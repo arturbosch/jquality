@@ -1,4 +1,6 @@
-package com.gitlab.artismarti.ast
+package com.gitlab.artismarti.smartsmells
+
+import com.gitlab.artismarti.smartsmells.comment.CommentDetector
 
 import java.nio.file.Paths
 

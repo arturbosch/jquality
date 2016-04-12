@@ -1,4 +1,4 @@
-group 'com.gitlab.artismarti.ast'
+group 'com.gitlab.artismarti.smartsmells'
 version 'A'
 
 apply plugin: 'groovy'
