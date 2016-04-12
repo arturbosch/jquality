@@ -12,6 +12,10 @@ class LongMethodDetectorTest extends Specification {
 		expect:
 		smells.size() == 1
 		smells.get(0).name == "longMethod"
+		smells.get(0).signature == "void longMethod(String s1, String s2, String s3, String s4, String s5)"
+		smells.get(0).size == 11
+		smells.get(0).header == "public void longMethod(String s1, String s2, String s3, String s4, String s5)"
+		smells.get(0).sourceRange.toString() == "[[8, 21], [9, 9]]"
 
 		where:
 		smells = new LongMethodDetector().run(Test.PATH)

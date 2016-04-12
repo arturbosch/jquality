@@ -22,14 +22,4 @@ class CommentSmell {
 	Tuple2<SourcePosition, SourcePosition> positions
 	String sourcePath
 
-	@Override
-	String toString() {
-		return "CommentSmell{" +
-				"comment='" + comment + '\'' +
-				", type='" + type + '\'' +
-				", positions=" + positions +
-				", path='" + sourcePath + '\'' +
-				", message='" + message + '\'' +
-				'}';
-	}
 }

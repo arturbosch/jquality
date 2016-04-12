@@ -5,9 +5,11 @@ import com.github.javaparser.ast.body.MethodDeclaration
 import com.github.javaparser.ast.body.ModifierSet
 import com.github.javaparser.ast.comments.Comment
 import com.gitlab.artismarti.smartsmells.common.SourcePosition
+import com.gitlab.artismarti.smartsmells.common.SourceRange
 import com.gitlab.artismarti.smartsmells.common.Visitor
 
 import java.nio.file.Path
+
 /**
  * Visits all method declaration of a compilation unit and examines them
  * for orphan comments or comments above private/package-private methods.
@@ -50,7 +52,7 @@ class CommentVisitor extends Visitor {
 	}
 
 	private static Tuple2<SourcePosition, SourcePosition> positions(Comment comment) {
-		return new Tuple2<SourcePosition, SourcePosition>(
+		return SourceRange.of(
 				new SourcePosition(Position.beginOf(comment).line, Position.beginOf(comment).column),
 				new SourcePosition(Position.endOf(comment).line, Position.endOf(comment).column))
 	}
