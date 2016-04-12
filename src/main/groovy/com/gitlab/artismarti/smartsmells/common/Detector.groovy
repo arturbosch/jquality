@@ -1,4 +1,4 @@
-package com.gitlab.artismarti.ast
+package com.gitlab.artismarti.smartsmells.common
 
 import com.github.javaparser.JavaParser
 import org.codehaus.groovy.runtime.IOGroovyMethods
@@ -7,23 +7,19 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.util.function.BinaryOperator
 import java.util.stream.Collectors
-
 /**
- * Detector finds orphan comments within methods or not very useful comments over private/package-private methods.
- * Comments are considered as a smell because they shade poor code which should be rewritten instead.
- *
  * @author artur
  */
-class CommentDetector {
+abstract class Detector<T> {
 
 	/**
 	 * Binary operator combines two lists into one.
 	 */
-	static def op = new BinaryOperator<List<CommentSmell>>() {
+	static def op = new BinaryOperator<List<T>>() {
 		@Override
-		List<CommentSmell> apply(List<CommentSmell> commentSmell, List<CommentSmell> commentSmell2) {
-			List<CommentSmell> list = new ArrayList<>(commentSmell)
-			list.addAll(commentSmell2)
+		List<T> apply(List<T> l1, List<T> l2) {
+			List<T> list = new ArrayList<>(l1)
+			list.addAll(l2)
 			return list
 		}
 	}
@@ -33,21 +29,23 @@ class CommentDetector {
 	 * @param startPath project path
 	 * @return list of comment smells
 	 */
-	static List<CommentSmell> run(Path startPath) {
+	List<T> run(Path startPath) {
 		return Files.walk(startPath)
 				.filter({ it.fileName.toString().endsWith("java") })
 				.map({ execute(it) })
 				.collect(Collectors.reducing(new ArrayList(), op))
-
 	}
 
-	private static List<CommentSmell> execute(Path path) {
+	protected List<T> execute(Path path) {
 		def fis = Files.newInputStream(path)
-		def visitor = new MethodVisitor(path)
+		def visitor = getVisitor(path)
 		IOGroovyMethods.withCloseable(fis) {
 			def unit = JavaParser.parse(fis)
 			visitor.visit(unit, null)
 		}
 		return visitor.smells
 	}
+
+	protected abstract Visitor getVisitor(Path path)
+
 }

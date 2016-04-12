@@ -3,7 +3,7 @@ package com.gitlab.artismarti.smartsmells;
 /**
  * @author artur
  */
-public class Test {
+@SuppressWarnings("ALL") public class CommentDummy {
 
 	/**
 	 * Ich bin ein Kommentar!

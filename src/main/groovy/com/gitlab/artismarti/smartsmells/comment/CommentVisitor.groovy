@@ -4,28 +4,26 @@ import com.github.javaparser.Position
 import com.github.javaparser.ast.body.MethodDeclaration
 import com.github.javaparser.ast.body.ModifierSet
 import com.github.javaparser.ast.comments.Comment
-import com.github.javaparser.ast.visitor.VoidVisitorAdapter
 import com.gitlab.artismarti.smartsmells.common.SourcePosition
+import com.gitlab.artismarti.smartsmells.common.Visitor
 
 import java.nio.file.Path
-
 /**
  * Visits all method declaration of a compilation unit and examines them
  * for orphan comments or comments above private/package-private methods.
  *
  * @author artur
  */
-class MethodVisitor extends VoidVisitorAdapter<Object> {
+class CommentVisitor extends Visitor {
 
 	private final
 	static String DEFAULT_MESSAGE = "are considered as a smell, try to refactor your code so others will understand it without a comment."
 	private final static String ORPHAN_MESSAGE = "Loosely comments " + DEFAULT_MESSAGE
 	private final static String JAVADOC_MESSAGE = "Javadoc over private or package private methods " + DEFAULT_MESSAGE
 
-	private List<CommentSmell> smells = new ArrayList<>()
 	private Path path
 
-	MethodVisitor(Path path) {
+	CommentVisitor(Path path) {
 		this.path = path
 	}
 
@@ -55,10 +53,6 @@ class MethodVisitor extends VoidVisitorAdapter<Object> {
 		return new Tuple2<SourcePosition, SourcePosition>(
 				new SourcePosition(Position.beginOf(comment).line, Position.beginOf(comment).column),
 				new SourcePosition(Position.endOf(comment).line, Position.endOf(comment).column))
-	}
-
-	List<CommentSmell> getSmells() {
-		return smells
 	}
 
 }

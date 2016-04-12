@@ -12,7 +12,7 @@ class Main {
 	static void main(String... args) {
 
 		new CommentDetector()
-				.run(Paths.get("./src/main/groovy"))
+				.run(Paths.get("./src"))
 				.forEach({ println(it) })
 
 	}
