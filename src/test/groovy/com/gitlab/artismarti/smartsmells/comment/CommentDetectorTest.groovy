@@ -1,9 +1,7 @@
 package com.gitlab.artismarti.smartsmells.comment
 
+import com.gitlab.artismarti.smartsmells.common.Test
 import spock.lang.Specification
-
-import java.nio.file.Paths
-
 /**
  * @author artur
  */
@@ -15,6 +13,6 @@ class CommentDetectorTest extends Specification {
 
 		where:
 		smells = new CommentDetector()
-				.run(Paths.get("./src/test/groovy"))
+				.run(Test.PATH)
 	}
 }

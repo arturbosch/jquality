@@ -1,4 +1,4 @@
-package com.gitlab.artismarti.smartsmells;
+package com.gitlab.artismarti.smartsmells.comment;
 
 /**
  * @author artur
