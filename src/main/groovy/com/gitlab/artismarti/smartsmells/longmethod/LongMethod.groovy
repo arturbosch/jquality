@@ -13,6 +13,7 @@ class LongMethod {
 	String name
 	String signature
 	int size
+	int threshold
 	SourceRange sourceRange
 
 }

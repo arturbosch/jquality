@@ -25,8 +25,9 @@ class LongMethodVisitor extends Visitor<LongMethod> {
 		})
 	}
 
-	private static LongMethod newLongMethod(MethodDeclaration n, List<Statement> it) {
-		new LongMethod(n.declarationAsString, n.name, n.getDeclarationAsString(false, false, true), it.size(),
+	private LongMethod newLongMethod(MethodDeclaration n, List<Statement> it) {
+		new LongMethod(n.declarationAsString, n.name, n.getDeclarationAsString(false, false, true),
+				it.size(), threshold,
 				SourceRange.of(n.getBeginLine(), n.getBeginColumn(), n.getEndLine(), n.getEndColumn()))
 	}
 }
