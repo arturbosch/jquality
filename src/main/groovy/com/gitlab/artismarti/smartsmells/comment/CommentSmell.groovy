@@ -1,8 +1,7 @@
 package com.gitlab.artismarti.smartsmells.comment
 
-import com.gitlab.artismarti.smartsmells.common.SourcePosition
+import com.gitlab.artismarti.smartsmells.common.SourceRange
 import groovy.transform.Immutable
-
 /**
  * Represents a comment smell. There are two types of comment smell.
  * One is a comment above private and package private methods.
@@ -19,7 +18,7 @@ class CommentSmell {
 	String type
 	String comment
 	String message
-	Tuple2<SourcePosition, SourcePosition> positions
+	SourceRange positions
 	String sourcePath
 
 }
