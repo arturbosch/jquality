@@ -1,0 +1,13 @@
+group 'com.gitlab.artismarti.ast'
+version 'A'
+
+apply plugin: 'groovy'
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	compile 'org.codehaus.groovy:groovy-all:2.4.6'
+	compile 'com.github.javaparser:javaparser-core:2.3.0'
+}
