@@ -1,11 +1,10 @@
 package com.gitlab.artismarti.smartsmells.longmethod
 
-import com.github.javaparser.ast.body.MethodDeclaration
+import com.github.javaparser.ast.body.BodyDeclaration
 import com.github.javaparser.ast.stmt.Statement
 import com.gitlab.artismarti.smartsmells.common.MethodMetricVisitor
 
 import java.nio.file.Path
-
 /**
  * @author artur
  */
@@ -16,11 +15,11 @@ class LongMethodVisitor extends MethodMetricVisitor<LongMethod> {
 	}
 
 	@Override
-	protected byThreshold(MethodDeclaration n, List<Statement> stmt) {
+	protected byThreshold(BodyDeclaration n, List<Statement> stmt) {
 		return stmt.size() > threshold
 	}
 
-	protected def addSmell(MethodDeclaration n, List<Statement> it) {
+	protected def addSmell(BodyDeclaration n, List<Statement> it) {
 		smells.add(newLongMethod(n, it))
 	}
 }

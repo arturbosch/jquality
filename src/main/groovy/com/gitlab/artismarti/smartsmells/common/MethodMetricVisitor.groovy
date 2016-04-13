@@ -1,6 +1,9 @@
 package com.gitlab.artismarti.smartsmells.common
 
+import com.github.javaparser.ast.body.BodyDeclaration
+import com.github.javaparser.ast.body.ConstructorDeclaration
 import com.github.javaparser.ast.body.MethodDeclaration
+import com.github.javaparser.ast.stmt.BlockStmt
 import com.github.javaparser.ast.stmt.Statement
 import com.gitlab.artismarti.smartsmells.domain.SourcePath
 import com.gitlab.artismarti.smartsmells.domain.SourceRange
@@ -21,24 +24,39 @@ abstract class MethodMetricVisitor<T> extends Visitor<T> {
 	}
 
 	@Override
-	void visit(MethodDeclaration node, Object arg) {
-		Optional.ofNullable(node.body)
-				.map({ it.stmts })
-				.filter({ byThreshold(node, it) })
-				.ifPresent({ addSmell(node, it) }
+	void visit(ConstructorDeclaration node, Object arg) {
+		visitBlock(Optional.ofNullable(node.block), node)
+	}
+
+	private void visitBlock(Optional<BlockStmt> blockStmt, BodyDeclaration body) {
+		blockStmt.map({ it.stmts })
+				.filter({ byThreshold(body, it) })
+				.ifPresent({ addSmell(body, it) }
 		)
 	}
 
-	protected LongMethod newLongMethod(MethodDeclaration n, List<Statement> it) {
-		new LongMethod(
-				n.declarationAsString, n.name, n.getDeclarationAsString(false, false, true),
-				it.size(), threshold,
+	@Override
+	void visit(MethodDeclaration node, Object arg) {
+		visitBlock(Optional.ofNullable(node.body), node)
+	}
+
+	protected LongMethod newLongMethod(BodyDeclaration n, List<Statement> it) {
+		if (n instanceof MethodDeclaration)
+			longMethodIntern(n.declarationAsString, n.name, n.getDeclarationAsString(false, false, true), n, it)
+		else {
+			def node = (ConstructorDeclaration) n
+			longMethodIntern(node.declarationAsString, node.name, node.getDeclarationAsString(false, false, true), n, it)
+		}
+	}
+
+	private LongMethod longMethodIntern(String header, String name, String signature, BodyDeclaration n, List<Statement> it) {
+		new LongMethod(header, name, signature, it.size(), threshold,
 				SourceRange.of(n.getBeginLine(), n.getBeginColumn(), n.getEndLine(), n.getEndColumn()),
 				SourcePath.of(path)
 		)
 	}
 
-	protected abstract byThreshold(MethodDeclaration n, List<Statement> stmt)
+	protected abstract byThreshold(BodyDeclaration n, List<Statement> stmt)
 
-	protected abstract addSmell(MethodDeclaration n, List<Statement> stmt)
+	protected abstract addSmell(BodyDeclaration n, List<Statement> stmt)
 }
