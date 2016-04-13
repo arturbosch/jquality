@@ -1,4 +1,4 @@
-package com.gitlab.artismarti.smartsmells.longmethod;
+package com.gitlab.artismarti.smartsmells.java;
 
 /**
  * @author artur

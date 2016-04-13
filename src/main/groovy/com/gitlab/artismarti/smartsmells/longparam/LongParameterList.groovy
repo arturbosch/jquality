@@ -14,4 +14,7 @@ class LongParameterList {
 	LongMethod longMethod
 	List<String> parameters
 
+	def getPath() {
+		longMethod.path
+	}
 }

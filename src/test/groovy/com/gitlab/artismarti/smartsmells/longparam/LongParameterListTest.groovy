@@ -16,8 +16,8 @@ class LongParameterListTest extends Specification {
 		lpl.header == "header"
 		lpl.name == "name"
 		lpl.longMethod.name == "name"
-		lpl.path == Test.PATH.toAbsolutePath().normalize().toString()
 		lpl.sourcePath == SourcePath.of(Test.PATH)
+		lpl.path == Test.PATH.toAbsolutePath().normalize().toString()
 
 		where:
 		lpl = new LongParameterList(new LongMethod("header", "name", "signature", 1, 1,
