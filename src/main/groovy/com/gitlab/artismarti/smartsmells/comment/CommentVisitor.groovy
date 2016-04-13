@@ -4,12 +4,13 @@ import com.github.javaparser.Position
 import com.github.javaparser.ast.body.MethodDeclaration
 import com.github.javaparser.ast.body.ModifierSet
 import com.github.javaparser.ast.comments.Comment
-import com.gitlab.artismarti.smartsmells.common.SourcePath
-import com.gitlab.artismarti.smartsmells.common.SourcePosition
-import com.gitlab.artismarti.smartsmells.common.SourceRange
 import com.gitlab.artismarti.smartsmells.common.Visitor
+import com.gitlab.artismarti.smartsmells.domain.SourcePath
+import com.gitlab.artismarti.smartsmells.domain.SourcePosition
+import com.gitlab.artismarti.smartsmells.domain.SourceRange
 
 import java.nio.file.Path
+
 /**
  * Visits all method declaration of a compilation unit and examines them
  * for orphan comments or comments above private/package-private methods.
@@ -23,10 +24,8 @@ class CommentVisitor extends Visitor {
 	private final static String ORPHAN_MESSAGE = "Loosely comments " + DEFAULT_MESSAGE
 	private final static String JAVADOC_MESSAGE = "Javadoc over private or package private methods " + DEFAULT_MESSAGE
 
-	private Path path
-
 	CommentVisitor(Path path) {
-		this.path = path
+		super(path)
 	}
 
 	@Override
@@ -48,7 +47,7 @@ class CommentVisitor extends Visitor {
 	private void addCommentSmell(String type, Comment comment, String message) {
 		def sloc = positions(comment)
 		smells.add(new CommentSmell(type, comment.toString(), message, sloc,
-				SourcePath.of(path.toAbsolutePath().normalize().toString())))
+				SourcePath.of(path)))
 	}
 
 	private static SourceRange positions(Comment comment) {

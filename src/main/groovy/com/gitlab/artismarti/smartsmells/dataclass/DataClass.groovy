@@ -1,5 +1,6 @@
 package com.gitlab.artismarti.smartsmells.dataclass
 
+import com.gitlab.artismarti.smartsmells.domain.SourcePath
 import groovy.transform.Immutable
 
 /**
@@ -8,4 +9,6 @@ import groovy.transform.Immutable
 @Immutable
 class DataClass {
 
+	String name
+	SourcePath sourcePath
 }

@@ -1,7 +1,9 @@
-package com.gitlab.artismarti.smartsmells.common
+package com.gitlab.artismarti.smartsmells.domain
 
 import groovy.transform.Immutable
 import groovy.transform.ToString
+
+import java.nio.file.Path
 
 /**
  * @author artur
@@ -12,7 +14,7 @@ class SourcePath {
 
 	String path
 
-	static def of(String path) {
-		new SourcePath(path)
+	static def of(Path path) {
+		new SourcePath(path.toAbsolutePath().normalize().toString())
 	}
 }

@@ -3,7 +3,6 @@ package com.gitlab.artismarti.smartsmells.longparam
 import com.gitlab.artismarti.smartsmells.longmethod.LongMethod
 import groovy.transform.Immutable
 import groovy.transform.ToString
-
 /**
  * @author artur
  */

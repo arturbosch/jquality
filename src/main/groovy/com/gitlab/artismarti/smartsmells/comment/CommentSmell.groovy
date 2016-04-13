@@ -1,7 +1,7 @@
 package com.gitlab.artismarti.smartsmells.comment
 
-import com.gitlab.artismarti.smartsmells.common.SourcePath
-import com.gitlab.artismarti.smartsmells.common.SourceRange
+import com.gitlab.artismarti.smartsmells.domain.SourcePath
+import com.gitlab.artismarti.smartsmells.domain.SourceRange
 import groovy.transform.Immutable
 /**
  * Represents a comment smell. There are two types of comment smell.

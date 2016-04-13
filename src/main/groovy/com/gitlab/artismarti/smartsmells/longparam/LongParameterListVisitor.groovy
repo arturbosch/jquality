@@ -4,13 +4,15 @@ import com.github.javaparser.ast.body.MethodDeclaration
 import com.github.javaparser.ast.stmt.Statement
 import com.gitlab.artismarti.smartsmells.common.MethodMetricVisitor
 
+import java.nio.file.Path
+
 /**
  * @author artur
  */
 class LongParameterListVisitor extends MethodMetricVisitor<LongParameterList> {
 
-	LongParameterListVisitor(int threshold) {
-		super(threshold)
+	LongParameterListVisitor(int threshold, Path path) {
+		super(threshold, path)
 	}
 
 	@Override
