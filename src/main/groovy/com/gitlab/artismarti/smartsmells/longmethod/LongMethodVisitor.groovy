@@ -6,9 +6,9 @@ import com.gitlab.artismarti.smartsmells.common.MethodMetricVisitor
 /**
  * @author artur
  */
-class LongMethodVisitorMethod extends MethodMetricVisitor<LongMethod> {
+class LongMethodVisitor extends MethodMetricVisitor<LongMethod> {
 
-	LongMethodVisitorMethod(int threshold) {
+	LongMethodVisitor(int threshold) {
 		super(threshold)
 	}
 

@@ -19,6 +19,6 @@ class LongParameterListDetector extends Detector<LongParameterList> {
 
 	@Override
 	protected Visitor getVisitor(Path path) {
-		new LongParameterListVisitorMethod(threshold)
+		new LongParameterListVisitor(threshold)
 	}
 }

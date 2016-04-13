@@ -19,7 +19,7 @@ class LongMethodDetector extends Detector<LongMethod> {
 
 	@Override
 	protected Visitor getVisitor(Path path) {
-		new LongMethodVisitorMethod(threshold)
+		new LongMethodVisitor(threshold)
 	}
 
 }

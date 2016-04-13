@@ -13,7 +13,7 @@ class CommentDetectorTest extends Specification {
 		!smells.get(0).type.isEmpty()
 		!smells.get(0).comment.isEmpty()
 		!smells.get(0).message.isEmpty()
-		!smells.get(0).sourcePath.isEmpty()
+		!smells.get(0).path.isEmpty()
 		!smells.get(0).positions.isEmpty()
 
 		where:

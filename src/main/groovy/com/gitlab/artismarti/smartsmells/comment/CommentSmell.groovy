@@ -1,5 +1,6 @@
 package com.gitlab.artismarti.smartsmells.comment
 
+import com.gitlab.artismarti.smartsmells.common.SourcePath
 import com.gitlab.artismarti.smartsmells.common.SourceRange
 import groovy.transform.Immutable
 /**
@@ -19,6 +20,8 @@ class CommentSmell {
 	String comment
 	String message
 	SourceRange positions
-	String sourcePath
+
+	@Delegate
+	SourcePath sourcePath
 
 }
