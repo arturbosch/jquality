@@ -2,11 +2,13 @@ package com.gitlab.artismarti.smartsmells.longmethod
 
 import com.gitlab.artismarti.smartsmells.common.SourceRange
 import groovy.transform.Immutable
+import groovy.transform.ToString
 
 /**
  * @author artur
  */
 @Immutable
+@ToString(includePackage = false)
 class LongMethod {
 
 	String header
