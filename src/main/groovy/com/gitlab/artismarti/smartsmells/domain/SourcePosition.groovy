@@ -19,4 +19,7 @@ class SourcePosition extends Tuple2<Integer, Integer> {
 		return (int) get(1);
 	}
 
+	static SourcePosition of(int line, int column) {
+		new SourcePosition(line, column)
+	}
 }

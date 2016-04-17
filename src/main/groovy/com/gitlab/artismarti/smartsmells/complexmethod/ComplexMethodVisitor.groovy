@@ -20,7 +20,7 @@ class ComplexMethodVisitor extends MethodMetricVisitor<ComplexMethod> {
 
 	@Override
 	protected byThreshold(BodyDeclaration n, List<Statement> stmt) {
-		mcc = MethodHelper.calcMcCabe(n) + 1
+		mcc = MethodHelper.calcMcCabe(n)
 		return mcc >= threshold
 	}
 

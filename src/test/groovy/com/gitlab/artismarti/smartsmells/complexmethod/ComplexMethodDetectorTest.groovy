@@ -15,6 +15,6 @@ class ComplexMethodDetectorTest extends Specification {
 		smells.get(0).longMethod.name == "complexMethod"
 
 		where:
-		smells = new ComplexMethodDetector().run(Test.PATH.resolve("com/gitlab/artismarti/smartsmells/java"))
+		smells = new ComplexMethodDetector().run(Test.COMPLEX_METHOD_DUMMY_PATH)
 	}
 }

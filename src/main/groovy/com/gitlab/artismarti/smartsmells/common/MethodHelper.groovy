@@ -14,7 +14,7 @@ import com.gitlab.artismarti.smartsmells.complexmethod.CyclomaticComplexityVisit
 class MethodHelper {
 
 	static int calcMcCabe(BodyDeclaration n) {
-		return mcCabeIntern(n)
+		return mcCabeIntern(n) + 1
 	}
 
 	static int calcMcCabeForStatement(Statement n) {

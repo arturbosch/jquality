@@ -1,15 +1,24 @@
 package com.gitlab.artismarti.smartsmells.godclass
 
+import com.gitlab.artismarti.smartsmells.domain.SourcePath
+import com.gitlab.artismarti.smartsmells.domain.SourceRange
 import groovy.transform.Immutable
+import groovy.transform.ToString
 
 /**
  * @author artur
  */
 @Immutable
+@ToString(includePackage = false)
 class GodClass {
 
-	int WeightedMethodPerClass
-	int TightClassCohesion
-	int AccessToForeignData
+	int weightedMethodPerClass
+	double tiedClassCohesion
+	int accessToForeignData
+
+	@Delegate
+	SourcePath sourcePath
+	@Delegate
+	SourceRange sourceRange
 
 }

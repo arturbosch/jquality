@@ -19,6 +19,6 @@ class ComplexMethodDetector extends Detector<ComplexMethod> {
 
 	@Override
 	protected Visitor getVisitor(Path path) {
-		return new ComplexMethodVisitor(Defaults.COMPLEX_METHOD, path)
+		return new ComplexMethodVisitor(complexity, path)
 	}
 }
