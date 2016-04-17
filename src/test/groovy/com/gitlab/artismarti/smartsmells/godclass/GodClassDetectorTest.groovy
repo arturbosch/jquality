@@ -13,7 +13,9 @@ class GodClassDetectorTest extends Specification {
 		smells.size() == 1
 		smells.get(0).accessToForeignData == 6
 		smells.get(0).weightedMethodPerClass == 21
-		smells.get(0).tiedClassCohesion == 0.0d
+		smells.get(0).tiedClassCohesion == 0.3d
+		smells.get(0).sourcePath != null
+		smells.get(0).sourceRange != null
 
 		where:
 		smells = new GodClassDetector().run(Test.GOD_CLASS_DUMMY_PATH)

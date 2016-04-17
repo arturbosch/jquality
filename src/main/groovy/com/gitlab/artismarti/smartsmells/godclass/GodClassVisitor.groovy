@@ -26,7 +26,8 @@ class GodClassVisitor extends Visitor<GodClass> {
 
 	private int atfd = 0
 	private int wmc = 0
-	private BigDecimal tcc = new BigDecimal("0.0")
+	private double tcc = 0.0
+
 	private String className
 	private List<String> fields
 	private List<String> methods
@@ -35,7 +36,7 @@ class GodClassVisitor extends Visitor<GodClass> {
 
 	GodClassVisitor(int accessToForeignDataThreshold,
 					int weightedMethodCountThreshold,
-					BigDecimal tiedClassCohesionThreshold,
+					double tiedClassCohesionThreshold,
 					Path path) {
 		super(path)
 		this.accessToForeignDataThreshold = accessToForeignDataThreshold
@@ -76,27 +77,27 @@ class GodClassVisitor extends Visitor<GodClass> {
 	}
 
 	private boolean addSmell(ClassOrInterfaceDeclaration n) {
-		smells.add(new GodClass(wmc, tcc.toDouble(), atfd, SourcePath.of(path),
+		smells.add(new GodClass(wmc, tcc, atfd, SourcePath.of(path),
 				SourceRange.of(SourcePosition.of(n.beginLine, n.beginColumn),
 						SourcePosition.of(n.endLine, n.endColumn))))
 	}
 
 	private double calculateTcc() {
-		BigDecimal tcc = new BigDecimal("0.0");
-		BigDecimal methodPairs = determineMethodPairs();
+		double tcc = new BigDecimal("0.0");
+		double methodPairs = determineMethodPairs();
 		println "method pairs: $methodPairs"
-		BigDecimal totalMethodPairs = calculateTotalMethodPairs();
+		double totalMethodPairs = calculateTotalMethodPairs();
 		println "total method pairs: $totalMethodPairs"
 		if (totalMethodPairs.compareTo(BigDecimal.ZERO)) {
-			tcc = methodPairs.divide(totalMethodPairs);
+			tcc = methodPairs / totalMethodPairs;
 		}
 		return tcc;
 	}
 
-	BigDecimal determineMethodPairs() {
-		def methods = new ArrayList<String>(methodFieldAccesses.entrySet().size());
+	double determineMethodPairs() {
+		def methods = methodFieldAccesses.keySet().toList();
 		def methodCount = methods.size();
-		def pairs = BigDecimal.ZERO;
+		def pairs = 0.0;
 		if (methodCount > 1) {
 			for (int i = 0; i < methodCount; i++) {
 				for (int j = i + 1; j < methodCount; j++) {
@@ -108,7 +109,7 @@ class GodClassVisitor extends Visitor<GodClass> {
 					combinedAccesses.addAll(accessesOfFirstMethod);
 					combinedAccesses.addAll(accessesOfSecondMethod);
 					if (combinedAccesses.size() < (accessesOfFirstMethod.size() + accessesOfSecondMethod.size())) {
-						pairs.add(BigDecimal.ONE);
+						pairs++;
 					}
 				}
 			}
@@ -116,7 +117,7 @@ class GodClassVisitor extends Visitor<GodClass> {
 		return pairs;
 	}
 
-	BigDecimal calculateTotalMethodPairs() {
+	double calculateTotalMethodPairs() {
 		int n = methodFieldAccesses.size();
 		return n * (n - 1) / 2.0;
 	}
@@ -140,7 +141,10 @@ class GodClassVisitor extends Visitor<GodClass> {
 	void visit(MethodDeclaration n, Object arg) {
 		wmc += MethodHelper.calcMcCabe(n)
 
-		def accessedFieldNames = n.accept(new FieldAccessVisitor(), new HashSet<String>())
+		def visitor = new FieldAccessVisitor()
+		n.accept(visitor, null)
+
+		def accessedFieldNames = visitor.fieldNames
 		def methodName = n.name
 
 		methodFieldAccesses.put(methodName, accessedFieldNames)

@@ -44,7 +44,8 @@ package com.gitlab.artismarti.smartsmells.java;
 						break;
 					default:
 						for (int i : new int[] {1, 2, 3, 4, 5}) {
-							System.out.println(i);
+							dummy.complexMethod(true, true, i);
+							dummy.complexMethod(true, true, i);
 						}
 				}
 			}
@@ -70,7 +71,8 @@ package com.gitlab.artismarti.smartsmells.java;
 						break;
 					default:
 						for (int i : new int[] {1, 2, 3, 4, 5}) {
-							System.out.println(i);
+							dummy.complexMethod(true, true, i);
+							dummy.complexMethod(true, true, i);
 						}
 				}
 			}
