@@ -1,10 +1,12 @@
 package com.gitlab.artismarti.smartsmells.godclass
 
-import com.github.javaparser.ASTHelper
-import com.github.javaparser.ast.body.*
+import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration
+import com.github.javaparser.ast.body.ConstructorDeclaration
+import com.github.javaparser.ast.body.MethodDeclaration
 import com.github.javaparser.ast.expr.FieldAccessExpr
 import com.github.javaparser.ast.expr.MethodCallExpr
 import com.gitlab.artismarti.smartsmells.common.MethodHelper
+import com.gitlab.artismarti.smartsmells.common.NodeHelper
 import com.gitlab.artismarti.smartsmells.common.Visitor
 import com.gitlab.artismarti.smartsmells.domain.SourcePath
 import com.gitlab.artismarti.smartsmells.domain.SourcePosition
@@ -52,14 +54,10 @@ class GodClassVisitor extends Visitor<GodClass> {
 	@Override
 	void visit(ClassOrInterfaceDeclaration n, Object arg) {
 		this.className = n.name
-		fields = getFieldNames(n)
 
-		def methodNodes = ASTHelper.getNodesByType(n, MethodDeclaration.class)
-		methods = methodNodes.collect({ it.name })
-
-		publicMethods = methodNodes.stream()
-				.filter({ ModifierSet.isPublic(it.modifiers) })
-				.collect({ it.name })
+		fields = NodeHelper.findFieldNames(n)
+		methods = NodeHelper.findMethodNames(n)
+		publicMethods = NodeHelper.findPublicMethods(n)
 
 		// traverse all nodes and calculate values before evaluate for god class
 		super.visit(n, arg)
@@ -68,15 +66,6 @@ class GodClassVisitor extends Visitor<GodClass> {
 		if (checkThresholds(tcc)) {
 			addSmell(n)
 		}
-	}
-
-	private static List<String> getFieldNames(ClassOrInterfaceDeclaration n) {
-		ASTHelper.getNodesByType(n, FieldDeclaration.class)
-				.collect({ it.variables })
-				.collect({ it.id })
-				.collect({ it.name })
-				.flatten()
-				.collect({ (String) it })
 	}
 
 	private boolean checkThresholds(BigDecimal tcc) {
