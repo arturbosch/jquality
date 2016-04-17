@@ -14,8 +14,6 @@ package com.gitlab.artismarti.smartsmells.java;
 		if (b1) {
 			while (b2) {
 				switch (number) {
-					case 5:
-						break;
 					case 4:
 						break;
 					case 3:
@@ -30,7 +28,6 @@ package com.gitlab.artismarti.smartsmells.java;
 						for (int i : new int[] {1, 2, 3, 4, 5}) {
 							System.out.println(i);
 						}
-						;
 				}
 			}
 		}
@@ -65,9 +62,6 @@ package com.gitlab.artismarti.smartsmells.java;
 						}
 				}
 			}
-		}
-		while(true) {
-
 		}
 	}
 }

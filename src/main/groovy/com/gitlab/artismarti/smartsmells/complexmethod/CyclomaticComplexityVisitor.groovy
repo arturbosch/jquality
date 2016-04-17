@@ -6,7 +6,7 @@ import com.github.javaparser.ast.visitor.VoidVisitorAdapter
 import com.gitlab.artismarti.smartsmells.common.MethodHelper
 
 /**
- * Attention! You have to add one to mccabe complexity
+ * Attention! You have to add one to McCabeComplexity
  * @author artur
  */
 class CyclomaticComplexityVisitor extends VoidVisitorAdapter<Object> {
@@ -15,69 +15,80 @@ class CyclomaticComplexityVisitor extends VoidVisitorAdapter<Object> {
 
 	@Override
 	void visit(IfStmt n, Object arg) {
-		println "if stmt"
-		incMcc(n.thenStmt)
-		incMcc(n.elseStmt)
+		incAndCalcMcc(n.thenStmt)
+		calcMcc(n.elseStmt)
 	}
 
-	private void incMcc(Statement statement) {
+	private void incAndCalcMcc(Statement statement) {
+		incMcc()
+		calcMcc(statement)
+	}
+
+	private void incMcc() {
+		mcCabeComplexity++
+	}
+
+	private void calcMcc(Statement statement) {
 		Optional.ofNullable(statement)
 				.ifPresent({ mcCabeComplexity += MethodHelper.calcMcCabeForStatement(it) })
-
 	}
 
 	@Override
 	void visit(ConditionalExpr n, Object arg) {
-		println "conditional stmt"
-		mcCabeComplexity++
+		incMcc()
 	}
 
 	@Override
 	void visit(SwitchStmt n, Object arg) {
-		println "switch"
-		n.entries.forEach({ incMcc(it) })
+		n.entries.forEach({ calcMcc(it) })
 	}
 
 	@Override
 	void visit(SwitchEntryStmt n, Object arg) {
-		println "switch case"
-//		if (!isDefaultCase(n)) n.stmts.forEach({ incMcc(it) })
+		if (!isDefaultCase(n))
+			incMcc()
+		controlFlowStatements(n.stmts)
+				.forEach({ calcMcc(it) })
 	}
 
 	private static boolean isDefaultCase(SwitchEntryStmt n) {
-		println n.label.toString()
-		n.label.toString().contains("default")
+		n.toString().contains("default")
+	}
+
+	static def controlFlowStatements(List<Statement> statements) {
+		statements.grep({
+			it instanceof DoStmt || it instanceof ForeachStmt ||
+					it instanceof ForStmt || it instanceof IfStmt ||
+					it instanceof ForStmt || it instanceof IfStmt ||
+					it instanceof SwitchEntryStmt || it instanceof SwitchStmt ||
+					it instanceof TryStmt || it instanceof WhileStmt
+		})
 	}
 
 	@Override
 	void visit(TryStmt n, Object arg) {
-		println "try"
-		incMcc(n.tryBlock)
-		n.catchs.forEach({ incMcc(it.catchBlock) })
+		calcMcc(n.tryBlock)
+		n.catchs.forEach({ incAndCalcMcc(it.catchBlock) })
 	}
 
 	@Override
 	void visit(WhileStmt n, Object arg) {
-		println "while"
-		incMcc(n.body)
+		incAndCalcMcc(n.body)
 	}
 
 	@Override
 	void visit(DoStmt n, Object arg) {
-		println "do while"
-		incMcc(n.body)
+		incAndCalcMcc(n.body)
 	}
 
 	@Override
 	void visit(ForeachStmt n, Object arg) {
-		println "for each"
-		incMcc(n.body)
+		incAndCalcMcc(n.body)
 	}
 
 	@Override
 	void visit(ForStmt n, Object arg) {
-		println "for"
-		incMcc(n.body)
+		incAndCalcMcc(n.body)
 	}
 
 	int getMcCabeComplexity() {
