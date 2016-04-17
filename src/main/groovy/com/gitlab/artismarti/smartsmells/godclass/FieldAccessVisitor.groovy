@@ -3,6 +3,7 @@ package com.gitlab.artismarti.smartsmells.godclass
 import com.github.javaparser.ast.expr.FieldAccessExpr
 import com.github.javaparser.ast.expr.MethodCallExpr
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter
+
 /**
  * @author artur
  */
@@ -17,7 +18,8 @@ class FieldAccessVisitor extends VoidVisitorAdapter<Set<String>> {
 
 	@Override
 	void visit(MethodCallExpr n, Set<String> arg) {
-		fieldNames.add(n.scope.toStringWithoutComments())
+		Optional.ofNullable(n.scope)
+				.ifPresent({ fieldNames.add(n.scope.toStringWithoutComments()) })
 	}
 
 	Set<String> getFieldNames() {

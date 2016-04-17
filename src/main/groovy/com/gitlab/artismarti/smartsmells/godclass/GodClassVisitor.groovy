@@ -16,6 +16,11 @@ import java.nio.file.Path
  * GodClasses := ((ATFD, TopValues(20%)) ∧ (ATFD, HigherThan(4))) ∧
  * ((WMC, HigherThan(20)) ∨ (TCC, LowerThan(0.33)).
  *
+ * Metric proposed by:
+ * R. Marinescu, Measurement and quality in object-oriented design, Ph.D. thesis in
+ * the Faculty of Automatics and Computer Science of the Politehnica University of
+ * Timisoara, 2003.
+ *
  * @author artur
  */
 class GodClassVisitor extends Visitor<GodClass> {
@@ -29,10 +34,10 @@ class GodClassVisitor extends Visitor<GodClass> {
 	private double tcc = 0.0
 
 	private String className
-	private List<String> fields
-	private List<String> methods
-	private Map<String, Set<String>> methodFieldAccesses
-	private List<String> publicMethods
+	private List<String> fields = new ArrayList<>()
+	private List<String> methods = new ArrayList<>()
+	private Map<String, Set<String>> methodFieldAccesses = new HashMap<>()
+	private List<String> publicMethods = new ArrayList<>()
 
 	GodClassVisitor(int accessToForeignDataThreshold,
 					int weightedMethodCountThreshold,
@@ -42,7 +47,6 @@ class GodClassVisitor extends Visitor<GodClass> {
 		this.accessToForeignDataThreshold = accessToForeignDataThreshold
 		this.weightedMethodCountThreshold = weightedMethodCountThreshold
 		this.tiedClassCohesionThreshold = tiedClassCohesionThreshold
-		this.methodFieldAccesses = new HashMap<>()
 	}
 
 	@Override
@@ -59,67 +63,11 @@ class GodClassVisitor extends Visitor<GodClass> {
 
 		// traverse all nodes and calculate values before evaluate for god class
 		super.visit(n, arg)
-		tcc = calculateTcc()
-
-		println "WMC: $wmc"
-		println "ATFD: $atfd"
-		println "TCC: $tcc"
+		tcc = TiedClassCohesion.calc(methodFieldAccesses)
 
 		if (checkThresholds(tcc)) {
 			addSmell(n)
 		}
-	}
-
-	private boolean checkThresholds(BigDecimal tcc) {
-		atfd > accessToForeignDataThreshold &&
-				(wmc > weightedMethodCountThreshold ||
-						tcc > tiedClassCohesionThreshold)
-	}
-
-	private boolean addSmell(ClassOrInterfaceDeclaration n) {
-		smells.add(new GodClass(wmc, tcc, atfd, SourcePath.of(path),
-				SourceRange.of(SourcePosition.of(n.beginLine, n.beginColumn),
-						SourcePosition.of(n.endLine, n.endColumn))))
-	}
-
-	private double calculateTcc() {
-		double tcc = new BigDecimal("0.0");
-		double methodPairs = determineMethodPairs();
-		println "method pairs: $methodPairs"
-		double totalMethodPairs = calculateTotalMethodPairs();
-		println "total method pairs: $totalMethodPairs"
-		if (totalMethodPairs.compareTo(BigDecimal.ZERO)) {
-			tcc = methodPairs / totalMethodPairs;
-		}
-		return tcc;
-	}
-
-	double determineMethodPairs() {
-		def methods = methodFieldAccesses.keySet().toList();
-		def methodCount = methods.size();
-		def pairs = 0.0;
-		if (methodCount > 1) {
-			for (int i = 0; i < methodCount; i++) {
-				for (int j = i + 1; j < methodCount; j++) {
-					String firstMethodName = methods.get(i);
-					String secondMethodName = methods.get(j);
-					Set<String> accessesOfFirstMethod = methodFieldAccesses.get(firstMethodName);
-					Set<String> accessesOfSecondMethod = methodFieldAccesses.get(secondMethodName);
-					Set<String> combinedAccesses = new HashSet<String>();
-					combinedAccesses.addAll(accessesOfFirstMethod);
-					combinedAccesses.addAll(accessesOfSecondMethod);
-					if (combinedAccesses.size() < (accessesOfFirstMethod.size() + accessesOfSecondMethod.size())) {
-						pairs++;
-					}
-				}
-			}
-		}
-		return pairs;
-	}
-
-	double calculateTotalMethodPairs() {
-		int n = methodFieldAccesses.size();
-		return n * (n - 1) / 2.0;
 	}
 
 	private static List<String> getFieldNames(ClassOrInterfaceDeclaration n) {
@@ -129,6 +77,18 @@ class GodClassVisitor extends Visitor<GodClass> {
 				.collect({ it.name })
 				.flatten()
 				.collect({ (String) it })
+	}
+
+	private boolean checkThresholds(BigDecimal tcc) {
+		atfd > accessToForeignDataThreshold &&
+				(wmc > weightedMethodCountThreshold ||
+						tcc < tiedClassCohesionThreshold)
+	}
+
+	private boolean addSmell(ClassOrInterfaceDeclaration n) {
+		smells.add(new GodClass(wmc, tcc, atfd, SourcePath.of(path),
+				SourceRange.of(SourcePosition.of(n.beginLine, n.beginColumn),
+						SourcePosition.of(n.endLine, n.endColumn))))
 	}
 
 	@Override
@@ -141,6 +101,14 @@ class GodClassVisitor extends Visitor<GodClass> {
 	void visit(MethodDeclaration n, Object arg) {
 		wmc += MethodHelper.calcMcCabe(n)
 
+		if (publicMethods.contains(n.name)) {
+			collectFieldAccesses(n)
+		}
+
+		super.visit(n, arg)
+	}
+
+	private void collectFieldAccesses(MethodDeclaration n) {
 		def visitor = new FieldAccessVisitor()
 		n.accept(visitor, null)
 
@@ -148,8 +116,6 @@ class GodClassVisitor extends Visitor<GodClass> {
 		def methodName = n.name
 
 		methodFieldAccesses.put(methodName, accessedFieldNames)
-
-		super.visit(n, arg)
 	}
 
 	@Override

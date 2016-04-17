@@ -21,4 +21,15 @@ class GodClass {
 	@Delegate
 	SourceRange sourceRange
 
+
+	@Override
+	public String toString() {
+		return "GodClass{" +
+				"weightedMethodPerClass=" + weightedMethodPerClass +
+				", tiedClassCohesion=" + tiedClassCohesion +
+				", accessToForeignData=" + accessToForeignData +
+				", path=" + path +
+				", positions=" + sourceRange +
+				'}';
+	}
 }
