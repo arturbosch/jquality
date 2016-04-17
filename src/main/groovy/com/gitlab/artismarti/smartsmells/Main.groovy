@@ -7,6 +7,7 @@ import com.gitlab.artismarti.smartsmells.godclass.GodClassDetector
 import com.gitlab.artismarti.smartsmells.longmethod.LongMethodDetector
 import com.gitlab.artismarti.smartsmells.longparam.LongParameterListDetector
 
+import java.nio.file.Path
 import java.nio.file.Paths
 
 /**
@@ -14,24 +15,45 @@ import java.nio.file.Paths
  */
 class Main {
 
+	def static benchmark = { closure ->
+		def start = System.currentTimeMillis()
+		closure.call()
+		def now = System.currentTimeMillis()
+		now - start
+	}
+
 	static void main(String... args) {
 
 		def path = Paths.get("/home/artur/Repos/quide/Implementierung/QuideService/src")
 
-		println "GodClasses: " + new GodClassDetector().run(path)
-				.stream().count()
-		println "ComplexMethods: " + new ComplexMethodDetector().run(path)
-				.stream().count()
-		println "CommentSmell: " + new CommentDetector().run(path)
-				.stream().count()
-		println "LongMethod: " + new LongMethodDetector(15)
-				.run(path)
-				.stream().count()
-		println "LongParameterList: " + new LongParameterListDetector()
-				.run(path)
-				.stream().count()
-		println "DataClass: " + new DataClassDetector()
-				.run(path)
-				.stream().count()
+		for (i in 0..9) syncTest(path)
+		println()
+		for (i in 0..9) asyncTest(path)
+
+	}
+
+	private static asyncTest(Path path) {
+		println "\n Async Duration: " + benchmark { new DetectorFacade().start(path) } / 1000
+	}
+
+	private static void syncTest(Path path) {
+		println "\n Sync Duration: " + benchmark {
+
+			println "GodClasses: " + new GodClassDetector().run(path)
+					.stream().count()
+			println "ComplexMethods: " + new ComplexMethodDetector().run(path)
+					.stream().count()
+			println "CommentSmell: " + new CommentDetector().run(path)
+					.stream().count()
+			println "LongMethod: " + new LongMethodDetector(15)
+					.run(path)
+					.stream().count()
+			println "LongParameterList: " + new LongParameterListDetector()
+					.run(path)
+					.stream().count()
+			println "DataClass: " + new DataClassDetector()
+					.run(path)
+					.stream().count()
+		} / 1000
 	}
 }
