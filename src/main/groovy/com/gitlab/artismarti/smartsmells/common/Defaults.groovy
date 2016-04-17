@@ -5,12 +5,12 @@ package com.gitlab.artismarti.smartsmells.common
  */
 class Defaults {
 
-	static LONG_METHOD = 7
-	static LONG_PARAMETER_LIST = 5
-	static COMPLEX_METHOD = 10
-
+	static def LONG_METHOD = 7
+	static def LONG_PARAMETER_LIST = 5
+	static def COMPLEX_METHOD = 10
 	static def WEIGHTED_METHOD_COUNT = 20
 	static def ACCESS_TO_FOREIGN_DATA = 4
 	static def TIED_CLASS_COHESION = 0.33
 	static boolean ONLY_PRIVATE_DEAD_CODE = true
+
 }
