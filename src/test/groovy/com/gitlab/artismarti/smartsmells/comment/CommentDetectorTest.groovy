@@ -2,6 +2,7 @@ package com.gitlab.artismarti.smartsmells.comment
 
 import com.gitlab.artismarti.smartsmells.common.Test
 import spock.lang.Specification
+
 /**
  * @author artur
  */
@@ -15,6 +16,7 @@ class CommentDetectorTest extends Specification {
 		!smells.get(0).message.isEmpty()
 		!smells.get(0).path.isEmpty()
 		!smells.get(0).positions.isEmpty()
+		smells.get(0).sourcePath != null
 
 		where:
 		smells = new CommentDetector()

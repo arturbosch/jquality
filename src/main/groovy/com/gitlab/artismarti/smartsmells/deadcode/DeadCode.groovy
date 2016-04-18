@@ -10,6 +10,9 @@ import groovy.transform.Immutable
 @Immutable
 class DeadCode {
 
+	String entityName
+	String signature
+
 	@Delegate
 	SourcePath sourcePath
 	@Delegate

@@ -1,6 +1,9 @@
 package com.gitlab.artismarti.smartsmells.deadcode
 
 import com.github.javaparser.ast.CompilationUnit
+import com.github.javaparser.ast.expr.FieldAccessExpr
+import com.github.javaparser.ast.expr.MethodCallExpr
+import com.github.javaparser.ast.expr.MethodReferenceExpr
 import com.gitlab.artismarti.smartsmells.common.NodeHelper
 import com.gitlab.artismarti.smartsmells.common.Visitor
 
@@ -32,6 +35,33 @@ class DeadCodeVisitor extends Visitor<DeadCode> {
 				.stream()
 				.collect(Collectors.toMap(Function.identity(), { method -> 0 }))
 
+		println methods
+		println fields
+		super.visit(n, arg)
+
+		println methods
+		println fields
+	}
+
+	@Override
+	void visit(MethodReferenceExpr n, Object arg) {
+		println n.identifier
+		methods.computeIfPresent(n.identifier, { key, value -> value + 1 })
+		super.visit(n, arg)
+	}
+
+	@Override
+	void visit(MethodCallExpr n, Object arg) {
+		methods.computeIfPresent(n.name, { key, value -> value + 1 })
+		fields.computeIfPresent(n.scope, { key, value -> value + 1 })
+		n.args.each { fields.computeIfPresent(it.toStringWithoutComments(), { key, value -> value + 1 }) }
+		super.visit(n, arg)
+	}
+
+	@Override
+	void visit(FieldAccessExpr n, Object arg) {
+		println n.field
+		fields.computeIfPresent(n.field, { key, value -> value + 1 })
 		super.visit(n, arg)
 	}
 }

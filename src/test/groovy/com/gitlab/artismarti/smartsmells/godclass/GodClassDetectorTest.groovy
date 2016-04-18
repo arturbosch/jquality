@@ -16,6 +16,9 @@ class GodClassDetectorTest extends Specification {
 		smells.get(0).accessToForeignData == 6
 		smells.get(0).weightedMethodPerClass == 21
 		smells.get(0).tiedClassCohesion == 0.3d
+		smells.get(0).accessToForeignDataThreshold == 4
+		smells.get(0).weightedMethodPerClassThreshold == 20
+		smells.get(0).tiedClassCohesionThreshold == 0.33d
 		smells.get(0).sourcePath != null
 		smells.get(0).sourceRange != null
 
