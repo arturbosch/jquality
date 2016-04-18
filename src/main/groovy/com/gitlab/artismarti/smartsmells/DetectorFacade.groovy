@@ -17,12 +17,24 @@ class DetectorFacade {
 
 	static def start(Path path) {
 
-		def gc = CompletableFuture.supplyAsync({ new GodClassDetector().run(path) })
-		def cm = CompletableFuture.supplyAsync({ new ComplexMethodDetector().run(path) })
-		def cs = CompletableFuture.supplyAsync({ new CommentDetector().run(path) })
-		def lm = CompletableFuture.supplyAsync({ new LongMethodDetector().run(path) })
-		def lpl = CompletableFuture.supplyAsync({ new LongParameterListDetector().run(path) })
-		def dc = CompletableFuture.supplyAsync({ new DataClassDetector().run(path) })
+		def gc = CompletableFuture
+				.supplyAsync({ new GodClassDetector().run(path) })
+				.exceptionally({ new ArrayList<>() })
+		def cm = CompletableFuture
+				.supplyAsync({ new ComplexMethodDetector().run(path) })
+				.exceptionally({ new ArrayList<>() })
+		def cs = CompletableFuture
+				.supplyAsync({ new CommentDetector().run(path) })
+				.exceptionally({ new ArrayList<>() })
+		def lm = CompletableFuture
+				.supplyAsync({ new LongMethodDetector().run(path) })
+				.exceptionally({ new ArrayList<>() })
+		def lpl = CompletableFuture
+				.supplyAsync({ new LongParameterListDetector().run(path) })
+				.exceptionally({ new ArrayList<>() })
+		def dc = CompletableFuture
+				.supplyAsync({ new DataClassDetector().run(path) })
+				.exceptionally({ new ArrayList<>() })
 
 		CompletableFuture.allOf(gc, cm, cs, lm, lpl, dc)
 
@@ -34,4 +46,5 @@ class DetectorFacade {
 		println "DataClass: " + dc.get().stream().count()
 
 	}
+
 }

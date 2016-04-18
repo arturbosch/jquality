@@ -7,6 +7,7 @@ import com.github.javaparser.ast.expr.FieldAccessExpr
 import com.github.javaparser.ast.expr.MethodCallExpr
 import com.gitlab.artismarti.smartsmells.common.MethodHelper
 import com.gitlab.artismarti.smartsmells.common.NodeHelper
+import com.gitlab.artismarti.smartsmells.common.SignatureHelper
 import com.gitlab.artismarti.smartsmells.common.Visitor
 import com.gitlab.artismarti.smartsmells.domain.SourcePath
 import com.gitlab.artismarti.smartsmells.domain.SourcePosition
@@ -75,7 +76,9 @@ class GodClassVisitor extends Visitor<GodClass> {
 	}
 
 	private boolean addSmell(ClassOrInterfaceDeclaration n) {
-		smells.add(new GodClass(wmc, tcc, atfd, SourcePath.of(path),
+		smells.add(new GodClass(n.name, SignatureHelper.createSignature(n), wmc, tcc, atfd,
+				weightedMethodCountThreshold, tiedClassCohesionThreshold,
+				accessToForeignDataThreshold, SourcePath.of(path),
 				SourceRange.of(SourcePosition.of(n.beginLine, n.beginColumn),
 						SourcePosition.of(n.endLine, n.endColumn))))
 	}

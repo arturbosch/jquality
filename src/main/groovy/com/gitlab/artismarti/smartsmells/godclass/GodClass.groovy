@@ -12,9 +12,16 @@ import groovy.transform.ToString
 @ToString(includePackage = false)
 class GodClass {
 
+	String name
+	String signature
+
 	int weightedMethodPerClass
 	double tiedClassCohesion
 	int accessToForeignData
+
+	int weightedMethodPerClassThreshold
+	double tiedClassCohesionThreshold
+	int accessToForeignDataThreshold
 
 	@Delegate
 	SourcePath sourcePath

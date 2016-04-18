@@ -11,6 +11,8 @@ class GodClassDetectorTest extends Specification {
 	def "find one god class"() {
 		expect:
 		smells.size() == 1
+		smells.get(0).name == "GodClassDummy"
+		smells.get(0).signature == "GodClassDummy"
 		smells.get(0).accessToForeignData == 6
 		smells.get(0).weightedMethodPerClass == 21
 		smells.get(0).tiedClassCohesion == 0.3d
