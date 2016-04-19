@@ -1,15 +1,14 @@
 package com.gitlab.artismarti.smartsmells.deadcode
 
 import com.github.javaparser.ast.CompilationUnit
-import com.github.javaparser.ast.expr.FieldAccessExpr
-import com.github.javaparser.ast.expr.MethodCallExpr
-import com.github.javaparser.ast.expr.MethodReferenceExpr
+import com.github.javaparser.ast.body.FieldDeclaration
+import com.github.javaparser.ast.body.MethodDeclaration
+import com.github.javaparser.ast.expr.*
+import com.github.javaparser.ast.stmt.ReturnStmt
 import com.gitlab.artismarti.smartsmells.common.NodeHelper
 import com.gitlab.artismarti.smartsmells.common.Visitor
 
 import java.nio.file.Path
-import java.util.function.Function
-import java.util.stream.Collectors
 
 /**
  * @author artur
@@ -18,8 +17,17 @@ class DeadCodeVisitor extends Visitor<DeadCode> {
 
 	private boolean onlyPrivate
 
-	private Map<String, Integer> methods
-	private Map<String, Integer> fields
+	private Map<String, Integer> methodsToReferenceCount = new HashMap<>()
+	private Map<String, MethodDeclaration> methodToMethodDeclaration = new HashMap<>()
+
+	private Map<String, Integer> fieldsToReferenceCount = new HashMap<>()
+	private Map<String, FieldDeclaration> fieldsToFieldDeclaration = new HashMap<>()
+
+	private Map<String, Integer> parameterToReferenceCount = new HashMap<>()
+	private Map<String, FieldDeclaration> parameterToParameterDeclaration = new HashMap<>()
+
+	private Map<String, Integer> localeVariableToReferenceCount = new HashMap<>()
+	private Map<String, VariableDeclarationExpr> localeVariableToVariableDeclaration = new HashMap<>()
 
 	DeadCodeVisitor(Path path, boolean onlyPrivate) {
 		super(path)
@@ -28,40 +36,106 @@ class DeadCodeVisitor extends Visitor<DeadCode> {
 
 	@Override
 	void visit(CompilationUnit n, Object arg) {
-		methods = NodeHelper.findPrivateMethods(n)
-				.stream()
-				.collect(Collectors.toMap(Function.identity(), { method -> 0 }))
-		fields = NodeHelper.findPrivateFields(n)
-				.stream()
-				.collect(Collectors.toMap(Function.identity(), { method -> 0 }))
 
-		println methods
-		println fields
+		def methodDeclarations = NodeHelper.findPrivateMethods(n)
+		methodsToReferenceCount = methodDeclarations.collectEntries({ [it.name, 0] })
+		methodToMethodDeclaration = methodDeclarations.collectEntries({ [it.name, it] })
+
+		def variableDeclarations = NodeHelper.findPrivateFields(n)
+		createFieldMaps(variableDeclarations)
+
+		def parameters = DeadCodeHelper.parametersFromAllMethodDeclarationsAsStringSet(methodDeclarations)
+		parameterToReferenceCount = parameters.collectEntries { [it.id.name, 0] }
+		parameterToParameterDeclaration = parameters.collectEntries { [it.id.name, it] }
+
+		def localeVariables = LocaleVariableHelper.find(methodDeclarations)
+		createLocaleVariableMaps(localeVariables)
+
 		super.visit(n, arg)
 
-		println methods
-		println fields
+		println methodsToReferenceCount
+		println fieldsToReferenceCount
+		println parameterToReferenceCount
+		println localeVariableToReferenceCount
+
+	}
+
+	private void createFieldMaps(List<FieldDeclaration> variableDeclarations) {
+		variableDeclarations.each { declaration ->
+			declaration.variables.each {
+				fieldsToReferenceCount.put(it.id.name, 0)
+				fieldsToFieldDeclaration.put(it.id.name, declaration)
+			}
+		}
+	}
+
+	private void createLocaleVariableMaps(List<VariableDeclarationExpr> variableDeclarations) {
+		variableDeclarations.each { declaration ->
+			declaration.vars.each {
+				localeVariableToReferenceCount.put(it.id.name, 0)
+				localeVariableToVariableDeclaration.put(it.id.name, declaration)
+			}
+		}
 	}
 
 	@Override
 	void visit(MethodReferenceExpr n, Object arg) {
 		println n.identifier
-		methods.computeIfPresent(n.identifier, { key, value -> value + 1 })
+		methodsToReferenceCount.computeIfPresent(n.identifier, { key, value -> println value; value + 1 })
 		super.visit(n, arg)
 	}
 
 	@Override
-	void visit(MethodCallExpr n, Object arg) {
-		methods.computeIfPresent(n.name, { key, value -> value + 1 })
-		fields.computeIfPresent(n.scope, { key, value -> value + 1 })
-		n.args.each { fields.computeIfPresent(it.toStringWithoutComments(), { key, value -> value + 1 }) }
+	void visit(AssignExpr n, Object arg) {
+		def maybeField = n.target.toStringWithoutComments()
+		if (fieldsToReferenceCount.keySet().contains(maybeField)) {
+			def expr = n.value.toStringWithoutComments()
+			checkOccurrence(localeVariableToReferenceCount, expr)
+			checkOccurrence(parameterToReferenceCount, expr)
+		}
 		super.visit(n, arg)
+	}
+
+	@Override
+	void visit(ReturnStmt n, Object arg) {
+		def expr = n.expr.toStringWithoutComments()
+		checkOccurrence(fieldsToReferenceCount, expr)
+		checkOccurrence(parameterToReferenceCount, expr)
+		checkOccurrence(localeVariableToReferenceCount, expr)
+		super.visit(n, arg)
+	}
+
+	private static checkOccurrence(Map<String, Integer> map, String expr) {
+		map.entrySet().stream()
+				.filter { expr.contains(it.key) }
+				.forEach { it.value++ }
+	}
+
+	@Override
+	void visit(MethodCallExpr n, Object arg) {
+		methodsToReferenceCount.computeIfPresent(n.name, { key, value -> value + 1 })
+
+		checkMethodCaller(n)
+
+		n.args.each {
+			checkOccurrence(fieldsToReferenceCount, it.toStringWithoutComments())
+		}
+
+		super.visit(n, arg)
+	}
+
+	private checkMethodCaller(MethodCallExpr n) {
+		Optional.ofNullable(n.scope)
+				.map({ it.toStringWithoutComments() })
+				.ifPresent({
+			fieldsToReferenceCount.computeIfPresent(it, { key, value -> value + 1 })
+		})
 	}
 
 	@Override
 	void visit(FieldAccessExpr n, Object arg) {
 		println n.field
-		fields.computeIfPresent(n.field, { key, value -> value + 1 })
+		fieldsToReferenceCount.computeIfPresent(n.field, { key, value -> value + 1 })
 		super.visit(n, arg)
 	}
 }

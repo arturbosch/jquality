@@ -11,10 +11,10 @@ import com.github.javaparser.ast.body.ModifierSet
  */
 class NodeHelper {
 
-	static List<String> findPrivateMethods(Node n) {
+	static List<MethodDeclaration> findPrivateMethods(Node n) {
 		findMethods(n).stream()
 				.filter({ ModifierSet.isPrivate(it.modifiers) })
-				.collect({ it.name })
+				.collect(Collectors.toList())
 	}
 
 	static List<String> findPublicMethods(Node n) {
@@ -40,15 +40,11 @@ class NodeHelper {
 				.collect({ (String) it })
 	}
 
-	static List<String> findPrivateFields(Node n) {
+	static List<FieldDeclaration> findPrivateFields(Node n) {
 		findFields(n)
 				.stream()
 				.filter({ ModifierSet.isPrivate(it.modifiers) })
-				.collect({ it.variables })
-				.collect({ it.id })
-				.collect({ it.name })
-				.flatten()
-				.collect({ (String) it })
+				.collect()
 	}
 
 	private static List<FieldDeclaration> findFields(Node n) {
