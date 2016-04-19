@@ -6,6 +6,8 @@ import com.github.javaparser.ast.body.FieldDeclaration
 import com.github.javaparser.ast.body.MethodDeclaration
 import com.github.javaparser.ast.body.ModifierSet
 
+import java.util.stream.Collectors
+
 /**
  * @author artur
  */

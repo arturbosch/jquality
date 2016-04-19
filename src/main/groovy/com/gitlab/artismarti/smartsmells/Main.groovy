@@ -3,6 +3,7 @@ package com.gitlab.artismarti.smartsmells
 import com.gitlab.artismarti.smartsmells.comment.CommentDetector
 import com.gitlab.artismarti.smartsmells.complexmethod.ComplexMethodDetector
 import com.gitlab.artismarti.smartsmells.dataclass.DataClassDetector
+import com.gitlab.artismarti.smartsmells.deadcode.DeadCodeDetector
 import com.gitlab.artismarti.smartsmells.godclass.GodClassDetector
 import com.gitlab.artismarti.smartsmells.longmethod.LongMethodDetector
 import com.gitlab.artismarti.smartsmells.longparam.LongParameterListDetector
@@ -26,7 +27,7 @@ class Main {
 
 		def path = Paths.get("/home/artur/Repos/quide/Implementierung/QuideService/src")
 
-		for (i in 0..9) syncTest(path)
+//		for (i in 0..9) syncTest(path)
 		println()
 		for (i in 0..9) asyncTest(path)
 
@@ -52,6 +53,9 @@ class Main {
 					.run(path)
 					.stream().count()
 			println "DataClass: " + new DataClassDetector()
+					.run(path)
+					.stream().count()
+			println "DeadCode: " + new DeadCodeDetector()
 					.run(path)
 					.stream().count()
 		} / 1000

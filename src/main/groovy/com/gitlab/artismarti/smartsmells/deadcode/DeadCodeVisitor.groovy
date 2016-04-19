@@ -53,10 +53,12 @@ class DeadCodeVisitor extends Visitor<DeadCode> {
 
 		super.visit(n, arg)
 
-		println methodsToReferenceCount
-		println fieldsToReferenceCount
-		println parameterToReferenceCount
-		println localeVariableToReferenceCount
+//		println methodsToReferenceCount
+//		println fieldsToReferenceCount
+//		println parameterToReferenceCount
+//		println localeVariableToReferenceCount
+
+
 
 	}
 
@@ -80,8 +82,7 @@ class DeadCodeVisitor extends Visitor<DeadCode> {
 
 	@Override
 	void visit(MethodReferenceExpr n, Object arg) {
-		println n.identifier
-		methodsToReferenceCount.computeIfPresent(n.identifier, { key, value -> println value; value + 1 })
+		methodsToReferenceCount.computeIfPresent(n.identifier, { key, value -> value + 1 })
 		super.visit(n, arg)
 	}
 
