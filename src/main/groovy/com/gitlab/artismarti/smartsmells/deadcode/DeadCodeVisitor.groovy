@@ -3,10 +3,13 @@ package com.gitlab.artismarti.smartsmells.deadcode
 import com.github.javaparser.ast.CompilationUnit
 import com.github.javaparser.ast.body.FieldDeclaration
 import com.github.javaparser.ast.body.MethodDeclaration
+import com.github.javaparser.ast.body.Parameter
 import com.github.javaparser.ast.expr.*
 import com.github.javaparser.ast.stmt.ReturnStmt
+import com.gitlab.artismarti.smartsmells.common.BadSmellHelper
 import com.gitlab.artismarti.smartsmells.common.NodeHelper
 import com.gitlab.artismarti.smartsmells.common.Visitor
+import com.gitlab.artismarti.smartsmells.domain.SourcePath
 
 import java.nio.file.Path
 
@@ -24,7 +27,7 @@ class DeadCodeVisitor extends Visitor<DeadCode> {
 	private Map<String, FieldDeclaration> fieldsToFieldDeclaration = new HashMap<>()
 
 	private Map<String, Integer> parameterToReferenceCount = new HashMap<>()
-	private Map<String, FieldDeclaration> parameterToParameterDeclaration = new HashMap<>()
+	private Map<String, Parameter> parameterToParameterDeclaration = new HashMap<>()
 
 	private Map<String, Integer> localeVariableToReferenceCount = new HashMap<>()
 	private Map<String, VariableDeclarationExpr> localeVariableToVariableDeclaration = new HashMap<>()
@@ -38,8 +41,8 @@ class DeadCodeVisitor extends Visitor<DeadCode> {
 	void visit(CompilationUnit n, Object arg) {
 
 		def methodDeclarations = NodeHelper.findPrivateMethods(n)
-		methodsToReferenceCount = methodDeclarations.collectEntries({ [it.name, 0] })
-		methodToMethodDeclaration = methodDeclarations.collectEntries({ [it.name, it] })
+		methodsToReferenceCount = methodDeclarations.collectEntries { [it.name, 0] }
+		methodToMethodDeclaration = methodDeclarations.collectEntries { [it.name, it] }
 
 		def variableDeclarations = NodeHelper.findPrivateFields(n)
 		createFieldMaps(variableDeclarations)
@@ -53,13 +56,46 @@ class DeadCodeVisitor extends Visitor<DeadCode> {
 
 		super.visit(n, arg)
 
-//		println methodsToReferenceCount
-//		println fieldsToReferenceCount
-//		println parameterToReferenceCount
-//		println localeVariableToReferenceCount
+		println methodsToReferenceCount
+		println fieldsToReferenceCount
+		println parameterToReferenceCount
+		println localeVariableToReferenceCount
+		addSmells()
 
+	}
 
+	private void addSmells() {
+		methodsToReferenceCount.entrySet().stream()
+				.filter { it.value == 0 }
+				.map { methodToMethodDeclaration.get(it.key) }
+				.forEach {
+			smells.add(new DeadCode(it.name, it.declarationAsString, SourcePath.of(path),
+					BadSmellHelper.createSourceRangeFromNode(it)))
+		}
 
+		fieldsToReferenceCount.entrySet().stream()
+				.filter { it.value == 0 }
+				.forEach {
+			def field = fieldsToFieldDeclaration.get(it.key)
+			smells.add(new DeadCode(it.key, field.toStringWithoutComments(), SourcePath.of(path),
+					BadSmellHelper.createSourceRangeFromNode(field)))
+		}
+
+		parameterToReferenceCount.entrySet().stream()
+				.filter { it.value == 0 }
+				.map { parameterToParameterDeclaration.get(it.key) }
+				.forEach {
+			smells.add(new DeadCode(it.id.name, it.toStringWithoutComments(), SourcePath.of(path),
+					BadSmellHelper.createSourceRangeFromNode(it)))
+		}
+
+		localeVariableToReferenceCount.entrySet().stream()
+				.filter { it.value == 0 }
+				.forEach {
+			def var = localeVariableToVariableDeclaration.get(it.key)
+			smells.add(new DeadCode(it.key, var.toStringWithoutComments(), SourcePath.of(path),
+					BadSmellHelper.createSourceRangeFromNode(var)))
+		}
 	}
 
 	private void createFieldMaps(List<FieldDeclaration> variableDeclarations) {

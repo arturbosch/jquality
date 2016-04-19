@@ -1,7 +1,7 @@
 package com.gitlab.artismarti.smartsmells.dataclass
 
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration
-import com.gitlab.artismarti.smartsmells.common.SignatureHelper
+import com.gitlab.artismarti.smartsmells.common.BadSmellHelper
 import com.gitlab.artismarti.smartsmells.common.Visitor
 import com.gitlab.artismarti.smartsmells.domain.SourcePath
 import com.gitlab.artismarti.smartsmells.domain.SourceRange
@@ -25,7 +25,7 @@ class DataClassVisitor extends Visitor<DataClass> {
 		n.accept(visitor, null)
 
 		if (visitor.isDataClass()) {
-			def signature = SignatureHelper.createSignature(n)
+			def signature = BadSmellHelper.createSignature(n)
 			smells.add(new DataClass(n.getName(), signature,
 					SourceRange.of(n.beginLine, n.endLine, n.beginColumn, n.endColumn),
 					SourcePath.of(path)))
