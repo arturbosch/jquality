@@ -16,7 +16,7 @@ package com.gitlab.artismarti.smartsmells.java;
 		return 5;
 	}
 
-	private int usedMethod(String usedParameter) {
+	public int usedMethod(String usedParameter) {
 		usedField = usedParameter.length() + usedString.length();
 		int usedLocaleVariable = 4;
 		return Integer.valueOf(usedField).compareTo(usedLocaleVariable);

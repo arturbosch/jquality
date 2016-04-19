@@ -47,19 +47,21 @@ class DeadCodeVisitor extends Visitor<DeadCode> {
 		def variableDeclarations = NodeHelper.findPrivateFields(n)
 		createFieldMaps(variableDeclarations)
 
-		def parameters = DeadCodeHelper.parametersFromAllMethodDeclarationsAsStringSet(methodDeclarations)
+		def allMethods = NodeHelper.findMethods(n)
+		def parameters = DeadCodeHelper.parametersFromAllMethodDeclarationsAsStringSet(allMethods)
 		parameterToReferenceCount = parameters.collectEntries { [it.id.name, 0] }
 		parameterToParameterDeclaration = parameters.collectEntries { [it.id.name, it] }
 
-		def localeVariables = LocaleVariableHelper.find(methodDeclarations)
+		def localeVariables = LocaleVariableHelper.find(allMethods)
 		createLocaleVariableMaps(localeVariables)
 
 		super.visit(n, arg)
+//
+//		if (!methodsToReferenceCount.isEmpty()) println methodsToReferenceCount
+//		if (!fieldsToReferenceCount.isEmpty()) println fieldsToReferenceCount
+//		if (!parameterToReferenceCount.isEmpty()) println parameterToReferenceCount
+//		if (!localeVariableToReferenceCount.isEmpty()) println localeVariableToReferenceCount
 
-		println methodsToReferenceCount
-		println fieldsToReferenceCount
-		println parameterToReferenceCount
-		println localeVariableToReferenceCount
 		addSmells()
 
 	}
@@ -135,11 +137,18 @@ class DeadCodeVisitor extends Visitor<DeadCode> {
 
 	@Override
 	void visit(ReturnStmt n, Object arg) {
-		def expr = n.expr.toStringWithoutComments()
-		checkOccurrence(fieldsToReferenceCount, expr)
-		checkOccurrence(parameterToReferenceCount, expr)
-		checkOccurrence(localeVariableToReferenceCount, expr)
+		checkArguments(n.expr)
 		super.visit(n, arg)
+	}
+
+	private void checkArguments(Expression it) {
+		Optional.ofNullable(it)
+				.map { it.toStringWithoutComments() }
+				.ifPresent {
+			checkOccurrence(fieldsToReferenceCount, it)
+			checkOccurrence(parameterToReferenceCount, it)
+			checkOccurrence(localeVariableToReferenceCount, it)
+		}
 	}
 
 	private static checkOccurrence(Map<String, Integer> map, String expr) {
@@ -155,7 +164,7 @@ class DeadCodeVisitor extends Visitor<DeadCode> {
 		checkMethodCaller(n)
 
 		n.args.each {
-			checkOccurrence(fieldsToReferenceCount, it.toStringWithoutComments())
+			checkArguments(it)
 		}
 
 		super.visit(n, arg)
@@ -171,7 +180,6 @@ class DeadCodeVisitor extends Visitor<DeadCode> {
 
 	@Override
 	void visit(FieldAccessExpr n, Object arg) {
-		println n.field
 		fieldsToReferenceCount.computeIfPresent(n.field, { key, value -> value + 1 })
 		super.visit(n, arg)
 	}

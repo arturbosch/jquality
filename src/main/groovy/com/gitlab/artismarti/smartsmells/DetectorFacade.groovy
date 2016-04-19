@@ -28,7 +28,7 @@ class DetectorFacade {
 				.supplyAsync({ new CommentDetector().run(path) })
 				.exceptionally({ new ArrayList<>() })
 		def lm = CompletableFuture
-				.supplyAsync({ new LongMethodDetector().run(path) })
+				.supplyAsync({ new LongMethodDetector(15).run(path) })
 				.exceptionally({ new ArrayList<>() })
 		def lpl = CompletableFuture
 				.supplyAsync({ new LongParameterListDetector().run(path) })
@@ -40,7 +40,7 @@ class DetectorFacade {
 				.supplyAsync({ new DeadCodeDetector().run(path) })
 				.exceptionally({ new ArrayList<>() })
 
-		CompletableFuture.allOf(gc, cm, cs, lm, lpl, dc)
+		CompletableFuture.allOf(gc, cm, cs, lm, lpl, dc, dcd)
 
 		println "GodClasses: " + gc.get().stream().count()
 		println "ComplexMethods: " + cm.get().stream().count()
@@ -49,6 +49,8 @@ class DetectorFacade {
 		println "LongParameterList: " + lpl.get().stream().count()
 		println "DataClass: " + dc.get().stream().count()
 		println "DeadCode: " + dcd.get().stream().count()
+
+		dcd.get().forEach { println it.toString() }
 
 	}
 

@@ -25,11 +25,12 @@ class Main {
 
 	static void main(String... args) {
 
+		// /main/java/de/uni_bremen/st/quide/detectors/tools/file_metrics/impl/LOC.java
 		def path = Paths.get("/home/artur/Repos/quide/Implementierung/QuideService/src")
 
-//		for (i in 0..9) syncTest(path)
+//		for (i in 0..0) syncTest(path)
 		println()
-		for (i in 0..9) asyncTest(path)
+		for (i in 0..0) asyncTest(path)
 
 	}
 
@@ -46,17 +47,13 @@ class Main {
 					.stream().count()
 			println "CommentSmell: " + new CommentDetector().run(path)
 					.stream().count()
-			println "LongMethod: " + new LongMethodDetector(15)
-					.run(path)
+			println "LongMethod: " + new LongMethodDetector(15).run(path)
 					.stream().count()
-			println "LongParameterList: " + new LongParameterListDetector()
-					.run(path)
+			println "LongParameterList: " + new LongParameterListDetector().run(path)
 					.stream().count()
-			println "DataClass: " + new DataClassDetector()
-					.run(path)
+			println "DataClass: " + new DataClassDetector().run(path)
 					.stream().count()
-			println "DeadCode: " + new DeadCodeDetector()
-					.run(path)
+			println "DeadCode: " + new DeadCodeDetector().run(path)
 					.stream().count()
 		} / 1000
 	}

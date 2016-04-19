@@ -11,6 +11,6 @@ class Defaults {
 	static def WEIGHTED_METHOD_COUNT = 20
 	static def ACCESS_TO_FOREIGN_DATA = 4
 	static def TIED_CLASS_COHESION = 0.33
-	static boolean ONLY_PRIVATE_DEAD_CODE = true
+	static def ONLY_PRIVATE_DEAD_CODE = true
 
 }

@@ -7,6 +7,7 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.util.function.BinaryOperator
 import java.util.stream.Collectors
+
 /**
  * @author artur
  */
