@@ -12,7 +12,7 @@ class DeadCodeDetectorTest extends Specification {
 		expect:
 		smells.size() == 4
 		smells.get(0).entityName == "deadMethod"
-		println smells
+
 		where:
 		smells = new DeadCodeDetector().run(Test.DEAD_CODE_PATH)
 	}

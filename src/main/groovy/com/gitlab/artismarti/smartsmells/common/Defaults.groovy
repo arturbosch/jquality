@@ -12,5 +12,6 @@ class Defaults {
 	static def ACCESS_TO_FOREIGN_DATA = 4
 	static def TIED_CLASS_COHESION = 0.33
 	static def ONLY_PRIVATE_DEAD_CODE = true
+	static def LARGE_CLASS = 150
 
 }

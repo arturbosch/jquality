@@ -21,7 +21,7 @@ class LongMethodDetectorTest extends Specification {
 		smells.get(0).sourceRange.toString() == "[[21, 38], [9, 9]]"
 
 		where:
-		smells = new LongMethodDetector(14).run(Test.PATH)
+		smells = new LongMethodDetector(14).run(Test.LONG_METHOD_DUMMY_PATH)
 	}
 
 	def "find two long methods one is a long constructor with default threshold"() {
@@ -30,7 +30,7 @@ class LongMethodDetectorTest extends Specification {
 		smells.get(0).name == "LongMethodDummy"
 
 		where:
-		smells = new LongMethodDetector().run(Test.PATH)
+		smells = new LongMethodDetector().run(Test.LONG_METHOD_DUMMY_PATH)
 	}
 
 	def "find no long method with custom threshold"() {
@@ -38,6 +38,6 @@ class LongMethodDetectorTest extends Specification {
 		smells.size() == 0
 
 		where:
-		smells = new LongMethodDetector(20).run(Test.PATH)
+		smells = new LongMethodDetector(20).run(Test.LONG_METHOD_DUMMY_PATH)
 	}
 }

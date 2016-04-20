@@ -11,9 +11,13 @@ abstract class Visitor<T> extends VoidVisitorAdapter<Object> {
 
 	protected Path path
 
+	private List<T> smells = new ArrayList<>()
+
 	Visitor(Path path) {
 		this.path = path
 	}
 
-	List<T> smells = new ArrayList<>()
+	List<T> getSmells() {
+		return smells
+	}
 }

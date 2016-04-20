@@ -50,8 +50,6 @@ class DetectorFacade {
 		println "DataClass: " + dc.get().stream().count()
 		println "DeadCode: " + dcd.get().stream().count()
 
-		dcd.get().forEach { println it.toString() }
-
 	}
 
 }

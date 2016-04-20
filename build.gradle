@@ -11,4 +11,5 @@ dependencies {
 	compile 'org.codehaus.groovy:groovy-all:2.4.6'
 	compile 'org.spockframework:spock-core:1.0-groovy-2.4'
 	compile 'com.github.javaparser:javaparser-core:2.3.0'
+	compile 'de.artismarti:SmartUtils:0.2.5'
 }

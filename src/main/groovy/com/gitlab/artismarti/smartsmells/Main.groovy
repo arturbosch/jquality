@@ -28,9 +28,9 @@ class Main {
 		// /main/java/de/uni_bremen/st/quide/detectors/tools/file_metrics/impl/LOC.java
 		def path = Paths.get("/home/artur/Repos/quide/Implementierung/QuideService/src")
 
-//		for (i in 0..0) syncTest(path)
+		for (i in 0..10) syncTest(path)
 		println()
-		for (i in 0..0) asyncTest(path)
+		for (i in 0..10) asyncTest(path)
 
 	}
 

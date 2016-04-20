@@ -10,6 +10,8 @@ class Test {
 	static Path PATH = Paths.get("./src/test/groovy")
 	static Path COMPLEX_METHOD_DUMMY_PATH =
 			Paths.get("./src/test/groovy/com/gitlab/artismarti/smartsmells/java/ComplexMethodDummy.java")
+	static Path LONG_METHOD_DUMMY_PATH =
+			Paths.get("./src/test/groovy/com/gitlab/artismarti/smartsmells/java/LongMethodDummy.java")
 	static Path GOD_CLASS_DUMMY_PATH =
 			Paths.get("./src/test/groovy/com/gitlab/artismarti/smartsmells/java/GodClassDummy.java")
 	static Path DEAD_CODE_PATH =
