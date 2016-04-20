@@ -5,6 +5,7 @@ import com.gitlab.artismarti.smartsmells.complexmethod.ComplexMethodDetector
 import com.gitlab.artismarti.smartsmells.dataclass.DataClassDetector
 import com.gitlab.artismarti.smartsmells.deadcode.DeadCodeDetector
 import com.gitlab.artismarti.smartsmells.godclass.GodClassDetector
+import com.gitlab.artismarti.smartsmells.largeclass.LargeClassDetector
 import com.gitlab.artismarti.smartsmells.longmethod.LongMethodDetector
 import com.gitlab.artismarti.smartsmells.longparam.LongParameterListDetector
 
@@ -20,27 +21,30 @@ class DetectorFacade {
 
 		def gc = CompletableFuture
 				.supplyAsync({ new GodClassDetector().run(path) })
-				.exceptionally({ new ArrayList<>() })
+				.exceptionally({ handle() })
 		def cm = CompletableFuture
 				.supplyAsync({ new ComplexMethodDetector().run(path) })
-				.exceptionally({ new ArrayList<>() })
+				.exceptionally({ handle() })
 		def cs = CompletableFuture
 				.supplyAsync({ new CommentDetector().run(path) })
-				.exceptionally({ new ArrayList<>() })
+				.exceptionally({ handle() })
 		def lm = CompletableFuture
 				.supplyAsync({ new LongMethodDetector(15).run(path) })
-				.exceptionally({ new ArrayList<>() })
+				.exceptionally({ handle() })
 		def lpl = CompletableFuture
 				.supplyAsync({ new LongParameterListDetector().run(path) })
-				.exceptionally({ new ArrayList<>() })
+				.exceptionally({ handle() })
 		def dc = CompletableFuture
 				.supplyAsync({ new DataClassDetector().run(path) })
-				.exceptionally({ new ArrayList<>() })
+				.exceptionally({ handle() })
 		def dcd = CompletableFuture
 				.supplyAsync({ new DeadCodeDetector().run(path) })
-				.exceptionally({ new ArrayList<>() })
+				.exceptionally({ handle() })
+		def lc = CompletableFuture
+				.supplyAsync({ new LargeClassDetector().run(path) })
+				.exceptionally({ handle() })
 
-		CompletableFuture.allOf(gc, cm, cs, lm, lpl, dc, dcd).join()
+		CompletableFuture.allOf(gc, cm, cs, lm, lpl, dc, dcd, lc).join()
 
 		println "GodClasses: " + gc.get().stream().count()
 		println "ComplexMethods: " + cm.get().stream().count()
@@ -49,7 +53,30 @@ class DetectorFacade {
 		println "LongParameterList: " + lpl.get().stream().count()
 		println "DataClass: " + dc.get().stream().count()
 		println "DeadCode: " + dcd.get().stream().count()
+		println "LargeClass: " + lc.get().stream().count()
 
 	}
 
+	private static ArrayList handle() {
+		new ArrayList<>()
+	}
+
+	static def syncStart(Path path) {
+		println "GodClasses: " + new GodClassDetector().run(path)
+				.stream().count()
+		println "ComplexMethods: " + new ComplexMethodDetector().run(path)
+				.stream().count()
+		println "CommentSmell: " + new CommentDetector().run(path)
+				.stream().count()
+		println "LongMethod: " + new LongMethodDetector(15).run(path)
+				.stream().count()
+		println "LongParameterList: " + new LongParameterListDetector().run(path)
+				.stream().count()
+		println "DataClass: " + new DataClassDetector().run(path)
+				.stream().count()
+		println "DeadCode: " + new DeadCodeDetector().run(path)
+				.stream().count()
+		println "LargeClass: " + new LargeClassDetector().run(path)
+				.stream().count()
+	}
 }
