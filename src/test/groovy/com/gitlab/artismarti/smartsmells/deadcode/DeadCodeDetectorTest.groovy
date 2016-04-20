@@ -16,4 +16,12 @@ class DeadCodeDetectorTest extends Specification {
 		where:
 		smells = new DeadCodeDetector().run(Test.DEAD_CODE_PATH)
 	}
+
+	def "find no dead code for variables which are used in conditions"() {
+		expect:
+		smells.size() == 0
+
+		where:
+		smells = new DeadCodeDetector().run(Test.DEAD_CODE_CONDITIONAL_PATH)
+	}
 }

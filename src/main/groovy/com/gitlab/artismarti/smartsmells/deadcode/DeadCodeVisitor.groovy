@@ -5,14 +5,13 @@ import com.github.javaparser.ast.body.FieldDeclaration
 import com.github.javaparser.ast.body.MethodDeclaration
 import com.github.javaparser.ast.body.Parameter
 import com.github.javaparser.ast.expr.*
-import com.github.javaparser.ast.stmt.ReturnStmt
+import com.github.javaparser.ast.stmt.*
 import com.gitlab.artismarti.smartsmells.common.BadSmellHelper
 import com.gitlab.artismarti.smartsmells.common.NodeHelper
 import com.gitlab.artismarti.smartsmells.common.Visitor
 import com.gitlab.artismarti.smartsmells.domain.SourcePath
 
 import java.nio.file.Path
-
 /**
  * @author artur
  */
@@ -56,7 +55,7 @@ class DeadCodeVisitor extends Visitor<DeadCode> {
 		createLocaleVariableMaps(localeVariables)
 
 		super.visit(n, arg)
-//
+
 //		if (!methodsToReferenceCount.isEmpty()) println methodsToReferenceCount
 //		if (!fieldsToReferenceCount.isEmpty()) println fieldsToReferenceCount
 //		if (!parameterToReferenceCount.isEmpty()) println parameterToReferenceCount
@@ -126,12 +125,7 @@ class DeadCodeVisitor extends Visitor<DeadCode> {
 
 	@Override
 	void visit(AssignExpr n, Object arg) {
-		def maybeField = n.target.toStringWithoutComments()
-		if (fieldsToReferenceCount.keySet().contains(maybeField)) {
-			def expr = n.value.toStringWithoutComments()
-			checkOccurrence(localeVariableToReferenceCount, expr)
-			checkOccurrence(parameterToReferenceCount, expr)
-		}
+		checkArguments(n.value)
 		super.visit(n, arg)
 	}
 
@@ -171,16 +165,50 @@ class DeadCodeVisitor extends Visitor<DeadCode> {
 	}
 
 	private checkMethodCaller(MethodCallExpr n) {
-		Optional.ofNullable(n.scope)
-				.map({ it.toStringWithoutComments() })
-				.ifPresent({
-			fieldsToReferenceCount.computeIfPresent(it, { key, value -> value + 1 })
-		})
+		checkArguments(n.scope)
 	}
 
 	@Override
 	void visit(FieldAccessExpr n, Object arg) {
 		fieldsToReferenceCount.computeIfPresent(n.field, { key, value -> value + 1 })
+		super.visit(n, arg)
+	}
+
+	@Override
+	void visit(ObjectCreationExpr n, Object arg) {
+		n.args.each {
+			checkArguments(it)
+		}
+		super.visit(n, arg)
+	}
+
+	@Override
+	void visit(ForeachStmt n, Object arg) {
+		checkArguments(n.iterable)
+		super.visit(n, arg)
+	}
+
+	@Override
+	void visit(ForStmt n, Object arg) {
+		checkArguments(n.compare)
+		super.visit(n, arg)
+	}
+
+	@Override
+	void visit(IfStmt n, Object arg) {
+		checkArguments(n.condition)
+		super.visit(n, arg)
+	}
+
+	@Override
+	void visit(WhileStmt n, Object arg) {
+		checkArguments(n.condition)
+		super.visit(n, arg)
+	}
+
+	@Override
+	void visit(SwitchStmt n, Object arg) {
+		checkArguments(n.selector)
 		super.visit(n, arg)
 	}
 }

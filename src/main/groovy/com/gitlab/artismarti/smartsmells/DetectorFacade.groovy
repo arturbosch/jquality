@@ -40,7 +40,7 @@ class DetectorFacade {
 				.supplyAsync({ new DeadCodeDetector().run(path) })
 				.exceptionally({ new ArrayList<>() })
 
-		CompletableFuture.allOf(gc, cm, cs, lm, lpl, dc, dcd)
+		CompletableFuture.allOf(gc, cm, cs, lm, lpl, dc, dcd).join()
 
 		println "GodClasses: " + gc.get().stream().count()
 		println "ComplexMethods: " + cm.get().stream().count()
