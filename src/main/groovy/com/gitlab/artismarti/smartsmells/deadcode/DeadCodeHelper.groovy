@@ -18,4 +18,11 @@ class DeadCodeHelper {
 				.collect(Collectors.toSet())
 	}
 
+	static List<MethodDeclaration> filterMethodsForAnnotations(List<MethodDeclaration> methodDeclarations) {
+		methodDeclarations.stream().filter {
+
+			!(it.getAnnotations().find { it.name.name == "PostConstruct" })
+
+		}.collect()
+	}
 }

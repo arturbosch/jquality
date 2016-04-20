@@ -43,7 +43,7 @@ class DeadCodeVisitor extends Visitor<DeadCode> {
 		if (isInterface(n))
 			return
 
-		def methodDeclarations = NodeHelper.findPrivateMethods(n)
+		def methodDeclarations = DeadCodeHelper.filterMethodsForAnnotations(NodeHelper.findPrivateMethods(n))
 		methodsToReferenceCount = methodDeclarations.collectEntries { [it.name, 0] }
 		methodToMethodDeclaration = methodDeclarations.collectEntries { [it.name, it] }
 
@@ -115,7 +115,8 @@ class DeadCodeVisitor extends Visitor<DeadCode> {
 
 	private void createFieldMaps(List<FieldDeclaration> variableDeclarations) {
 		variableDeclarations.each { declaration ->
-			declaration.variables.each {
+			declaration.variables.stream()
+					.filter({ it.id.name != "serialVersionUID" }).each {
 				fieldsToReferenceCount.put(it.id.name, 0)
 				fieldsToFieldDeclaration.put(it.id.name, declaration)
 			}
