@@ -8,16 +8,15 @@ import spock.lang.Specification
  */
 class MessageChainDetectorTest extends Specification {
 
-	def "find two message chains (size 1/2)"() {
+	def "find one message chains with size 2"() {
 		expect:
-		smells.size() == 2
+		smells.size() == 1
 		smells.get(0).chainSize == 2
-		smells.get(0).chainSizeThreshold == 1
+		smells.get(0).chainSizeThreshold == 2
 		smells.get(0).sourceEntity == "chainMiddle"
 		smells.get(0).targetEntity == "complexComputation"
 		smells.get(0).sourcePath != null
 		smells.get(0).sourceRange != null
-		smells.get(1).chainSize == 1
 
 		where:
 		smells = new MessageChainDetector().run(Test.MESSAGE_CHAIN_PATH)

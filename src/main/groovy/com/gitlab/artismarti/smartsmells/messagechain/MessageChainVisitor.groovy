@@ -29,16 +29,21 @@ class MessageChainVisitor extends Visitor<MessageChain> {
 		methodCallExprMap.entrySet().stream()
 				.collect {
 
-			new MessageChain(it.key, it.key.split("\\.")[0], it.value.name, countOccurrences(it.key, "get"), chainSizeThreshold,
+			new MessageChain(it.value.toStringWithoutComments(), extractSourceString(it.value),
+					it.value.name, countOccurrences(it.key, "get"), chainSizeThreshold,
 					SourcePath.of(path), BadSmellHelper.createSourceRangeFromNode(it.value)
 
 			)
 		}.each { smells.add(it) }
 	}
 
+	private static String extractSourceString(MethodCallExpr it) {
+		it.toStringWithoutComments().split("\\.")[0].replace("(", "").replace(")", "")
+	}
+
 	@Override
 	void visit(MethodCallExpr n, Object arg) {
-		def expr = n.toStringWithoutComments()
+		def expr = extractExpressionNames(n)
 		def count = countOccurrences(expr, "get")
 
 		boolean found = false
@@ -55,7 +60,12 @@ class MessageChainVisitor extends Visitor<MessageChain> {
 		super.visit(n, arg)
 	}
 
-	static def countOccurrences(String source, String pattern) {
+	def extractExpressionNames(MethodCallExpr n) {
+		if (n.scope == null || !(n.scope instanceof MethodCallExpr)) return n.name
+		return extractExpressionNames((MethodCallExpr) n.scope) + "." + n.name
+	}
+
+	private static def countOccurrences(String source, String pattern) {
 		if (source.isEmpty() || pattern.isEmpty()) {
 			return 0;
 		}

@@ -16,11 +16,11 @@ class Main {
 	}
 
 	static void main(String... args) {
-		def path = Paths.get("/home/artur/Repos/quide/Implementierung/QuIDE_Plugin/src")
+		def path = Paths.get("/home/artur/Repos/quide/Implementierung/QuideService`/src")
 
-		(0..10).each { syncTest(path) }
-		println()
-		(0..10).each { asyncTest(path) }
+//		(0..10).each { syncTest(path) }
+//		println()
+		(0..0).each { asyncTest(path) }
 	}
 
 	static asyncTest(Path path) {

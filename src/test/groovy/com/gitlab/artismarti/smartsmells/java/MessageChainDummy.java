@@ -13,7 +13,7 @@ package com.gitlab.artismarti.smartsmells.java;
 	}
 
 	public void chainSizeTwo() {
-		chainMiddle.getMessageChainer().getChainEnd().complexComputation();
+		chainMiddle.getMessageChainer(5, 5).getChainEnd().complexComputation();
 	}
 
 	private class MessageChainer {
@@ -28,7 +28,7 @@ package com.gitlab.artismarti.smartsmells.java;
 	private class ChainMiddle {
 		MessageChainer messageChainer = new MessageChainer();
 
-		MessageChainer getMessageChainer() {
+		MessageChainer getMessageChainer(int i, int i1) {
 			return messageChainer;
 		}
 	}

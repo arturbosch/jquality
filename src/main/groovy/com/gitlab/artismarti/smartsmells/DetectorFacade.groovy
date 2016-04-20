@@ -8,6 +8,7 @@ import com.gitlab.artismarti.smartsmells.godclass.GodClassDetector
 import com.gitlab.artismarti.smartsmells.largeclass.LargeClassDetector
 import com.gitlab.artismarti.smartsmells.longmethod.LongMethodDetector
 import com.gitlab.artismarti.smartsmells.longparam.LongParameterListDetector
+import com.gitlab.artismarti.smartsmells.messagechain.MessageChainDetector
 
 import java.nio.file.Path
 import java.util.concurrent.CompletableFuture
@@ -43,8 +44,11 @@ class DetectorFacade {
 		def lc = CompletableFuture
 				.supplyAsync({ new LargeClassDetector().run(path) })
 				.exceptionally({ handle() })
+		def mc = CompletableFuture
+				.supplyAsync({ new MessageChainDetector().run(path) })
+				.exceptionally({ handle() })
 
-		CompletableFuture.allOf(gc, cm, cs, lm, lpl, dc, dcd, lc).join()
+		CompletableFuture.allOf(gc, cm, cs, lm, lpl, dc, dcd, lc, mc).join()
 
 		println "GodClasses: " + gc.get().stream().count()
 		println "ComplexMethods: " + cm.get().stream().count()
@@ -54,6 +58,9 @@ class DetectorFacade {
 		println "DataClass: " + dc.get().stream().count()
 		println "DeadCode: " + dcd.get().stream().count()
 		println "LargeClass: " + lc.get().stream().count()
+		println "MessageChain: " + mc.get().stream().count()
+
+		mc.get().forEach { println it.toString() }
 
 	}
 
@@ -77,6 +84,8 @@ class DetectorFacade {
 		println "DeadCode: " + new DeadCodeDetector().run(path)
 				.stream().count()
 		println "LargeClass: " + new LargeClassDetector().run(path)
+				.stream().count()
+		println "MessageChain: " + new MessageChainDetector().run(path)
 				.stream().count()
 	}
 }
