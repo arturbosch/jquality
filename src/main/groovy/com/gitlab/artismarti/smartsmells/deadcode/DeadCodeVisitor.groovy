@@ -1,6 +1,7 @@
 package com.gitlab.artismarti.smartsmells.deadcode
 
 import com.github.javaparser.ast.CompilationUnit
+import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration
 import com.github.javaparser.ast.body.FieldDeclaration
 import com.github.javaparser.ast.body.MethodDeclaration
 import com.github.javaparser.ast.body.Parameter
@@ -12,6 +13,7 @@ import com.gitlab.artismarti.smartsmells.common.Visitor
 import com.gitlab.artismarti.smartsmells.domain.SourcePath
 
 import java.nio.file.Path
+
 /**
  * @author artur
  */
@@ -38,6 +40,8 @@ class DeadCodeVisitor extends Visitor<DeadCode> {
 
 	@Override
 	void visit(CompilationUnit n, Object arg) {
+		if (isInterface(n))
+			return
 
 		def methodDeclarations = NodeHelper.findPrivateMethods(n)
 		methodsToReferenceCount = methodDeclarations.collectEntries { [it.name, 0] }
@@ -63,6 +67,16 @@ class DeadCodeVisitor extends Visitor<DeadCode> {
 
 		addSmells()
 
+	}
+
+	private static boolean isInterface(CompilationUnit n) {
+		def types = n.types
+		if (types.size() == 1) {
+			def classOrInterface = types[0]
+			if (classOrInterface instanceof ClassOrInterfaceDeclaration)
+				return classOrInterface.interface
+		}
+		return false
 	}
 
 	private void addSmells() {
