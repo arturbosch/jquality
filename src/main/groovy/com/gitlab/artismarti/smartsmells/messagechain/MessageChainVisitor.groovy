@@ -7,6 +7,7 @@ import com.gitlab.artismarti.smartsmells.common.Visitor
 import com.gitlab.artismarti.smartsmells.domain.SourcePath
 
 import java.nio.file.Path
+import java.util.stream.Collectors
 
 /**
  * @author artur
@@ -25,6 +26,7 @@ class MessageChainVisitor extends Visitor<MessageChain> {
 	@Override
 	void visit(CompilationUnit n, Object arg) {
 		super.visit(n, arg)
+		println methodCallExprMap
 
 		methodCallExprMap.entrySet().stream()
 				.collect {
@@ -43,7 +45,8 @@ class MessageChainVisitor extends Visitor<MessageChain> {
 
 	@Override
 	void visit(MethodCallExpr n, Object arg) {
-		def expr = extractExpressionNames(n)
+		def linkedExpr = extractExpressionNames(n)
+		def expr = filterCollectionGets(linkedExpr)
 		def count = countOccurrences(expr, "get")
 
 		boolean found = false
@@ -58,6 +61,12 @@ class MessageChainVisitor extends Visitor<MessageChain> {
 			}
 		}
 		super.visit(n, arg)
+	}
+
+	private static String filterCollectionGets(String expressions) {
+		Arrays.stream(expressions.split("\\."))
+				.filter { it != "get" }
+				.collect(Collectors.joining("."))
 	}
 
 	def extractExpressionNames(MethodCallExpr n) {
