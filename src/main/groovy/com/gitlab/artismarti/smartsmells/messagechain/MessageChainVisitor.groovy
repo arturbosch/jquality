@@ -26,7 +26,6 @@ class MessageChainVisitor extends Visitor<MessageChain> {
 	@Override
 	void visit(CompilationUnit n, Object arg) {
 		super.visit(n, arg)
-		println methodCallExprMap
 
 		methodCallExprMap.entrySet().stream()
 				.collect {
