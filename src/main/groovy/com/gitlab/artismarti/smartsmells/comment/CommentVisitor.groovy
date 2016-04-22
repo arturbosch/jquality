@@ -8,6 +8,7 @@ import com.gitlab.artismarti.smartsmells.common.Visitor
 import com.gitlab.artismarti.smartsmells.domain.SourcePath
 
 import java.nio.file.Path
+
 /**
  * Visits all method declaration of a compilation unit and examines them
  * for orphan comments or comments above private/package-private methods.
@@ -42,8 +43,13 @@ class CommentVisitor extends Visitor {
 	}
 
 	private void addCommentSmell(String type, Comment comment, String message) {
+
 		smells.add(new CommentSmell(type, comment.toString(), message,
+				hasTodoOrFixme(comment, "TODO"), hasTodoOrFixme(comment, "FIXME"),
 				SourcePath.of(path), BadSmellHelper.createSourceRangeFromNode(comment)))
 	}
 
+	private static boolean hasTodoOrFixme(Comment comment, String pattern) {
+		comment.content.contains(pattern)
+	}
 }

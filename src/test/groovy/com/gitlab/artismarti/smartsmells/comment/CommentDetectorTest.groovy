@@ -17,6 +17,9 @@ class CommentDetectorTest extends Specification {
 		!smells.get(0).path.isEmpty()
 		smells.get(0).sourceRange != null
 		smells.get(0).sourcePath != null
+		smells.get(0).hasTODO
+		!smells.get(0).hasFIXME
+		smells.get(1).hasFIXME
 
 		where:
 		smells = new CommentDetector().run(Test.PATH)
