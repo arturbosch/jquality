@@ -65,8 +65,6 @@ class DetectorFacade {
 		println "MessageChain: " + mc.get().stream().count()
 		println "MiddleMan: " + mm.get().stream().count()
 
-//		mm.get().forEach { println it.toString() }
-
 	}
 
 	private static ArrayList handle() {
