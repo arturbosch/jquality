@@ -19,9 +19,10 @@ class CommentSmell {
 	String type
 	String comment
 	String message
-	SourceRange positions
 
 	@Delegate
 	SourcePath sourcePath
+	@Delegate
+	SourceRange sourceRange
 
 }

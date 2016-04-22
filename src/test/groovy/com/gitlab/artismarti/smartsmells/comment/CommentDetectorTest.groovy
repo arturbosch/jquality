@@ -15,11 +15,10 @@ class CommentDetectorTest extends Specification {
 		!smells.get(0).comment.isEmpty()
 		!smells.get(0).message.isEmpty()
 		!smells.get(0).path.isEmpty()
-		!smells.get(0).positions.isEmpty()
+		smells.get(0).sourceRange != null
 		smells.get(0).sourcePath != null
 
 		where:
-		smells = new CommentDetector()
-				.run(Test.PATH)
+		smells = new CommentDetector().run(Test.PATH)
 	}
 }

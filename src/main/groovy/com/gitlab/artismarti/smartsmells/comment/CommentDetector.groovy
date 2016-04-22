@@ -13,6 +13,6 @@ class CommentDetector extends Detector<CommentSmell> {
 
 	@Override
 	protected CommentVisitor getVisitor(Path path) {
-		new CommentVisitor(path)
+		return new CommentVisitor(path)
 	}
 }
