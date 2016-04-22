@@ -20,4 +20,6 @@ class Test {
 			Paths.get("./src/test/groovy/com/gitlab/artismarti/smartsmells/java/ConditionalDeadCodeDummy.java")
 	static Path MESSAGE_CHAIN_PATH =
 			Paths.get("./src/test/groovy/com/gitlab/artismarti/smartsmells/java/MessageChainDummy.java")
+	static Path MIDDLE_MAN_PATH =
+			Paths.get("./src/test/groovy/com/gitlab/artismarti/smartsmells/java/MiddleManDummy.java")
 }

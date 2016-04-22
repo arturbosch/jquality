@@ -9,6 +9,7 @@ import com.gitlab.artismarti.smartsmells.largeclass.LargeClassDetector
 import com.gitlab.artismarti.smartsmells.longmethod.LongMethodDetector
 import com.gitlab.artismarti.smartsmells.longparam.LongParameterListDetector
 import com.gitlab.artismarti.smartsmells.messagechain.MessageChainDetector
+import com.gitlab.artismarti.smartsmells.middleman.MiddleManDetector
 
 import java.nio.file.Path
 import java.util.concurrent.CompletableFuture
@@ -47,8 +48,11 @@ class DetectorFacade {
 		def mc = CompletableFuture
 				.supplyAsync({ new MessageChainDetector().run(path) })
 				.exceptionally({ handle() })
+		def mm = CompletableFuture
+				.supplyAsync({ new MiddleManDetector().run(path) })
+				.exceptionally({ handle() })
 
-		CompletableFuture.allOf(gc, cm, cs, lm, lpl, dc, dcd, lc, mc).join()
+		CompletableFuture.allOf(gc, cm, cs, lm, lpl, dc, dcd, lc, mc, mm).join()
 
 		println "GodClasses: " + gc.get().stream().count()
 		println "ComplexMethods: " + cm.get().stream().count()
@@ -59,8 +63,9 @@ class DetectorFacade {
 		println "DeadCode: " + dcd.get().stream().count()
 		println "LargeClass: " + lc.get().stream().count()
 		println "MessageChain: " + mc.get().stream().count()
+		println "MiddleMan: " + mm.get().stream().count()
 
-		mc.get().forEach { println it.toString() }
+//		mm.get().forEach { println it.toString() }
 
 	}
 

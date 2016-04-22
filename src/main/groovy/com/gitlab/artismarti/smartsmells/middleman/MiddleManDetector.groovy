@@ -10,9 +10,9 @@ import java.nio.file.Path
  */
 class MiddleManDetector extends Detector<MiddleMan> {
 
-    @Override
-    protected Visitor getVisitor(Path path) {
-        return new MiddleManVisitor(path)
-    }
+	@Override
+	protected Visitor getVisitor(Path path) {
+		return new MiddleManVisitor(path)
+	}
 
 }
