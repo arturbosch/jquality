@@ -14,6 +14,9 @@ class FeatureEnvyVisitor extends Visitor<FeatureEnvy> {
 
 	private double threshold
 
+	private methodNames
+	private fieldNames
+
 	FeatureEnvyVisitor(Path path, double threshold) {
 		super(path)
 		this.threshold = threshold
@@ -25,6 +28,9 @@ class FeatureEnvyVisitor extends Visitor<FeatureEnvy> {
 		if (TypeHelper.hasNoMethods(n)) return
 
 		def methods = NodeHelper.findMethods(n)
+
+		methodNames = methods.collect { it.name }
+		fieldNames = NodeHelper.findFieldNames(n)
 
 		methods.each {
 			println it.name
