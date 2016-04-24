@@ -26,5 +26,11 @@ class FeatureEnvyVisitor extends Visitor<FeatureEnvy> {
 
 		def methods = NodeHelper.findMethods(n)
 
+		methods.each {
+			println it.name
+			def visitor = new MethodInvocationCountVisitor()
+			it.accept(visitor, null)
+			println visitor.count
+		}
 	}
 }
