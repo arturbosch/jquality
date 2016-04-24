@@ -4,10 +4,7 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration
 import com.github.javaparser.ast.body.MethodDeclaration
 import com.github.javaparser.ast.expr.MethodCallExpr
 import com.github.javaparser.ast.stmt.ReturnStmt
-import com.gitlab.artismarti.smartsmells.common.BadSmellHelper
-import com.gitlab.artismarti.smartsmells.common.MethodHelper
-import com.gitlab.artismarti.smartsmells.common.NodeHelper
-import com.gitlab.artismarti.smartsmells.common.Visitor
+import com.gitlab.artismarti.smartsmells.common.*
 import com.gitlab.artismarti.smartsmells.domain.SourcePath
 
 import java.nio.file.Path
@@ -23,8 +20,8 @@ class MiddleManVisitor extends Visitor<MiddleMan> {
 
 	@Override
 	void visit(ClassOrInterfaceDeclaration n, Object arg) {
-		if (isEmptyBody(n)) return
-		if (hasNoMethods(n)) return
+		if (TypeHelper.isEmptyBody(n)) return
+		if (TypeHelper.hasNoMethods(n)) return
 
 		def methods = NodeHelper.findMethods(n)
 
@@ -42,14 +39,6 @@ class MiddleManVisitor extends Visitor<MiddleMan> {
 		}
 
 		super.visit(n, arg)
-	}
-
-	private static boolean isEmptyBody(ClassOrInterfaceDeclaration n) {
-		n.members.empty
-	}
-
-	private static boolean hasNoMethods(ClassOrInterfaceDeclaration n) {
-		n.members.stream().filter { it instanceof MethodDeclaration }.count() == 0
 	}
 
 	private static boolean hasBodySizeOne(MethodDeclaration method) {
