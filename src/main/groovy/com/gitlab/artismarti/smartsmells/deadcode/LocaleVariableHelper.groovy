@@ -16,4 +16,10 @@ class LocaleVariableHelper {
 		}.flatMap({ it.stream() })
 				.collect()
 	}
+
+	static List<VariableDeclarationExpr> find(MethodDeclaration methodDeclaration) {
+		def visitor = new LocaleVariableFinder()
+		methodDeclaration.accept(visitor, null)
+		visitor.variables
+	}
 }

@@ -1,9 +1,11 @@
 package com.gitlab.artismarti.smartsmells.featureenvy
 
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration
+import com.gitlab.artismarti.smartsmells.common.MethodHelper
 import com.gitlab.artismarti.smartsmells.common.NodeHelper
 import com.gitlab.artismarti.smartsmells.common.TypeHelper
 import com.gitlab.artismarti.smartsmells.common.Visitor
+import com.gitlab.artismarti.smartsmells.deadcode.LocaleVariableHelper
 
 import java.nio.file.Path
 
@@ -37,6 +39,10 @@ class FeatureEnvyVisitor extends Visitor<FeatureEnvy> {
 			def visitor = new MethodInvocationCountVisitor()
 			it.accept(visitor, null)
 			println visitor.count
+
+			def parameters = MethodHelper.extractParameters(it).collectEntries { [it.id.name, it] }
+			def variables = LocaleVariableHelper.find(it)
+
 		}
 	}
 }
