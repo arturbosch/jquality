@@ -9,8 +9,9 @@ import spock.lang.Specification
 class FeatureEnvyDetectorTest extends Specification {
 
 	def "find one feature envy method"() {
+
 		expect:
-		smells.size() == 1
+		smells.size() == 2
 
 		where:
 		smells = new FeatureEnvyDetector().run(Test.FEATURE_ENVY_PATH)

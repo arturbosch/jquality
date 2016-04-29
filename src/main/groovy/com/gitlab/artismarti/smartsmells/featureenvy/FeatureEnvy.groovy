@@ -18,6 +18,8 @@ class FeatureEnvy {
 	String object
 	String objectSignature
 
+	double factor
+
 	@Delegate
 	SourcePath sourcePath
 	@Delegate

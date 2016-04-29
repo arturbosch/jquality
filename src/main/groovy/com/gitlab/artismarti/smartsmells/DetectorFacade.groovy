@@ -4,6 +4,7 @@ import com.gitlab.artismarti.smartsmells.comment.CommentDetector
 import com.gitlab.artismarti.smartsmells.complexmethod.ComplexMethodDetector
 import com.gitlab.artismarti.smartsmells.dataclass.DataClassDetector
 import com.gitlab.artismarti.smartsmells.deadcode.DeadCodeDetector
+import com.gitlab.artismarti.smartsmells.featureenvy.FeatureEnvyDetector
 import com.gitlab.artismarti.smartsmells.godclass.GodClassDetector
 import com.gitlab.artismarti.smartsmells.largeclass.LargeClassDetector
 import com.gitlab.artismarti.smartsmells.longmethod.LongMethodDetector
@@ -51,8 +52,11 @@ class DetectorFacade {
 		def mm = CompletableFuture
 				.supplyAsync({ new MiddleManDetector().run(path) })
 				.exceptionally({ handle() })
+		def fe = CompletableFuture
+				.supplyAsync({ new FeatureEnvyDetector().run(path) })
+				.exceptionally({ handle() })
 
-		CompletableFuture.allOf(gc, cm, cs, lm, lpl, dc, dcd, lc, mc, mm).join()
+		CompletableFuture.allOf(gc, cm, cs, lm, lpl, dc, dcd, lc, mc, mm, fe).join()
 
 		println "GodClasses: " + gc.get().stream().count()
 		println "ComplexMethods: " + cm.get().stream().count()
@@ -64,6 +68,9 @@ class DetectorFacade {
 		println "LargeClass: " + lc.get().stream().count()
 		println "MessageChain: " + mc.get().stream().count()
 		println "MiddleMan: " + mm.get().stream().count()
+		println "FeatureEnvy: " + fe.get().stream().count()
+
+		println fe.get().each { println it.toString() }
 
 	}
 
@@ -89,6 +96,8 @@ class DetectorFacade {
 		println "LargeClass: " + new LargeClassDetector().run(path)
 				.stream().count()
 		println "MessageChain: " + new MessageChainDetector().run(path)
+				.stream().count()
+		println "FeatureEnvy: " + new FeatureEnvyDetector().run(path)
 				.stream().count()
 	}
 }

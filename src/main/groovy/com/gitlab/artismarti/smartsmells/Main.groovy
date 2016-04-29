@@ -16,10 +16,11 @@ class Main {
 	}
 
 	static void main(String... args) {
-		def path = Paths.get("/home/artur/Repos/quide/Implementierung/QuideService/src")
+//		def path = Paths.get("/home/artur/Repos/quide/Implementierung/QuideService/src")
+		def path = Paths.get("/home/artur/Arbeit/pooka-co/trunk/pooka/src")
 
 //		(0..10).each { syncTest(path) }
-		println()
+//		println()
 		(0..0).each { asyncTest(path) }
 	}
 
