@@ -16,6 +16,7 @@ class FeatureEnvy {
 	String methodSignature
 
 	String object
+	String objectSignature
 
 	@Delegate
 	SourcePath sourcePath

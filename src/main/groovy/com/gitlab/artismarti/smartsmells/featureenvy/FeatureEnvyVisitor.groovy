@@ -1,10 +1,8 @@
 package com.gitlab.artismarti.smartsmells.featureenvy
 
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration
-import com.gitlab.artismarti.smartsmells.common.MethodHelper
-import com.gitlab.artismarti.smartsmells.common.NodeHelper
-import com.gitlab.artismarti.smartsmells.common.TypeHelper
-import com.gitlab.artismarti.smartsmells.common.Visitor
+import com.github.javaparser.ast.body.MethodDeclaration
+import com.gitlab.artismarti.smartsmells.common.*
 import com.gitlab.artismarti.smartsmells.deadcode.LocaleVariableHelper
 
 import java.nio.file.Path
@@ -16,8 +14,7 @@ class FeatureEnvyVisitor extends Visitor<FeatureEnvy> {
 
 	private double threshold
 
-	private methodNames
-	private fieldNames
+	private Set<CustomVariableDeclaration> fields
 
 	FeatureEnvyVisitor(Path path, double threshold) {
 		super(path)
@@ -29,20 +26,29 @@ class FeatureEnvyVisitor extends Visitor<FeatureEnvy> {
 		if (TypeHelper.isEmptyBody(n)) return
 		if (TypeHelper.hasNoMethods(n)) return
 
-		def methods = NodeHelper.findMethods(n)
+		fields = VariableHelper.fromFieldToCustomVariableDeclarations(NodeHelper.findFields(n))
 
-		methodNames = methods.collect { it.name }
-		fieldNames = NodeHelper.findFieldNames(n)
+		analyzeMethods(NodeHelper.findMethods(n))
+	}
 
+	private analyzeMethods(List<MethodDeclaration> methods) {
 		methods.each {
-			println it.name
-			def visitor = new MethodInvocationCountVisitor()
-			it.accept(visitor, null)
-			println visitor.count
+			def allCalls = MethodHelper.getAllMethodInvocations(it)
 
-			def parameters = MethodHelper.extractParameters(it).collectEntries { [it.id.name, it] }
-			def variables = LocaleVariableHelper.find(it)
+			def parameters = VariableHelper.toCustomVariableDeclarations(MethodHelper.extractParameters(it))
+			def variables = VariableHelper.toCustomVariableDeclarations(LocaleVariableHelper.find(it))
 
+			analyzeVariables(it, allCalls, variables)
+			analyzeVariables(it, allCalls, parameters)
+			analyzeVariables(it, allCalls, fields)
+
+		}
+	}
+
+	private static analyzeVariables(MethodDeclaration method, int allCalls, Set<CustomVariableDeclaration> variables) {
+		variables.forEach {
+			int count = MethodHelper.getAllMethodInvocationsForEntityWithName(it.name, method)
+			println "$it.name has count $count"
 		}
 	}
 }

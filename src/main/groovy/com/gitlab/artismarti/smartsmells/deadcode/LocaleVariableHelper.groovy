@@ -17,7 +17,7 @@ class LocaleVariableHelper {
 				.collect()
 	}
 
-	static List<VariableDeclarationExpr> find(MethodDeclaration methodDeclaration) {
+	static Set<VariableDeclarationExpr> find(MethodDeclaration methodDeclaration) {
 		def visitor = new LocaleVariableFinder()
 		methodDeclaration.accept(visitor, null)
 		visitor.variables

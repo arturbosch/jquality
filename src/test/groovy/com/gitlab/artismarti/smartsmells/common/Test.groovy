@@ -22,4 +22,6 @@ class Test {
 			Paths.get("./src/test/groovy/com/gitlab/artismarti/smartsmells/java/MessageChainDummy.java")
 	static Path MIDDLE_MAN_PATH =
 			Paths.get("./src/test/groovy/com/gitlab/artismarti/smartsmells/java/MiddleManDummy.java")
+	static Path FEATURE_ENVY_PATH =
+			Paths.get("./src/test/groovy/com/gitlab/artismarti/smartsmells/java/FeatureEnvyDummy.java")
 }

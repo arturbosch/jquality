@@ -49,7 +49,7 @@ class NodeHelper {
 				.collect()
 	}
 
-	private static List<FieldDeclaration> findFields(Node n) {
+	static List<FieldDeclaration> findFields(Node n) {
 		ASTHelper.getNodesByType(n, FieldDeclaration.class)
 	}
 }

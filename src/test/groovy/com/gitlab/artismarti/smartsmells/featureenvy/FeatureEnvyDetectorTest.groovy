@@ -13,6 +13,6 @@ class FeatureEnvyDetectorTest extends Specification {
 		smells.size() == 1
 
 		where:
-		smells = new FeatureEnvyDetector().run(Test.PATH)
+		smells = new FeatureEnvyDetector().run(Test.FEATURE_ENVY_PATH)
 	}
 }

@@ -11,6 +11,7 @@ import com.github.javaparser.ast.stmt.ExpressionStmt
 import com.github.javaparser.ast.stmt.ReturnStmt
 import com.github.javaparser.ast.stmt.Statement
 import com.gitlab.artismarti.smartsmells.complexmethod.CyclomaticComplexityVisitor
+import com.gitlab.artismarti.smartsmells.featureenvy.MethodInvocationCountVisitor
 
 /**
  * @author artur
@@ -62,5 +63,20 @@ class MethodHelper {
 			}
 		}
 		return false
+	}
+
+	static int getAllMethodInvocations(MethodDeclaration it) {
+		def visitor = new MethodInvocationCountVisitor()
+		executeVisitor(it, visitor)
+	}
+
+	private static int executeVisitor(MethodDeclaration it, MethodInvocationCountVisitor visitor) {
+		it.accept(visitor, null)
+		visitor.count
+	}
+
+	static int getAllMethodInvocationsForEntityWithName(String searchedName, MethodDeclaration it) {
+		def visitor = new MethodInvocationCountVisitor(searchedName)
+		executeVisitor(it, visitor)
 	}
 }
