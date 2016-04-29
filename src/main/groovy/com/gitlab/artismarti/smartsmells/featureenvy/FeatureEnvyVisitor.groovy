@@ -1,5 +1,8 @@
 package com.gitlab.artismarti.smartsmells.featureenvy
 
+import com.github.javaparser.ASTHelper
+import com.github.javaparser.ast.CompilationUnit
+import com.github.javaparser.ast.ImportDeclaration
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration
 import com.github.javaparser.ast.body.MethodDeclaration
 import com.gitlab.artismarti.smartsmells.common.*
@@ -15,10 +18,17 @@ class FeatureEnvyVisitor extends Visitor<FeatureEnvy> {
 	private double threshold
 
 	private Set<CustomVariableDeclaration> fields
+	private List<ImportDeclaration> imports
 
 	FeatureEnvyVisitor(Path path, double threshold) {
 		super(path)
 		this.threshold = threshold
+	}
+
+	@Override
+	void visit(CompilationUnit n, Object arg) {
+		imports = ASTHelper.getNodesByType(n, ImportDeclaration.class)
+		super.visit(n, arg)
 	}
 
 	@Override
@@ -32,15 +42,18 @@ class FeatureEnvyVisitor extends Visitor<FeatureEnvy> {
 	}
 
 	private analyzeMethods(List<MethodDeclaration> methods) {
+		def filter = new JavaClassFilter(imports)
 		methods.each {
+
 			def allCalls = MethodHelper.getAllMethodInvocations(it)
 
 			def parameters = VariableHelper.toCustomVariableDeclarations(MethodHelper.extractParameters(it))
+
 			def variables = VariableHelper.toCustomVariableDeclarations(LocaleVariableHelper.find(it))
 
-			analyzeVariables(it, allCalls, variables)
-			analyzeVariables(it, allCalls, parameters)
-			analyzeVariables(it, allCalls, fields)
+			analyzeVariables(it, allCalls, filter.forJavaClasses(variables))
+			analyzeVariables(it, allCalls, filter.forJavaClasses(parameters))
+			analyzeVariables(it, allCalls, filter.forJavaClasses(fields))
 
 		}
 	}
@@ -48,7 +61,8 @@ class FeatureEnvyVisitor extends Visitor<FeatureEnvy> {
 	private static analyzeVariables(MethodDeclaration method, int allCalls, Set<CustomVariableDeclaration> variables) {
 		variables.forEach {
 			int count = MethodHelper.getAllMethodInvocationsForEntityWithName(it.name, method)
-			println "$it.name has count $count"
+
+
 		}
 	}
 }

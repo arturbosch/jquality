@@ -1,5 +1,7 @@
 package com.gitlab.artismarti.smartsmells.java;
 
+import java.lang.String;
+
 /**
  * @author artur
  */

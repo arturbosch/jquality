@@ -2,7 +2,6 @@ package com.gitlab.artismarti.smartsmells.common
 
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration
 import com.github.javaparser.ast.body.MethodDeclaration
-
 /**
  * @author artur
  */
