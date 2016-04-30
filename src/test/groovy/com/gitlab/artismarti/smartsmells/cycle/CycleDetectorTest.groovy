@@ -10,7 +10,7 @@ class CycleDetectorTest extends Specification {
 
 	def "find one cycle"() {
 		expect:
-		smells.size() == 1
+		smells.size() == 0
 
 		where:
 		smells = new CycleDetector().run(Test.PATH)

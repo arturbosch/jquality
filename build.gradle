@@ -5,11 +5,12 @@ apply plugin: 'groovy'
 
 repositories {
 	mavenCentral()
+	mavenLocal()
 }
 
 dependencies {
 	compile 'org.codehaus.groovy:groovy-all:2.4.6'
 	compile 'org.spockframework:spock-core:1.0-groovy-2.4'
 	compile 'com.github.javaparser:javaparser-core:2.4.0'
-
+	compile 'com.gitlab.artismarti:SmartUtils:0.3.0'
 }
