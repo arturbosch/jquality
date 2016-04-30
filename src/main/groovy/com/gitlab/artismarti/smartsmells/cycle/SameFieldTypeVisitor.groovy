@@ -19,7 +19,6 @@ class SameFieldTypeVisitor extends VoidVisitorAdapter {
 	private QualifiedType currentClass
 
 	SameFieldTypeVisitor(QualifiedType searchedType) {
-		println "searching for $searchedType"
 		this.searchedType = searchedType
 	}
 
@@ -38,7 +37,6 @@ class SameFieldTypeVisitor extends VoidVisitorAdapter {
 	@Override
 	void visit(FieldDeclaration n, Object arg) {
 		def qualifiedType = packageImportHelper.getQualifiedType(n.type)
-		println "current type $qualifiedType"
 		if (qualifiedType.name.equals(searchedType.name)) {
 			foundFieldWithType = new Tuple2<>(currentClass, n)
 			found |= true

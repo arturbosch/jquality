@@ -11,8 +11,8 @@ class ComplexMethodDetectorTest extends Specification {
 	def "finds one complex method"() {
 		expect:
 		smells.size() == 1
-		smells.get(0).cyclomaticComplexity == 11
-		smells.get(0).longMethod.name == "complexMethod"
+		smells.getAt(0).cyclomaticComplexity == 11
+		smells.getAt(0).longMethod.name == "complexMethod"
 
 		where:
 		smells = new ComplexMethodDetector().run(Test.COMPLEX_METHOD_DUMMY_PATH)

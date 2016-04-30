@@ -11,10 +11,10 @@ class LargeClassDetectorTest extends Specification {
 	def "find one large class"() {
 		expect:
 		smells.size() == 1
-		smells.get(0).name == "LargeClassDummy"
-		smells.get(0).signature == "LargeClassDummy"
-		smells.get(0).sourcePath != null
-		smells.get(0).sourceRange != null
+		smells.getAt(0).name == "LargeClassDummy"
+		smells.getAt(0).signature == "LargeClassDummy"
+		smells.getAt(0).sourcePath != null
+		smells.getAt(0).sourceRange != null
 
 		where:
 		smells = new LargeClassDetector().run(Test.PATH)

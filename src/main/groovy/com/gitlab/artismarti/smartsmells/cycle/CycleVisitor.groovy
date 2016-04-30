@@ -44,7 +44,6 @@ class CycleVisitor extends Visitor<Cycle> {
 				def maybeType = findReferencedType(qualifiedType)
 
 				if (maybeType.isPresent()) {
-					println maybeType.get()
 					searchForCycles(maybeType.get(), thisClassType, it)
 				}
 			}

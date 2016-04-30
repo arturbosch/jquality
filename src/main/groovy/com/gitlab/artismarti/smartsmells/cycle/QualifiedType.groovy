@@ -16,10 +16,6 @@ class QualifiedType {
 
 	TypeToken typeToken
 
-	QualifiedType(String name) {
-		this(name, TypeToken.REFERENCE)
-	}
-
 	QualifiedType(String name, TypeToken typeToken) {
 		this.name = name
 		this.typeToken = typeToken
@@ -38,9 +34,9 @@ class QualifiedType {
 	}
 
 	String shortName() {
-		def index = name.lastIndexOf("\\.")
+		def index = name.lastIndexOf(".")
 		if (index == -1)
 			return name
-		return name.substring(index)
+		return name.substring(index + 1)
 	}
 }

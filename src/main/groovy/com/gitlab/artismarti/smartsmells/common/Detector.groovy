@@ -18,10 +18,10 @@ abstract class Detector<T> {
 	/**
 	 * Binary operator combines two lists into one.
 	 */
-	static def op = new BinaryOperator<List<T>>() {
+	static def op = new BinaryOperator<Set<T>>() {
 		@Override
-		List<T> apply(List<T> l1, List<T> l2) {
-			List<T> list = new ArrayList<>(l1)
+		Set<T> apply(Set<T> l1, Set<T> l2) {
+			Set<T> list = new HashSet<>(l1)
 			list.addAll(l2)
 			return list
 		}
@@ -32,15 +32,15 @@ abstract class Detector<T> {
 	 * @param startPath project path
 	 * @return list of comment smells
 	 */
-	List<T> run(Path startPath) {
+	Set<T> run(Path startPath) {
 		this.startPath = startPath
 		return Files.walk(startPath)
 				.filter({ it.fileName.toString().endsWith("java") })
 				.map({ execute(it) })
-				.collect(Collectors.reducing(new ArrayList(), op))
+				.collect(Collectors.reducing(new HashSet(), op))
 	}
 
-	protected List<T> execute(Path path) {
+	protected Set<T> execute(Path path) {
 		def fis = Files.newInputStream(path)
 		def visitor = getVisitor(path)
 		visitor.startPath = startPath

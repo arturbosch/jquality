@@ -12,12 +12,12 @@ class FeatureEnvyDetectorTest extends Specification {
 
 		expect:
 		smells.size() == 2
-		smells.get(0).methodName == "envyMethod"
-		smells.get(0).methodSignature == "public void envyMethod()"
-		smells.get(0).object == "otherLogic"
-		smells.get(0).objectSignature == "HasLogic"
-		smells.get(0).factor > 0.5d
-		smells.get(0).factorThreshold == 0.52d
+		smells.getAt(0).methodName == "envyMethod"
+		smells.getAt(0).methodSignature == "public void envyMethod()"
+		smells.getAt(0).object == "otherLogic"
+		smells.getAt(0).objectSignature == "HasLogic"
+		smells.getAt(0).factor > 0.5d
+		smells.getAt(0).factorThreshold == 0.52d
 
 		where:
 		smells = new FeatureEnvyDetector().run(Test.FEATURE_ENVY_PATH)

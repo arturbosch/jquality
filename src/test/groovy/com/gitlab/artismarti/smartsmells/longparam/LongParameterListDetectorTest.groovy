@@ -11,8 +11,8 @@ class LongParameterListDetectorTest extends Specification {
 	def "finds one long parameter list with default threshold"() {
 		expect:
 		smells.size() == 1
-		smells.get(0).name == "longMethod"
-		smells.get(0).parameters.size() == 6
+		smells.getAt(0).name == "longMethod"
+		smells.getAt(0).parameters.size() == 6
 
 		where:
 		smells = new LongParameterListDetector().run(Test.PATH)

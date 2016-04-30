@@ -13,9 +13,8 @@ import java.nio.file.Paths
 class CycleDetectorTest extends Specification {
 
 	def "find one cycle"() {
-		smells.each { println it.toString() }
 		expect:
-		smells.size() == 2
+		smells.size() == 1
 
 		where:
 		smells = new CycleDetector().run(Test.PATH)

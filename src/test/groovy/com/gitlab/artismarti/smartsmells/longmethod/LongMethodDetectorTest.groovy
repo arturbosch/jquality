@@ -11,14 +11,14 @@ class LongMethodDetectorTest extends Specification {
 	def "find one long method with size 15 and threshold 14"() {
 		expect:
 		smells.size() == 1
-		smells.get(0).name == "longMethod"
-		smells.get(0).signature ==
+		smells.getAt(0).name == "longMethod"
+		smells.getAt(0).signature ==
 				"void longMethod(String s1, String s2, String s3, String s4, String s5, String s6)"
-		smells.get(0).size == 15
-		smells.get(0).threshold == 14
-		smells.get(0).header ==
+		smells.getAt(0).size == 15
+		smells.getAt(0).threshold == 14
+		smells.getAt(0).header ==
 				"public void longMethod(String s1, String s2, String s3, String s4, String s5, String s6)"
-		smells.get(0).sourceRange.toString() == "[[21, 38], [9, 9]]"
+		smells.getAt(0).sourceRange.toString() == "[[21, 38], [9, 9]]"
 
 		where:
 		smells = new LongMethodDetector(14).run(Test.LONG_METHOD_DUMMY_PATH)
@@ -27,7 +27,7 @@ class LongMethodDetectorTest extends Specification {
 	def "find two long methods one is a long constructor with default threshold"() {
 		expect:
 		smells.size() == 2
-		smells.get(0).name == "LongMethodDummy"
+		smells.getAt(0).name == "longMethod"
 
 		where:
 		smells = new LongMethodDetector().run(Test.LONG_METHOD_DUMMY_PATH)

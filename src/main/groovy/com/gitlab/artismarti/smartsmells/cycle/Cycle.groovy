@@ -1,7 +1,11 @@
 package com.gitlab.artismarti.smartsmells.cycle
+
+import groovy.transform.ToString
+
 /**
  * @author artur
  */
+@ToString(includeNames = false, includePackage = false)
 class Cycle {
 
 	Dependency source
@@ -15,16 +19,11 @@ class Cycle {
 	@Override
 	boolean equals(Object obj) {
 		if (obj instanceof Cycle) {
-			if (source.equals(obj.source) && target.equals(obj.target)) {
-				return true
-			}
-			if (source.equals(obj.target) && target.equals(obj.source)) {
-				return true
-			}
+			return (source.equals(obj.source) && target.equals(obj.target)) ||
+					(source.equals(obj.target) && target.equals(obj.source))
 		}
 		return false
 	}
-
 
 	@Override
 	public String toString() {
@@ -32,5 +31,10 @@ class Cycle {
 				"source=" + source.toString() +
 				", target=" + target.toString() +
 				'}';
+	}
+
+	@Override
+	int hashCode() {
+		return Objects.hash(source) + Objects.hash(target)
 	}
 }

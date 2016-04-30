@@ -11,10 +11,10 @@ class MiddleManDetectorTest extends Specification {
 	def "find one middle man class"() {
 		expect:
 		smells.size() == 1
-		smells.get(0).name == "ManInTheMiddle"
-		smells.get(0).signature == "ManInTheMiddle"
-		smells.get(0).sourcePath != null
-		smells.get(0).sourceRange != null
+		smells.getAt(0).name == "ManInTheMiddle"
+		smells.getAt(0).signature == "ManInTheMiddle"
+		smells.getAt(0).sourcePath != null
+		smells.getAt(0).sourceRange != null
 
 		where:
 		smells = new MiddleManDetector().run(Test.MIDDLE_MAN_PATH)

@@ -12,13 +12,13 @@ abstract class Visitor<T> extends VoidVisitorAdapter<Object> {
 	protected Path startPath
 	protected Path path
 
-	private List<T> smells = new ArrayList<>()
+	private Set<T> smells = new HashSet<>()
 
 	Visitor(Path path) {
 		this.path = path
 	}
 
-	List<T> getSmells() {
+	Set<T> getSmells() {
 		return smells
 	}
 }
