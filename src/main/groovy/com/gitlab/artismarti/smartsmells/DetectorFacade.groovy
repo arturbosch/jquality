@@ -3,6 +3,7 @@ package com.gitlab.artismarti.smartsmells
 import com.gitlab.artismarti.smartsmells.comment.CommentDetector
 import com.gitlab.artismarti.smartsmells.common.Detector
 import com.gitlab.artismarti.smartsmells.complexmethod.ComplexMethodDetector
+import com.gitlab.artismarti.smartsmells.cycle.CompilationTree
 import com.gitlab.artismarti.smartsmells.cycle.CycleDetector
 import com.gitlab.artismarti.smartsmells.dataclass.DataClassDetector
 import com.gitlab.artismarti.smartsmells.deadcode.DeadCodeDetector
@@ -25,16 +26,19 @@ class DetectorFacade {
 
 	static def run(Path startPath) {
 
+		CompilationTree.registerRoot(startPath)
+
 		def detectors = [new GodClassDetector(), new ComplexMethodDetector(), new CommentDetector(),
 		                 new LongMethodDetector(15), new LongParameterListDetector(), new DeadCodeDetector(),
 		                 new LargeClassDetector(), new MessageChainDetector(), new MiddleManDetector(),
-		                 new FeatureEnvyDetector()/*, new CycleDetector()*/]
+		                 new FeatureEnvyDetector(), new CycleDetector()]
 
 		Files.walk(startPath)
 				.filter { it.fileName.toString().endsWith("java") }
 				.forEach { runRun(detectors, it) }
 
-		detectors.each { println it.class.name + " : " + it.smells.size() }
+		detectors.each { println it.class.simpleName + " : " + it.smells.size() }
+
 	}
 
 	static def runRun(List<Detector> detectors, Path path) {
@@ -42,7 +46,7 @@ class DetectorFacade {
 		detectors.each { detector ->
 			futures.add(CompletableFuture
 					.supplyAsync { detector.execute(path) }
-					.exceptionally { println it.printStackTrace(); handle(it) })
+					.exceptionally { handle(it) })
 		}
 		CompletableFuture.allOf(futures.toArray(new CompletableFuture<?>[0])).join()
 	}
@@ -105,7 +109,7 @@ class DetectorFacade {
 	}
 
 	private static ArrayList handle(Throwable throwable) {
-		println throwable.cause
+		println throwable.printStackTrace()
 		new ArrayList<>()
 	}
 

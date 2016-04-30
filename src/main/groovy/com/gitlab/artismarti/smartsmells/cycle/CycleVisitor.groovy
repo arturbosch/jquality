@@ -9,9 +9,7 @@ import com.gitlab.artismarti.smartsmells.common.NodeHelper
 import com.gitlab.artismarti.smartsmells.common.Visitor
 import com.gitlab.artismarti.smartsmells.common.source.SourcePath
 
-import java.nio.file.Files
 import java.nio.file.Path
-
 /**
  * @author artur
  */
@@ -41,7 +39,7 @@ class CycleVisitor extends Visitor<Cycle> {
 			def qualifiedType = packageImportHelper.getQualifiedType(it.type)
 			if (qualifiedType.isReference()) {
 
-				def maybeType = findReferencedType(qualifiedType)
+				def maybeType = CompilationTree.findReferencedType(qualifiedType)
 
 				if (maybeType.isPresent()) {
 					searchForCycles(maybeType.get(), thisClassType, it)
@@ -90,11 +88,4 @@ class CycleVisitor extends Visitor<Cycle> {
 		unit
 	}
 
-	private Optional<Path> findReferencedType(QualifiedType it) {
-		def search = "${it.name.replaceAll("\\.", "/")}.java"
-		return Files.walk(startPath)
-				.filter { it.endsWith(search) }
-				.findFirst()
-				.map { it.toAbsolutePath().normalize() }
-	}
 }

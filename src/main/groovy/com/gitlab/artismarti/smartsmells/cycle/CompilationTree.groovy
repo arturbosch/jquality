@@ -13,18 +13,49 @@ import java.nio.file.Path
  */
 class CompilationTree {
 
-	private static Cache<Path, CompilationUnit> cache = new Cache<Path, CompilationUnit>() {}
+	static Map<String, Path> qualifiedNameToPathCache = new HashMap<>()
+	static Cache<Path, CompilationUnit> cache = new Cache<Path, CompilationUnit>() {}
+
+	static Path root
 
 	static Optional<CompilationUnit> getUnit(Path path) {
 		return Optional.ofNullable(cache.verifyAndReturn(path))
 	}
 
 	static CompilationUnit compileFor(Path path) {
-		def fis = Files.newInputStream(path)
-		def unit = IOGroovyMethods.withCloseable(fis) {
-			JavaParser.parse(fis)
+		def unit = IOGroovyMethods.withCloseable(Files.newInputStream(path)) {
+			JavaParser.parse(it)
 		}
 		cache.putPair(path, unit)
 		return unit
+	}
+
+	static def putUnit(Path path, CompilationUnit unit) {
+		cache.putPair(path, unit)
+	}
+
+	static def registerRoot(Path path) {
+		root = path
+	}
+
+	static Optional<Path> findReferencedType(QualifiedType qualifiedType) {
+
+		def maybePath = Optional.ofNullable(qualifiedNameToPathCache.get(qualifiedType.name))
+
+		if (maybePath.isPresent()) {
+			return maybePath
+		} else {
+			def search = "${qualifiedType.name.replaceAll("\\.", "/")}.java"
+
+			def pathToQualifier = Files.walk(root)
+					.filter { it.endsWith(search) }
+					.findFirst()
+					.map { it.toAbsolutePath().normalize() }
+
+			pathToQualifier.ifPresent { qualifiedNameToPathCache.put(qualifiedType.name, it) }
+
+			return pathToQualifier
+		}
+
 	}
 }
