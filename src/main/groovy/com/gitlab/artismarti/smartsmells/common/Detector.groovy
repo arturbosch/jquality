@@ -14,6 +14,7 @@ import java.util.stream.Collectors
 abstract class Detector<T> {
 
 	protected Path startPath
+	Deque<T> smells = new ArrayDeque<>(100)
 
 	/**
 	 * Binary operator combines two lists into one.
@@ -40,7 +41,7 @@ abstract class Detector<T> {
 				.collect(Collectors.reducing(new HashSet(), op))
 	}
 
-	protected Set<T> execute(Path path) {
+	Set<T> execute(Path path) {
 		def fis = Files.newInputStream(path)
 		def visitor = getVisitor(path)
 		visitor.startPath = startPath
@@ -48,6 +49,7 @@ abstract class Detector<T> {
 			def unit = JavaParser.parse(fis)
 			visitor.visit(unit, null)
 		}
+		smells.addAll(visitor.smells)
 		return visitor.smells
 	}
 
