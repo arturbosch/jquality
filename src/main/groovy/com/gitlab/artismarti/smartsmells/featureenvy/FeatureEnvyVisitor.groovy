@@ -17,7 +17,7 @@ import java.nio.file.Path
 class FeatureEnvyVisitor extends Visitor<FeatureEnvy> {
 
 	private double threshold
-	private double weight = 0.45
+	private double weight = 0.5
 	private double base = 0.5
 
 	private Set<CustomVariableDeclaration> fields
@@ -46,7 +46,7 @@ class FeatureEnvyVisitor extends Visitor<FeatureEnvy> {
 
 	private analyzeMethods(List<MethodDeclaration> methods) {
 		def filter = new JavaClassFilter(imports)
-		methods.each {
+		methods.stream().filter { MethodHelper.sizeBiggerThan(2, it) }.each {
 
 			def allCalls = MethodHelper.getAllMethodInvocations(it)
 
@@ -67,7 +67,7 @@ class FeatureEnvyVisitor extends Visitor<FeatureEnvy> {
 
 			if (factor > threshold) {
 				smells.add(new FeatureEnvy(method.name, method.declarationAsString, it.name,
-						it.toString(), factor, SourcePath.of(path), it.sourceRange))
+						it.type.toString(), factor, SourcePath.of(path), it.sourceRange))
 			}
 		}
 	}

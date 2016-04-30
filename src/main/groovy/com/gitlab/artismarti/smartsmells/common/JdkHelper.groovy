@@ -1,0 +1,171 @@
+package com.gitlab.artismarti.smartsmells.common
+
+/**
+ * Took the base line from spring roo project and extended it.
+ *
+ * @author artur
+ */
+class JdkHelper {
+
+	private static final List<String> javaLangSimpleTypeNames = new ArrayList<String>();
+	private static final List<String> javaCollections = new ArrayList<String>();
+
+	static {
+		javaLangSimpleTypeNames.add("Appendable");
+		javaLangSimpleTypeNames.add("ArrayList");
+		javaLangSimpleTypeNames.add("Array");
+		javaLangSimpleTypeNames.add("Arrays");
+		javaLangSimpleTypeNames.add("BigDecimal");
+		javaLangSimpleTypeNames.add("BigInteger");
+		javaLangSimpleTypeNames.add("Blob");
+		javaLangSimpleTypeNames.add("ByteArrayInputStream");
+		javaLangSimpleTypeNames.add("Calendar");
+		javaLangSimpleTypeNames.add("CharSequence");
+		javaLangSimpleTypeNames.add("Clob");
+		javaLangSimpleTypeNames.add("Cloneable");
+		javaLangSimpleTypeNames.add("Collection");
+		javaLangSimpleTypeNames.add("Comparable");
+		javaLangSimpleTypeNames.add("Iterable");
+		javaLangSimpleTypeNames.add("Readable");
+		javaLangSimpleTypeNames.add("Runnable");
+		javaLangSimpleTypeNames.add("Boolean");
+		javaLangSimpleTypeNames.add("Byte");
+		javaLangSimpleTypeNames.add("Character");
+		javaLangSimpleTypeNames.add("Class");
+		javaLangSimpleTypeNames.add("ClassLoader");
+		javaLangSimpleTypeNames.add("Compiler");
+		javaLangSimpleTypeNames.add("Date");
+		javaLangSimpleTypeNames.add("DateFormat");
+		javaLangSimpleTypeNames.add("Double");
+		javaLangSimpleTypeNames.add("Enum");
+		javaLangSimpleTypeNames.add("Exception");
+		javaLangSimpleTypeNames.add("Float");
+		javaLangSimpleTypeNames.add("GregorianCalendar");
+		javaLangSimpleTypeNames.add("HashSet");
+		javaLangSimpleTypeNames.add("HashMap");
+		javaLangSimpleTypeNames.add("InheritableThreadLocal");
+		javaLangSimpleTypeNames.add("Integer");
+		javaLangSimpleTypeNames.add("Iterator");
+		javaLangSimpleTypeNames.add("Iterable");
+		javaLangSimpleTypeNames.add("List");
+		javaLangSimpleTypeNames.add("Long");
+		javaLangSimpleTypeNames.add("Math");
+		javaLangSimpleTypeNames.add("Map");
+		javaLangSimpleTypeNames.add("Number");
+		javaLangSimpleTypeNames.add("Object");
+		javaLangSimpleTypeNames.add("Package");
+		javaLangSimpleTypeNames.add("Path");
+		javaLangSimpleTypeNames.add("File");
+		javaLangSimpleTypeNames.add("Process");
+		javaLangSimpleTypeNames.add("ProcessBuilder");
+		javaLangSimpleTypeNames.add("Random");
+		javaLangSimpleTypeNames.add("Runtime");
+		javaLangSimpleTypeNames.add("RuntimePermission");
+		javaLangSimpleTypeNames.add("Scanner");
+		javaLangSimpleTypeNames.add("SecurityManager");
+		javaLangSimpleTypeNames.add("SecureRandom");
+		javaLangSimpleTypeNames.add("Serializable");
+		javaLangSimpleTypeNames.add("Set");
+		javaLangSimpleTypeNames.add("SimpleDateFormat");
+		javaLangSimpleTypeNames.add("Short");
+		javaLangSimpleTypeNames.add("StackTraceElement");
+		javaLangSimpleTypeNames.add("StrictMath");
+		javaLangSimpleTypeNames.add("String");
+		javaLangSimpleTypeNames.add("StringBuilder");
+		javaLangSimpleTypeNames.add("StringBuffer");
+		javaLangSimpleTypeNames.add("SuppressWarnings");
+		javaLangSimpleTypeNames.add("System");
+		javaLangSimpleTypeNames.add("Timestamp");
+		javaLangSimpleTypeNames.add("Thread");
+		javaLangSimpleTypeNames.add("ThreadGroup");
+		javaLangSimpleTypeNames.add("ThreadLocal");
+		javaLangSimpleTypeNames.add("Throwable");
+		javaLangSimpleTypeNames.add("Void");
+		javaLangSimpleTypeNames.add("ArithmeticException");
+		javaLangSimpleTypeNames.add("ArrayIndexOutOfBoundsException");
+		javaLangSimpleTypeNames.add("ArrayStoreException");
+		javaLangSimpleTypeNames.add("ClassCastException");
+		javaLangSimpleTypeNames.add("ClassNotFoundException");
+		javaLangSimpleTypeNames.add("CloneNotSupportedException");
+		javaLangSimpleTypeNames.add("EnumConstantNotPresentException");
+		javaLangSimpleTypeNames.add("Exception");
+		javaLangSimpleTypeNames.add("IllegalAccessException");
+		javaLangSimpleTypeNames.add("IllegalArgumentException");
+		javaLangSimpleTypeNames.add("IllegalMonitorStateException");
+		javaLangSimpleTypeNames.add("IllegalStateException");
+		javaLangSimpleTypeNames.add("IllegalThreadStateException");
+		javaLangSimpleTypeNames.add("IndexOutOfBoundsException");
+		javaLangSimpleTypeNames.add("InstantiationException");
+		javaLangSimpleTypeNames.add("InterruptedException");
+		javaLangSimpleTypeNames.add("NegativeArraySizeException");
+		javaLangSimpleTypeNames.add("NoSuchFieldException");
+		javaLangSimpleTypeNames.add("NoSuchMethodException");
+		javaLangSimpleTypeNames.add("NullPointerException");
+		javaLangSimpleTypeNames.add("NumberFormatException");
+		javaLangSimpleTypeNames.add("RuntimeException");
+		javaLangSimpleTypeNames.add("SecurityException");
+		javaLangSimpleTypeNames.add("StringIndexOutOfBoundsException");
+		javaLangSimpleTypeNames.add("TypeNotPresentException");
+		javaLangSimpleTypeNames.add("UnsupportedOperationException");
+		javaLangSimpleTypeNames.add("AbstractMethodError");
+		javaLangSimpleTypeNames.add("AssertionError");
+		javaLangSimpleTypeNames.add("ClassCircularityError");
+		javaLangSimpleTypeNames.add("ClassFormatError");
+		javaLangSimpleTypeNames.add("Error");
+		javaLangSimpleTypeNames.add("ExceptionInInitializerError");
+		javaLangSimpleTypeNames.add("IllegalAccessError");
+		javaLangSimpleTypeNames.add("IncompatibleClassChangeError");
+		javaLangSimpleTypeNames.add("InstantiationError");
+		javaLangSimpleTypeNames.add("InternalError");
+		javaLangSimpleTypeNames.add("LinkageError");
+		javaLangSimpleTypeNames.add("NoClassDefFoundError");
+		javaLangSimpleTypeNames.add("NoSuchFieldError");
+		javaLangSimpleTypeNames.add("NoSuchMethodError");
+		javaLangSimpleTypeNames.add("OutOfMemoryError");
+		javaLangSimpleTypeNames.add("StackOverflowError");
+		javaLangSimpleTypeNames.add("ThreadDeath");
+		javaLangSimpleTypeNames.add("UnknownError");
+		javaLangSimpleTypeNames.add("UnsatisfiedLinkError");
+		javaLangSimpleTypeNames.add("UnsupportedClassVersionError");
+		javaLangSimpleTypeNames.add("VerifyError");
+		javaLangSimpleTypeNames.add("VirtualMachineError");
+	}
+
+	static {
+		javaCollections.add("List")
+		javaCollections.add("Array")
+		javaCollections.add("ArrayDeque")
+		javaCollections.add("Comparator")
+		javaCollections.add("Deque")
+		javaCollections.add("Enumeration")
+		javaCollections.add("Collection")
+		javaCollections.add("Map")
+		javaCollections.add("Set")
+		javaCollections.add("TreeSet")
+		javaCollections.add("HashMap")
+		javaCollections.add("HashSet")
+		javaCollections.add("Hashtable")
+		javaCollections.add("Formattable")
+		javaCollections.add("ArrayList")
+		javaCollections.add("Iterable")
+		javaCollections.add("Iterator")
+		javaCollections.add("ListIterator")
+		javaCollections.add("LinkedList")
+		javaCollections.add("LinkedHashMap")
+		javaCollections.add("LinkedHashSet")
+		javaCollections.add("Observable")
+		javaCollections.add("Observer")
+		javaCollections.add("Optional")
+		javaCollections.add("PrimitiveIterator")
+		javaCollections.add("Queue")
+		javaCollections.add("Stack")
+		javaCollections.add("StringTokenizer")
+		javaCollections.add("TreeMap")
+		javaCollections.add("Vector")
+	}
+
+
+	static boolean isPartOfJavaLang(String simpleTypeName) {
+		return javaLangSimpleTypeNames.contains(simpleTypeName) || javaCollections.any { simpleTypeName.startsWith(it) }
+	}
+}

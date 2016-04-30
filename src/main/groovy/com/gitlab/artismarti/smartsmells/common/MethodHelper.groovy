@@ -79,4 +79,8 @@ class MethodHelper {
 		def visitor = new MethodInvocationCountVisitor(searchedName)
 		executeVisitor(it, visitor)
 	}
+
+	static boolean sizeBiggerThan(int threshold, MethodDeclaration methodDeclaration) {
+		return Optional.ofNullable(methodDeclaration.body).filter { it.stmts.size() > threshold }.isPresent()
+	}
 }

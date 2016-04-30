@@ -1,10 +1,10 @@
 package com.gitlab.artismarti.smartsmells.featureenvy
 
 import com.github.javaparser.ast.ImportDeclaration
-import com.github.javaparser.ast.type.ClassOrInterfaceType
 import com.github.javaparser.ast.type.PrimitiveType
-import com.github.javaparser.ast.type.ReferenceType
 import com.gitlab.artismarti.smartsmells.common.CustomVariableDeclaration
+import com.gitlab.artismarti.smartsmells.common.JdkHelper
+import com.gitlab.artismarti.smartsmells.common.TypeHelper
 
 import static java.util.stream.Collectors.toSet
 
@@ -21,33 +21,35 @@ class JavaClassFilter {
 		}
 	}
 
-	public Set<CustomVariableDeclaration> forJavaClasses(Set<CustomVariableDeclaration> fields) {
-		return fields.stream().filter { isNoPrimitiveType(it) }
+	public Set<CustomVariableDeclaration> forJavaClasses(Set<CustomVariableDeclaration> variables) {
+		return variables.stream().filter { isNoPrimitiveType(it) }
 				.filter { !isJavaType(it) }.collect(toSet());
 	}
 
-	private static boolean isNoPrimitiveType(CustomVariableDeclaration field) {
-		return !(field.getType() instanceof PrimitiveType);
+	private static boolean isNoPrimitiveType(CustomVariableDeclaration variable) {
+		return !(variable.getType() instanceof PrimitiveType);
 	}
 
-	private boolean isJavaType(CustomVariableDeclaration field) {
-		def typeOfVar = field.type.toStringWithoutComments()
-		if (isJavaObject(typeOfVar)) {
-			return true
-		}
+	private boolean isJavaType(CustomVariableDeclaration variable) {
 
-		if (field.getType() instanceof ReferenceType) {
-			def type = (ReferenceType) field.getType()
-			if (type.type instanceof ClassOrInterfaceType) {
-				def realType = (ClassOrInterfaceType) type.getType()
-				if (realType.isBoxedType()) {
-					return true
+		def maybeType = TypeHelper.getClassOrInterfaceType(variable.getType())
+
+		if (maybeType.isPresent()) {
+			if (maybeType.get().isBoxedType()) {
+				return true
+			} else {
+				String name = maybeType.get().name
+				if (imports.entrySet().contains(name)) {
+					String qualifiedName = imports.get(name)
+					// was found inside imports, check if package does not start with java
+					return qualifiedName.startsWith("java") || qualifiedName.startsWith("javax")
 				} else {
-					String name = realType.name
-					if (imports.entrySet().contains(name)) {
-						String qualifiedName = imports.get(name)
-						return qualifiedName.startsWith("java") || qualifiedName.startsWith("javax")
+					def typeOfVar = variable.type.toStringWithoutComments()
+					if (JdkHelper.isPartOfJavaLang(typeOfVar)) {
+						// is inside a jdk package
+						return true
 					}
+					// lets assume it is in the same package
 					return false
 				}
 			}
