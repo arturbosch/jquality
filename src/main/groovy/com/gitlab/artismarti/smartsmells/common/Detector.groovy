@@ -1,8 +1,6 @@
 package com.gitlab.artismarti.smartsmells.common
 
-import com.github.javaparser.JavaParser
 import com.gitlab.artismarti.smartsmells.cycle.CompilationTree
-import org.codehaus.groovy.runtime.IOGroovyMethods
 
 import java.nio.file.Files
 import java.nio.file.Path
@@ -44,17 +42,8 @@ abstract class Detector<T> {
 
 	Set<T> execute(Path path) {
 		def visitor = getVisitor(path)
-		def maybeUnit = CompilationTree.getUnit(path)
-		if (maybeUnit.isPresent()) {
-			visitor.visit(maybeUnit.get(), null)
-		} else {
-			visitor.startPath = startPath
-			IOGroovyMethods.withCloseable(Files.newInputStream(path)) {
-				def unit = JavaParser.parse(it)
-				CompilationTree.putUnit(path, unit)
-				visitor.visit(unit, null)
-			}
-		}
+		def unit = CompilationTree.getCompilationUnit(path)
+		visitor.visit(unit, null)
 		smells.addAll(visitor.smells)
 		return visitor.smells
 	}

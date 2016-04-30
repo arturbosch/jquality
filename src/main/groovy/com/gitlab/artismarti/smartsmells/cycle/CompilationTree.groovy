@@ -18,11 +18,11 @@ class CompilationTree {
 
 	static Path root
 
-	static Optional<CompilationUnit> getUnit(Path path) {
+	private static Optional<CompilationUnit> getUnit(Path path) {
 		return Optional.ofNullable(cache.verifyAndReturn(path))
 	}
 
-	static CompilationUnit compileFor(Path path) {
+	private static CompilationUnit compileFor(Path path) {
 		def unit = IOGroovyMethods.withCloseable(Files.newInputStream(path)) {
 			JavaParser.parse(it)
 		}
@@ -57,5 +57,16 @@ class CompilationTree {
 			return pathToQualifier
 		}
 
+	}
+
+	static CompilationUnit getCompilationUnit(Path path) {
+		def maybeUnit = getUnit(path)
+		def unit
+		if (maybeUnit.isPresent()) {
+			unit = maybeUnit.get()
+		} else {
+			unit = compileFor(path)
+		}
+		unit
 	}
 }

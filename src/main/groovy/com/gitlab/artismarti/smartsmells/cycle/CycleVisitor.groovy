@@ -52,7 +52,7 @@ class CycleVisitor extends Visitor<Cycle> {
 
 	def searchForCycles(Path path, QualifiedType thisClass, FieldDeclaration field) {
 
-		CompilationUnit unit = getCompilationUnit(path)
+		CompilationUnit unit = CompilationTree.getCompilationUnit(path)
 		def visitor = new SameFieldTypeVisitor(thisClass)
 		visitor.visit(unit, null)
 
@@ -75,17 +75,6 @@ class CycleVisitor extends Visitor<Cycle> {
 		if (!smells.contains(cycle)) {
 			smells.add(cycle)
 		}
-	}
-
-	private static CompilationUnit getCompilationUnit(Path path) {
-		def maybeUnit = CompilationTree.getUnit(path)
-		def unit
-		if (maybeUnit.isPresent()) {
-			unit = maybeUnit.get()
-		} else {
-			unit = CompilationTree.compileFor(path)
-		}
-		unit
 	}
 
 }
