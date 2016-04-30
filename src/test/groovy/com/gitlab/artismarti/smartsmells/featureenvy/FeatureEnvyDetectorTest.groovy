@@ -17,6 +17,7 @@ class FeatureEnvyDetectorTest extends Specification {
 		smells.get(0).object == "otherLogic"
 		smells.get(0).objectSignature == "HasLogic"
 		smells.get(0).factor > 0.5d
+		smells.get(0).factorThreshold == 0.52d
 
 		where:
 		smells = new FeatureEnvyDetector().run(Test.FEATURE_ENVY_PATH)

@@ -67,7 +67,7 @@ class FeatureEnvyVisitor extends Visitor<FeatureEnvy> {
 
 			if (factor > threshold) {
 				smells.add(new FeatureEnvy(method.name, method.declarationAsString, it.name,
-						it.type.toString(), factor, SourcePath.of(path), it.sourceRange))
+						it.type.toString(), factor, threshold, SourcePath.of(path), it.sourceRange))
 			}
 		}
 	}

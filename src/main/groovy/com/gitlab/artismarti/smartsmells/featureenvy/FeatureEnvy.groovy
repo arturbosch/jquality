@@ -19,6 +19,7 @@ class FeatureEnvy {
 	String objectSignature
 
 	double factor
+	double factorThreshold
 
 	@Delegate
 	SourcePath sourcePath
