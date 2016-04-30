@@ -4,8 +4,8 @@ import com.github.javaparser.ast.body.BodyDeclaration
 import com.github.javaparser.ast.body.ConstructorDeclaration
 import com.github.javaparser.ast.body.MethodDeclaration
 import com.github.javaparser.ast.stmt.Statement
-import com.gitlab.artismarti.smartsmells.common.MethodHelper
-import com.gitlab.artismarti.smartsmells.common.MethodMetricVisitor
+import com.gitlab.artismarti.smartsmells.common.helper.MethodHelper
+import com.gitlab.artismarti.smartsmells.common.visitor.MethodMetricVisitor
 
 import java.nio.file.Path
 /**

@@ -1,11 +1,11 @@
-package com.gitlab.artismarti.smartsmells.deadcode
+package com.gitlab.artismarti.smartsmells.common.visitor
 
 import com.github.javaparser.ast.expr.VariableDeclarationExpr
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter
 /**
  * @author artur
  */
-class LocaleVariableFinder extends VoidVisitorAdapter<Object> {
+class LocaleVariableVisitor extends VoidVisitorAdapter<Object> {
 
 	def variables = new HashSet<VariableDeclarationExpr>()
 

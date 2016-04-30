@@ -1,4 +1,4 @@
-package com.gitlab.artismarti.smartsmells.cycle
+package com.gitlab.artismarti.smartsmells.common
 
 import com.github.javaparser.JavaParser
 import com.github.javaparser.ast.CompilationUnit

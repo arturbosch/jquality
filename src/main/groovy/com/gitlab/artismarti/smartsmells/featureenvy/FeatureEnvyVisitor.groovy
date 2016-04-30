@@ -6,7 +6,11 @@ import com.github.javaparser.ast.ImportDeclaration
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration
 import com.github.javaparser.ast.body.MethodDeclaration
 import com.gitlab.artismarti.smartsmells.common.*
-import com.gitlab.artismarti.smartsmells.deadcode.LocaleVariableHelper
+import com.gitlab.artismarti.smartsmells.common.helper.MethodHelper
+import com.gitlab.artismarti.smartsmells.common.helper.NodeHelper
+import com.gitlab.artismarti.smartsmells.common.helper.TypeHelper
+import com.gitlab.artismarti.smartsmells.common.helper.VariableHelper
+import com.gitlab.artismarti.smartsmells.common.helper.LocaleVariableHelper
 import com.gitlab.artismarti.smartsmells.common.source.SourcePath
 
 import java.nio.file.Path

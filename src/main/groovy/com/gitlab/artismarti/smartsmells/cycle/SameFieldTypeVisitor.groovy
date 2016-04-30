@@ -5,6 +5,8 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration
 import com.github.javaparser.ast.body.FieldDeclaration
 import com.github.javaparser.ast.type.ClassOrInterfaceType
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter
+import com.gitlab.artismarti.smartsmells.common.helper.PackageImportHelper
+import com.gitlab.artismarti.smartsmells.common.QualifiedType
 
 /**
  * @author artur

@@ -1,4 +1,4 @@
-package com.gitlab.artismarti.smartsmells.common
+package com.gitlab.artismarti.smartsmells.common.helper
 
 /**
  * Took the base line from spring roo project and extended it.

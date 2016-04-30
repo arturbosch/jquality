@@ -3,7 +3,7 @@ package com.gitlab.artismarti.smartsmells
 import com.gitlab.artismarti.smartsmells.comment.CommentDetector
 import com.gitlab.artismarti.smartsmells.common.Detector
 import com.gitlab.artismarti.smartsmells.complexmethod.ComplexMethodDetector
-import com.gitlab.artismarti.smartsmells.cycle.CompilationTree
+import com.gitlab.artismarti.smartsmells.common.CompilationTree
 import com.gitlab.artismarti.smartsmells.cycle.CycleDetector
 import com.gitlab.artismarti.smartsmells.deadcode.DeadCodeDetector
 import com.gitlab.artismarti.smartsmells.featureenvy.FeatureEnvyDetector

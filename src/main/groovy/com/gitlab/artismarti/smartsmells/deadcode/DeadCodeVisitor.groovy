@@ -7,8 +7,9 @@ import com.github.javaparser.ast.body.MethodDeclaration
 import com.github.javaparser.ast.body.Parameter
 import com.github.javaparser.ast.expr.*
 import com.github.javaparser.ast.stmt.*
-import com.gitlab.artismarti.smartsmells.common.BadSmellHelper
-import com.gitlab.artismarti.smartsmells.common.NodeHelper
+import com.gitlab.artismarti.smartsmells.common.helper.BadSmellHelper
+import com.gitlab.artismarti.smartsmells.common.helper.LocaleVariableHelper
+import com.gitlab.artismarti.smartsmells.common.helper.NodeHelper
 import com.gitlab.artismarti.smartsmells.common.Visitor
 import com.gitlab.artismarti.smartsmells.common.source.SourcePath
 

@@ -19,7 +19,7 @@ class FieldAccessVisitor extends VoidVisitorAdapter<Set<String>> {
 	@Override
 	void visit(MethodCallExpr n, Set<String> arg) {
 		Optional.ofNullable(n.scope)
-				.ifPresent({ fieldNames.add(n.scope.toStringWithoutComments()) })
+				.ifPresent { fieldNames.add(n.scope.toStringWithoutComments()) }
 	}
 
 	Set<String> getFieldNames() {

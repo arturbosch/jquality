@@ -1,4 +1,4 @@
-package com.gitlab.artismarti.smartsmells.common
+package com.gitlab.artismarti.smartsmells.common.helper
 
 import com.github.javaparser.ast.Node
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration

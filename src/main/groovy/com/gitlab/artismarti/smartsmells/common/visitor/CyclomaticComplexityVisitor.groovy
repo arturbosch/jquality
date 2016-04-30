@@ -1,9 +1,9 @@
-package com.gitlab.artismarti.smartsmells.complexmethod
+package com.gitlab.artismarti.smartsmells.common.visitor
 
 import com.github.javaparser.ast.expr.ConditionalExpr
 import com.github.javaparser.ast.stmt.*
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter
-import com.gitlab.artismarti.smartsmells.common.MethodHelper
+import com.gitlab.artismarti.smartsmells.common.helper.MethodHelper
 
 /**
  * Attention! You have to add one to McCabeComplexity

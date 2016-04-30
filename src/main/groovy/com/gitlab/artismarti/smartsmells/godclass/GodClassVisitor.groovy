@@ -5,9 +5,9 @@ import com.github.javaparser.ast.body.ConstructorDeclaration
 import com.github.javaparser.ast.body.MethodDeclaration
 import com.github.javaparser.ast.expr.FieldAccessExpr
 import com.github.javaparser.ast.expr.MethodCallExpr
-import com.gitlab.artismarti.smartsmells.common.MethodHelper
-import com.gitlab.artismarti.smartsmells.common.NodeHelper
-import com.gitlab.artismarti.smartsmells.common.BadSmellHelper
+import com.gitlab.artismarti.smartsmells.common.helper.MethodHelper
+import com.gitlab.artismarti.smartsmells.common.helper.NodeHelper
+import com.gitlab.artismarti.smartsmells.common.helper.BadSmellHelper
 import com.gitlab.artismarti.smartsmells.common.Visitor
 import com.gitlab.artismarti.smartsmells.common.source.SourcePath
 import com.gitlab.artismarti.smartsmells.common.source.SourcePosition

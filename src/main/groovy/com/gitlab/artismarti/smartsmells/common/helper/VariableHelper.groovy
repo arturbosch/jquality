@@ -1,9 +1,10 @@
-package com.gitlab.artismarti.smartsmells.common
+package com.gitlab.artismarti.smartsmells.common.helper
 
 import com.github.javaparser.ast.body.FieldDeclaration
 import com.github.javaparser.ast.body.Parameter
 import com.github.javaparser.ast.expr.NameExpr
 import com.github.javaparser.ast.expr.VariableDeclarationExpr
+import com.gitlab.artismarti.smartsmells.common.CustomVariableDeclaration
 
 import java.util.stream.Collectors
 

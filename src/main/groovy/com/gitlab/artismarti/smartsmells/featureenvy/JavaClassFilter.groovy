@@ -3,8 +3,8 @@ package com.gitlab.artismarti.smartsmells.featureenvy
 import com.github.javaparser.ast.ImportDeclaration
 import com.github.javaparser.ast.type.PrimitiveType
 import com.gitlab.artismarti.smartsmells.common.CustomVariableDeclaration
-import com.gitlab.artismarti.smartsmells.common.JdkHelper
-import com.gitlab.artismarti.smartsmells.common.TypeHelper
+import com.gitlab.artismarti.smartsmells.common.helper.JdkHelper
+import com.gitlab.artismarti.smartsmells.common.helper.TypeHelper
 
 import static java.util.stream.Collectors.toSet
 

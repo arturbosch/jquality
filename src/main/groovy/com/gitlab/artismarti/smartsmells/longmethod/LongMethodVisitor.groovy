@@ -2,7 +2,7 @@ package com.gitlab.artismarti.smartsmells.longmethod
 
 import com.github.javaparser.ast.body.BodyDeclaration
 import com.github.javaparser.ast.stmt.Statement
-import com.gitlab.artismarti.smartsmells.common.MethodMetricVisitor
+import com.gitlab.artismarti.smartsmells.common.visitor.MethodMetricVisitor
 
 import java.nio.file.Path
 /**

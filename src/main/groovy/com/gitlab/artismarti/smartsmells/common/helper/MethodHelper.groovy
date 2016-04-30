@@ -1,4 +1,4 @@
-package com.gitlab.artismarti.smartsmells.common
+package com.gitlab.artismarti.smartsmells.common.helper
 
 import com.github.javaparser.ast.Node
 import com.github.javaparser.ast.body.BodyDeclaration
@@ -10,7 +10,7 @@ import com.github.javaparser.ast.expr.NameExpr
 import com.github.javaparser.ast.stmt.ExpressionStmt
 import com.github.javaparser.ast.stmt.ReturnStmt
 import com.github.javaparser.ast.stmt.Statement
-import com.gitlab.artismarti.smartsmells.complexmethod.CyclomaticComplexityVisitor
+import com.gitlab.artismarti.smartsmells.common.visitor.CyclomaticComplexityVisitor
 import com.gitlab.artismarti.smartsmells.featureenvy.MethodInvocationCountVisitor
 
 /**

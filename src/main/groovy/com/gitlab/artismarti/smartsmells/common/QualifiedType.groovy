@@ -1,4 +1,4 @@
-package com.gitlab.artismarti.smartsmells.cycle
+package com.gitlab.artismarti.smartsmells.common
 
 import groovy.transform.ToString
 

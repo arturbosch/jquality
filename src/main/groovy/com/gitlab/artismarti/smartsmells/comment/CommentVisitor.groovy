@@ -3,7 +3,7 @@ package com.gitlab.artismarti.smartsmells.comment
 import com.github.javaparser.ast.body.MethodDeclaration
 import com.github.javaparser.ast.body.ModifierSet
 import com.github.javaparser.ast.comments.Comment
-import com.gitlab.artismarti.smartsmells.common.BadSmellHelper
+import com.gitlab.artismarti.smartsmells.common.helper.BadSmellHelper
 import com.gitlab.artismarti.smartsmells.common.Visitor
 import com.gitlab.artismarti.smartsmells.common.source.SourcePath
 

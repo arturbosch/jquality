@@ -1,11 +1,10 @@
-package com.gitlab.artismarti.smartsmells.cycle
+package com.gitlab.artismarti.smartsmells.common.helper
 
 import com.github.javaparser.ast.ImportDeclaration
 import com.github.javaparser.ast.PackageDeclaration
 import com.github.javaparser.ast.type.PrimitiveType
 import com.github.javaparser.ast.type.Type
-import com.gitlab.artismarti.smartsmells.common.JdkHelper
-import com.gitlab.artismarti.smartsmells.common.TypeHelper
+import com.gitlab.artismarti.smartsmells.common.QualifiedType
 
 /**
  * @author artur

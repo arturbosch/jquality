@@ -1,7 +1,5 @@
 package com.gitlab.artismarti.smartsmells.common
 
-import com.gitlab.artismarti.smartsmells.cycle.CompilationTree
-
 import java.nio.file.Files
 import java.nio.file.Path
 import java.util.function.BinaryOperator

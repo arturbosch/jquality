@@ -4,8 +4,11 @@ import com.github.javaparser.ast.CompilationUnit
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration
 import com.github.javaparser.ast.body.FieldDeclaration
 import com.github.javaparser.ast.type.ClassOrInterfaceType
-import com.gitlab.artismarti.smartsmells.common.BadSmellHelper
-import com.gitlab.artismarti.smartsmells.common.NodeHelper
+import com.gitlab.artismarti.smartsmells.common.helper.BadSmellHelper
+import com.gitlab.artismarti.smartsmells.common.CompilationTree
+import com.gitlab.artismarti.smartsmells.common.helper.NodeHelper
+import com.gitlab.artismarti.smartsmells.common.helper.PackageImportHelper
+import com.gitlab.artismarti.smartsmells.common.QualifiedType
 import com.gitlab.artismarti.smartsmells.common.Visitor
 import com.gitlab.artismarti.smartsmells.common.source.SourcePath
 

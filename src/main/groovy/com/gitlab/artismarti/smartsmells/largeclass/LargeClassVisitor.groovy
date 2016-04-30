@@ -1,7 +1,7 @@
 package com.gitlab.artismarti.smartsmells.largeclass
 
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration
-import com.gitlab.artismarti.smartsmells.common.BadSmellHelper
+import com.gitlab.artismarti.smartsmells.common.helper.BadSmellHelper
 import com.gitlab.artismarti.smartsmells.common.Visitor
 import com.gitlab.artismarti.smartsmells.common.source.SourcePath
 
