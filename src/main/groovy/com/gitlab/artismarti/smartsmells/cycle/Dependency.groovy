@@ -3,13 +3,10 @@ package com.gitlab.artismarti.smartsmells.cycle
 import com.gitlab.artismarti.smartsmells.common.source.SourcePath
 import com.gitlab.artismarti.smartsmells.common.source.SourceRange
 import groovy.transform.Immutable
-import groovy.transform.ToString
-
 /**
  * @author artur
  */
 @Immutable
-@ToString(includeNames = false, includePackage = false)
 class Dependency {
 
 	String entityName
@@ -19,4 +16,14 @@ class Dependency {
 	SourcePath sourcePath
 	@Delegate
 	SourceRange sourceRange
+
+	static Dependency of(String entityName, String entitySignature, SourcePath sourcePath, SourceRange sourceRange) {
+		return new Dependency(entityName, entitySignature, sourcePath, sourceRange)
+	}
+
+	@Override
+	public String toString() {
+		return "{$entityName, $entitySignature, $sourcePath, $sourceRange}"
+	}
+
 }

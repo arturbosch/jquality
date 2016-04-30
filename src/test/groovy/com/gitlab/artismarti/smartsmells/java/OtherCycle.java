@@ -4,14 +4,13 @@ package com.gitlab.artismarti.smartsmells.java;
  * @author artur
  */
 @SuppressWarnings("ALL")
-class CycleDummy {
-	OtherCycle meCycle = new OtherCycle();
+class OtherCycle {
+	CycleDummy cycleDummy = new CycleDummy();
 
 	public void compute() {
-		meCycle.cycleDummy.meah();
+		cycleDummy.meCycle.meah();
 	}
 
 	private void meah() {
 	}
-
 }

@@ -37,4 +37,10 @@ class QualifiedType {
 		return typeToken == TypeToken.REFERENCE
 	}
 
+	String shortName() {
+		def index = name.lastIndexOf("\\.")
+		if (index == -1)
+			return name
+		return name.substring(index)
+	}
 }

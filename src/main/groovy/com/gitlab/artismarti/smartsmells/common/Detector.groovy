@@ -13,6 +13,8 @@ import java.util.stream.Collectors
  */
 abstract class Detector<T> {
 
+	protected Path startPath
+
 	/**
 	 * Binary operator combines two lists into one.
 	 */
@@ -31,6 +33,7 @@ abstract class Detector<T> {
 	 * @return list of comment smells
 	 */
 	List<T> run(Path startPath) {
+		this.startPath = startPath
 		return Files.walk(startPath)
 				.filter({ it.fileName.toString().endsWith("java") })
 				.map({ execute(it) })
@@ -40,6 +43,7 @@ abstract class Detector<T> {
 	protected List<T> execute(Path path) {
 		def fis = Files.newInputStream(path)
 		def visitor = getVisitor(path)
+		visitor.startPath = startPath
 		IOGroovyMethods.withCloseable(fis) {
 			def unit = JavaParser.parse(fis)
 			visitor.visit(unit, null)

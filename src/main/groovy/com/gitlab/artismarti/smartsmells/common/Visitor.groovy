@@ -9,6 +9,7 @@ import java.nio.file.Path
  */
 abstract class Visitor<T> extends VoidVisitorAdapter<Object> {
 
+	protected Path startPath
 	protected Path path
 
 	private List<T> smells = new ArrayList<>()
