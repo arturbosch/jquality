@@ -13,4 +13,14 @@ class Cycle {
 	Dependency source
 	Dependency target
 
+	@Override
+	boolean equals(Object obj) {
+		if (this == obj) return true
+		if (obj instanceof Cycle) {
+			return (source.equals(obj.source) && target.equals(obj.target)) ||
+					(source.equals(obj.target) && target.equals(obj.source))
+		}
+		return false
+	}
+
 }
