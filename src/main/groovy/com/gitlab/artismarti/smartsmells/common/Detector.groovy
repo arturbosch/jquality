@@ -10,11 +10,10 @@ import java.util.stream.Collectors
  */
 abstract class Detector<T> {
 
-	protected Path startPath
-	Deque<T> smells = new ArrayDeque<>(100)
+	private Deque<T> smells = new ArrayDeque<>(100)
 
 	/**
-	 * Binary operator combines two lists into one.
+	 * Binary operator combines two sets into one.
 	 */
 	static def op = new BinaryOperator<Set<T>>() {
 		@Override
@@ -26,18 +25,26 @@ abstract class Detector<T> {
 	}
 
 	/**
-	 * Walks from the given base path down all dirs and analyzes java source files.
-	 * @param startPath project path
-	 * @return list of comment smells
+	 * Attention!!! Only use this method if running this detector in single mode.
+	 *
+	 * Walks from the given base path down all directories and analyzes java source files.
+	 *
+	 * @param startPath start path of analyzing project
+	 * @return set of smells
 	 */
 	Set<T> run(Path startPath) {
-		this.startPath = startPath
 		return Files.walk(startPath)
 				.filter({ it.fileName.toString().endsWith("java") })
 				.map({ execute(it) })
 				.collect(Collectors.reducing(new HashSet(), op))
 	}
 
+	/**
+	 * This method is called from detector facade which handles all paths.
+	 *
+	 * @param path current file path
+	 * @return smells of current analyzed file
+	 */
 	Set<T> execute(Path path) {
 		def visitor = getVisitor(path)
 		def unit = CompilationTree.getCompilationUnit(path)
@@ -46,6 +53,15 @@ abstract class Detector<T> {
 		return visitor.smells
 	}
 
+	/**
+	 * All subclasses must specify visitor.
+	 *
+	 * @param path of current file
+	 * @return visitor for specific smell
+	 */
 	protected abstract Visitor getVisitor(Path path)
 
+	Deque<T> getSmells() {
+		return smells
+	}
 }

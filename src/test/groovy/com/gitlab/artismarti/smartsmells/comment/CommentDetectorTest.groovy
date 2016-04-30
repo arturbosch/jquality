@@ -9,7 +9,6 @@ import spock.lang.Specification
 class CommentDetectorTest extends Specification {
 
 	void "three comments detected"() {
-		smells.each { println it.toString() }
 		expect:
 		smells.size() == 3
 		!smells.getAt(0).type.isEmpty()

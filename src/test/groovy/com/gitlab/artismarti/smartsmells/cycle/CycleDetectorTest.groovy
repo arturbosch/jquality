@@ -6,18 +6,18 @@ import com.gitlab.artismarti.smartsmells.common.source.SourceRange
 import spock.lang.Specification
 
 import java.nio.file.Paths
-
 /**
  * @author artur
  */
 class CycleDetectorTest extends Specification {
 
 	def "find one cycle"() {
+
 		expect:
 		smells.size() == 1
 
 		where:
-		smells = new CycleDetector().run(Test.PATH)
+		smells = new CycleDetector(Test.PATH).run(Test.PATH)
 	}
 
 	def "cycles are equals, dependency position doesnt matter"() {

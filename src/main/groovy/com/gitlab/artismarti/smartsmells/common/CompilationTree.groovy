@@ -30,10 +30,6 @@ class CompilationTree {
 		return unit
 	}
 
-	static def putUnit(Path path, CompilationUnit unit) {
-		cache.putPair(path, unit)
-	}
-
 	static def registerRoot(Path path) {
 		root = path
 	}
