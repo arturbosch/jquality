@@ -3,8 +3,8 @@ package com.gitlab.artismarti.smartsmells.dataclass
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration
 import com.gitlab.artismarti.smartsmells.common.BadSmellHelper
 import com.gitlab.artismarti.smartsmells.common.Visitor
-import com.gitlab.artismarti.smartsmells.domain.SourcePath
-import com.gitlab.artismarti.smartsmells.domain.SourceRange
+import com.gitlab.artismarti.smartsmells.common.source.SourcePath
+import com.gitlab.artismarti.smartsmells.common.source.SourceRange
 
 import java.nio.file.Path
 

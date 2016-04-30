@@ -70,8 +70,6 @@ class DetectorFacade {
 		println "MiddleMan: " + mm.get().stream().count()
 		println "FeatureEnvy: " + fe.get().stream().count()
 
-		println fe.get().each { println it.toString() }
-
 	}
 
 	private static ArrayList handle() {

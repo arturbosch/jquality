@@ -1,4 +1,4 @@
-package com.gitlab.artismarti.smartsmells.domain
+package com.gitlab.artismarti.smartsmells.common.source
 
 import groovy.transform.Immutable
 import groovy.transform.ToString

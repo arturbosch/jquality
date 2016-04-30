@@ -4,7 +4,7 @@ import com.github.javaparser.ast.body.VariableDeclaratorId
 import com.github.javaparser.ast.expr.AnnotationExpr
 import com.github.javaparser.ast.expr.Expression
 import com.github.javaparser.ast.type.Type
-import com.gitlab.artismarti.smartsmells.domain.SourceRange
+import com.gitlab.artismarti.smartsmells.common.source.SourceRange
 import groovy.transform.ToString
 
 /**

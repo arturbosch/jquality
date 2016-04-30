@@ -9,9 +9,9 @@ import com.gitlab.artismarti.smartsmells.common.MethodHelper
 import com.gitlab.artismarti.smartsmells.common.NodeHelper
 import com.gitlab.artismarti.smartsmells.common.BadSmellHelper
 import com.gitlab.artismarti.smartsmells.common.Visitor
-import com.gitlab.artismarti.smartsmells.domain.SourcePath
-import com.gitlab.artismarti.smartsmells.domain.SourcePosition
-import com.gitlab.artismarti.smartsmells.domain.SourceRange
+import com.gitlab.artismarti.smartsmells.common.source.SourcePath
+import com.gitlab.artismarti.smartsmells.common.source.SourcePosition
+import com.gitlab.artismarti.smartsmells.common.source.SourceRange
 
 import java.nio.file.Path
 

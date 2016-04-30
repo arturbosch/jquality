@@ -5,8 +5,8 @@ import com.github.javaparser.ast.body.ConstructorDeclaration
 import com.github.javaparser.ast.body.MethodDeclaration
 import com.github.javaparser.ast.stmt.BlockStmt
 import com.github.javaparser.ast.stmt.Statement
-import com.gitlab.artismarti.smartsmells.domain.SourcePath
-import com.gitlab.artismarti.smartsmells.domain.SourceRange
+import com.gitlab.artismarti.smartsmells.common.source.SourcePath
+import com.gitlab.artismarti.smartsmells.common.source.SourceRange
 import com.gitlab.artismarti.smartsmells.longmethod.LongMethod
 
 import java.nio.file.Path

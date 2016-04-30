@@ -1,7 +1,7 @@
 package com.gitlab.artismarti.smartsmells.godclass
 
-import com.gitlab.artismarti.smartsmells.domain.SourcePath
-import com.gitlab.artismarti.smartsmells.domain.SourceRange
+import com.gitlab.artismarti.smartsmells.common.source.SourcePath
+import com.gitlab.artismarti.smartsmells.common.source.SourceRange
 import groovy.transform.Immutable
 import groovy.transform.ToString
 

@@ -7,7 +7,7 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration
 import com.github.javaparser.ast.body.MethodDeclaration
 import com.gitlab.artismarti.smartsmells.common.*
 import com.gitlab.artismarti.smartsmells.deadcode.LocaleVariableHelper
-import com.gitlab.artismarti.smartsmells.domain.SourcePath
+import com.gitlab.artismarti.smartsmells.common.source.SourcePath
 
 import java.nio.file.Path
 

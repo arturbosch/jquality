@@ -10,7 +10,7 @@ import com.github.javaparser.ast.stmt.*
 import com.gitlab.artismarti.smartsmells.common.BadSmellHelper
 import com.gitlab.artismarti.smartsmells.common.NodeHelper
 import com.gitlab.artismarti.smartsmells.common.Visitor
-import com.gitlab.artismarti.smartsmells.domain.SourcePath
+import com.gitlab.artismarti.smartsmells.common.source.SourcePath
 
 import java.nio.file.Path
 

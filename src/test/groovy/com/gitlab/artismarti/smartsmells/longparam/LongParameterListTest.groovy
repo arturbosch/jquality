@@ -1,8 +1,8 @@
 package com.gitlab.artismarti.smartsmells.longparam
 
 import com.gitlab.artismarti.smartsmells.common.Test
-import com.gitlab.artismarti.smartsmells.domain.SourcePath
-import com.gitlab.artismarti.smartsmells.domain.SourceRange
+import com.gitlab.artismarti.smartsmells.common.source.SourcePath
+import com.gitlab.artismarti.smartsmells.common.source.SourceRange
 import com.gitlab.artismarti.smartsmells.longmethod.LongMethod
 import spock.lang.Specification
 

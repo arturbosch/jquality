@@ -4,7 +4,7 @@ import com.github.javaparser.ast.CompilationUnit
 import com.github.javaparser.ast.expr.MethodCallExpr
 import com.gitlab.artismarti.smartsmells.common.BadSmellHelper
 import com.gitlab.artismarti.smartsmells.common.Visitor
-import com.gitlab.artismarti.smartsmells.domain.SourcePath
+import com.gitlab.artismarti.smartsmells.common.source.SourcePath
 
 import java.nio.file.Path
 import java.util.stream.Collectors

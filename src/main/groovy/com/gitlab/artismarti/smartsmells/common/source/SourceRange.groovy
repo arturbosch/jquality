@@ -1,4 +1,4 @@
-package com.gitlab.artismarti.smartsmells.domain
+package com.gitlab.artismarti.smartsmells.common.source
 /**
  * A source range is a tuple of source positions and represent a range inside a file.
  *

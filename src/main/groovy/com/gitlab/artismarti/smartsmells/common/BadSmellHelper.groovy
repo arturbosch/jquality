@@ -2,7 +2,7 @@ package com.gitlab.artismarti.smartsmells.common
 
 import com.github.javaparser.ast.Node
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration
-import com.gitlab.artismarti.smartsmells.domain.SourceRange
+import com.gitlab.artismarti.smartsmells.common.source.SourceRange
 
 /**
  * @author artur

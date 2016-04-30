@@ -1,4 +1,4 @@
-package com.gitlab.artismarti.smartsmells.domain
+package com.gitlab.artismarti.smartsmells.common.source
 
 /**
  * A source position is a tuple of line to column and represent a position inside a file.
