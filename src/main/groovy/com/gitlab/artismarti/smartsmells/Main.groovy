@@ -20,17 +20,11 @@ class Main {
 //		def path = Paths.get("/home/artur/Arbeit/pooka-co/trunk/pooka/src")
 //		def path = Paths.get("/home/artur/Arbeit/tools/ismell/src")
 
-//		(0..10).each { syncTest(path) }
-//		println()
 		(0..10).each { asyncTest(path) }
-//		(0..10).each { println "\n Async Duration: " + benchmark { DetectorFacade.run(path) } / 1000 }
 	}
 
 	static asyncTest(Path path) {
 		println "\n Async Duration: " + benchmark { DetectorFacade.run(path) } / 1000
 	}
 
-	static syncTest(Path path) {
-		println "\n Sync Duration: " + benchmark { DetectorFacade.syncStart(path) } / 1000
-	}
 }
