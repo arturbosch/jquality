@@ -13,10 +13,10 @@ import java.nio.file.Path
  */
 class CompilationTree {
 
-	static Map<String, Path> qualifiedNameToPathCache = new HashMap<>()
-	static Cache<Path, CompilationUnit> cache = new Cache<Path, CompilationUnit>() {}
+	private static Map<String, Path> qualifiedNameToPathCache = new HashMap<>()
+	private static Cache<Path, CompilationUnit> cache = new Cache<Path, CompilationUnit>() {}
 
-	static Path root
+	private static Path root
 
 	private static Optional<CompilationUnit> getUnit(Path path) {
 		return Optional.ofNullable(cache.verifyAndReturn(path))

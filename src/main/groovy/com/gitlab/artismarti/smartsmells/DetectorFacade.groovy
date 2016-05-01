@@ -23,14 +23,14 @@ import java.util.concurrent.CompletableFuture
  */
 class DetectorFacade {
 
+	static def detectors = [new GodClassDetector(), new ComplexMethodDetector(), new CommentDetector(),
+	                        new LongMethodDetector(15), new LongParameterListDetector(), new DeadCodeDetector(),
+	                        new LargeClassDetector(), new MessageChainDetector(), new MiddleManDetector(),
+	                        new FeatureEnvyDetector(), new CycleDetector()]
+
 	static def run(Path startPath) {
 
 		CompilationTree.registerRoot(startPath)
-
-		def detectors = [new GodClassDetector(), new ComplexMethodDetector(), new CommentDetector(),
-		                 new LongMethodDetector(15), new LongParameterListDetector(), new DeadCodeDetector(),
-		                 new LargeClassDetector(), new MessageChainDetector(), new MiddleManDetector(),
-		                 new FeatureEnvyDetector(), new CycleDetector()]
 
 		Files.walk(startPath)
 				.filter { it.fileName.toString().endsWith("java") }
