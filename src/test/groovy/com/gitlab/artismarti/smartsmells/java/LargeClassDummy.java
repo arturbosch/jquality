@@ -3,6 +3,7 @@ package com.gitlab.artismarti.smartsmells.java;
 /**
  * @author artur
  */
+@SuppressWarnings("ALL")
 public class LargeClassDummy {
 
 	public void largeMethod() {

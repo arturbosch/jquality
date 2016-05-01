@@ -20,7 +20,7 @@ class CycleDetectorTest extends Specification {
 		smells = new CycleDetector(Test.PATH).run(Test.PATH)
 	}
 
-	def "cycles are equals, dependency position doesnt matter"() {
+	def "cycles are equals, dependency position doesn't matter"() {
 
 		expect:
 		cycle == cycle2

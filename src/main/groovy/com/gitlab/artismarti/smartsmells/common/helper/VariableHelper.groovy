@@ -15,16 +15,16 @@ class VariableHelper {
 
 	static Set<CustomVariableDeclaration> toCustomVariableDeclarations(Set<VariableDeclarationExpr> declarations) {
 		return declarations.stream().map {
-			decl ->
-				decl.vars.collect {
+			declaration ->
+				declaration.vars.collect {
 					new CustomVariableDeclaration(
 							it.beginLine,
 							it.beginColumn,
 							it.endLine,
 							it.endColumn,
-							decl.modifiers,
-							decl.annotations,
-							decl.type,
+							declaration.modifiers,
+							declaration.annotations,
+							declaration.type,
 							it.id,
 							it.init)
 				}
