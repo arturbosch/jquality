@@ -13,7 +13,7 @@ import java.nio.file.Path
  */
 class CompilationTree {
 
-	private static Map<String, Path> qualifiedNameToPathCache = new HashMap<>()
+	private static Cache<String, Path> qualifiedNameToPathCache = new Cache<String, Path>() {}
 	private static Cache<Path, CompilationUnit> cache = new Cache<Path, CompilationUnit>() {}
 
 	private static Path root
@@ -36,7 +36,7 @@ class CompilationTree {
 
 	static Optional<Path> findReferencedType(QualifiedType qualifiedType) {
 
-		def maybePath = Optional.ofNullable(qualifiedNameToPathCache.get(qualifiedType.name))
+		def maybePath = Optional.ofNullable(qualifiedNameToPathCache.verifyAndReturn(qualifiedType.name))
 
 		if (maybePath.isPresent()) {
 			return maybePath
@@ -48,7 +48,7 @@ class CompilationTree {
 					.findFirst()
 					.map { it.toAbsolutePath().normalize() }
 
-			pathToQualifier.ifPresent { qualifiedNameToPathCache.put(qualifiedType.name, it) }
+			pathToQualifier.ifPresent { qualifiedNameToPathCache.putPair(qualifiedType.name, it) }
 
 			return pathToQualifier
 		}

@@ -8,6 +8,10 @@ import java.nio.file.Paths
  */
 class Test {
 	static Path PATH = Paths.get("./src/test/groovy")
+	static Path DATA_CLASS_DUMMY_PATH =
+			Paths.get("./src/test/groovy/com/gitlab/artismarti/smartsmells/java/DataClassDummy.java")
+	static Path EMPTY_DATA_CLASS_DUMMY_PATH =
+			Paths.get("./src/test/groovy/com/gitlab/artismarti/smartsmells/java/EmptyDataClassDummy.java")
 	static Path COMPLEX_METHOD_DUMMY_PATH =
 			Paths.get("./src/test/groovy/com/gitlab/artismarti/smartsmells/java/ComplexMethodDummy.java")
 	static Path LONG_METHOD_DUMMY_PATH =
