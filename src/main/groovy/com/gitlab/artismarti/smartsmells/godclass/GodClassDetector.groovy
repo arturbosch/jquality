@@ -2,6 +2,7 @@ package com.gitlab.artismarti.smartsmells.godclass
 
 import com.gitlab.artismarti.smartsmells.common.Defaults
 import com.gitlab.artismarti.smartsmells.common.Detector
+import com.gitlab.artismarti.smartsmells.common.Smell
 import com.gitlab.artismarti.smartsmells.common.Visitor
 
 import java.nio.file.Path
@@ -28,5 +29,10 @@ class GodClassDetector extends Detector<GodClass> {
 	@Override
 	protected Visitor getVisitor(Path path) {
 		return new GodClassVisitor(atfdThreshold, wmcThreshold, tccThreshold, path)
+	}
+
+	@Override
+	protected Smell getType() {
+		return Smell.GOD_CLASS
 	}
 }

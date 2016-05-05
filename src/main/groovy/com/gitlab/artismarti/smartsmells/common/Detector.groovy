@@ -8,8 +8,9 @@ import java.util.stream.Collectors
 /**
  * @author artur
  */
-abstract class Detector<T> {
+abstract class Detector<T extends Smelly> {
 
+	protected Smell type = getType()
 	private Deque<T> smells = new ArrayDeque<>(100)
 
 	/**
@@ -60,6 +61,8 @@ abstract class Detector<T> {
 	 * @return visitor for specific smell
 	 */
 	protected abstract Visitor getVisitor(Path path)
+
+	protected abstract Smell getType()
 
 	Deque<T> getSmells() {
 		return smells

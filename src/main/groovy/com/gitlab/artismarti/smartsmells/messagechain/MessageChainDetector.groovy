@@ -2,6 +2,7 @@ package com.gitlab.artismarti.smartsmells.messagechain
 
 import com.gitlab.artismarti.smartsmells.common.Defaults
 import com.gitlab.artismarti.smartsmells.common.Detector
+import com.gitlab.artismarti.smartsmells.common.Smell
 import com.gitlab.artismarti.smartsmells.common.Visitor
 
 import java.nio.file.Path
@@ -20,5 +21,10 @@ class MessageChainDetector extends Detector<MessageChain> {
 	@Override
 	protected Visitor getVisitor(Path path) {
 		return new MessageChainVisitor(path, chainSizeThreshold)
+	}
+
+	@Override
+	protected Smell getType() {
+		return Smell.MESSAGE_CHAIN
 	}
 }

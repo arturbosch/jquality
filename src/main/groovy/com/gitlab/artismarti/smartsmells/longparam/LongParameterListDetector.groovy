@@ -2,6 +2,7 @@ package com.gitlab.artismarti.smartsmells.longparam
 
 import com.gitlab.artismarti.smartsmells.common.Defaults
 import com.gitlab.artismarti.smartsmells.common.Detector
+import com.gitlab.artismarti.smartsmells.common.Smell
 import com.gitlab.artismarti.smartsmells.common.Visitor
 
 import java.nio.file.Path
@@ -20,5 +21,10 @@ class LongParameterListDetector extends Detector<LongParameterList> {
 	@Override
 	protected Visitor getVisitor(Path path) {
 		new LongParameterListVisitor(threshold, path)
+	}
+
+	@Override
+	protected Smell getType() {
+		return Smell.LONG_PARAM
 	}
 }

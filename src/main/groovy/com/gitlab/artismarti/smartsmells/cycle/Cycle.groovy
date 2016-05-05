@@ -1,12 +1,13 @@
 package com.gitlab.artismarti.smartsmells.cycle
 
+import com.gitlab.artismarti.smartsmells.common.Smelly
 import groovy.transform.ToString
 
 /**
  * @author artur
  */
 @ToString(includeNames = false, includePackage = false)
-class Cycle {
+class Cycle implements Smelly {
 
 	Dependency source
 	Dependency target

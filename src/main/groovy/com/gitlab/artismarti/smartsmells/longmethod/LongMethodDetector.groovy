@@ -2,6 +2,7 @@ package com.gitlab.artismarti.smartsmells.longmethod
 
 import com.gitlab.artismarti.smartsmells.common.Defaults
 import com.gitlab.artismarti.smartsmells.common.Detector
+import com.gitlab.artismarti.smartsmells.common.Smell
 import com.gitlab.artismarti.smartsmells.common.Visitor
 
 import java.nio.file.Path
@@ -22,4 +23,8 @@ class LongMethodDetector extends Detector<LongMethod> {
 		new LongMethodVisitor(threshold, path)
 	}
 
+	@Override
+	protected Smell getType() {
+		return Smell.LONG_METHOD
+	}
 }

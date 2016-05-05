@@ -1,6 +1,7 @@
 package com.gitlab.artismarti.smartsmells.comment
 
 import com.gitlab.artismarti.smartsmells.common.Detector
+import com.gitlab.artismarti.smartsmells.common.Smell
 
 import java.nio.file.Path
 
@@ -15,5 +16,10 @@ class CommentDetector extends Detector<CommentSmell> {
 	@Override
 	protected CommentVisitor getVisitor(Path path) {
 		return new CommentVisitor(path)
+	}
+
+	@Override
+	protected Smell getType() {
+		return Smell.COMMENT
 	}
 }

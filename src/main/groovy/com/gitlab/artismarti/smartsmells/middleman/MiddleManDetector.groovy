@@ -1,6 +1,7 @@
 package com.gitlab.artismarti.smartsmells.middleman
 
 import com.gitlab.artismarti.smartsmells.common.Detector
+import com.gitlab.artismarti.smartsmells.common.Smell
 import com.gitlab.artismarti.smartsmells.common.Visitor
 
 import java.nio.file.Path
@@ -15,4 +16,8 @@ class MiddleManDetector extends Detector<MiddleMan> {
 		return new MiddleManVisitor(path)
 	}
 
+	@Override
+	protected Smell getType() {
+		return Smell.MIDDLE_MAN
+	}
 }

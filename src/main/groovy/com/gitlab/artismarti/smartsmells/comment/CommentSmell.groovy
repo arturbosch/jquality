@@ -1,5 +1,6 @@
 package com.gitlab.artismarti.smartsmells.comment
 
+import com.gitlab.artismarti.smartsmells.common.Smelly
 import com.gitlab.artismarti.smartsmells.common.source.SourcePath
 import com.gitlab.artismarti.smartsmells.common.source.SourceRange
 import groovy.transform.Immutable
@@ -12,7 +13,7 @@ import groovy.transform.Immutable
  * @author artur
  */
 @Immutable
-class CommentSmell {
+class CommentSmell implements Smelly {
 
 	static String ORPHAN = "ORPHAN"
 	static String PRIVATE = "PRIVATE"

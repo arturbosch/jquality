@@ -16,7 +16,8 @@ class Main {
 	}
 
 	static void main(String... args) {
-		def path = Paths.get("/home/artur/Repos/quide/Implementierung/QuideService/src")
+//		def path = Paths.get("/home/artur/Repos/quide/Implementierung/QuideService/src")
+		def path = Paths.get("/home/artur/Repos/ollijasmus/ManagePSP")
 //		def path = Paths.get("/home/artur/Arbeit/pooka-co/trunk/pooka/src")
 //		def path = Paths.get("/home/artur/Arbeit/tools/ismell/src")
 
@@ -24,7 +25,7 @@ class Main {
 	}
 
 	static asyncTest(Path path) {
-		println "\n Async Duration: " + benchmark { DetectorFacade.run(path) } / 1000
+		println "\n Async Duration: " + benchmark { DetectorFacade.builder().fullStackFacade().run(path) } / 1000
 	}
 
 }

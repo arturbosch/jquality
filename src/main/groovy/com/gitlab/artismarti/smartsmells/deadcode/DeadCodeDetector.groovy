@@ -2,6 +2,7 @@ package com.gitlab.artismarti.smartsmells.deadcode
 
 import com.gitlab.artismarti.smartsmells.common.Defaults
 import com.gitlab.artismarti.smartsmells.common.Detector
+import com.gitlab.artismarti.smartsmells.common.Smell
 import com.gitlab.artismarti.smartsmells.common.Visitor
 
 import java.nio.file.Path
@@ -20,5 +21,10 @@ class DeadCodeDetector extends Detector<DeadCode> {
 	@Override
 	protected Visitor getVisitor(Path path) {
 		return new DeadCodeVisitor(path, onlyPrivate)
+	}
+
+	@Override
+	protected Smell getType() {
+		return Smell.DEAD_CODE
 	}
 }

@@ -2,6 +2,7 @@ package com.gitlab.artismarti.smartsmells.featureenvy
 
 import com.gitlab.artismarti.smartsmells.common.Defaults
 import com.gitlab.artismarti.smartsmells.common.Detector
+import com.gitlab.artismarti.smartsmells.common.Smell
 import com.gitlab.artismarti.smartsmells.common.Visitor
 
 import java.nio.file.Path
@@ -22,4 +23,8 @@ class FeatureEnvyDetector extends Detector<FeatureEnvy> {
 		return new FeatureEnvyVisitor(path, threshold)
 	}
 
+	@Override
+	protected Smell getType() {
+		return Smell.FEATURE_ENVY
+	}
 }

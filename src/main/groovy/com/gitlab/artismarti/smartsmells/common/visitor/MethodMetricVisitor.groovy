@@ -5,6 +5,7 @@ import com.github.javaparser.ast.body.ConstructorDeclaration
 import com.github.javaparser.ast.body.MethodDeclaration
 import com.github.javaparser.ast.stmt.BlockStmt
 import com.github.javaparser.ast.stmt.Statement
+import com.gitlab.artismarti.smartsmells.common.Smelly
 import com.gitlab.artismarti.smartsmells.common.Visitor
 import com.gitlab.artismarti.smartsmells.common.source.SourcePath
 import com.gitlab.artismarti.smartsmells.common.source.SourceRange
@@ -15,7 +16,7 @@ import java.nio.file.Path
 /**
  * @author artur
  */
-abstract class MethodMetricVisitor<T> extends Visitor<T> {
+abstract class MethodMetricVisitor<T extends Smelly> extends Visitor<T> {
 
 	int threshold
 

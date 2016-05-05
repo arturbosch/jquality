@@ -2,6 +2,7 @@ package com.gitlab.artismarti.smartsmells.cycle
 
 import com.gitlab.artismarti.smartsmells.common.CompilationTree
 import com.gitlab.artismarti.smartsmells.common.Detector
+import com.gitlab.artismarti.smartsmells.common.Smell
 import com.gitlab.artismarti.smartsmells.common.Visitor
 
 import java.nio.file.Path
@@ -32,4 +33,8 @@ class CycleDetector extends Detector<Cycle> {
 		return new CycleVisitor(path)
 	}
 
+	@Override
+	protected Smell getType() {
+		return Smell.CYCLE
+	}
 }
