@@ -14,4 +14,14 @@ class CycleDummy {
 	private void meah() {
 	}
 
+	class OtherCycle {
+		CycleDummy cycleDummy = new CycleDummy();
+
+		public void compute() {
+			cycleDummy.meCycle.meah();
+		}
+
+		private void meah() {
+		}
+	}
 }

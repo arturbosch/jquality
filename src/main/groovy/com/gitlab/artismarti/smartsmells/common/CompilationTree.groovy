@@ -14,19 +14,19 @@ import java.nio.file.Path
 class CompilationTree {
 
 	private static Cache<String, Path> qualifiedNameToPathCache = new Cache<String, Path>() {}
-	private static Cache<Path, CompilationUnit> cache = new Cache<Path, CompilationUnit>() {}
+	private static Cache<Path, CompilationUnit> pathToCompilationUnitCache = new Cache<Path, CompilationUnit>() {}
 
 	private static Path root
 
 	private static Optional<CompilationUnit> getUnit(Path path) {
-		return Optional.ofNullable(cache.verifyAndReturn(path))
+		return Optional.ofNullable(pathToCompilationUnitCache.verifyAndReturn(path))
 	}
 
 	private static CompilationUnit compileFor(Path path) {
 		def unit = IOGroovyMethods.withCloseable(Files.newInputStream(path)) {
 			JavaParser.parse(it)
 		}
-		cache.putPair(path, unit)
+		pathToCompilationUnitCache.putPair(path, unit)
 		return unit
 	}
 
@@ -41,8 +41,9 @@ class CompilationTree {
 		if (maybePath.isPresent()) {
 			return maybePath
 		} else {
-			def search = "${qualifiedType.name.replaceAll("\\.", "/")}.java"
-
+			println "Before: " + qualifiedType.name
+			def search = qualifiedType.asStringPathToJavaFile()
+			println "Search: " + search
 			def pathToQualifier = Files.walk(root)
 					.filter { it.endsWith(search) }
 					.findFirst()

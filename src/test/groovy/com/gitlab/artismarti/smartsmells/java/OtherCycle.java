@@ -8,9 +8,7 @@ class OtherCycle {
 	CycleDummy cycleDummy = new CycleDummy();
 
 	public void compute() {
-		cycleDummy.meCycle.meah();
+		cycleDummy.meCycle.hashCode();
 	}
 
-	private void meah() {
-	}
 }

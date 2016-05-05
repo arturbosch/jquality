@@ -22,7 +22,6 @@ class PackageImportHelper {
 	}
 
 	QualifiedType getQualifiedType(Type type) {
-
 		if (type instanceof PrimitiveType) {
 			return new QualifiedType(type.type.toString(), QualifiedType.TypeToken.PRIMITIVE)
 		}
@@ -34,7 +33,7 @@ class PackageImportHelper {
 			if (realType.isBoxedType()) {
 				return new QualifiedType("java.lang." + realType.name, QualifiedType.TypeToken.BOXED_PRIMITIVE)
 			} else {
-				String name = realType.name
+				String name = realType.toString()
 				if (imports.entrySet().contains(name)) {
 					String qualifiedName = imports.get(name)
 					return new QualifiedType(qualifiedName, QualifiedType.TypeToken.REFERENCE)

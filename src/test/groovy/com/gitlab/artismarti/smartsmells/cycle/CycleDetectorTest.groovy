@@ -11,13 +11,13 @@ import java.nio.file.Paths
  */
 class CycleDetectorTest extends Specification {
 
-	def "find one cycle"() {
+	def "find two cycles, one as inner class, one as normal class"() {
 
 		expect:
-		smells.size() == 1
+		smells.size() == 2
 
 		where:
-		smells = new CycleDetector(Test.PATH).run(Test.PATH)
+		smells = new CycleDetector(Test.CYCLE_DUMMY_PATH).run(Test.CYCLE_DUMMY_PATH)
 	}
 
 	def "cycles are equals, dependency position doesn't matter"() {

@@ -56,8 +56,4 @@ class JavaClassFilter {
 		}
 		return true
 	}
-
-	static boolean isJavaObject(String s) {
-		return "Object".equals(s) || "String".equals(s)
-	}
 }

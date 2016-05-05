@@ -13,6 +13,7 @@ import com.gitlab.artismarti.smartsmells.common.Visitor
 import com.gitlab.artismarti.smartsmells.common.source.SourcePath
 
 import java.nio.file.Path
+
 /**
  * @author artur
  */
@@ -32,14 +33,23 @@ class CycleVisitor extends Visitor<Cycle> {
 
 	@Override
 	void visit(ClassOrInterfaceDeclaration n, Object arg) {
+		def unqualifiedName = n.name
+		if (n.parentNode instanceof ClassOrInterfaceDeclaration) {
+			def parentName = ((ClassOrInterfaceDeclaration) n.parentNode).name
+			unqualifiedName = "$parentName.$n.name"
+			println "Parent: " + parentName
+		}
 
-		def thisClassType = packageImportHelper.getQualifiedType(new ClassOrInterfaceType(n.name))
+		def thisClassType = packageImportHelper.getQualifiedType(new ClassOrInterfaceType(unqualifiedName))
 
+		println thisClassType
 		def fields = NodeHelper.findFields(n)
 
 		fields.each {
 
+			println it.type
 			def qualifiedType = packageImportHelper.getQualifiedType(it.type)
+			println qualifiedType
 			if (qualifiedType.isReference()) {
 
 				def maybeType = CompilationTree.findReferencedType(qualifiedType)
