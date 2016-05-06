@@ -1,5 +1,6 @@
 package com.gitlab.artismarti.smartsmells.cycle
 
+import com.gitlab.artismarti.smartsmells.common.CompilationTree
 import com.gitlab.artismarti.smartsmells.common.Test
 import com.gitlab.artismarti.smartsmells.common.source.SourcePath
 import com.gitlab.artismarti.smartsmells.common.source.SourceRange
@@ -11,17 +12,28 @@ import java.nio.file.Paths
  */
 class CycleDetectorTest extends Specification {
 
-	def "find two cycles, one as inner class, one as normal class"() {
+	def cleanup() {
+		CompilationTree.reset()
+	}
 
+	def "find one cycle in CycleDummy and OtherCycle, one as inner classes of CycleDummy"() {
 		expect:
 		smells.size() == 2
+
+		where:
+		smells = new CycleDetector(Test.PATH).run(Test.CYCLE_DUMMY_PATH)
+	}
+
+	def "find cycle in inner classes of CycleDummy"() {
+		expect:
+		println smells
+		smells.size() == 1
 
 		where:
 		smells = new CycleDetector(Test.CYCLE_DUMMY_PATH).run(Test.CYCLE_DUMMY_PATH)
 	}
 
 	def "cycles are equals, dependency position doesn't matter"() {
-
 		expect:
 		cycle == cycle2
 

@@ -19,7 +19,7 @@ class CommentDetector extends Detector<CommentSmell> {
 	}
 
 	@Override
-	protected Smell getType() {
+	Smell getType() {
 		return Smell.COMMENT
 	}
 }

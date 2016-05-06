@@ -24,7 +24,7 @@ class FeatureEnvyDetector extends Detector<FeatureEnvy> {
 	}
 
 	@Override
-	protected Smell getType() {
+	Smell getType() {
 		return Smell.FEATURE_ENVY
 	}
 }

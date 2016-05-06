@@ -24,7 +24,7 @@ class DeadCodeDetector extends Detector<DeadCode> {
 	}
 
 	@Override
-	protected Smell getType() {
+	Smell getType() {
 		return Smell.DEAD_CODE
 	}
 }

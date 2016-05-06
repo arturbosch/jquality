@@ -14,14 +14,12 @@ class CycleDummy {
 	private void meah() {
 	}
 
-	class OtherCycle {
-		CycleDummy cycleDummy = new CycleDummy();
+	class InnerCycleOne {
+		InnerCycleTwo cycleDummy = new InnerCycleTwo();
+	}
 
-		public void compute() {
-			cycleDummy.meCycle.meah();
-		}
-
-		private void meah() {
-		}
+	class InnerCycleTwo {
+		String maybe = "";
+		InnerCycleOne cycleOne = new InnerCycleOne();
 	}
 }

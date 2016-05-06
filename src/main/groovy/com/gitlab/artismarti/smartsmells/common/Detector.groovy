@@ -62,7 +62,7 @@ abstract class Detector<T extends Smelly> {
 	 */
 	protected abstract Visitor getVisitor(Path path)
 
-	protected abstract Smell getType()
+	abstract Smell getType()
 
 	Deque<T> getSmells() {
 		return smells

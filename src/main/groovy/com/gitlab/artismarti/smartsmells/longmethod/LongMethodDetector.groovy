@@ -24,7 +24,7 @@ class LongMethodDetector extends Detector<LongMethod> {
 	}
 
 	@Override
-	protected Smell getType() {
+	Smell getType() {
 		return Smell.LONG_METHOD
 	}
 }

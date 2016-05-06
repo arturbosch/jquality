@@ -23,7 +23,7 @@ class ComplexMethodDetector extends Detector<ComplexMethod> {
 	}
 
 	@Override
-	protected Smell getType() {
+	Smell getType() {
 		return Smell.COMPLEX_METHOD
 	}
 }

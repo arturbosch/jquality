@@ -24,7 +24,7 @@ class MessageChainDetector extends Detector<MessageChain> {
 	}
 
 	@Override
-	protected Smell getType() {
+	Smell getType() {
 		return Smell.MESSAGE_CHAIN
 	}
 }

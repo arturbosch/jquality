@@ -17,7 +17,7 @@ class DataClassDetector extends Detector<DataClass> {
 	}
 
 	@Override
-	protected Smell getType() {
+	Smell getType() {
 		return Smell.DATA_CLASS
 	}
 }

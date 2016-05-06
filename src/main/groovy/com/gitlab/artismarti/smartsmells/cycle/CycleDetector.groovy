@@ -34,7 +34,7 @@ class CycleDetector extends Detector<Cycle> {
 	}
 
 	@Override
-	protected Smell getType() {
+	Smell getType() {
 		return Smell.CYCLE
 	}
 }

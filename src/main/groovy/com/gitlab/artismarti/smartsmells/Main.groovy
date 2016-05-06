@@ -25,7 +25,11 @@ class Main {
 	}
 
 	static asyncTest(Path path) {
-		println "\n Async Duration: " + benchmark { DetectorFacade.builder().fullStackFacade().run(path) } / 1000
+		println "\n Async Duration: " + benchmark {
+			DetectorFacade.builder().fullStackFacade()
+					.run(path)
+					.prettyPrint()
+		} / 1000
 	}
 
 }

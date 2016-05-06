@@ -24,7 +24,7 @@ class LargeClassDetector extends Detector<LargeClass> {
 	}
 
 	@Override
-	protected Smell getType() {
+	Smell getType() {
 		return Smell.LARGE_CLASS
 	}
 }

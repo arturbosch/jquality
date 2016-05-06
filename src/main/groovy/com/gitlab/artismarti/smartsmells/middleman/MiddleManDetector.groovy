@@ -17,7 +17,7 @@ class MiddleManDetector extends Detector<MiddleMan> {
 	}
 
 	@Override
-	protected Smell getType() {
+	Smell getType() {
 		return Smell.MIDDLE_MAN
 	}
 }

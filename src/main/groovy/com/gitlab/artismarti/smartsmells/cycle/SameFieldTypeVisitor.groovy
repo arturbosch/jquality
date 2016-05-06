@@ -15,6 +15,7 @@ class SameFieldTypeVisitor extends VoidVisitorAdapter {
 
 	private QualifiedType searchedType
 	private PackageImportHelper packageImportHelper
+	private InnerClassesHandler innerClassesHandler
 
 	private boolean found
 	private Tuple2<QualifiedType, FieldDeclaration> foundFieldWithType
@@ -27,21 +28,27 @@ class SameFieldTypeVisitor extends VoidVisitorAdapter {
 	@Override
 	void visit(CompilationUnit n, Object arg) {
 		packageImportHelper = new PackageImportHelper(n.package, n.imports)
+		innerClassesHandler = new InnerClassesHandler(n)
 		super.visit(n, arg)
 	}
 
 	@Override
 	void visit(ClassOrInterfaceDeclaration n, Object arg) {
-		currentClass = packageImportHelper.getQualifiedType(new ClassOrInterfaceType(n.name))
+		String unqualifiedName = innerClassesHandler.appendOuterClassIfInnerClass(n)
+		currentClass = packageImportHelper.getQualifiedType(new ClassOrInterfaceType(unqualifiedName))
 		super.visit(n, arg)
 	}
 
 	@Override
 	void visit(FieldDeclaration n, Object arg) {
-		def qualifiedType = packageImportHelper.getQualifiedType(n.type)
-		if (qualifiedType.name.equals(searchedType.name)) {
-			foundFieldWithType = new Tuple2<>(currentClass, n)
-			found |= true
+		def unqualifiedFieldName = innerClassesHandler.getUnqualifiedNameForInnerClass(n.type)
+		def qualifiedType = packageImportHelper.getQualifiedType(new ClassOrInterfaceType(unqualifiedFieldName))
+
+		if (qualifiedType.isReference()) {
+			if (qualifiedType.name.equals(searchedType.name)) {
+				foundFieldWithType = new Tuple2<>(currentClass, n)
+				found |= true
+			}
 		}
 	}
 

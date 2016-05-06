@@ -19,4 +19,10 @@ class SmellResult {
 	Deque<Smelly> of(Smell smell) {
 		smellSets.getOrDefault(smell, new ArrayDeque<>())
 	}
+
+	def prettyPrint() {
+		smellSets.entrySet().each {
+			println "$it.key: ${it.value.size()}"
+		}
+	}
 }

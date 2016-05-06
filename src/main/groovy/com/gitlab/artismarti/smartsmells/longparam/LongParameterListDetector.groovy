@@ -24,7 +24,7 @@ class LongParameterListDetector extends Detector<LongParameterList> {
 	}
 
 	@Override
-	protected Smell getType() {
+	Smell getType() {
 		return Smell.LONG_PARAM
 	}
 }

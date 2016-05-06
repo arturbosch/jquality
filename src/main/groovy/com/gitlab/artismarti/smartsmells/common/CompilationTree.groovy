@@ -30,10 +30,6 @@ class CompilationTree {
 		return unit
 	}
 
-	static def registerRoot(Path path) {
-		root = path
-	}
-
 	static Optional<Path> findReferencedType(QualifiedType qualifiedType) {
 
 		def maybePath = Optional.ofNullable(qualifiedNameToPathCache.verifyAndReturn(qualifiedType.name))
@@ -41,9 +37,7 @@ class CompilationTree {
 		if (maybePath.isPresent()) {
 			return maybePath
 		} else {
-			println "Before: " + qualifiedType.name
 			def search = qualifiedType.asStringPathToJavaFile()
-			println "Search: " + search
 			def pathToQualifier = Files.walk(root)
 					.filter { it.endsWith(search) }
 					.findFirst()
@@ -65,5 +59,14 @@ class CompilationTree {
 			unit = compileFor(path)
 		}
 		unit
+	}
+
+	static def registerRoot(Path path) {
+		root = path
+	}
+
+	static def reset() {
+		qualifiedNameToPathCache.reset()
+		pathToCompilationUnitCache.reset()
 	}
 }

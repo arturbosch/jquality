@@ -2,6 +2,7 @@ package com.gitlab.artismarti.smartsmells.common.helper
 
 import com.github.javaparser.ASTHelper
 import com.github.javaparser.ast.Node
+import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration
 import com.github.javaparser.ast.body.FieldDeclaration
 import com.github.javaparser.ast.body.MethodDeclaration
 import com.github.javaparser.ast.body.ModifierSet
@@ -51,5 +52,12 @@ class NodeHelper {
 
 	static List<FieldDeclaration> findFields(Node n) {
 		ASTHelper.getNodesByType(n, FieldDeclaration.class)
+	}
+
+	static Set<String> findNamesOfInnerClasses(Node n) {
+		ASTHelper.getNodesByType(n, ClassOrInterfaceDeclaration.class).stream()
+				.filter { it.parentNode instanceof ClassOrInterfaceDeclaration }
+				.map { it.name }
+				.collect()
 	}
 }

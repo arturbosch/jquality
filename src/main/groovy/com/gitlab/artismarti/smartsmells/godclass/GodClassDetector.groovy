@@ -32,7 +32,7 @@ class GodClassDetector extends Detector<GodClass> {
 	}
 
 	@Override
-	protected Smell getType() {
+	Smell getType() {
 		return Smell.GOD_CLASS
 	}
 }

@@ -20,6 +20,7 @@ import java.nio.file.Path
 class CycleVisitor extends Visitor<Cycle> {
 
 	private PackageImportHelper packageImportHelper
+	private InnerClassesHandler innerClassesHandler
 
 	CycleVisitor(Path path) {
 		super(path)
@@ -28,30 +29,25 @@ class CycleVisitor extends Visitor<Cycle> {
 	@Override
 	void visit(CompilationUnit n, Object arg) {
 		packageImportHelper = new PackageImportHelper(n.package, n.imports)
+		innerClassesHandler = new InnerClassesHandler(n)
 		super.visit(n, arg)
 	}
 
 	@Override
 	void visit(ClassOrInterfaceDeclaration n, Object arg) {
-		def unqualifiedName = n.name
-		if (n.parentNode instanceof ClassOrInterfaceDeclaration) {
-			def parentName = ((ClassOrInterfaceDeclaration) n.parentNode).name
-			unqualifiedName = "$parentName.$n.name"
-			println "Parent: " + parentName
-		}
-
+		String unqualifiedName = innerClassesHandler.appendOuterClassIfInnerClass(n)
 		def thisClassType = packageImportHelper.getQualifiedType(new ClassOrInterfaceType(unqualifiedName))
 
-		println thisClassType
 		def fields = NodeHelper.findFields(n)
 
 		fields.each {
 
-			println it.type
 			def qualifiedType = packageImportHelper.getQualifiedType(it.type)
-			println qualifiedType
+
 			if (qualifiedType.isReference()) {
 
+				def unqualifiedFieldName = innerClassesHandler.getUnqualifiedNameForInnerClass(it.type)
+				qualifiedType = packageImportHelper.getQualifiedType(new ClassOrInterfaceType(unqualifiedFieldName))
 				def maybeType = CompilationTree.findReferencedType(qualifiedType)
 
 				if (maybeType.isPresent()) {
