@@ -8,6 +8,22 @@ repositories {
 	mavenLocal()
 }
 
+jar {
+	baseName = 'SmartSmells'
+	version = '1.0.M2'
+}
+
+task fatJar(type: Jar) {
+	manifest {
+		attributes 'Implementation-Title': 'SmartSmells',
+				'Implementation-Version': version,
+				'Main-Class': 'com.gitlab.artismarti.smartsmells.Main'
+	}
+	baseName = project.name
+	from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+	with jar
+}
+
 dependencies {
 	compile 'org.codehaus.groovy:groovy-all:2.4.6'
 	compile 'org.spockframework:spock-core:1.0-groovy-2.4'
