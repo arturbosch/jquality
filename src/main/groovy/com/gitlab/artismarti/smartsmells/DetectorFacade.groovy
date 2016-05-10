@@ -15,11 +15,11 @@ import com.gitlab.artismarti.smartsmells.longmethod.LongMethodDetector
 import com.gitlab.artismarti.smartsmells.longparam.LongParameterListDetector
 import com.gitlab.artismarti.smartsmells.messagechain.MessageChainDetector
 import com.gitlab.artismarti.smartsmells.middleman.MiddleManDetector
+import com.gitlab.artismarti.smartsmells.util.StreamCloser
 
 import java.nio.file.Files
 import java.nio.file.Path
 import java.util.concurrent.CompletableFuture
-
 /**
  * @author artur
  */
@@ -39,9 +39,10 @@ class DetectorFacade {
 
 		CompilationTree.registerRoot(startPath)
 
-		Files.walk(startPath)
-				.filter { it.fileName.toString().endsWith("java") }
+		def walker = Files.walk(startPath)
+		walker.filter { it.fileName.toString().endsWith("java") }
 				.forEach { internal(detectors, it) }
+		StreamCloser.quietly(walker)
 
 		new SmellResult(detectors.collectEntries { [it.type, it.smells] })
 	}

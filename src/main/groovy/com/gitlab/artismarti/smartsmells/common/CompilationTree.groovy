@@ -3,11 +3,11 @@ package com.gitlab.artismarti.smartsmells.common
 import com.github.javaparser.JavaParser
 import com.github.javaparser.ast.CompilationUnit
 import com.gitlab.artismarti.cache.Cache
+import com.gitlab.artismarti.smartsmells.util.StreamCloser
 import org.codehaus.groovy.runtime.IOGroovyMethods
 
 import java.nio.file.Files
 import java.nio.file.Path
-
 /**
  * @author artur
  */
@@ -38,10 +38,13 @@ class CompilationTree {
 			return maybePath
 		} else {
 			def search = qualifiedType.asStringPathToJavaFile()
-			def pathToQualifier = Files.walk(root)
+
+			def walker = Files.walk(root)
+			def pathToQualifier = walker
 					.filter { it.endsWith(search) }
 					.findFirst()
 					.map { it.toAbsolutePath().normalize() }
+			StreamCloser.quietly(walker)
 
 			pathToQualifier.ifPresent { qualifiedNameToPathCache.putPair(qualifiedType.name, it) }
 

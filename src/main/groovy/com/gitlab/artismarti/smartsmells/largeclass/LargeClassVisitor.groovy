@@ -4,6 +4,7 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration
 import com.gitlab.artismarti.smartsmells.common.helper.BadSmellHelper
 import com.gitlab.artismarti.smartsmells.common.Visitor
 import com.gitlab.artismarti.smartsmells.common.source.SourcePath
+import com.gitlab.artismarti.smartsmells.util.StreamCloser
 
 import java.nio.file.Files
 import java.nio.file.Path
@@ -27,14 +28,16 @@ class LargeClassVisitor extends Visitor<LargeClass> {
 
 		def sum
 		try {
-			sum = Files.lines(path)
+			def walker = Files.lines(path)
+			sum = walker
 					.filter { isNotEmpty(it) }
 					.filter { hasNotSizeOneWhichIndicatesBraces(it) }
 					.filter { isNoPackageDeclaration(it) }
 					.filter { isNoImportStatement(it) }
 					.filter { isNoComment(it) }
 					.count()
-		} catch (IOException ignored) {
+			StreamCloser.quietly(walker)
+		} catch (UncheckedIOException | IOException ignored) {
 			sum = calcSizeFromNode(n)
 		}
 
