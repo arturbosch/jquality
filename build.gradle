@@ -1,5 +1,5 @@
 group 'com.gitlab.artismarti.smartsmells'
-version 'M2'
+version 'M3'
 
 apply plugin: 'groovy'
 
@@ -10,7 +10,7 @@ repositories {
 
 jar {
 	baseName = 'SmartSmells'
-	version = '1.0.M2'
+	version = version
 }
 
 task fatJar(type: Jar) {
