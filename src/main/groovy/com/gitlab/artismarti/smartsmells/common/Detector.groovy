@@ -1,5 +1,6 @@
 package com.gitlab.artismarti.smartsmells.common
 
+import com.gitlab.artismarti.smartsmells.config.Smell
 import com.gitlab.artismarti.smartsmells.util.StreamCloser
 
 import java.nio.file.Files

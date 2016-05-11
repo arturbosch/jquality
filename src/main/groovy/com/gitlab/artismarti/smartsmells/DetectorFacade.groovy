@@ -36,7 +36,7 @@ class DetectorFacade {
 	}
 
 //	static def fromConfig(final DetectorConfig config) {
-//		return new DetectorFacade(DetectorInitializer.init(config));
+//		return new DetectorFacade(DetectorInitializer.initialize(config));
 //	}
 
 	def run(Path startPath) {

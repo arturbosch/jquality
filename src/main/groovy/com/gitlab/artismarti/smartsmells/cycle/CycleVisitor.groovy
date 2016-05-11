@@ -8,7 +8,7 @@ import com.gitlab.artismarti.smartsmells.common.helper.BadSmellHelper
 import com.gitlab.artismarti.smartsmells.common.CompilationTree
 import com.gitlab.artismarti.smartsmells.common.helper.NodeHelper
 import com.gitlab.artismarti.smartsmells.common.helper.PackageImportHelper
-import com.gitlab.artismarti.smartsmells.common.helper.PackageImportHolder
+import com.gitlab.artismarti.smartsmells.common.PackageImportHolder
 import com.gitlab.artismarti.smartsmells.common.QualifiedType
 import com.gitlab.artismarti.smartsmells.common.Visitor
 import com.gitlab.artismarti.smartsmells.common.source.SourcePath

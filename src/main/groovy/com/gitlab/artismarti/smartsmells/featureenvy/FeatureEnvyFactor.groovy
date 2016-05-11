@@ -1,6 +1,6 @@
 package com.gitlab.artismarti.smartsmells.featureenvy
 
-import com.gitlab.artismarti.smartsmells.common.Defaults
+import com.gitlab.artismarti.smartsmells.config.Defaults
 import groovy.transform.Immutable
 
 /**

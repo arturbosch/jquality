@@ -2,6 +2,7 @@ package com.gitlab.artismarti.smartsmells.common.helper
 
 import com.github.javaparser.ast.type.PrimitiveType
 import com.github.javaparser.ast.type.Type
+import com.gitlab.artismarti.smartsmells.common.PackageImportHolder
 import com.gitlab.artismarti.smartsmells.common.QualifiedType
 
 /**

@@ -1,6 +1,6 @@
 package com.gitlab.artismarti.smartsmells
 
-import com.gitlab.artismarti.smartsmells.common.Smell
+import com.gitlab.artismarti.smartsmells.config.Smell
 import com.gitlab.artismarti.smartsmells.common.Smelly
 import groovy.transform.PackageScope
 

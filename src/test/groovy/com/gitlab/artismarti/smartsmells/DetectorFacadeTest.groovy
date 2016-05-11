@@ -1,6 +1,6 @@
 package com.gitlab.artismarti.smartsmells
 
-import com.gitlab.artismarti.smartsmells.common.Smell
+import com.gitlab.artismarti.smartsmells.config.Smell
 import com.gitlab.artismarti.smartsmells.common.Test
 import com.gitlab.artismarti.smartsmells.complexmethod.ComplexMethodDetector
 import com.gitlab.artismarti.smartsmells.longmethod.LongMethodDetector

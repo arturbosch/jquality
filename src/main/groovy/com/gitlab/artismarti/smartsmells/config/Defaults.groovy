@@ -1,4 +1,4 @@
-package com.gitlab.artismarti.smartsmells.common
+package com.gitlab.artismarti.smartsmells.config
 
 import com.gitlab.artismarti.smartsmells.middleman.MiddleManVisitor
 

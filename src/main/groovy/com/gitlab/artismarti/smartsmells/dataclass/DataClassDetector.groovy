@@ -1,7 +1,7 @@
 package com.gitlab.artismarti.smartsmells.dataclass
 
 import com.gitlab.artismarti.smartsmells.common.Detector
-import com.gitlab.artismarti.smartsmells.common.Smell
+import com.gitlab.artismarti.smartsmells.config.Smell
 import com.gitlab.artismarti.smartsmells.common.Visitor
 
 import java.nio.file.Path
