@@ -17,6 +17,6 @@ class MiddleManDetectorTest extends Specification {
 		smells.getAt(0).sourceRange != null
 
 		where:
-		smells = new MiddleManDetector().run(Test.MIDDLE_MAN_PATH)
+		smells = new MiddleManDetector(MiddleManVisitor.MMT.all).run(Test.MIDDLE_MAN_PATH)
 	}
 }

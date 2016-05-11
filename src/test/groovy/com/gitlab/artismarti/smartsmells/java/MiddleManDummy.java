@@ -18,6 +18,14 @@ public class MiddleManDummy {
 		String middleLogic(String s) {
 			return endMan.realLogic(s);
 		}
+
+		String middleLogic2(String s) {
+			return endMan.realLogic(s);
+		}
+
+		String middleLogic3(String s) {
+			return endMan.realLogic(s);
+		}
 	}
 
 	private class EndMan {

@@ -26,7 +26,6 @@ class CycleDetectorTest extends Specification {
 
 	def "find cycle in inner classes of CycleDummy"() {
 		expect:
-		println smells
 		smells.size() == 1
 
 		where:
