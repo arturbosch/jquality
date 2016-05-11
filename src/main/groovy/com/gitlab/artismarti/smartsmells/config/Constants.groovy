@@ -11,7 +11,7 @@ class Constants {
 	static final String TCC = "tcc"
 
 	static final String ACTIVE = "active"
-	static final String THRESHOLD = "featureEnvyFactor"
+	static final String THRESHOLD = "threshold"
 
 	static final String LONG_METHOD = "longmethod"
 	static final String LONG_PARAM = "longparameterlist"
