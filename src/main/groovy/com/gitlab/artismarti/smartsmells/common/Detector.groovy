@@ -1,10 +1,11 @@
 package com.gitlab.artismarti.smartsmells.common
 
+import com.gitlab.artismarti.smartsmells.util.StreamCloser
+
 import java.nio.file.Files
 import java.nio.file.Path
 import java.util.function.BinaryOperator
 import java.util.stream.Collectors
-
 /**
  * @author artur
  */
@@ -34,10 +35,13 @@ abstract class Detector<T extends Smelly> {
 	 * @return set of smells
 	 */
 	Set<T> run(Path startPath) {
-		return Files.walk(startPath)
+		def walker = Files.walk(startPath)
+		def result = walker
 				.filter({ it.fileName.toString().endsWith("java") })
 				.map({ execute(it) })
 				.collect(Collectors.reducing(new HashSet(), op))
+		StreamCloser.quietly(walker)
+		return result
 	}
 
 	/**
