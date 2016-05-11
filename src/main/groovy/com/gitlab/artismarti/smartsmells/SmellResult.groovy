@@ -22,6 +22,9 @@ class SmellResult {
 
 	def prettyPrint() {
 		smellSets.entrySet().each {
+//			if (it.key.equals(Smell.MIDDLE_MAN)) {
+//				it.value.each { println it.toString() }
+//			}
 			println "$it.key: ${it.value.size()}"
 		}
 	}

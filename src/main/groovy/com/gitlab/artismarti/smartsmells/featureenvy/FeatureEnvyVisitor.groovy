@@ -20,16 +20,14 @@ import java.nio.file.Path
  */
 class FeatureEnvyVisitor extends Visitor<FeatureEnvy> {
 
-	private double threshold
-	private double weight = 0.5
-	private double base = 0.5
+	private FeatureEnvyFactor featureEnvyFactor
 
 	private Set<CustomVariableDeclaration> fields
 	private List<ImportDeclaration> imports
 
-	FeatureEnvyVisitor(Path path, double threshold) {
+	FeatureEnvyVisitor(Path path, FeatureEnvyFactor factor) {
 		super(path)
-		this.threshold = threshold
+		this.featureEnvyFactor = factor
 	}
 
 	@Override
@@ -69,9 +67,9 @@ class FeatureEnvyVisitor extends Visitor<FeatureEnvy> {
 			int count = MethodHelper.getAllMethodInvocationsForEntityWithName(it.name, method)
 			double factor = calc(count, allCalls)
 
-			if (factor > threshold) {
+			if (factor > featureEnvyFactor.threshold) {
 				smells.add(new FeatureEnvy(method.name, method.declarationAsString, it.name,
-						it.type.toString(), factor, threshold, SourcePath.of(path), it.sourceRange))
+						it.type.toString(), factor, featureEnvyFactor.threshold, SourcePath.of(path), it.sourceRange))
 			}
 		}
 	}
@@ -81,7 +79,8 @@ class FeatureEnvyVisitor extends Visitor<FeatureEnvy> {
 			return 0.0;
 		}
 
-		return weight * (entityCalls / allCalls) + (1 - weight) * (1 - Math.pow(base, entityCalls));
+		def weight = featureEnvyFactor.weight
+		return weight * (entityCalls / allCalls) + (1 - weight) * (1 - Math.pow(featureEnvyFactor.base, entityCalls));
 	}
 
 }

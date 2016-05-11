@@ -16,6 +16,8 @@ class Defaults {
 	static boolean ONLY_PRIVATE_DEAD_CODE = true
 	static int LARGE_CLASS = 150
 	static int CHAIN_SIZE = 2
+	static double FEATURE_ENVY_BASE = 0.5
+	static double FEATURE_ENVY_WEIGHT = 0.5
 	static double FEATURE_ENVY_FACTOR = 0.52
 	static MiddleManVisitor.MMT MIDDLE_MAN_THRESHOLD = MiddleManVisitor.MMT.half
 

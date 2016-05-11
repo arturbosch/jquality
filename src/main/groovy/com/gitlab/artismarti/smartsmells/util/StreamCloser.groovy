@@ -10,7 +10,7 @@ final class StreamCloser {
 	static <T> void quietly(Stream<T> stream) {
 		try {
 			stream.close()
-		} catch (IOException ignored) {
+		} catch (Exception ignored) {
 		}
 	}
 }

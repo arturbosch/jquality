@@ -1,26 +1,24 @@
 package com.gitlab.artismarti.smartsmells.featureenvy
 
-import com.gitlab.artismarti.smartsmells.common.Defaults
 import com.gitlab.artismarti.smartsmells.common.Detector
 import com.gitlab.artismarti.smartsmells.common.Smell
 import com.gitlab.artismarti.smartsmells.common.Visitor
 
 import java.nio.file.Path
-
 /**
  * @author artur
  */
 class FeatureEnvyDetector extends Detector<FeatureEnvy> {
 
-	private double threshold
+	private FeatureEnvyFactor factor
 
-	FeatureEnvyDetector(double threshold = Defaults.FEATURE_ENVY_FACTOR) {
-		this.threshold = threshold
+	FeatureEnvyDetector(FeatureEnvyFactor factor = FeatureEnvyFactor.newInstance()) {
+		this.factor = factor
 	}
 
 	@Override
 	protected Visitor getVisitor(Path path) {
-		return new FeatureEnvyVisitor(path, threshold)
+		return new FeatureEnvyVisitor(path, factor)
 	}
 
 	@Override

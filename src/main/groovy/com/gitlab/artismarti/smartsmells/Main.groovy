@@ -16,12 +16,12 @@ class Main {
 	}
 
 	static void main(String... args) {
-//		def path = Paths.get("/home/artur/Repos/quide/Implementierung/QuideService/src")
-		def path = Paths.get("/home/artur/Downloads/argouml-master")
+		def path = Paths.get("/home/artur/Repos/quide/Implementierung/QuideService/src")
+//		def path = Paths.get("/home/artur/Downloads/argouml-master")
 //		def path = Paths.get("/home/artur/Arbeit/pooka-co/trunk/pooka/src")
 //		def path = Paths.get("/home/artur/Arbeit/tools/ismell/src")
 
-		(0..10).each { asyncTest(path) }
+		(0..0).each { asyncTest(path) }
 	}
 
 	static asyncTest(Path path) {

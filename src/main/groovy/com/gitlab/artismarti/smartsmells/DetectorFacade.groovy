@@ -35,6 +35,10 @@ class DetectorFacade {
 		return new DetectorFacadeBuilder()
 	}
 
+//	static def fromConfig(final DetectorConfig config) {
+//		return new DetectorFacade(DetectorInitializer.init(config));
+//	}
+
 	def run(Path startPath) {
 
 		CompilationTree.registerRoot(startPath)
