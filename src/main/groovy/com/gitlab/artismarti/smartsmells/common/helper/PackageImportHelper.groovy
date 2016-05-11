@@ -1,7 +1,5 @@
 package com.gitlab.artismarti.smartsmells.common.helper
 
-import com.github.javaparser.ast.ImportDeclaration
-import com.github.javaparser.ast.PackageDeclaration
 import com.github.javaparser.ast.type.PrimitiveType
 import com.github.javaparser.ast.type.Type
 import com.gitlab.artismarti.smartsmells.common.QualifiedType
@@ -11,17 +9,7 @@ import com.gitlab.artismarti.smartsmells.common.QualifiedType
  */
 class PackageImportHelper {
 
-	String packageName
-	Map<String, String> imports
-
-	PackageImportHelper(PackageDeclaration packageDeclaration, List<ImportDeclaration> imports) {
-		this.packageName = Optional.ofNullable(packageDeclaration).map {it.packageName}.orElse("")
-		this.imports = imports.collectEntries {
-			[Arrays.asList(it.toStringWithoutComments().split("\\.")).last(), it.name.toStringWithoutComments()]
-		}
-	}
-
-	QualifiedType getQualifiedType(Type type) {
+	static QualifiedType getQualifiedType(PackageImportHolder holder, Type type) {
 		if (type instanceof PrimitiveType) {
 			return new QualifiedType(type.type.toString(), QualifiedType.TypeToken.PRIMITIVE)
 		}
@@ -34,6 +22,7 @@ class PackageImportHelper {
 				return new QualifiedType("java.lang." + realType.name, QualifiedType.TypeToken.BOXED_PRIMITIVE)
 			} else {
 				String name = realType.toString()
+				def imports = holder.imports
 				if (imports.entrySet().contains(name)) {
 					String qualifiedName = imports.get(name)
 					return new QualifiedType(qualifiedName, QualifiedType.TypeToken.REFERENCE)
@@ -42,11 +31,12 @@ class PackageImportHelper {
 						return new QualifiedType("java.lang." + name, QualifiedType.TypeToken.JAVA_REFERENCE)
 					}
 					// lets assume it is in the same package
-					return new QualifiedType("$packageName.$name", QualifiedType.TypeToken.REFERENCE)
+					return new QualifiedType("$holder.packageName.$name", QualifiedType.TypeToken.REFERENCE)
 				}
 			}
 		}
 
 		return new QualifiedType("UNKNOWN", QualifiedType.TypeToken.UNKNOWN)
 	}
+
 }

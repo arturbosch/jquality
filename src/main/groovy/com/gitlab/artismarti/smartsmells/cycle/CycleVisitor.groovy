@@ -8,6 +8,7 @@ import com.gitlab.artismarti.smartsmells.common.helper.BadSmellHelper
 import com.gitlab.artismarti.smartsmells.common.CompilationTree
 import com.gitlab.artismarti.smartsmells.common.helper.NodeHelper
 import com.gitlab.artismarti.smartsmells.common.helper.PackageImportHelper
+import com.gitlab.artismarti.smartsmells.common.helper.PackageImportHolder
 import com.gitlab.artismarti.smartsmells.common.QualifiedType
 import com.gitlab.artismarti.smartsmells.common.Visitor
 import com.gitlab.artismarti.smartsmells.common.source.SourcePath
@@ -19,7 +20,7 @@ import java.nio.file.Path
  */
 class CycleVisitor extends Visitor<Cycle> {
 
-	private PackageImportHelper packageImportHelper
+	private PackageImportHolder packageImportHolder
 	private InnerClassesHandler innerClassesHandler
 
 	CycleVisitor(Path path) {
@@ -28,7 +29,7 @@ class CycleVisitor extends Visitor<Cycle> {
 
 	@Override
 	void visit(CompilationUnit n, Object arg) {
-		packageImportHelper = new PackageImportHelper(n.package, n.imports)
+		packageImportHolder = new PackageImportHolder(n.package, n.imports)
 		innerClassesHandler = new InnerClassesHandler(n)
 		super.visit(n, arg)
 	}
@@ -36,18 +37,21 @@ class CycleVisitor extends Visitor<Cycle> {
 	@Override
 	void visit(ClassOrInterfaceDeclaration n, Object arg) {
 		String unqualifiedName = innerClassesHandler.appendOuterClassIfInnerClass(n)
-		def thisClassType = packageImportHelper.getQualifiedType(new ClassOrInterfaceType(unqualifiedName))
+		def thisClassType = PackageImportHelper.getQualifiedType(
+				packageImportHolder, new ClassOrInterfaceType(unqualifiedName))
 
 		def fields = NodeHelper.findFields(n)
 
 		fields.each {
 
-			def qualifiedType = packageImportHelper.getQualifiedType(it.type)
+			def qualifiedType = PackageImportHelper.getQualifiedType(
+					packageImportHolder, it.type)
 
 			if (qualifiedType.isReference()) {
 
 				def unqualifiedFieldName = innerClassesHandler.getUnqualifiedNameForInnerClass(it.type)
-				qualifiedType = packageImportHelper.getQualifiedType(new ClassOrInterfaceType(unqualifiedFieldName))
+				qualifiedType = PackageImportHelper.getQualifiedType(
+						packageImportHolder, new ClassOrInterfaceType(unqualifiedFieldName))
 				def maybeType = CompilationTree.findReferencedType(qualifiedType)
 
 				if (maybeType.isPresent()) {

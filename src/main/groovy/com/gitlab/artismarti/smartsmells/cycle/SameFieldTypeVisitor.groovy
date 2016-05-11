@@ -6,6 +6,7 @@ import com.github.javaparser.ast.body.FieldDeclaration
 import com.github.javaparser.ast.type.ClassOrInterfaceType
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter
 import com.gitlab.artismarti.smartsmells.common.helper.PackageImportHelper
+import com.gitlab.artismarti.smartsmells.common.helper.PackageImportHolder
 import com.gitlab.artismarti.smartsmells.common.QualifiedType
 
 /**
@@ -14,7 +15,7 @@ import com.gitlab.artismarti.smartsmells.common.QualifiedType
 class SameFieldTypeVisitor extends VoidVisitorAdapter {
 
 	private QualifiedType searchedType
-	private PackageImportHelper packageImportHelper
+	private PackageImportHolder packageImportHolder
 	private InnerClassesHandler innerClassesHandler
 
 	private boolean found
@@ -27,7 +28,7 @@ class SameFieldTypeVisitor extends VoidVisitorAdapter {
 
 	@Override
 	void visit(CompilationUnit n, Object arg) {
-		packageImportHelper = new PackageImportHelper(n.package, n.imports)
+		packageImportHolder = new PackageImportHolder(n.package, n.imports)
 		innerClassesHandler = new InnerClassesHandler(n)
 		super.visit(n, arg)
 	}
@@ -35,14 +36,16 @@ class SameFieldTypeVisitor extends VoidVisitorAdapter {
 	@Override
 	void visit(ClassOrInterfaceDeclaration n, Object arg) {
 		String unqualifiedName = innerClassesHandler.appendOuterClassIfInnerClass(n)
-		currentClass = packageImportHelper.getQualifiedType(new ClassOrInterfaceType(unqualifiedName))
+		currentClass = PackageImportHelper.getQualifiedType(
+				packageImportHolder, new ClassOrInterfaceType(unqualifiedName))
 		super.visit(n, arg)
 	}
 
 	@Override
 	void visit(FieldDeclaration n, Object arg) {
 		def unqualifiedFieldName = innerClassesHandler.getUnqualifiedNameForInnerClass(n.type)
-		def qualifiedType = packageImportHelper.getQualifiedType(new ClassOrInterfaceType(unqualifiedFieldName))
+		def qualifiedType = PackageImportHelper.getQualifiedType(
+				packageImportHolder, new ClassOrInterfaceType(unqualifiedFieldName))
 
 		if (qualifiedType.isReference()) {
 			if (qualifiedType.name.equals(searchedType.name)) {
