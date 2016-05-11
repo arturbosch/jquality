@@ -4,7 +4,7 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration
 import com.github.javaparser.ast.body.MethodDeclaration
 import com.github.javaparser.ast.expr.MethodCallExpr
 import com.github.javaparser.ast.stmt.ReturnStmt
-import com.gitlab.artismarti.smartsmells.common.*
+import com.gitlab.artismarti.smartsmells.common.Visitor
 import com.gitlab.artismarti.smartsmells.common.helper.BadSmellHelper
 import com.gitlab.artismarti.smartsmells.common.helper.MethodHelper
 import com.gitlab.artismarti.smartsmells.common.helper.NodeHelper
@@ -12,14 +12,20 @@ import com.gitlab.artismarti.smartsmells.common.helper.TypeHelper
 import com.gitlab.artismarti.smartsmells.common.source.SourcePath
 
 import java.nio.file.Path
-
 /**
  * @author artur
  */
 class MiddleManVisitor extends Visitor<MiddleMan> {
 
-	MiddleManVisitor(Path path) {
+	private threshold = MMT.all
+
+	enum MMT {
+		all, half, third
+	}
+
+	MiddleManVisitor(Path path, MMT threshold) {
 		super(path)
+		this.threshold = threshold
 	}
 
 	@Override
@@ -29,20 +35,40 @@ class MiddleManVisitor extends Visitor<MiddleMan> {
 
 		def methods = NodeHelper.findMethods(n)
 
-		def allMatch = methods.stream()
-				.allMatch {
+		def partition = methods.groupBy {
 			hasBodySizeOne(it) &&
 					hasComplexityOfOne(it) &&
 					useSameParametersForMethodInvocation(it) &&
 					hasNoFilteredAnnotations(it)
 		}
 
-		if (allMatch) {
+		if (checkThreshold(partition)) {
 			smells.add(new MiddleMan(n.name, BadSmellHelper.createSignature(n),
 					SourcePath.of(path), BadSmellHelper.createSourceRangeFromNode(n)))
 		}
 
 		super.visit(n, arg)
+	}
+
+	private boolean checkThreshold(Map<Boolean, List<MethodDeclaration>> map) {
+
+		def trueSize = map[true] ? map[true].size() : 0
+		def falseSize = map[false] ? map[false].size() : 0
+		def allSize = trueSize + falseSize
+
+		def match = false
+		switch (threshold) {
+			case threshold.all:
+				match |= (trueSize == allSize && allSize > 1)
+				break;
+			case threshold.half:
+				match |= (trueSize.toBigDecimal() >= (allSize / 2) && allSize > 3)
+				break;
+			case threshold.third:
+				match |= (trueSize.toBigDecimal() >= (allSize / 3) && allSize > 5)
+				break;
+		}
+		return match
 	}
 
 	private static boolean hasBodySizeOne(MethodDeclaration method) {

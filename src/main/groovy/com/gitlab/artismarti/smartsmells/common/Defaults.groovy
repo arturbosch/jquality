@@ -1,5 +1,7 @@
 package com.gitlab.artismarti.smartsmells.common
 
+import com.gitlab.artismarti.smartsmells.middleman.MiddleManVisitor
+
 /**
  * @author artur
  */
@@ -15,5 +17,6 @@ class Defaults {
 	static int LARGE_CLASS = 150
 	static int CHAIN_SIZE = 2
 	static double FEATURE_ENVY_FACTOR = 0.52
+	static MiddleManVisitor.MMT MIDDLE_MAN_THRESHOLD = MiddleManVisitor.MMT.half
 
 }
