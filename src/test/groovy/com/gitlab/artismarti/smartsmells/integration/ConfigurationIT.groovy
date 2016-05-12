@@ -2,6 +2,7 @@ package com.gitlab.artismarti.smartsmells.integration
 
 import com.gitlab.artismarti.smartsmells.common.Test
 import com.gitlab.artismarti.smartsmells.config.DetectorConfig
+import com.gitlab.artismarti.smartsmells.out.XMLBuilder
 import com.gitlab.artismarti.smartsmells.start.DetectorFacade
 import spock.lang.Specification
 
@@ -26,6 +27,6 @@ class ConfigurationIT extends Specification {
 		def result = DetectorFacade.builder().fullStackFacade().run(Test.PATH)
 		then:
 		result.smellSets.size() == 12
-//		XMLBuilder.toXml(result)
+		XMLBuilder.toXml(result)
 	}
 }
