@@ -1,8 +1,8 @@
 package com.gitlab.artismarti.smartsmells.integration
 
-import com.gitlab.artismarti.smartsmells.start.DetectorFacade
 import com.gitlab.artismarti.smartsmells.common.Test
 import com.gitlab.artismarti.smartsmells.config.DetectorConfig
+import com.gitlab.artismarti.smartsmells.start.DetectorFacade
 import spock.lang.Specification
 
 import java.nio.file.Paths
@@ -22,10 +22,10 @@ class ConfigurationIT extends Specification {
 	}
 
 	def "create detector facade as full stack facade and run over test dummies"() {
-		expect:
+		when:
+		def result = DetectorFacade.builder().fullStackFacade().run(Test.PATH)
+		then:
 		result.smellSets.size() == 12
-
-		where:
-		result = DetectorFacade.builder().fullStackFacade().run(Test.PATH)
+//		XMLBuilder.toXml(result)
 	}
 }

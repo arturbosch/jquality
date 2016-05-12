@@ -18,4 +18,9 @@ class SourceRange extends Tuple2<SourcePosition, SourcePosition> {
 		return new SourceRange(begin, end)
 	}
 
+
+	@Override
+	public String toString() {
+		return "$first.first,$first.second,$second.first,$second.second";
+	}
 }

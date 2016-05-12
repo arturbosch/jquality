@@ -13,6 +13,11 @@ import java.nio.file.Paths
  */
 class Main {
 
+//		def path = Paths.get("/home/artur/Repos/quide/Implementierung/QuideService/src")
+//		def path = Paths.get("/home/artur/Downloads/argouml-master")
+//		def path = Paths.get("/home/artur/Arbeit/pooka-co/trunk/pooka/src")
+//		def path = Paths.get("/home/artur/Arbeit/tools/ismell/src")
+
 	@Parameter(names = ["--path", "-p"], description = "Project path to analyze")
 	String projectPath;
 	@Parameter(names = ["--config", "-c"], description = "Config path to use")

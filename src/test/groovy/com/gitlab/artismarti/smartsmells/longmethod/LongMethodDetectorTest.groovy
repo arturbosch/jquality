@@ -18,7 +18,6 @@ class LongMethodDetectorTest extends Specification {
 		smells.getAt(0).threshold == 14
 		smells.getAt(0).header ==
 				"public void longMethod(String s1, String s2, String s3, String s4, String s5, String s6)"
-		smells.getAt(0).sourceRange.toString() == "[[21, 38], [9, 9]]"
 
 		where:
 		smells = new LongMethodDetector(14).run(Test.LONG_METHOD_DUMMY_PATH)
