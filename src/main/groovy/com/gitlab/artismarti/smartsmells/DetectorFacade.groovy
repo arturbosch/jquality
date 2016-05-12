@@ -5,6 +5,8 @@ import com.gitlab.artismarti.smartsmells.common.CompilationTree
 import com.gitlab.artismarti.smartsmells.common.Detector
 import com.gitlab.artismarti.smartsmells.common.Smelly
 import com.gitlab.artismarti.smartsmells.complexmethod.ComplexMethodDetector
+import com.gitlab.artismarti.smartsmells.config.DetectorConfig
+import com.gitlab.artismarti.smartsmells.config.DetectorInitializer
 import com.gitlab.artismarti.smartsmells.cycle.CycleDetector
 import com.gitlab.artismarti.smartsmells.dataclass.DataClassDetector
 import com.gitlab.artismarti.smartsmells.deadcode.DeadCodeDetector
@@ -35,9 +37,9 @@ class DetectorFacade {
 		return new DetectorFacadeBuilder()
 	}
 
-//	static def fromConfig(final DetectorConfig config) {
-//		return new DetectorFacade(DetectorInitializer.initialize(config));
-//	}
+	static def fromConfig(final DetectorConfig config) {
+		return new DetectorFacade(DetectorInitializer.init(config));
+	}
 
 	def run(Path startPath) {
 

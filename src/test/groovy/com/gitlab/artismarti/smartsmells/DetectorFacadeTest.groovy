@@ -1,12 +1,12 @@
 package com.gitlab.artismarti.smartsmells
 
-import com.gitlab.artismarti.smartsmells.config.Smell
-import com.gitlab.artismarti.smartsmells.common.Test
 import com.gitlab.artismarti.smartsmells.complexmethod.ComplexMethodDetector
+import com.gitlab.artismarti.smartsmells.config.DetectorConfig
 import com.gitlab.artismarti.smartsmells.longmethod.LongMethodDetector
 import com.gitlab.artismarti.smartsmells.longparam.LongParameterListDetector
 import spock.lang.Specification
 
+import java.nio.file.Paths
 /**
  * @author artur
  */
@@ -25,11 +25,13 @@ class DetectorFacadeTest extends Specification {
 				.build()
 	}
 
-	def "run facade and get result set of long methods"() {
+	def "create detector facade from config"() {
 		expect:
-		!result.of(Smell.LONG_METHOD).isEmpty()
+		facade.numberOfDetectors() == 12
 
 		where:
-		result = DetectorFacade.builder().fullStackFacade().run(Test.PATH)
+		path = Paths.get(getClass().getResource("/integration.yml").getFile())
+		facade = DetectorFacade.fromConfig(DetectorConfig.load(path))
 	}
+
 }

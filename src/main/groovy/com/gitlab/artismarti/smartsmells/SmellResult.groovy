@@ -28,4 +28,8 @@ class SmellResult {
 			println "$it.key: ${it.value.size()}"
 		}
 	}
+
+	Map<Smell, Deque<Smelly>> getSmellSets() {
+		return smellSets
+	}
 }
