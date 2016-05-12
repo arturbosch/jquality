@@ -1,4 +1,4 @@
-package com.gitlab.artismarti.smartsmells
+package com.gitlab.artismarti.smartsmells.start
 
 import com.gitlab.artismarti.smartsmells.config.Smell
 import com.gitlab.artismarti.smartsmells.common.Smelly

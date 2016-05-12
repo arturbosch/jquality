@@ -1,4 +1,4 @@
-package com.gitlab.artismarti.smartsmells
+package com.gitlab.artismarti.smartsmells.start
 
 import com.gitlab.artismarti.smartsmells.comment.CommentDetector
 import com.gitlab.artismarti.smartsmells.common.CompilationTree

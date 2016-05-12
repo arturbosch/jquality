@@ -1,6 +1,6 @@
 package com.gitlab.artismarti.smartsmells.integration
 
-import com.gitlab.artismarti.smartsmells.DetectorFacade
+import com.gitlab.artismarti.smartsmells.start.DetectorFacade
 import com.gitlab.artismarti.smartsmells.common.Test
 import com.gitlab.artismarti.smartsmells.config.DetectorConfig
 import spock.lang.Specification

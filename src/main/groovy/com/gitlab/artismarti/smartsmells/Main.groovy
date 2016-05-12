@@ -1,12 +1,24 @@
 package com.gitlab.artismarti.smartsmells
 
-import java.nio.file.Path
-import java.nio.file.Paths
+import com.beust.jcommander.JCommander
+import com.beust.jcommander.Parameter
+import com.gitlab.artismarti.smartsmells.config.DetectorConfig
+import com.gitlab.artismarti.smartsmells.start.DetectorFacade
+import com.gitlab.artismarti.smartsmells.util.Validate
 
+import java.nio.file.Files
+import java.nio.file.Paths
 /**
  * @author artur
  */
 class Main {
+
+	@Parameter(names = ["--path", "-p"], description = "Project path to analyze")
+	String projectPath;
+	@Parameter(names = ["--config", "-c"], description = "Config path to use")
+	String configPath;
+	@Parameter(names = ["--fullStack", "-f"], description = "Use all available detectors with default thresholds")
+	Boolean fullStackFacade;
 
 	def static benchmark = { closure ->
 		def start = System.currentTimeMillis()
@@ -15,21 +27,42 @@ class Main {
 		now - start
 	}
 
+	@SuppressWarnings("GroovyResultOfObjectAllocationIgnored")
 	static void main(String... args) {
-		def path = Paths.get("/home/artur/Repos/quide/Implementierung/QuideService/src")
-//		def path = Paths.get("/home/artur/Downloads/argouml-master")
-//		def path = Paths.get("/home/artur/Arbeit/pooka-co/trunk/pooka/src")
-//		def path = Paths.get("/home/artur/Arbeit/tools/ismell/src")
+		Main main = new Main()
+		new JCommander(main, args)
+		main.validateParsedArguments()
 
-		(0..0).each { asyncTest(path) }
+		println "\n Duration: " + benchmark {
+			main.run();
+		} / 1000
 	}
 
-	static asyncTest(Path path) {
-		println "\n Async Duration: " + benchmark {
+	private void validateParsedArguments() {
+		def pathError = "The path to the project file is not specified."
+		def configError = "The path to the config file is not specified."
+
+		Validate.isTrue(projectPath != null, pathError)
+		Validate.isTrue(Files.exists(Paths.get(projectPath)), pathError)
+
+		if (!fullStackFacade) {
+			Validate.isTrue(configPath != null, configError)
+			Validate.isTrue(Files.exists(Paths.get(configPath)), configError)
+		}
+	}
+
+	private void run() {
+		def project = Paths.get(projectPath)
+		if (fullStackFacade) {
 			DetectorFacade.builder().fullStackFacade()
-					.run(path)
+					.run(project)
 					.prettyPrint()
-		} / 1000
+		} else {
+			def config = Paths.get(configPath)
+			DetectorFacade.fromConfig(DetectorConfig.load(config))
+					.run(project)
+					.prettyPrint()
+		}
 	}
 
 }

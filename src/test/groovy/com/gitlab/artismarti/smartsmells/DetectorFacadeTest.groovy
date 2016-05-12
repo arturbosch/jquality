@@ -4,6 +4,7 @@ import com.gitlab.artismarti.smartsmells.complexmethod.ComplexMethodDetector
 import com.gitlab.artismarti.smartsmells.config.DetectorConfig
 import com.gitlab.artismarti.smartsmells.longmethod.LongMethodDetector
 import com.gitlab.artismarti.smartsmells.longparam.LongParameterListDetector
+import com.gitlab.artismarti.smartsmells.start.DetectorFacade
 import spock.lang.Specification
 
 import java.nio.file.Paths
