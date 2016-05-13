@@ -11,18 +11,22 @@ import java.lang.reflect.Field
  */
 class XMLBuilder {
 
-	static void toXml(SmellResult smellResult) {
+	static String toXml(SmellResult smellResult) {
+
+		List<String> entries = new ArrayList<>()
 		smellResult.smellSets.each { key, value ->
-			value.each {
+			entries.addAll(value.collect {
 				if (key == Smell.COMPLEX_METHOD || key == Smell.LONG_PARAM) {
-					println handleLongMethodDelegates(it)
+					"\t" + handleLongMethodDelegates(it)
 				} else if (key == Smell.CYCLE) {
-					println handleDependencyDelegates(it)
+					"\t" + handleDependencyDelegates(it)
 				} else {
-					println toXmlEntry(it)
+					"\t" + toXmlEntry(it)
 				}
-			}
+			})
 		}
+
+		return "<SmartSmells>\n" + entries.join("\n") + "\n</SmartSmells>"
 	}
 
 	private static String handleDependencyDelegates(Smelly smelly) {

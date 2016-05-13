@@ -7,26 +7,43 @@ import com.gitlab.artismarti.smartsmells.start.DetectorFacade
 import spock.lang.Specification
 
 import java.nio.file.Paths
+
 /**
  * @author artur
  */
 class ConfigurationIT extends Specification {
 
 	def "create detector facade from config und run over test dummies"() {
-		expect:
+
+		when:
+		def path = Paths.get(getClass().getResource("/integration.yml").getFile())
+		def facade = DetectorFacade.fromConfig(DetectorConfig.load(path))
+		def result = facade.run(Test.PATH)
+
+		then:
 		result.smellSets.size() == 12
 
-		where:
-		path = Paths.get(getClass().getResource("/integration.yml").getFile())
-		facade = DetectorFacade.fromConfig(DetectorConfig.load(path))
-		result = facade.run(Test.PATH)
+		when:
+		def xml = XMLBuilder.toXml(result)
+
+		then:
+		xml.startsWith("<SmartSmells>")
+		xml.endsWith("</SmartSmells>")
 	}
 
 	def "create detector facade as full stack facade and run over test dummies"() {
+
 		when:
 		def result = DetectorFacade.builder().fullStackFacade().run(Test.PATH)
+
 		then:
 		result.smellSets.size() == 12
-		XMLBuilder.toXml(result)
+
+		when:
+		def xml = XMLBuilder.toXml(result)
+
+		then:
+		xml.startsWith("<SmartSmells>")
+		xml.endsWith("</SmartSmells>")
 	}
 }
