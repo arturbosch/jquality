@@ -19,7 +19,6 @@ class CommentSmell implements Smelly {
 	static String PRIVATE = "PRIVATE"
 
 	String type
-	String comment
 	String message
 
 	boolean hasTODO

@@ -9,7 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * Defines a generic cache.
  *
- * @author Artur
+ * @author artur
  */
 public abstract class Cache<K, V> {
 

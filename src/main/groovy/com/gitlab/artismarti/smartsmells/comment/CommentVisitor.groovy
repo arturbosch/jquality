@@ -44,7 +44,7 @@ class CommentVisitor extends Visitor {
 
 	private void addCommentSmell(String type, Comment comment, String message) {
 
-		smells.add(new CommentSmell(type, comment.toString(), message,
+		smells.add(new CommentSmell(type, message,
 				hasTodoOrFixme(comment, "TODO"), hasTodoOrFixme(comment, "FIXME"),
 				SourcePath.of(path), BadSmellHelper.createSourceRangeFromNode(comment)))
 	}

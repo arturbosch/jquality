@@ -12,16 +12,10 @@ class CommentDetectorTest extends Specification {
 		expect:
 		smells.size() == 3
 		!smells.getAt(0).type.isEmpty()
-		!smells.getAt(0).comment.isEmpty()
 		!smells.getAt(0).message.isEmpty()
 		!smells.getAt(0).path.isEmpty()
 		smells.getAt(0).sourceRange != null
 		smells.getAt(0).sourcePath != null
-		smells.getAt(0).hasTODO
-		!smells.getAt(0).hasFIXME
-		!smells.getAt(1).hasTODO
-		!smells.getAt(1).hasFIXME
-		smells.getAt(2).hasFIXME
 
 		where:
 		smells = new CommentDetector().run(Test.PATH)
