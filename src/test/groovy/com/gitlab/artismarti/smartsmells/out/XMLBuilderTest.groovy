@@ -12,12 +12,15 @@ import java.nio.file.Paths
  */
 class XMLBuilderTest extends Specification {
 
-	def "dostuff"() {
+	def "smell to xml entry with escapes"() {
 
 		when:
-		XMLBuilder.toXmlEntry(new FeatureEnvy("methode", "signature", "object", "objectSignature",
+		def xml = XMLBuilder.toXmlEntry(new FeatureEnvy("methode", "signature", "<\"'>&", "objectSignature",
 				1d, 1d, SourcePath.of(Paths.get(".")), SourceRange.of(1, 1, 1, 1)))
 		then:
-		1 == 1
+		xml.startsWith("<FeatureEnvy")
+		xml.endsWith("/>")
+		xml.contains("objectSignature")
+		xml.contains("&lt;&quot;&apos;&gt;&amp;")
 	}
 }

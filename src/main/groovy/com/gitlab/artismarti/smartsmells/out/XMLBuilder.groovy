@@ -6,6 +6,7 @@ import com.gitlab.artismarti.smartsmells.start.SmellResult
 import com.gitlab.artismarti.smartsmells.util.Strings
 
 import java.lang.reflect.Field
+
 /**
  * @author artur
  */
@@ -65,7 +66,7 @@ class XMLBuilder {
 		joinToXmlAttribute(entries)
 	}
 
-	private static String toXmlEntry(Smelly smelly) {
+	static String toXmlEntry(Smelly smelly) {
 
 		def name = smelly.class.simpleName
 		def path = extractPath(smelly)
@@ -90,8 +91,16 @@ class XMLBuilder {
 	private static Map<String, String> joinFieldsToNameValueMap(List<Field> fields, smelly) {
 		fields.collectEntries() {
 			it.setAccessible(true)
-			[it.name, it.get(smelly).toString()]
+			[it.name, replaceXmlSymbols(it.get(smelly).toString())]
 		}
+	}
+
+	private static String replaceXmlSymbols(String value) {
+		return value.replaceAll("&", "&amp;")
+				.replaceAll("\"", "&quot;")
+				.replaceAll("\'", "&apos;")
+				.replaceAll("<", "&lt;")
+				.replaceAll(">", "&gt;")
 	}
 
 	private static String joinToXmlAttribute(Map<String, String> entries) {
