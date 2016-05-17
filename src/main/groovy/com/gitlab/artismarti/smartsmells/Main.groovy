@@ -3,7 +3,7 @@ package com.gitlab.artismarti.smartsmells
 import com.beust.jcommander.JCommander
 import com.beust.jcommander.Parameter
 import com.gitlab.artismarti.smartsmells.config.DetectorConfig
-import com.gitlab.artismarti.smartsmells.out.XMLBuilder
+import com.gitlab.artismarti.smartsmells.out.XMLWriter
 import com.gitlab.artismarti.smartsmells.start.DetectorFacade
 import com.gitlab.artismarti.smartsmells.start.SmellResult
 import com.gitlab.artismarti.smartsmells.util.Validate
@@ -79,7 +79,7 @@ class Main {
 	}
 
 	private Path writeToFile(SmellResult result) {
-		Files.write(Paths.get(outputPath), XMLBuilder.toXml(result).getBytes())
+		Files.write(Paths.get(outputPath), XMLWriter.toXml(result).getBytes())
 	}
 
 }

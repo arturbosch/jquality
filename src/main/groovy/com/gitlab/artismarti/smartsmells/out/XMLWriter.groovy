@@ -10,7 +10,7 @@ import java.lang.reflect.Field
 /**
  * @author artur
  */
-class XMLBuilder {
+class XMLWriter {
 
 	static String toXml(SmellResult smellResult) {
 
