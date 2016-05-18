@@ -20,11 +20,13 @@ class SmellResult {
 		smellSets.getOrDefault(smell, new ArrayDeque<>())
 	}
 
-	def prettyPrint() {
+	def prettyPrint(Smell... smells) {
+
+		def printList = Arrays.asList(smells)
 		smellSets.entrySet().each {
-//			if (it.key.equals(Smell.MIDDLE_MAN)) {
-//				it.value.each { println it.toString() }
-//			}
+			if (printList.contains(it.key)) {
+				it.value.each { println it.toString() }
+			}
 			println "$it.key: ${it.value.size()}"
 		}
 	}
