@@ -49,10 +49,10 @@ class QualifiedType {
 	}
 
 	boolean isInnerClass() {
-		def split = Arrays.asList(name.split("\\."))
-		if (split.size() > 1) {
-			def get = split.get(split.size() - 2)
-			return Character.isUpperCase(get.charAt(0))
+		def tokens = Arrays.asList(name.split("\\."))
+		if (tokens.size() > 1) {
+			def secondLastToken = tokens.get(tokens.size() - 2)
+			return !secondLastToken.isEmpty() && Character.isUpperCase(secondLastToken.charAt(0))
 		}
 		return false
 	}
