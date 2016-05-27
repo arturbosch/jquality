@@ -83,7 +83,7 @@ class DetectorFacade {
 
 		def fullStackFacade() {
 			detectors = [new GodClassDetector(), new ComplexMethodDetector(), new CommentDetector(),
-			             new LongMethodDetector(15), new LongParameterListDetector(), new DeadCodeDetector(),
+			             new LongMethodDetector(), new LongParameterListDetector(), new DeadCodeDetector(),
 			             new LargeClassDetector(), new MessageChainDetector(), new MiddleManDetector(),
 			             new FeatureEnvyDetector(), new CycleDetector(), new DataClassDetector()]
 			build()
