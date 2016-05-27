@@ -6,12 +6,15 @@ import com.gitlab.artismarti.smartsmells.util.StreamCloser
 import java.nio.file.Files
 import java.nio.file.Path
 import java.util.function.BinaryOperator
+import java.util.logging.Logger
 import java.util.stream.Collectors
 
 /**
  * @author artur
  */
 abstract class Detector<T extends Smelly> {
+
+	protected Logger logger = Logger.getLogger(getClass().simpleName)
 
 	protected Smell type = getType()
 	private Deque<T> smells = new ArrayDeque<>(100)
@@ -60,6 +63,8 @@ abstract class Detector<T extends Smelly> {
 			visitor.visit(maybeUnit.get(), null)
 			newSmells = visitor.smells
 			smells.addAll(newSmells)
+		} else {
+			logger.warning("Could not create compilation unit from: $path due to syntax errors.")
 		}
 		return newSmells
 	}
