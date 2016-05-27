@@ -12,7 +12,8 @@ class LongParameterListDetectorTest extends Specification {
 		expect:
 		smells.size() == 1
 		smells.getAt(0).name == "longMethod"
-		smells.getAt(0).parameters.size() == 6
+		!smells.getAt(0).parameters.isEmpty()
+		smells.getAt(0).numberOfParams == 6
 
 		where:
 		smells = new LongParameterListDetector().run(Test.PATH)

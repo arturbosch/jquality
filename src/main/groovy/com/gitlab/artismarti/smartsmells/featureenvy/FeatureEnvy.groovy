@@ -13,8 +13,8 @@ import groovy.transform.ToString
 @ToString(includeNames = false, includePackage = false)
 class FeatureEnvy implements Smelly {
 
-	String methodName
-	String methodSignature
+	String name
+	String signature
 
 	String object
 	String objectSignature

@@ -11,7 +11,7 @@ class DeadCodeDetectorTest extends Specification {
 	def "find one unused field, method, parameter and locale variable"() {
 		expect:
 		smells.size() == 4
-		smells.getAt(0).entityName.startsWith("dead")
+		smells.getAt(0).name.startsWith("dead")
 
 		where:
 		smells = new DeadCodeDetector().run(Test.DEAD_CODE_PATH)

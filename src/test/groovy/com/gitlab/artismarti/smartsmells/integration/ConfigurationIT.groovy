@@ -27,6 +27,7 @@ class ConfigurationIT extends Specification {
 		def xml = XMLWriter.toXml(result)
 
 		then:
+		println xml
 		xml.startsWith("<SmartSmells>")
 		xml.endsWith("</SmartSmells>")
 	}

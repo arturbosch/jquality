@@ -10,8 +10,8 @@ import groovy.transform.Immutable
 @Immutable
 class Dependency implements Smelly {
 
-	String entityName
-	String entitySignature
+	String name
+	String signature
 
 	@Delegate
 	SourcePath sourcePath
@@ -24,7 +24,7 @@ class Dependency implements Smelly {
 
 	@Override
 	public String toString() {
-		return "{$entityName, $entitySignature, $sourcePath, $sourceRange}"
+		return "{$name, $signature, $sourcePath, $sourceRange}"
 	}
 
 }

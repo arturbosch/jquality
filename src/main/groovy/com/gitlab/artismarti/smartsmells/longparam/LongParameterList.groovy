@@ -14,6 +14,7 @@ class LongParameterList implements Smelly {
 	@Delegate
 	LongMethod longMethod
 	List<String> parameters
+	int numberOfParams
 
 	def getPath() {
 		longMethod.path

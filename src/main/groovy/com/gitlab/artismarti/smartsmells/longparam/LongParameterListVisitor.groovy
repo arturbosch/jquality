@@ -27,6 +27,6 @@ class LongParameterListVisitor extends MethodMetricVisitor<LongParameterList> {
 	protected addSmell(BodyDeclaration n, List<Statement> it) {
 		def parameters = MethodHelper.extractParameters(n)
 		smells.add(new LongParameterList(newLongMethod(n, it),
-				parameters.collect { it.toStringWithoutComments() }))
+				parameters.collect { it.toStringWithoutComments() }, parameters.size()))
 	}
 }

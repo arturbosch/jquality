@@ -33,7 +33,9 @@ class GodClass implements Smelly {
 	@Override
 	public String toString() {
 		return "GodClass{" +
-				"weightedMethodPerClass=" + weightedMethodPerClass +
+				"name=" + name +
+				", signature=" + signature +
+				", weightedMethodPerClass=" + weightedMethodPerClass +
 				", tiedClassCohesion=" + tiedClassCohesion +
 				", accessToForeignData=" + accessToForeignData +
 				", path=" + path +

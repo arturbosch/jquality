@@ -16,6 +16,8 @@ class LargeClass implements Smelly {
 	String name
 	String signature
 
+	int size
+
 	@Delegate
 	SourcePath sourcePath
 

@@ -16,7 +16,7 @@ featureenvy:
   weight: '0.5'
 godclass:
   active: 'true'
-  wmc: '75'
+  wmc: '20'
   atfd: '5'
   tcc: '0.1'
 largeclass:

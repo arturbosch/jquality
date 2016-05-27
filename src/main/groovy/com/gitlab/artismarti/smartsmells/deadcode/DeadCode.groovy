@@ -13,8 +13,9 @@ import groovy.transform.ToString
 @ToString(includePackage = false)
 class DeadCode implements Smelly {
 
-	String entityName
+	String name
 	String signature
+	String entityType
 
 	@Delegate
 	SourcePath sourcePath
@@ -25,7 +26,7 @@ class DeadCode implements Smelly {
 	@Override
 	public String toString() {
 		return "DeadCode{" +
-				"entityName='" + entityName + '\'' +
+				"entityName='" + name + '\'' +
 				", signature='" + signature + '\'' +
 				", path=" + sourcePath +
 				", positions=" + sourceRange +

@@ -42,7 +42,7 @@ class LargeClassVisitor extends Visitor<LargeClass> {
 		}
 
 		if (sum >= sizeThreshold)
-			smells.add(new LargeClass(n.name, BadSmellHelper.createSignature(n),
+			smells.add(new LargeClass(n.name, BadSmellHelper.createSignature(n), sum.toInteger(),
 					SourcePath.of(path), BadSmellHelper.createSourceRangeFromNode(n)))
 	}
 
