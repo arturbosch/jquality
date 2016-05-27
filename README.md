@@ -1,5 +1,23 @@
 # SmartSmells
 
+### Info
+
+SmartSmells is a code smell detector for java powered by javaparser.
+Current found smells are:
+
+- GodClass
+- FeatureEnvy
+- DataClass
+- LongMethod
+- LongParameterList
+- ComplexMethod
+- LargeClass
+- CommentSmell
+- Cycle
+- Deadcode
+- MessageChain
+- MiddleMan
+
 ### Installation
 
 - cd {path}/SmartSmells
