@@ -1,6 +1,7 @@
 package com.gitlab.artismarti.smartsmells.common
 
 import com.github.javaparser.JavaParser
+import com.github.javaparser.ParseException
 import com.github.javaparser.ast.CompilationUnit
 import com.gitlab.artismarti.smartsmells.util.Cache
 import com.gitlab.artismarti.smartsmells.util.StreamCloser
@@ -8,6 +9,7 @@ import org.codehaus.groovy.runtime.IOGroovyMethods
 
 import java.nio.file.Files
 import java.nio.file.Path
+
 /**
  * @author artur
  */
@@ -22,12 +24,16 @@ class CompilationTree {
 		return Optional.ofNullable(pathToCompilationUnitCache.verifyAndReturn(path))
 	}
 
-	private static CompilationUnit compileFor(Path path) {
-		def unit = IOGroovyMethods.withCloseable(Files.newInputStream(path)) {
-			JavaParser.parse(it)
+	private static Optional<CompilationUnit> compileFor(Path path) {
+		return IOGroovyMethods.withCloseable(Files.newInputStream(path)) {
+			try {
+				def compilationUnit = JavaParser.parse(it)
+				pathToCompilationUnitCache.putPair(path, compilationUnit)
+				Optional.of(compilationUnit)
+			} catch (ParseException ignored) {
+				Optional.empty()
+			}
 		}
-		pathToCompilationUnitCache.putPair(path, unit)
-		return unit
 	}
 
 	static Optional<Path> findReferencedType(QualifiedType qualifiedType) {
@@ -53,11 +59,11 @@ class CompilationTree {
 
 	}
 
-	static CompilationUnit getCompilationUnit(Path path) {
+	static Optional<CompilationUnit> getCompilationUnit(Path path) {
 		def maybeUnit = getUnit(path)
 		def unit
 		if (maybeUnit.isPresent()) {
-			unit = maybeUnit.get()
+			unit = maybeUnit
 		} else {
 			unit = compileFor(path)
 		}

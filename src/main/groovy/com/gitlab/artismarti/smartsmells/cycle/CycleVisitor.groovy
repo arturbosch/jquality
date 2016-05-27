@@ -65,13 +65,15 @@ class CycleVisitor extends Visitor<Cycle> {
 
 	def searchForCycles(Path path, QualifiedType thisClass, FieldDeclaration field) {
 
-		CompilationUnit unit = CompilationTree.getCompilationUnit(path)
-		def visitor = new SameFieldTypeVisitor(thisClass)
-		visitor.visit(unit, null)
+		CompilationTree.getCompilationUnit(path).ifPresent {
+			def visitor = new SameFieldTypeVisitor(thisClass)
+			visitor.visit(it, null)
 
-		if (visitor.haveFound()) {
-			addCycle(visitor, thisClass, field, path)
+			if (visitor.haveFound()) {
+				addCycle(visitor, thisClass, field, path)
+			}
 		}
+
 	}
 
 	private void addCycle(SameFieldTypeVisitor visitor, QualifiedType thisClass, FieldDeclaration field, Path path) {

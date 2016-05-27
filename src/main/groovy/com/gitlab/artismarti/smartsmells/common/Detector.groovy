@@ -7,6 +7,7 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.util.function.BinaryOperator
 import java.util.stream.Collectors
+
 /**
  * @author artur
  */
@@ -53,10 +54,14 @@ abstract class Detector<T extends Smelly> {
 	 */
 	Set<T> execute(Path path) {
 		def visitor = getVisitor(path)
-		def unit = CompilationTree.getCompilationUnit(path)
-		visitor.visit(unit, null)
-		smells.addAll(visitor.smells)
-		return visitor.smells
+		def maybeUnit = CompilationTree.getCompilationUnit(path)
+		def newSmells = Collections.emptySet()
+		if (maybeUnit.isPresent()) {
+			visitor.visit(maybeUnit.get(), null)
+			newSmells = visitor.smells
+			smells.addAll(newSmells)
+		}
+		return newSmells
 	}
 
 	/**
