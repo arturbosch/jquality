@@ -1,0 +1,36 @@
+comment:
+  active: 'true'
+complexmethod:
+  active: 'true'
+  threshold: '10'
+cycle:
+  active: 'true'
+dataclass:
+  active: 'true'
+deadcode:
+  active: 'true'
+featureenvy:
+  active: 'true'
+  threshold: '0.52'
+  base: '0.5'
+  weight: '0.5'
+godclass:
+  active: 'true'
+  wmc: '20'
+  atfd: '5'
+  tcc: '0.1'
+largeclass:
+  active: 'true'
+  threshold: '150'
+longmethod:
+  active: 'true'
+  threshold: '10'
+longparameterlist:
+  active: 'true'
+  threshold: '5'
+middleman:
+  active: 'true'
+  threshold: 'half'
+messagechain:
+  active: 'true'
+  threshold: '2'
