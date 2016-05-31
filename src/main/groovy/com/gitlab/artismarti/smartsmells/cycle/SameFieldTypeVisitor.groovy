@@ -38,7 +38,13 @@ class SameFieldTypeVisitor extends VoidVisitorAdapter {
 		String unqualifiedName = innerClassesHandler.appendOuterClassIfInnerClass(n)
 		currentClass = PackageImportHelper.getQualifiedType(
 				packageImportHolder, new ClassOrInterfaceType(unqualifiedName))
-		super.visit(n, arg)
+		if (currentClass.name == searchedType.name) {
+			// Note: Singletons are no cycles
+			found = false
+		} else {
+			super.visit(n, arg)
+		}
+
 	}
 
 	@Override

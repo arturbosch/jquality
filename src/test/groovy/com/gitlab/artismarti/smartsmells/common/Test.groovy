@@ -10,6 +10,8 @@ class Test {
 	static Path PATH = Paths.get("./src/test/groovy")
 	static Path CYCLE_DUMMY_PATH =
 			Paths.get("./src/test/groovy/com/gitlab/artismarti/smartsmells/java/CycleDummy.java")
+	static Path SINGLETON_CYCLE_PATH =
+			Paths.get("./src/test/groovy/com/gitlab/artismarti/smartsmells/java/SingletonCycleDummy.java")
 	static Path DATA_CLASS_DUMMY_PATH =
 			Paths.get("./src/test/groovy/com/gitlab/artismarti/smartsmells/java/DataClassDummy.java")
 	static Path EMPTY_DATA_CLASS_DUMMY_PATH =

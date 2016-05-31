@@ -1,20 +1,14 @@
 package com.gitlab.artismarti.smartsmells.cycle
 
-import com.gitlab.artismarti.smartsmells.common.CompilationTree
 import com.gitlab.artismarti.smartsmells.common.Test
 import com.gitlab.artismarti.smartsmells.common.source.SourcePath
 import com.gitlab.artismarti.smartsmells.common.source.SourceRange
-import spock.lang.Specification
 
 import java.nio.file.Paths
 /**
  * @author artur
  */
-class CycleDetectorTest extends Specification {
-
-	def cleanup() {
-		CompilationTree.reset()
-	}
+class CycleDetectorTest extends AbstractCycleTest {
 
 	def "find one cycle in CycleDummy and OtherCycle, one as inner classes of CycleDummy"() {
 		expect:
