@@ -21,7 +21,7 @@ Current found smells are:
 ### Installation
 
 - cd {path}/SmartSmells
-- gradle clean build for install into local m2 repo
+- gradle unitTest to verify all tests
 - gradle fatJar to build an executable jar
 
 ### Usage
