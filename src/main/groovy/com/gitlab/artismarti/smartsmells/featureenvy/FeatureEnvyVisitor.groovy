@@ -5,12 +5,10 @@ import com.github.javaparser.ast.CompilationUnit
 import com.github.javaparser.ast.ImportDeclaration
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration
 import com.github.javaparser.ast.body.MethodDeclaration
-import com.gitlab.artismarti.smartsmells.common.*
-import com.gitlab.artismarti.smartsmells.common.helper.MethodHelper
-import com.gitlab.artismarti.smartsmells.common.helper.NodeHelper
-import com.gitlab.artismarti.smartsmells.common.helper.TypeHelper
-import com.gitlab.artismarti.smartsmells.common.helper.VariableHelper
-import com.gitlab.artismarti.smartsmells.common.helper.LocaleVariableHelper
+import com.github.javaparser.ast.expr.ObjectCreationExpr
+import com.gitlab.artismarti.smartsmells.common.CustomVariableDeclaration
+import com.gitlab.artismarti.smartsmells.common.Visitor
+import com.gitlab.artismarti.smartsmells.common.helper.*
 import com.gitlab.artismarti.smartsmells.common.source.SourcePath
 
 import java.nio.file.Path
@@ -48,7 +46,9 @@ class FeatureEnvyVisitor extends Visitor<FeatureEnvy> {
 
 	private analyzeMethods(List<MethodDeclaration> methods) {
 		def filter = new JavaClassFilter(imports)
-		methods.stream().filter { MethodHelper.sizeBiggerThan(2, it) }.each {
+		MethodHelper.filterAnonymousMethods(methods)
+				.stream()
+				.filter { MethodHelper.sizeBiggerThan(2, it) }.each {
 
 			def allCalls = MethodHelper.getAllMethodInvocations(it)
 
@@ -69,8 +69,19 @@ class FeatureEnvyVisitor extends Visitor<FeatureEnvy> {
 
 			if (factor > featureEnvyFactor.threshold) {
 				double roundedFactor = String.format("%.2f", factor).toDouble();
-				smells.add(new FeatureEnvy(method.name, method.declarationAsString, it.name,
-						it.type.toString(), roundedFactor, featureEnvyFactor.threshold, SourcePath.of(path), it.sourceRange))
+
+				def featureEnvy = new FeatureEnvy(method.name, method.declarationAsString, it.name,
+						it.type.toString(), roundedFactor, featureEnvyFactor.threshold,
+						SourcePath.of(path), it.sourceRange)
+
+				if (method.name == "run") {
+					def parent = method.getParentNode()
+					if (parent instanceof ObjectCreationExpr) {
+						parent.println "jaaa"
+					}
+				}
+
+				smells.add(featureEnvy)
 			}
 		}
 	}

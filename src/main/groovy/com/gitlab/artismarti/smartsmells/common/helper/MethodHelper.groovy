@@ -7,6 +7,7 @@ import com.github.javaparser.ast.body.MethodDeclaration
 import com.github.javaparser.ast.body.Parameter
 import com.github.javaparser.ast.expr.AssignExpr
 import com.github.javaparser.ast.expr.NameExpr
+import com.github.javaparser.ast.expr.ObjectCreationExpr
 import com.github.javaparser.ast.stmt.ExpressionStmt
 import com.github.javaparser.ast.stmt.ReturnStmt
 import com.github.javaparser.ast.stmt.Statement
@@ -82,5 +83,19 @@ class MethodHelper {
 
 	static boolean sizeBiggerThan(int threshold, MethodDeclaration methodDeclaration) {
 		return Optional.ofNullable(methodDeclaration.body).filter { it.stmts.size() > threshold }.isPresent()
+	}
+
+	/**
+	 * Use this method if anonymous classes produce duplicates for specific smells which
+	 * occur in methods.
+	 * @param methods list of all methods from a class
+	 * @return filtered methods
+	 */
+	static List<MethodDeclaration> filterAnonymousMethods(List<MethodDeclaration> methods) {
+		return methods.stream().filter {
+			!Optional.ofNullable(it.getParentNode())
+					.filter { it instanceof ObjectCreationExpr }
+					.isPresent()
+		}.collect()
 	}
 }

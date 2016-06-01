@@ -14,7 +14,8 @@ class SystemTestOnQuideIT extends Specification {
 
 	def "run on quide and find no same feature envy twice"() {
 		given:
-		def path = "/home/artur/Repos/quide/Implementierung/"
+		def path = "/home/artur/Repos/quide/Implementierung/QuIDE_Plugin/src/de.uni_bremen.st.quide.plugin/"
+//		def path = "/home/artur/Arbeit/pooka-co/trunk/pooka/src"
 		def result = DetectorFacade.builder().fullStackFacade().run(Paths.get(path))
 		def envies = result.of(Smell.FEATURE_ENVY)
 		when:
