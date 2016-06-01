@@ -68,8 +68,9 @@ class FeatureEnvyVisitor extends Visitor<FeatureEnvy> {
 			double factor = calc(count, allCalls)
 
 			if (factor > featureEnvyFactor.threshold) {
+				double roundedFactor = String.format("%.2f", factor).toDouble();
 				smells.add(new FeatureEnvy(method.name, method.declarationAsString, it.name,
-						it.type.toString(), factor, featureEnvyFactor.threshold, SourcePath.of(path), it.sourceRange))
+						it.type.toString(), roundedFactor, featureEnvyFactor.threshold, SourcePath.of(path), it.sourceRange))
 			}
 		}
 	}
