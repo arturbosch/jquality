@@ -16,11 +16,6 @@ import java.nio.file.Paths
  */
 class Main {
 
-//		def path = Paths.get("/home/artur/Repos/quide/Implementierung/QuideService/src")
-//		def path = Paths.get("/home/artur/Downloads/argouml-master")
-//		def path = Paths.get("/home/artur/Arbeit/pooka-co/trunk/pooka/src")
-//		def path = Paths.get("/home/artur/Arbeit/tools/ismell/src")
-
 	@Parameter(names = ["--input", "-i"], description = "Project path to analyze")
 	String projectPath;
 	@Parameter(names = ["--output", "-o"], description = "Xml output path")
