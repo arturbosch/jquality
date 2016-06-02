@@ -68,7 +68,7 @@ class FeatureEnvyVisitor extends Visitor<FeatureEnvy> {
 			double factor = calc(count, allCalls)
 
 			if (factor > featureEnvyFactor.threshold) {
-				double roundedFactor = String.format("%.2f", factor).toDouble();
+				def roundedFactor = (factor * 100).toInteger().toDouble() / 100
 
 				def featureEnvy = new FeatureEnvy(method.name, method.declarationAsString, it.name,
 						it.type.toString(), roundedFactor, featureEnvyFactor.threshold,
