@@ -29,7 +29,7 @@ class CustomVariableDeclaration {
 
 	public CustomVariableDeclaration(final int beginLine, final int beginColumn, final int endLine, final int endColumn,
 	                                 final int modifiers, final List<AnnotationExpr> annotations, final Type type,
-	                                 final VariableDeclaratorId id, final Expression expression, final Nature kind1) {
+	                                 final VariableDeclaratorId id, final Expression expression, final Nature nature) {
 		this.sourceRange = SourceRange.of(beginLine, endLine, beginColumn, endColumn)
 		this.modifiers = modifiers
 		this.annotations = annotations

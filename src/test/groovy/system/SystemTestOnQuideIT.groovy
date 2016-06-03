@@ -1,6 +1,7 @@
 package system
 
 import com.gitlab.artismarti.smartsmells.config.Smell
+import com.gitlab.artismarti.smartsmells.out.XMLWriter
 import com.gitlab.artismarti.smartsmells.start.DetectorFacade
 import spock.lang.Specification
 
@@ -22,7 +23,13 @@ class SystemTestOnQuideIT extends Specification {
 		def duplicates = envies.stream()
 				.filter { Collections.frequency(envies, it) > 1 }
 				.collect(Collectors.toSet())
+		envies.each { println it.toString() }
 		then:
 		duplicates.isEmpty()
+		when:
+		def xml = XMLWriter.toXml(result)
+		println xml
+		then:
+		xml.contains("FeatureEnvy")
 	}
 }
