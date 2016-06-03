@@ -13,6 +13,10 @@ import groovy.transform.ToString
 @ToString(includePackage = false)
 class CustomVariableDeclaration {
 
+	enum Nature {
+		Local, Field, Parameter
+	}
+
 	int modifiers;
 	List<AnnotationExpr> annotations;
 	Type type;
@@ -20,10 +24,12 @@ class CustomVariableDeclaration {
 	int arrayCount;
 	Expression expression;
 	SourceRange sourceRange
+	Nature nature
+
 
 	public CustomVariableDeclaration(final int beginLine, final int beginColumn, final int endLine, final int endColumn,
 	                                 final int modifiers, final List<AnnotationExpr> annotations, final Type type,
-	                                 final VariableDeclaratorId id, final Expression expression) {
+	                                 final VariableDeclaratorId id, final Expression expression, final Nature kind1) {
 		this.sourceRange = SourceRange.of(beginLine, endLine, beginColumn, endColumn)
 		this.modifiers = modifiers
 		this.annotations = annotations
@@ -31,6 +37,7 @@ class CustomVariableDeclaration {
 		this.name = id.name
 		this.arrayCount = id.arrayCount
 		this.expression = expression
+		this.nature = nature
 	}
 
 }

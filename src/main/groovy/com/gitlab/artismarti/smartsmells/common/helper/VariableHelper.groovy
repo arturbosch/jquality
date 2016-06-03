@@ -26,7 +26,8 @@ class VariableHelper {
 							declaration.annotations,
 							declaration.type,
 							it.id,
-							it.init)
+							it.init,
+							CustomVariableDeclaration.Nature.Local)
 				}
 		}.flatMap { it.stream() }.collect(Collectors.toSet())
 	}
@@ -44,7 +45,8 @@ class VariableHelper {
 							decl.annotations,
 							decl.type,
 							it.id,
-							it.init)
+							it.init,
+							CustomVariableDeclaration.Nature.Field)
 				}
 		}.flatMap { it.stream() }.collect(Collectors.toSet())
 	}
@@ -60,7 +62,8 @@ class VariableHelper {
 					it.annotations,
 					it.type,
 					it.id,
-					new NameExpr(it.id.name))
+					new NameExpr(it.id.name),
+					CustomVariableDeclaration.Nature.Parameter)
 		}
 	}
 }

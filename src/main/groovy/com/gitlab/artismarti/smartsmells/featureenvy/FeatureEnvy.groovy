@@ -16,8 +16,9 @@ class FeatureEnvy implements Smelly {
 	String name
 	String signature
 
-	String object
+	String objectName
 	String objectSignature
+	String objectType
 
 	double factor
 	double factorThreshold
@@ -35,7 +36,7 @@ class FeatureEnvy implements Smelly {
 		FeatureEnvy that = (FeatureEnvy) o
 
 		if (name != that.name) return false
-		if (object != that.object) return false
+		if (objectName != that.objectName) return false
 		if (objectSignature != that.objectSignature) return false
 		if (signature != that.signature) return false
 		if (sourcePath != that.sourcePath) return false
@@ -49,7 +50,7 @@ class FeatureEnvy implements Smelly {
 		int result
 		result = (name != null ? name.hashCode() : 0)
 		result = 31 * result + (signature != null ? signature.hashCode() : 0)
-		result = 31 * result + (object != null ? object.hashCode() : 0)
+		result = 31 * result + (objectName != null ? objectName.hashCode() : 0)
 		result = 31 * result + (objectSignature != null ? objectSignature.hashCode() : 0)
 		result = 31 * result + (sourcePath != null ? sourcePath.hashCode() : 0)
 		result = 31 * result + (sourceRange != null ? sourceRange.hashCode() : 0)

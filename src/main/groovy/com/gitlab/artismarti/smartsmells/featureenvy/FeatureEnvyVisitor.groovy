@@ -5,7 +5,6 @@ import com.github.javaparser.ast.CompilationUnit
 import com.github.javaparser.ast.ImportDeclaration
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration
 import com.github.javaparser.ast.body.MethodDeclaration
-import com.github.javaparser.ast.expr.ObjectCreationExpr
 import com.gitlab.artismarti.smartsmells.common.CustomVariableDeclaration
 import com.gitlab.artismarti.smartsmells.common.Visitor
 import com.gitlab.artismarti.smartsmells.common.helper.*
@@ -70,16 +69,11 @@ class FeatureEnvyVisitor extends Visitor<FeatureEnvy> {
 			if (factor > featureEnvyFactor.threshold) {
 				def roundedFactor = (factor * 100).toInteger().toDouble() / 100
 
-				def featureEnvy = new FeatureEnvy(method.name, method.declarationAsString, it.name,
-						it.type.toString(), roundedFactor, featureEnvyFactor.threshold,
+				def featureEnvy = new FeatureEnvy(
+						method.name, method.declarationAsString,
+						it.name, it.type.toString(), it.nature.toString(),
+						roundedFactor, featureEnvyFactor.threshold,
 						SourcePath.of(path), it.sourceRange)
-
-				if (method.name == "run") {
-					def parent = method.getParentNode()
-					if (parent instanceof ObjectCreationExpr) {
-						parent.println "jaaa"
-					}
-				}
 
 				smells.add(featureEnvy)
 			}
