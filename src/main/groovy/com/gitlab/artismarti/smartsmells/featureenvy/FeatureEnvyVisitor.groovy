@@ -4,7 +4,6 @@ import com.github.javaparser.ASTHelper
 import com.github.javaparser.ast.CompilationUnit
 import com.github.javaparser.ast.ImportDeclaration
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration
-import com.github.javaparser.ast.body.FieldDeclaration
 import com.github.javaparser.ast.body.MethodDeclaration
 import com.github.javaparser.ast.type.ClassOrInterfaceType
 import com.gitlab.artismarti.smartsmells.common.CustomVariableDeclaration
@@ -16,7 +15,6 @@ import com.gitlab.artismarti.smartsmells.cycle.InnerClassesHandler
 
 import java.nio.file.Path
 import java.util.stream.Collectors
-
 /**
  * @author artur
  */
@@ -55,18 +53,12 @@ class FeatureEnvyVisitor extends Visitor<FeatureEnvy> {
 
 		currentClassName = n.name
 		def filteredFields = NodeHelper.findFields(n).stream()
-				.filter { inCurrentClass(it, currentClassName) }
+				.filter { ClassHelper.inCurrentClass(it, currentClassName) }
 				.collect(Collectors.toList())
 
 		fields = VariableHelper.fromFieldToCustomVariableDeclarations(filteredFields)
 
 		analyzeMethods(NodeHelper.findMethods(n))
-	}
-
-	static boolean inCurrentClass(FieldDeclaration field, String className) {
-		return NodeHelper.findDeclaringClass(field)
-				.filter { it.name == className }
-				.isPresent()
 	}
 
 	private analyzeMethods(List<MethodDeclaration> methods) {
