@@ -36,12 +36,12 @@ class NodeHelper {
 	}
 
 	static List<String> findFieldNames(Node n) {
-		findFields(n)
-				.collect({ it.variables })
-				.collect({ it.id })
-				.collect({ it.name })
-				.flatten()
-				.collect({ (String) it })
+		findFields(n).stream()
+				.map { it.variables }
+				.map { it.id }
+				.map { it.name }
+				.flatMap { it.stream() }
+				.collect { (String) it }
 	}
 
 	static List<FieldDeclaration> findPrivateFields(Node n) {
