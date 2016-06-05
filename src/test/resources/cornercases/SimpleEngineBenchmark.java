@@ -45,7 +45,11 @@ import org.elasticsearch.util.TimeValue;
 import org.elasticsearch.util.lucene.Lucene;
 import org.elasticsearch.util.settings.Settings;
 
-import java.util.concurrent.*;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.CyclicBarrier;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.elasticsearch.util.lucene.DocumentBuilder.*;
@@ -56,250 +60,250 @@ import static org.elasticsearch.util.settings.ImmutableSettings.Builder.*;
  */
 public class SimpleEngineBenchmark {
 
-    private final Store store;
+	private final Store store;
 
-    private final Engine engine;
+	private final Engine engine;
 
+	private final AtomicInteger idGenerator = new AtomicInteger();
 
-    private final AtomicInteger idGenerator = new AtomicInteger();
+	private String[] contentItems = new String[]{"test1", "test2", "test3"};
 
-    private String[] contentItems = new String[]{"test1", "test2", "test3"};
+	private volatile int lastRefreshedId = 0;
 
-    private volatile int lastRefreshedId = 0;
+	private int searcherIterations = 10;
 
+	private Thread[] searcherThreads = new Thread[1];
 
-    private int searcherIterations = 10;
+	private int writerIterations = 10;
 
-    private Thread[] searcherThreads = new Thread[1];
+	private Thread[] writerThreads = new Thread[1];
 
-    private int writerIterations = 10;
+	private TimeValue refreshSchedule = new TimeValue(1, TimeUnit.SECONDS);
 
-    private Thread[] writerThreads = new Thread[1];
+	private TimeValue flushSchedule = new TimeValue(1, TimeUnit.MINUTES);
 
-    private TimeValue refreshSchedule = new TimeValue(1, TimeUnit.SECONDS);
+	private CountDownLatch latch;
+	private CyclicBarrier barrier1;
+	private CyclicBarrier barrier2;
 
-    private TimeValue flushSchedule = new TimeValue(1, TimeUnit.MINUTES);
+	// scheduled thread pool for both refresh and flush operations
+	private ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(2);
 
+	public SimpleEngineBenchmark(Store store, Engine engine) {
+		this.store = store;
+		this.engine = engine;
+	}
 
-    private CountDownLatch latch;
-    private CyclicBarrier barrier1;
-    private CyclicBarrier barrier2;
+	public SimpleEngineBenchmark numberOfContentItems(int numberOfContentItems) {
+		contentItems = new String[numberOfContentItems];
+		for (int i = 0; i < contentItems.length; i++) {
+			contentItems[i] = "content" + i;
+		}
+		return this;
+	}
 
+	public SimpleEngineBenchmark searcherThreads(int numberOfSearcherThreads) {
+		searcherThreads = new Thread[numberOfSearcherThreads];
+		return this;
+	}
 
-    // scheduled thread pool for both refresh and flush operations
-    private ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(2);
+	public SimpleEngineBenchmark searcherIterations(int searcherIterations) {
+		this.searcherIterations = searcherIterations;
+		return this;
+	}
 
-    public SimpleEngineBenchmark(Store store, Engine engine) {
-        this.store = store;
-        this.engine = engine;
-    }
+	public SimpleEngineBenchmark writerThreads(int numberOfWriterThreads) {
+		writerThreads = new Thread[numberOfWriterThreads];
+		return this;
+	}
 
-    public SimpleEngineBenchmark numberOfContentItems(int numberOfContentItems) {
-        contentItems = new String[numberOfContentItems];
-        for (int i = 0; i < contentItems.length; i++) {
-            contentItems[i] = "content" + i;
-        }
-        return this;
-    }
+	public SimpleEngineBenchmark writerIterations(int writerIterations) {
+		this.writerIterations = writerIterations;
+		return this;
+	}
 
-    public SimpleEngineBenchmark searcherThreads(int numberOfSearcherThreads) {
-        searcherThreads = new Thread[numberOfSearcherThreads];
-        return this;
-    }
+	public SimpleEngineBenchmark refreshSchedule(TimeValue refreshSchedule) {
+		this.refreshSchedule = refreshSchedule;
+		return this;
+	}
 
-    public SimpleEngineBenchmark searcherIterations(int searcherIterations) {
-        this.searcherIterations = searcherIterations;
-        return this;
-    }
+	public SimpleEngineBenchmark flushSchedule(TimeValue flushSchedule) {
+		this.flushSchedule = flushSchedule;
+		return this;
+	}
 
-    public SimpleEngineBenchmark writerThreads(int numberOfWriterThreads) {
-        writerThreads = new Thread[numberOfWriterThreads];
-        return this;
-    }
+	public SimpleEngineBenchmark build() {
+		for (int i = 0; i < searcherThreads.length; i++) {
+			searcherThreads[i] = new Thread(new SearcherThread(), "Searcher[" + i + "]");
+		}
+		for (int i = 0; i < writerThreads.length; i++) {
+			writerThreads[i] = new Thread(new WriterThread(), "Writer[" + i + "]");
+		}
 
-    public SimpleEngineBenchmark writerIterations(int writerIterations) {
-        this.writerIterations = writerIterations;
-        return this;
-    }
+		latch = new CountDownLatch(searcherThreads.length + writerThreads.length);
+		barrier1 = new CyclicBarrier(searcherThreads.length + writerThreads.length + 1);
+		barrier2 = new CyclicBarrier(searcherThreads.length + writerThreads.length + 1);
 
-    public SimpleEngineBenchmark refreshSchedule(TimeValue refreshSchedule) {
-        this.refreshSchedule = refreshSchedule;
-        return this;
-    }
+		// warmup by indexing all content items
+		StopWatch stopWatch = new StopWatch();
+		stopWatch.start();
+		for (String contentItem : contentItems) {
+			int id = idGenerator.incrementAndGet();
+			String sId = Integer.toString(id);
+			Document doc = doc().add(field("_id", sId))
+					.add(field("content", contentItem)).build();
+			engine.index(new Engine.Index(new Term("_id", sId), doc, Lucene.STANDARD_ANALYZER, "type", sId, "{ ... }"));
+		}
+		engine.refresh(true);
+		stopWatch.stop();
+		System.out.println("Warmup of [" + contentItems.length + "] content items, took " + stopWatch.totalTime());
 
-    public SimpleEngineBenchmark flushSchedule(TimeValue flushSchedule) {
-        this.flushSchedule = flushSchedule;
-        return this;
-    }
+		return this;
+	}
 
-    public SimpleEngineBenchmark build() {
-        for (int i = 0; i < searcherThreads.length; i++) {
-            searcherThreads[i] = new Thread(new SearcherThread(), "Searcher[" + i + "]");
-        }
-        for (int i = 0; i < writerThreads.length; i++) {
-            writerThreads[i] = new Thread(new WriterThread(), "Writer[" + i + "]");
-        }
+	public void run() throws Exception {
+		for (Thread t : searcherThreads) {
+			t.start();
+		}
+		for (Thread t : writerThreads) {
+			t.start();
+		}
+		barrier1.await();
 
-        latch = new CountDownLatch(searcherThreads.length + writerThreads.length);
-        barrier1 = new CyclicBarrier(searcherThreads.length + writerThreads.length + 1);
-        barrier2 = new CyclicBarrier(searcherThreads.length + writerThreads.length + 1);
+		Refresher refresher = new Refresher();
+		scheduledExecutorService.scheduleWithFixedDelay(refresher, refreshSchedule.millis(), refreshSchedule.millis(), TimeUnit.MILLISECONDS);
+		Flusher flusher = new Flusher();
+		scheduledExecutorService.scheduleWithFixedDelay(flusher, flushSchedule.millis(), flushSchedule.millis(), TimeUnit.MILLISECONDS);
 
-        // warmup by indexing all content items
-        StopWatch stopWatch = new StopWatch();
-        stopWatch.start();
-        for (String contentItem : contentItems) {
-            int id = idGenerator.incrementAndGet();
-            String sId = Integer.toString(id);
-            Document doc = doc().add(field("_id", sId))
-                    .add(field("content", contentItem)).build();
-            engine.index(new Engine.Index(new Term("_id", sId), doc, Lucene.STANDARD_ANALYZER, "type", sId, "{ ... }"));
-        }
-        engine.refresh(true);
-        stopWatch.stop();
-        System.out.println("Warmup of [" + contentItems.length + "] content items, took " + stopWatch.totalTime());
+		StopWatch stopWatch = new StopWatch();
+		stopWatch.start();
+		barrier2.await();
 
-        return this;
-    }
+		latch.await();
+		stopWatch.stop();
 
-    public void run() throws Exception {
-        for (Thread t : searcherThreads) {
-            t.start();
-        }
-        for (Thread t : writerThreads) {
-            t.start();
-        }
-        barrier1.await();
+		System.out.println("Summary");
+		System.out.println("   -- Readers [" + searcherThreads.length + "] with [" + searcherIterations + "] iterations");
+		System.out.println("   -- Writers [" + writerThreads.length + "] with [" + writerIterations + "] iterations");
+		System.out.println("   -- Took: " + stopWatch.totalTime());
+		System.out.println("   -- Refresh [" + refresher.id + "] took: " + refresher.stopWatch.totalTime());
+		System.out.println("   -- Flush [" + flusher.id + "] took: " + flusher.stopWatch.totalTime());
+		System.out.println("   -- Store size " + store.estimateSize());
 
-        Refresher refresher = new Refresher();
-        scheduledExecutorService.scheduleWithFixedDelay(refresher, refreshSchedule.millis(), refreshSchedule.millis(), TimeUnit.MILLISECONDS);
-        Flusher flusher = new Flusher();
-        scheduledExecutorService.scheduleWithFixedDelay(flusher, flushSchedule.millis(), flushSchedule.millis(), TimeUnit.MILLISECONDS);
+		scheduledExecutorService.shutdown();
 
-        StopWatch stopWatch = new StopWatch();
-        stopWatch.start();
-        barrier2.await();
+		engine.refresh(true);
+		stopWatch = new StopWatch();
+		stopWatch.start();
+		Engine.Searcher searcher = engine.searcher();
+		TopDocs topDocs = searcher.searcher().search(new MatchAllDocsQuery(), idGenerator.get() + 1);
+		stopWatch.stop();
+		System.out.println("   -- Indexed [" + idGenerator.get() + "] docs, found [" + topDocs.totalHits + "] hits, took " + stopWatch.totalTime());
+		searcher.release();
+	}
 
-        latch.await();
-        stopWatch.stop();
+	private String content(long number) {
+		return contentItems[((int) (number % contentItems.length))];
+	}
 
-        System.out.println("Summary");
-        System.out.println("   -- Readers [" + searcherThreads.length + "] with [" + searcherIterations + "] iterations");
-        System.out.println("   -- Writers [" + writerThreads.length + "] with [" + writerIterations + "] iterations");
-        System.out.println("   -- Took: " + stopWatch.totalTime());
-        System.out.println("   -- Refresh [" + refresher.id + "] took: " + refresher.stopWatch.totalTime());
-        System.out.println("   -- Flush [" + flusher.id + "] took: " + flusher.stopWatch.totalTime());
-        System.out.println("   -- Store size " + store.estimateSize());
+	private class Flusher implements Runnable {
+		StopWatch stopWatch = new StopWatch();
+		private int id;
 
-        scheduledExecutorService.shutdown();
+		@Override
+		public void run() {
+			stopWatch.start("" + ++id);
+			engine.flush();
+			stopWatch.stop();
+		}
+	}
 
-        engine.refresh(true);
-        stopWatch = new StopWatch();
-        stopWatch.start();
-        Engine.Searcher searcher = engine.searcher();
-        TopDocs topDocs = searcher.searcher().search(new MatchAllDocsQuery(), idGenerator.get() + 1);
-        stopWatch.stop();
-        System.out.println("   -- Indexed [" + idGenerator.get() + "] docs, found [" + topDocs.totalHits + "] hits, took " + stopWatch.totalTime());
-        searcher.release();
-    }
+	private class Refresher implements Runnable {
+		StopWatch stopWatch = new StopWatch();
+		private int id;
 
-    private String content(long number) {
-        return contentItems[((int) (number % contentItems.length))];
-    }
+		@Override
+		public synchronized void run() {
+			stopWatch.start("" + ++id);
+			int lastId = idGenerator.get();
+			engine.refresh(true);
+			lastRefreshedId = lastId;
+			stopWatch.stop();
+		}
+	}
 
-    private class Flusher implements Runnable {
-        StopWatch stopWatch = new StopWatch();
-        private int id;
+	private class SearcherThread implements Runnable {
+		@Override
+		public void run() {
+			try {
+				barrier1.await();
+				barrier2.await();
+				for (int i = 0; i < searcherIterations; i++) {
+					Engine.Searcher searcher = engine.searcher();
+					TopDocs topDocs = searcher.searcher().search(new TermQuery(new Term("content", content(i))), 10);
+					// read one
+					searcher.searcher().doc(topDocs.scoreDocs[0].doc, new LoadFirstFieldSelector());
+					searcher.release();
+				}
+			} catch (Exception e) {
+				System.out.println("Searcher thread failed");
+				e.printStackTrace();
+			} finally {
+				latch.countDown();
+			}
+		}
+	}
 
-        @Override public void run() {
-            stopWatch.start("" + ++id);
-            engine.flush();
-            stopWatch.stop();
-        }
-    }
+	private class WriterThread implements Runnable {
+		@Override
+		public void run() {
+			try {
+				barrier1.await();
+				barrier2.await();
+				for (int i = 0; i < writerIterations; i++) {
+					int id = idGenerator.incrementAndGet();
+					String sId = Integer.toString(id);
+					Document doc = doc().add(field("_id", sId))
+							.add(field("content", content(id))).build();
+					engine.index(new Engine.Index(new Term("_id", sId), doc, Lucene.STANDARD_ANALYZER, "type", sId, "{ ... }"));
+				}
+			} catch (Exception e) {
+				System.out.println("Writer thread failed");
+				e.printStackTrace();
+			} finally {
+				latch.countDown();
+			}
+		}
+	}
 
-    private class Refresher implements Runnable {
-        StopWatch stopWatch = new StopWatch();
-        private int id;
-
-        @Override public synchronized void run() {
-            stopWatch.start("" + ++id);
-            int lastId = idGenerator.get();
-            engine.refresh(true);
-            lastRefreshedId = lastId;
-            stopWatch.stop();
-        }
-    }
-
-    private class SearcherThread implements Runnable {
-        @Override public void run() {
-            try {
-                barrier1.await();
-                barrier2.await();
-                for (int i = 0; i < searcherIterations; i++) {
-                    Engine.Searcher searcher = engine.searcher();
-                    TopDocs topDocs = searcher.searcher().search(new TermQuery(new Term("content", content(i))), 10);
-                    // read one
-                    searcher.searcher().doc(topDocs.scoreDocs[0].doc, new LoadFirstFieldSelector());
-                    searcher.release();
-                }
-            } catch (Exception e) {
-                System.out.println("Searcher thread failed");
-                e.printStackTrace();
-            } finally {
-                latch.countDown();
-            }
-        }
-    }
-
-    private class WriterThread implements Runnable {
-        @Override public void run() {
-            try {
-                barrier1.await();
-                barrier2.await();
-                for (int i = 0; i < writerIterations; i++) {
-                    int id = idGenerator.incrementAndGet();
-                    String sId = Integer.toString(id);
-                    Document doc = doc().add(field("_id", sId))
-                            .add(field("content", content(id))).build();
-                    engine.index(new Engine.Index(new Term("_id", sId), doc, Lucene.STANDARD_ANALYZER, "type", sId, "{ ... }"));
-                }
-            } catch (Exception e) {
-                System.out.println("Writer thread failed");
-                e.printStackTrace();
-            } finally {
-                latch.countDown();
-            }
-        }
-    }
-
-    public static void main(String[] args) throws Exception {
-        ShardId shardId = new ShardId(new Index("index"), 1);
-        Settings settings = EMPTY_SETTINGS;
+	public static void main(String[] args) throws Exception {
+		ShardId shardId = new ShardId(new Index("index"), 1);
+		Settings settings = EMPTY_SETTINGS;
 
 //        Store store = new RamStore(shardId, settings);
-        Store store = new MemoryStore(shardId, settings);
+		Store store = new MemoryStore(shardId, settings);
 //        Store store = new NioFsStore(shardId, settings);
 
-        store.deleteContent();
+		store.deleteContent();
 
-        ThreadPool threadPool = new DynamicThreadPool();
-        SnapshotDeletionPolicy deletionPolicy = new SnapshotDeletionPolicy(new KeepOnlyLastDeletionPolicy(shardId, settings));
-        Engine engine = new RobinEngine(shardId, settings, store, deletionPolicy, new MemoryTranslog(shardId, settings), new LogByteSizeMergePolicyProvider(store),
-                new ConcurrentMergeSchedulerProvider(shardId, settings), new AnalysisService(shardId.index()), new SimilarityService(shardId.index()));
-        engine.start();
+		ThreadPool threadPool = new DynamicThreadPool();
+		SnapshotDeletionPolicy deletionPolicy = new SnapshotDeletionPolicy(new KeepOnlyLastDeletionPolicy(shardId, settings));
+		Engine engine = new RobinEngine(shardId, settings, store, deletionPolicy, new MemoryTranslog(shardId, settings), new LogByteSizeMergePolicyProvider(store),
+				new ConcurrentMergeSchedulerProvider(shardId, settings), new AnalysisService(shardId.index()), new SimilarityService(shardId.index()));
+		engine.start();
 
-        SimpleEngineBenchmark benchmark = new SimpleEngineBenchmark(store, engine)
-                .numberOfContentItems(1000)
-                .searcherThreads(50).searcherIterations(10000)
-                .writerThreads(10).writerIterations(10000)
-                .refreshSchedule(new TimeValue(1, TimeUnit.SECONDS))
-                .flushSchedule(new TimeValue(1, TimeUnit.MINUTES))
-                .build();
+		SimpleEngineBenchmark benchmark = new SimpleEngineBenchmark(store, engine)
+				.numberOfContentItems(1000)
+				.searcherThreads(50).searcherIterations(10000)
+				.writerThreads(10).writerIterations(10000)
+				.refreshSchedule(new TimeValue(1, TimeUnit.SECONDS))
+				.flushSchedule(new TimeValue(1, TimeUnit.MINUTES))
+				.build();
 
-        benchmark.run();
+		benchmark.run();
 
-        engine.close();
-        store.close();
-        threadPool.shutdown();
-    }
+		engine.close();
+		store.close();
+		threadPool.shutdown();
+	}
 }
