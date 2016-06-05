@@ -53,7 +53,7 @@ abstract class MethodMetricVisitor<T extends Smelly> extends Visitor<T> {
 
 	private LongMethod longMethodIntern(String header, String name, String signature, BodyDeclaration n, List<Statement> it) {
 		new LongMethod(header, name, signature, it.size(), threshold,
-				SourceRange.of(n.getBeginLine(), n.getBeginColumn(), n.getEndLine(), n.getEndColumn()),
+				SourceRange.of(n.getBeginLine(), n.getEndLine(), n.getBeginColumn(), n.getEndColumn()),
 				SourcePath.of(path)
 		)
 	}
