@@ -1,19 +1,25 @@
 package com.gitlab.artismarti.smartsmells.godclass
 
+import com.github.javaparser.ASTHelper
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration
 import com.github.javaparser.ast.body.ConstructorDeclaration
 import com.github.javaparser.ast.body.MethodDeclaration
 import com.github.javaparser.ast.expr.FieldAccessExpr
 import com.github.javaparser.ast.expr.MethodCallExpr
+import com.gitlab.artismarti.smartsmells.common.helper.ClassHelper
 import com.gitlab.artismarti.smartsmells.common.helper.MethodHelper
+import com.gitlab.artismarti.smartsmells.common.helper.ModifierHelper
+import com.gitlab.artismarti.smartsmells.common.helper.NameHelper
 import com.gitlab.artismarti.smartsmells.common.helper.NodeHelper
 import com.gitlab.artismarti.smartsmells.common.helper.BadSmellHelper
 import com.gitlab.artismarti.smartsmells.common.Visitor
+import com.gitlab.artismarti.smartsmells.common.helper.TypeHelper
 import com.gitlab.artismarti.smartsmells.common.source.SourcePath
 import com.gitlab.artismarti.smartsmells.common.source.SourcePosition
 import com.gitlab.artismarti.smartsmells.common.source.SourceRange
 
 import java.nio.file.Path
+import java.util.stream.Collectors
 
 /**
  * GodClasses := ((ATFD, TopValues(20%)) ∧ (ATFD, HigherThan(4))) ∧
@@ -36,16 +42,16 @@ class GodClassVisitor extends Visitor<GodClass> {
 	private int wmc = 0
 	private double tcc = 0.0
 
-	private String className
+	private String currentClassName
 	private List<String> fields = new ArrayList<>()
 	private List<String> methods = new ArrayList<>()
 	private Map<String, Set<String>> methodFieldAccesses = new HashMap<>()
 	private List<String> publicMethods = new ArrayList<>()
 
 	GodClassVisitor(int accessToForeignDataThreshold,
-					int weightedMethodCountThreshold,
-					double tiedClassCohesionThreshold,
-					Path path) {
+	                int weightedMethodCountThreshold,
+	                double tiedClassCohesionThreshold,
+	                Path path) {
 		super(path)
 		this.accessToForeignDataThreshold = accessToForeignDataThreshold
 		this.weightedMethodCountThreshold = weightedMethodCountThreshold
@@ -54,11 +60,27 @@ class GodClassVisitor extends Visitor<GodClass> {
 
 	@Override
 	void visit(ClassOrInterfaceDeclaration n, Object arg) {
-		this.className = n.name
 
-		fields = NodeHelper.findFieldNames(n)
-		methods = NodeHelper.findMethodNames(n)
-		publicMethods = NodeHelper.findPublicMethods(n)
+		ASTHelper.getNodesByType(n, ClassOrInterfaceDeclaration.class)
+				.each { visit(it, null) }
+
+		if (TypeHelper.isEmptyBody(n)) return
+		if (TypeHelper.hasNoMethods(n)) return
+
+
+		this.currentClassName = n.name
+
+		def filteredFields = NodeHelper.findFields(n).stream()
+				.filter { ClassHelper.inCurrentClass(it, currentClassName) }
+				.collect(Collectors.toList())
+
+		def filteredMethods = NodeHelper.findMethods(n).stream()
+				.filter { ClassHelper.inCurrentClass(it, currentClassName) }
+				.collect(Collectors.toList())
+
+		fields = NameHelper.toFieldNames(filteredFields)
+		methods = NameHelper.toMethodNames(filteredMethods)
+		publicMethods = NameHelper.toMethodNames(ModifierHelper.findPublicMethods(filteredMethods))
 
 		// traverse all nodes and calculate values before evaluate for god class
 		super.visit(n, arg)

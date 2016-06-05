@@ -21,27 +21,8 @@ class NodeHelper {
 				.collect(Collectors.toList())
 	}
 
-	static List<String> findPublicMethods(Node n) {
-		findMethods(n).stream()
-				.filter({ ModifierSet.isPublic(it.modifiers) })
-				.collect({ it.name })
-	}
-
 	static List<MethodDeclaration> findMethods(Node n) {
 		ASTHelper.getNodesByType(n, MethodDeclaration.class)
-	}
-
-	static List<String> findMethodNames(Node n) {
-		findMethods(n).collect({ it.name })
-	}
-
-	static List<String> findFieldNames(Node n) {
-		findFields(n).stream()
-				.map { it.variables }
-				.map { it.id }
-				.map { it.name }
-				.flatMap { it.stream() }
-				.collect { (String) it }
 	}
 
 	static List<FieldDeclaration> findPrivateFields(Node n) {
