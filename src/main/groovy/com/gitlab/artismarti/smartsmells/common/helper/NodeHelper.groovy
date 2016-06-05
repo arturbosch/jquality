@@ -62,13 +62,13 @@ class NodeHelper {
 				.collect()
 	}
 
-	static Optional<Node> findDeclaringClass(Node node) {
+	static Optional<ClassOrInterfaceDeclaration> findDeclaringClass(Node node) {
 
 		def parent = node
 		Looper.loop {
 			parent = parent.getParentNode()
 		} until { parent instanceof ClassOrInterfaceDeclaration || parent == null }
 
-		return Optional.ofNullable(parent)
+		return parent == null ? Optional.empty() : Optional.of(parent)
 	}
 }
