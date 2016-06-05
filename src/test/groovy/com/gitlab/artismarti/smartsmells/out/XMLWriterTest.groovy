@@ -15,7 +15,7 @@ class XMLWriterTest extends Specification {
 	def "smell to xml entry with escapes"() {
 
 		when:
-		def xml = XMLWriter.toXmlEntry(new FeatureEnvy("methode", "signature",
+		def xml = XMLWriter.toXmlEntry(new FeatureEnvy("methode", "signature", "class",
 				"<\"'>&", "objectSignature", "Locale",
 				1d, 1d, SourcePath.of(Paths.get(".")), SourceRange.of(1, 1, 1, 1)))
 

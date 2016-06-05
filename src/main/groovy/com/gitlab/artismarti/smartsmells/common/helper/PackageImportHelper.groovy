@@ -28,7 +28,7 @@ class PackageImportHelper {
 					String qualifiedName = imports.get(name)
 					return new QualifiedType(qualifiedName, QualifiedType.TypeToken.REFERENCE)
 				} else {
-					if (JdkHelper.isPartOfJavaLang(name)) {
+					if (JdkHelper.isPartOfJava(name)) {
 						return new QualifiedType("java.lang." + name, QualifiedType.TypeToken.JAVA_REFERENCE)
 					}
 					// lets assume it is in the same package

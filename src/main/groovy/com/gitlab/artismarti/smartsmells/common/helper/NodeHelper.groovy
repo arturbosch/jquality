@@ -6,6 +6,7 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration
 import com.github.javaparser.ast.body.FieldDeclaration
 import com.github.javaparser.ast.body.MethodDeclaration
 import com.github.javaparser.ast.body.ModifierSet
+import com.gitlab.artismarti.smartsmells.util.Looper
 
 import java.util.stream.Collectors
 
@@ -59,5 +60,15 @@ class NodeHelper {
 				.filter { it.parentNode instanceof ClassOrInterfaceDeclaration }
 				.map { it.name }
 				.collect()
+	}
+
+	static Optional<Node> findDeclaringClass(Node node) {
+
+		def parent = node
+		Looper.loop {
+			parent = parent.getParentNode()
+		} until { parent instanceof ClassOrInterfaceDeclaration || parent == null }
+
+		return Optional.ofNullable(parent)
 	}
 }

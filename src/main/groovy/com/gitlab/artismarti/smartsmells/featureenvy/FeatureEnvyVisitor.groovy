@@ -5,13 +5,15 @@ import com.github.javaparser.ast.CompilationUnit
 import com.github.javaparser.ast.ImportDeclaration
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration
 import com.github.javaparser.ast.body.MethodDeclaration
+import com.github.javaparser.ast.type.ClassOrInterfaceType
 import com.gitlab.artismarti.smartsmells.common.CustomVariableDeclaration
+import com.gitlab.artismarti.smartsmells.common.PackageImportHolder
 import com.gitlab.artismarti.smartsmells.common.Visitor
 import com.gitlab.artismarti.smartsmells.common.helper.*
 import com.gitlab.artismarti.smartsmells.common.source.SourcePath
+import com.gitlab.artismarti.smartsmells.cycle.InnerClassesHandler
 
 import java.nio.file.Path
-
 /**
  * @author artur
  */
@@ -22,6 +24,10 @@ class FeatureEnvyVisitor extends Visitor<FeatureEnvy> {
 	private Set<CustomVariableDeclaration> fields
 	private List<ImportDeclaration> imports
 
+	private String currentClassName
+	private PackageImportHolder packageImportHolder
+	private InnerClassesHandler innerClassesHandler
+
 	FeatureEnvyVisitor(Path path, FeatureEnvyFactor factor) {
 		super(path)
 		this.featureEnvyFactor = factor
@@ -30,6 +36,8 @@ class FeatureEnvyVisitor extends Visitor<FeatureEnvy> {
 	@Override
 	void visit(CompilationUnit n, Object arg) {
 		imports = ASTHelper.getNodesByType(n, ImportDeclaration.class)
+		packageImportHolder = new PackageImportHolder(n.package, n.imports)
+		innerClassesHandler = new InnerClassesHandler(n)
 		super.visit(n, arg)
 	}
 
@@ -48,6 +56,13 @@ class FeatureEnvyVisitor extends Visitor<FeatureEnvy> {
 		MethodHelper.filterAnonymousMethods(methods)
 				.stream()
 				.filter { MethodHelper.sizeBiggerThan(2, it) }.each {
+
+
+			def parent = NodeHelper.findDeclaringClass(it)
+			parent.ifPresent {
+				def type = new ClassOrInterfaceType(((ClassOrInterfaceDeclaration) parent.get()).name)
+				currentClassName = innerClassesHandler.getUnqualifiedNameForInnerClass(type)
+			}
 
 			def allCalls = MethodHelper.getAllMethodInvocations(it)
 
@@ -70,7 +85,7 @@ class FeatureEnvyVisitor extends Visitor<FeatureEnvy> {
 				def roundedFactor = (factor * 100).toInteger().toDouble() / 100
 
 				def featureEnvy = new FeatureEnvy(
-						method.name, method.declarationAsString,
+						method.name, method.declarationAsString, currentClassName,
 						it.name, it.type.toString(), it.nature.toString(),
 						roundedFactor, featureEnvyFactor.threshold,
 						SourcePath.of(path), it.sourceRange)

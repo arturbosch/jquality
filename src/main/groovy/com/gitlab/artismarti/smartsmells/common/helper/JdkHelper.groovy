@@ -180,10 +180,11 @@ class JdkHelper {
 		javaCollections.add("StringTokenizer")
 		javaCollections.add("TreeMap")
 		javaCollections.add("Vector")
+		javaCollections.add("ConcurrentHashMap")
 	}
 
 
-	static boolean isPartOfJavaLang(String simpleTypeName) {
+	static boolean isPartOfJava(String simpleTypeName) {
 		return javaTypes.contains(simpleTypeName) || javaCollections.any { simpleTypeName.startsWith(it) }
 	}
 }

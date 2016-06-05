@@ -45,7 +45,7 @@ class JavaClassFilter {
 					return qualifiedName.startsWith("java") || qualifiedName.startsWith("javax")
 				} else {
 					def typeOfVar = variable.type.toStringWithoutComments()
-					if (JdkHelper.isPartOfJavaLang(typeOfVar)) {
+					if (JdkHelper.isPartOfJava(typeOfVar)) {
 						// is inside a jdk package
 						return true
 					}
