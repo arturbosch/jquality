@@ -18,7 +18,7 @@ godclass:
   active: 'true'
   wmc: '20'
   atfd: '5'
-  tcc: '0.1'
+  tcc: '0.33'
 largeclass:
   active: 'true'
   threshold: '150'

@@ -1,19 +1,15 @@
 package com.gitlab.artismarti.smartsmells.godclass
 
 import com.github.javaparser.ASTHelper
+import com.github.javaparser.ast.CompilationUnit
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration
 import com.github.javaparser.ast.body.ConstructorDeclaration
 import com.github.javaparser.ast.body.MethodDeclaration
 import com.github.javaparser.ast.expr.FieldAccessExpr
 import com.github.javaparser.ast.expr.MethodCallExpr
-import com.gitlab.artismarti.smartsmells.common.helper.ClassHelper
-import com.gitlab.artismarti.smartsmells.common.helper.MethodHelper
-import com.gitlab.artismarti.smartsmells.common.helper.ModifierHelper
-import com.gitlab.artismarti.smartsmells.common.helper.NameHelper
-import com.gitlab.artismarti.smartsmells.common.helper.NodeHelper
-import com.gitlab.artismarti.smartsmells.common.helper.BadSmellHelper
+import com.github.javaparser.ast.visitor.VoidVisitorAdapter
 import com.gitlab.artismarti.smartsmells.common.Visitor
-import com.gitlab.artismarti.smartsmells.common.helper.TypeHelper
+import com.gitlab.artismarti.smartsmells.common.helper.*
 import com.gitlab.artismarti.smartsmells.common.source.SourcePath
 import com.gitlab.artismarti.smartsmells.common.source.SourcePosition
 import com.gitlab.artismarti.smartsmells.common.source.SourceRange
@@ -38,16 +34,6 @@ class GodClassVisitor extends Visitor<GodClass> {
 	private int weightedMethodCountThreshold
 	private BigDecimal tiedClassCohesionThreshold
 
-	private int atfd = 0
-	private int wmc = 0
-	private double tcc = 0.0
-
-	private String currentClassName
-	private List<String> fields = new ArrayList<>()
-	private List<String> methods = new ArrayList<>()
-	private Map<String, Set<String>> methodFieldAccesses = new HashMap<>()
-	private List<String> publicMethods = new ArrayList<>()
-
 	GodClassVisitor(int accessToForeignDataThreshold,
 	                int weightedMethodCountThreshold,
 	                double tiedClassCohesionThreshold,
@@ -59,103 +45,135 @@ class GodClassVisitor extends Visitor<GodClass> {
 	}
 
 	@Override
-	void visit(ClassOrInterfaceDeclaration n, Object arg) {
+	void visit(CompilationUnit n, Object arg) {
 
-		ASTHelper.getNodesByType(n, ClassOrInterfaceDeclaration.class)
-				.each { visit(it, null) }
-
-		if (TypeHelper.isEmptyBody(n)) return
-		if (TypeHelper.hasNoMethods(n)) return
-
-
-		this.currentClassName = n.name
-
-		def filteredFields = NodeHelper.findFields(n).stream()
-				.filter { ClassHelper.inCurrentClass(it, currentClassName) }
-				.collect(Collectors.toList())
-
-		def filteredMethods = NodeHelper.findMethods(n).stream()
-				.filter { ClassHelper.inCurrentClass(it, currentClassName) }
-				.collect(Collectors.toList())
-
-		fields = NameHelper.toFieldNames(filteredFields)
-		methods = NameHelper.toMethodNames(filteredMethods)
-		publicMethods = NameHelper.toMethodNames(ModifierHelper.findPublicMethods(filteredMethods))
-
-		// traverse all nodes and calculate values before evaluate for god class
-		super.visit(n, arg)
-		tcc = TiedClassCohesion.calc(methodFieldAccesses)
-
-		if (checkThresholds(tcc)) {
-			addSmell(n)
-		}
-	}
-
-	private boolean checkThresholds(BigDecimal tcc) {
-		atfd > accessToForeignDataThreshold &&
-				wmc > weightedMethodCountThreshold &&
-				tcc < tiedClassCohesionThreshold
-	}
-
-	private boolean addSmell(ClassOrInterfaceDeclaration n) {
-		smells.add(new GodClass(n.name, BadSmellHelper.createSignature(n), wmc, tcc, atfd,
-				weightedMethodCountThreshold, tiedClassCohesionThreshold,
-				accessToForeignDataThreshold, SourcePath.of(path),
-				SourceRange.of(SourcePosition.of(n.beginLine, n.beginColumn),
-						SourcePosition.of(n.endLine, n.endColumn))))
-	}
-
-	@Override
-	void visit(ConstructorDeclaration n, Object arg) {
-		wmc += MethodHelper.calcMcCabe(n)
-		super.visit(n, arg)
-	}
-
-	@Override
-	void visit(MethodDeclaration n, Object arg) {
-		wmc += MethodHelper.calcMcCabe(n)
-
-		if (publicMethods.contains(n.name)) {
-			collectFieldAccesses(n)
+		ASTHelper.getNodesByType(n, ClassOrInterfaceDeclaration.class).each {
+			new InternalGodClassVisitor().visit(it, null)
 		}
 
-		super.visit(n, arg)
 	}
 
-	private void collectFieldAccesses(MethodDeclaration n) {
-		def visitor = new FieldAccessVisitor()
-		n.accept(visitor, null)
+	private class InternalGodClassVisitor extends VoidVisitorAdapter<Object> {
 
-		def accessedFieldNames = visitor.fieldNames
-		def methodName = n.name
+		private int atfd = 0
+		private int wmc = 0
+		private double tcc = 0.0
 
-		methodFieldAccesses.put(methodName, accessedFieldNames)
-	}
+		private String currentClassName
+		private List<String> fields = new ArrayList<>()
+		private List<String> methods = new ArrayList<>()
+		private Map<String, Set<String>> methodFieldAccesses = new HashMap<>()
+		private List<String> publicMethods = new ArrayList<>()
 
-	@Override
-	void visit(FieldAccessExpr n, Object arg) {
-		if (isNotMemberOfThisClass(n.field, fields)) {
-			atfd++
-		}
-		super.visit(n, arg)
-	}
+		@Override
+		void visit(ClassOrInterfaceDeclaration n, Object arg) {
 
-	@Override
-	void visit(MethodCallExpr n, Object arg) {
-		if (isNotMemberOfThisClass(n.name, methods)) {
-			if (isNotAGetterOrSetter(n.name)) {
-				atfd++
+			if (TypeHelper.isEmptyBody(n)) return
+			if (TypeHelper.hasNoMethods(n)) return
+
+			this.currentClassName = n.name
+
+			def filteredFields = NodeHelper.findFields(n).stream()
+					.filter { ClassHelper.inCurrentClass(it, currentClassName) }
+					.collect(Collectors.toList())
+
+			def filteredMethods = NodeHelper.findMethods(n).stream()
+					.filter { ClassHelper.inCurrentClass(it, currentClassName) }
+					.collect(Collectors.toList())
+
+			fields = NameHelper.toFieldNames(filteredFields)
+			methods = NameHelper.toMethodNames(filteredMethods)
+			publicMethods = NameHelper.toMethodNames(ModifierHelper.findPublicMethods(filteredMethods))
+
+			// traverse all nodes and calculate values before evaluate for god class
+			super.visit(n, arg)
+
+			tcc = TiedClassCohesion.calc(methodFieldAccesses)
+
+			if (checkThresholds(tcc)) {
+				addSmell(n)
 			}
 		}
-		super.visit(n, arg)
-	}
 
-	private static boolean isNotMemberOfThisClass(String name, List<String> members) {
-		!members.contains(name)
-	}
+		private boolean checkThresholds(BigDecimal tcc) {
+			atfd > accessToForeignDataThreshold &&
+					wmc > weightedMethodCountThreshold &&
+					tcc < tiedClassCohesionThreshold
+		}
 
-	static boolean isNotAGetterOrSetter(String name) {
-		!name.startsWith("get") && !name.startsWith("set") && !name.startsWith("is")
+		private boolean addSmell(ClassOrInterfaceDeclaration n) {
+			smells.add(new GodClass(n.name, BadSmellHelper.createSignature(n), wmc, tcc, atfd,
+					weightedMethodCountThreshold, tiedClassCohesionThreshold,
+					accessToForeignDataThreshold, SourcePath.of(path),
+					SourceRange.of(SourcePosition.of(n.beginLine, n.beginColumn),
+							SourcePosition.of(n.endLine, n.endColumn))))
+		}
+
+		@Override
+		void visit(ConstructorDeclaration n, Object arg) {
+			def declaredClass = NodeHelper.findDeclaringClass(n)
+					.filter { it.name == currentClassName }
+
+			if (declaredClass.isPresent()) {
+				wmc += MethodHelper.calcMcCabe(n)
+				super.visit(n, arg)
+			}
+		}
+
+		@Override
+		void visit(MethodDeclaration n, Object arg) {
+
+			def declaredClass = NodeHelper.findDeclaringClass(n)
+					.filter { it.name == currentClassName }
+
+			if (declaredClass.isPresent()) {
+				wmc += MethodHelper.calcMcCabe(n)
+
+				if (publicMethods.contains(n.name)) {
+					collectFieldAccesses(n)
+				}
+
+				super.visit(n, arg)
+			}
+
+		}
+
+		private void collectFieldAccesses(MethodDeclaration n) {
+			def visitor = new FieldAccessVisitor()
+			n.accept(visitor, null)
+
+			def accessedFieldNames = visitor.fieldNames
+			def methodName = n.name
+
+			methodFieldAccesses.put(methodName, accessedFieldNames)
+		}
+
+		@Override
+		void visit(FieldAccessExpr n, Object arg) {
+			if (isNotMemberOfThisClass(n.field, fields)) {
+				atfd++
+			}
+			super.visit(n, arg)
+		}
+
+		@Override
+		void visit(MethodCallExpr n, Object arg) {
+			if (isNotMemberOfThisClass(n.name, methods)) {
+				if (isNotAGetterOrSetter(n.name)) {
+					atfd++
+				}
+			}
+			super.visit(n, arg)
+		}
+
+		private static boolean isNotMemberOfThisClass(String name, List<String> members) {
+			!members.contains(name)
+		}
+
+		static boolean isNotAGetterOrSetter(String name) {
+			!name.startsWith("get") && !name.startsWith("set") && !name.startsWith("is")
+		}
+
 	}
 }
 

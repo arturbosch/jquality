@@ -14,9 +14,10 @@ class SystemTestOnQuideIT extends Specification {
 
 	def "run on quide and find no same feature envy twice"() {
 		given:
-		def path = "/home/artur/Repos/quide/Implementierung/QuIDE_Plugin/src/de.uni_bremen.st.quide.plugin/"
+//		def path = "/home/artur/Repos/quide/Implementierung/QuideService/"
+//		def path = "/home/artur/Repos/quide/Implementierung/Analyse/in/679a88fdae553bbab0c841bb0df66e294e90ffaa/rxjava-core/src/main/java/rx/operators/OperationAverage.java"
 //		def path = "/home/artur/Arbeit/pooka-co/trunk/pooka/src"
-//		def path = Paths.getResource("/cornercases").getFile()
+		def path = Paths.getResource("/cornercases").getFile()
 		def result = DetectorFacade.builder().fullStackFacade().run(Paths.get(path))
 		def envies = result.of(Smell.FEATURE_ENVY)
 		when:
@@ -28,7 +29,7 @@ class SystemTestOnQuideIT extends Specification {
 		duplicates.isEmpty()
 		when:
 		def xml = XMLWriter.toXml(result)
-//		println xml
+		println xml
 		then:
 		xml.contains("FeatureEnvy")
 	}
