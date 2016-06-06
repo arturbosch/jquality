@@ -2,6 +2,7 @@ package com.gitlab.artismarti.smartsmells.godclass
 
 import com.github.javaparser.ASTHelper
 import com.github.javaparser.ast.CompilationUnit
+import com.github.javaparser.ast.Node
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration
 import com.github.javaparser.ast.body.ConstructorDeclaration
 import com.github.javaparser.ast.body.MethodDeclaration
@@ -47,8 +48,11 @@ class GodClassVisitor extends Visitor<GodClass> {
 	@Override
 	void visit(CompilationUnit n, Object arg) {
 
-		ASTHelper.getNodesByType(n, ClassOrInterfaceDeclaration.class).each {
-			new InternalGodClassVisitor().visit(it, null)
+		def classes = ASTHelper.getNodesByType(n, ClassOrInterfaceDeclaration.class)
+
+		classes.each {
+			def classVisitor = new InternalGodClassVisitor()
+			classVisitor.visit(it)
 		}
 
 	}
@@ -59,15 +63,13 @@ class GodClassVisitor extends Visitor<GodClass> {
 		private int wmc = 0
 		private double tcc = 0.0
 
-		private String currentClassName
+		private String currentClassName = ""
 		private List<String> fields = new ArrayList<>()
 		private List<String> methods = new ArrayList<>()
 		private Map<String, Set<String>> methodFieldAccesses = new HashMap<>()
 		private List<String> publicMethods = new ArrayList<>()
 
-		@Override
-		void visit(ClassOrInterfaceDeclaration n, Object arg) {
-
+		void visit(ClassOrInterfaceDeclaration n) {
 			if (TypeHelper.isEmptyBody(n)) return
 			if (TypeHelper.hasNoMethods(n)) return
 
@@ -86,7 +88,7 @@ class GodClassVisitor extends Visitor<GodClass> {
 			publicMethods = NameHelper.toMethodNames(ModifierHelper.findPublicMethods(filteredMethods))
 
 			// traverse all nodes and calculate values before evaluate for god class
-			super.visit(n, arg)
+			super.visit(n, null)
 
 			tcc = TiedClassCohesion.calc(methodFieldAccesses)
 
@@ -109,12 +111,17 @@ class GodClassVisitor extends Visitor<GodClass> {
 							SourcePosition.of(n.endLine, n.endColumn))))
 		}
 
+		def inScope(Node node, Closure code) {
+			def declaredClass = NodeHelper.findDeclaringClass(node)
+					.filter { it.name == currentClassName }
+			if (declaredClass.isPresent()) {
+				code()
+			}
+		}
+
 		@Override
 		void visit(ConstructorDeclaration n, Object arg) {
-			def declaredClass = NodeHelper.findDeclaringClass(n)
-					.filter { it.name == currentClassName }
-
-			if (declaredClass.isPresent()) {
+			inScope(n) {
 				wmc += MethodHelper.calcMcCabe(n)
 				super.visit(n, arg)
 			}
@@ -122,20 +129,29 @@ class GodClassVisitor extends Visitor<GodClass> {
 
 		@Override
 		void visit(MethodDeclaration n, Object arg) {
+			inScope(n) {
 
-			def declaredClass = NodeHelper.findDeclaringClass(n)
-					.filter { it.name == currentClassName }
-
-			if (declaredClass.isPresent()) {
 				wmc += MethodHelper.calcMcCabe(n)
-
 				if (publicMethods.contains(n.name)) {
 					collectFieldAccesses(n)
 				}
 
+				ASTHelper.getNodesByType(n, MethodCallExpr.class).each {
+					if (isNotMemberOfThisClass(it.name, methods)) {
+						if (isNotAGetterOrSetter(it.name)) {
+							atfd++
+						}
+					}
+				}
+
+				ASTHelper.getNodesByType(n, FieldAccessExpr.class).each {
+					if (isNotMemberOfThisClass(it.field, fields)) {
+						atfd++
+					}
+				}
+
 				super.visit(n, arg)
 			}
-
 		}
 
 		private void collectFieldAccesses(MethodDeclaration n) {
@@ -146,24 +162,6 @@ class GodClassVisitor extends Visitor<GodClass> {
 			def methodName = n.name
 
 			methodFieldAccesses.put(methodName, accessedFieldNames)
-		}
-
-		@Override
-		void visit(FieldAccessExpr n, Object arg) {
-			if (isNotMemberOfThisClass(n.field, fields)) {
-				atfd++
-			}
-			super.visit(n, arg)
-		}
-
-		@Override
-		void visit(MethodCallExpr n, Object arg) {
-			if (isNotMemberOfThisClass(n.name, methods)) {
-				if (isNotAGetterOrSetter(n.name)) {
-					atfd++
-				}
-			}
-			super.visit(n, arg)
 		}
 
 		private static boolean isNotMemberOfThisClass(String name, List<String> members) {

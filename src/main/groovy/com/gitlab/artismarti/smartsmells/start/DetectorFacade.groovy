@@ -22,6 +22,7 @@ import com.gitlab.artismarti.smartsmells.util.StreamCloser
 import java.nio.file.Files
 import java.nio.file.Path
 import java.util.concurrent.CompletableFuture
+
 /**
  * @author artur
  */
@@ -82,10 +83,10 @@ class DetectorFacade {
 		}
 
 		def fullStackFacade() {
-			detectors = [new GodClassDetector(), new ComplexMethodDetector(), new CommentDetector(),
-			             new LongMethodDetector(), new LongParameterListDetector(), new DeadCodeDetector(),
-			             new LargeClassDetector(), new MessageChainDetector(), new MiddleManDetector(),
-			             new FeatureEnvyDetector(), new CycleDetector(), new DataClassDetector()]
+			detectors = [new ComplexMethodDetector(), new CommentDetector(), new LongMethodDetector(),
+			             new LongParameterListDetector(), new DeadCodeDetector(), new LargeClassDetector(),
+			             new MessageChainDetector(), new MiddleManDetector(), new FeatureEnvyDetector(),
+			             new CycleDetector(), new DataClassDetector(), new GodClassDetector()]
 			build()
 		}
 
