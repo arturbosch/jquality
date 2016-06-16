@@ -14,8 +14,8 @@ class SystemTestOnQuideIT extends Specification {
 
 	def "run on quide and find no same feature envy twice"() {
 		given:
-//		def path = "/home/artur/Repos/quide/Implementierung/QuideService/"
-//		def path = "/home/artur/Repos/quide/Implementierung/Analyse/in/679a88fdae553bbab0c841bb0df66e294e90ffaa/rxjava-core/src/main/java/rx/operators/OperationAverage.java"
+//		def path = "/home/artur/Repos/quide/Implementierung/QuideService/src/main"
+//		def path = "/home/artur/Repos/quide/Implementierung/Analyse/in/c81e4fa9760107230b1670bf74b334533a0302e8/guava-tests/test/com/google/common/reflect/TypesTest.java"
 //		def path = "/home/artur/Arbeit/pooka-co/trunk/pooka/src"
 		def path = Paths.getResource("/cornercases").getFile()
 		def result = DetectorFacade.builder().fullStackFacade().run(Paths.get(path))

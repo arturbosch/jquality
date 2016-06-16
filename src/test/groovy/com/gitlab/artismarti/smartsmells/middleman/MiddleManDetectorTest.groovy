@@ -12,7 +12,7 @@ class MiddleManDetectorTest extends Specification {
 		expect:
 		smells.size() == 1
 		smells.getAt(0).name == "ManInTheMiddle"
-		smells.getAt(0).signature == "ManInTheMiddle"
+		smells.getAt(0).signature == "MiddleManDummy\$ManInTheMiddle"
 		smells.getAt(0).sourcePath != null
 		smells.getAt(0).sourceRange != null
 

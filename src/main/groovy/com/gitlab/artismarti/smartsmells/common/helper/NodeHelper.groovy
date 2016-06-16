@@ -52,4 +52,14 @@ class NodeHelper {
 
 		return parent == null ? Optional.empty() : Optional.of(parent)
 	}
+
+	static Optional<MethodDeclaration> findDeclaringMethod(Node node) {
+
+		def parent = node
+		Looper.loop {
+			parent = parent.getParentNode()
+		} until { parent instanceof MethodDeclaration || parent == null }
+
+		return parent == null ? Optional.empty() : Optional.of(parent)
+	}
 }

@@ -9,6 +9,15 @@ import com.gitlab.artismarti.smartsmells.common.source.SourceRange
  */
 class BadSmellHelper {
 
+	static String createClassSignature(ClassOrInterfaceDeclaration n) {
+		String signature = ""
+		NodeHelper.findDeclaringClass(n)
+				.ifPresent { signature = createSignature(it) + "\$$signature" }
+		NodeHelper.findDeclaringMethod(n)
+				.ifPresent { signature = signature + "${it.name}\$" }
+		return signature + createSignature(n)
+	}
+
 	static String createSignature(ClassOrInterfaceDeclaration n) {
 		def types = n.typeParameters.join(",")
 		def extend = n.extends.join(",")

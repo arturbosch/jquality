@@ -104,7 +104,7 @@ class GodClassVisitor extends Visitor<GodClass> {
 		}
 
 		private boolean addSmell(ClassOrInterfaceDeclaration n) {
-			smells.add(new GodClass(n.name, BadSmellHelper.createSignature(n), wmc, tcc, atfd,
+			smells.add(new GodClass(n.name, BadSmellHelper.createClassSignature(n), wmc, tcc, atfd,
 					weightedMethodCountThreshold, tiedClassCohesionThreshold,
 					accessToForeignDataThreshold, SourcePath.of(path),
 					SourceRange.of(SourcePosition.of(n.beginLine, n.beginColumn),
