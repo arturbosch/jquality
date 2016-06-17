@@ -18,15 +18,18 @@ class Constants {
 	static final String DATA_CLASS = "dataclass"
 
 	static final String FEATURE_ENVY = "featureenvy"
+	static final String FEATURE_ENVY_IGNORE_STATIC = "ignoreStatic"
+
 	static final String CYCLE = "cycle"
 	static final String DEAD_CODE = "deadcode"
 	static final String LARGE_CLASS = "largeclass"
 	static final String MESSAGE_CHAIN = "messagechain"
 	static final String MIDDLE_MAN = "middleman"
+
 	static final String COMMENT = "comment"
-
 	static final String WEIGHT = "weight"
-	static final String BASE = "base"
 
+	static final String BASE = "base"
 	static final String COMPLEX_METHOD = "complexmethod"
+
 }

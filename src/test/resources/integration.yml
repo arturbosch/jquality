@@ -11,6 +11,7 @@ deadcode:
   active: 'true'
 featureenvy:
   active: 'true'
+  ignoreStatic: 'true'
   threshold: '0.52'
   base: '0.5'
   weight: '0.5'

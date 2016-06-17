@@ -5,6 +5,7 @@ import com.github.javaparser.ast.CompilationUnit
 import com.github.javaparser.ast.ImportDeclaration
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration
 import com.github.javaparser.ast.body.MethodDeclaration
+import com.github.javaparser.ast.body.ModifierSet
 import com.github.javaparser.ast.type.ClassOrInterfaceType
 import com.gitlab.artismarti.smartsmells.common.CustomVariableDeclaration
 import com.gitlab.artismarti.smartsmells.common.PackageImportHolder
@@ -15,6 +16,7 @@ import com.gitlab.artismarti.smartsmells.cycle.InnerClassesHandler
 
 import java.nio.file.Path
 import java.util.stream.Collectors
+
 /**
  * @author artur
  */
@@ -29,9 +31,12 @@ class FeatureEnvyVisitor extends Visitor<FeatureEnvy> {
 	private PackageImportHolder packageImportHolder
 	private InnerClassesHandler innerClassesHandler
 
-	FeatureEnvyVisitor(Path path, FeatureEnvyFactor factor) {
+	private boolean ignoreStatic
+
+	FeatureEnvyVisitor(Path path, FeatureEnvyFactor factor, boolean ignoreStatic = false) {
 		super(path)
 		this.featureEnvyFactor = factor
+		this.ignoreStatic = ignoreStatic
 	}
 
 	@Override
@@ -65,6 +70,7 @@ class FeatureEnvyVisitor extends Visitor<FeatureEnvy> {
 		def filter = new JavaClassFilter(imports)
 		MethodHelper.filterAnonymousMethods(methods)
 				.stream()
+				.filter { !(ModifierSet.isStatic(it.modifiers) && ignoreStatic) }
 				.filter { MethodHelper.sizeBiggerThan(2, it) }.each {
 
 

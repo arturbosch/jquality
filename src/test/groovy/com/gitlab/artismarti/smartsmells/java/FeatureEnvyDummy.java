@@ -24,6 +24,19 @@ public class FeatureEnvyDummy {
         myLogic.doStuff(" " + me);
     }
 
+    public static void staticMethod() {
+        Staticly staticly = new Staticly();
+        staticly.envy();
+        staticly.envy();
+        staticly.envy();
+        staticly.envy();
+        staticly.envy();
+    }
+
+    private static class Staticly {
+        public void envy() {}
+    }
+
     private class HasFeatures {
         HasLogic hasLogic = new HasLogic();
 

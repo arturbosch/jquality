@@ -20,6 +20,7 @@ import java.util.function.Supplier
 
 import static com.gitlab.artismarti.smartsmells.util.Numbers.toDouble
 import static com.gitlab.artismarti.smartsmells.util.Numbers.toInt
+
 /**
  * @author artur
  */
@@ -63,10 +64,13 @@ enum Smell {
 				return Optional.of(new FeatureEnvyDetector(FeatureEnvyFactor.newInstance(
 						toDouble(config.get(Constants.THRESHOLD), Defaults.FEATURE_ENVY_FACTOR),
 						toDouble(config.get(Constants.BASE), Defaults.FEATURE_ENVY_BASE),
-						toDouble(config.get(Constants.WEIGHT), Defaults.FEATURE_ENVY_WEIGHT))));
+						toDouble(config.get(Constants.WEIGHT), Defaults.FEATURE_ENVY_WEIGHT)),
+						isActive(config, Constants.FEATURE_ENVY_IGNORE_STATIC))
+				);
 			}
 			Optional.empty()
 		}
+
 	}, GOD_CLASS{
 		@Override
 		Optional<Detector> initialize(DetectorConfig detectorConfig) {
@@ -149,7 +153,10 @@ enum Smell {
 	}
 
 	private static boolean isActive(final Map<String, String> config) {
-		return config != null && !config.isEmpty() && "true".equals(config.get(Constants.ACTIVE));
+		return isActive(config, Constants.ACTIVE);
 	}
 
+	private static boolean isActive(final Map<String, String> config, String attribute) {
+		return config != null && !config.isEmpty() && "true".equals(config.get(attribute));
+	}
 }

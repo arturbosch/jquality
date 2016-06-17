@@ -11,14 +11,18 @@ import java.nio.file.Path
 class FeatureEnvyDetector extends Detector<FeatureEnvy> {
 
 	private FeatureEnvyFactor factor
+	private boolean ignoreStatic
 
-	FeatureEnvyDetector(FeatureEnvyFactor factor = FeatureEnvyFactor.newInstance()) {
+
+	FeatureEnvyDetector(FeatureEnvyFactor factor = FeatureEnvyFactor.newInstance(),
+	                    boolean ignoreStatic = false) {
 		this.factor = factor
+		this.ignoreStatic = ignoreStatic
 	}
 
 	@Override
 	protected Visitor getVisitor(Path path) {
-		return new FeatureEnvyVisitor(path, factor)
+		return new FeatureEnvyVisitor(path, factor, ignoreStatic)
 	}
 
 	@Override
