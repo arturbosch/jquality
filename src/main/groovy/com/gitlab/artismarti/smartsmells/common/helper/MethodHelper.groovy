@@ -23,10 +23,6 @@ class MethodHelper {
 		return mcCabeIntern(n) + 1
 	}
 
-	static int calcMcCabeForStatement(Statement n) {
-		return mcCabeIntern(n)
-	}
-
 	private static int mcCabeIntern(Node n) {
 		def complexityVisitor = new CyclomaticComplexityVisitor()
 		n.accept(complexityVisitor, null)

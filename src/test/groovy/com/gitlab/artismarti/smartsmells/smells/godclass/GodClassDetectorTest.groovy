@@ -14,7 +14,7 @@ class GodClassDetectorTest extends Specification {
 		smells.getAt(0).name == "GodClassDummy"
 		smells.getAt(0).signature == "GodClassDummy"
 		smells.getAt(0).accessToForeignData == 6
-		smells.getAt(0).weightedMethodPerClass == 21
+		smells.getAt(0).weightedMethodPerClass == 22
 		smells.getAt(0).tiedClassCohesion == 0.3d
 		smells.getAt(0).accessToForeignDataThreshold == 4
 		smells.getAt(0).weightedMethodPerClassThreshold == 20

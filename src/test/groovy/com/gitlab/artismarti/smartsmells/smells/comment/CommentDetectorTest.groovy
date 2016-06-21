@@ -8,7 +8,7 @@ import spock.lang.Specification
  */
 class CommentDetectorTest extends Specification {
 
-	void "three comments detected"() {
+	void "three comments within private methods detected"() {
 		expect:
 		smells.size() == 3
 		!smells.getAt(0).type.isEmpty()
@@ -18,6 +18,6 @@ class CommentDetectorTest extends Specification {
 		smells.getAt(0).sourcePath != null
 
 		where:
-		smells = new CommentDetector().run(Test.PATH)
+		smells = new CommentDetector().run(Test.COMMENT_DUMMY_PATH)
 	}
 }

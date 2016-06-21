@@ -1,7 +1,7 @@
 package com.gitlab.artismarti.smartsmells.java;
 
 /**
- * Sum complexity of 21
+ * Sum complexity of 22
  *
  * @author artur
  */
@@ -26,7 +26,7 @@ package com.gitlab.artismarti.smartsmells.java;
 	}
 
 	/**
-	 * Complexity of 9
+	 * Complexity of 10
 	 */
 	public void complexMethod1(boolean b1, boolean b2, int number) {
 		if (b1) {
@@ -48,6 +48,10 @@ package com.gitlab.artismarti.smartsmells.java;
 							dummy.complexMethod(true, true, i);
 						}
 				}
+			}
+		} else {
+			// to test else block
+			if (true) {
 			}
 		}
 	}
