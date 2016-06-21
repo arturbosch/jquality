@@ -43,6 +43,15 @@ class MetricHelperTest extends Specification {
 		nom = MetricHelper.nom(clazz)
 	}
 
+	def "atfd"() {
+		expect: "uses ComplexDummy"
+		atfd == 5
+
+		where:
+		clazz = Test.firstClass(Test.compile(Test.GOD_CLASS_DUMMY_PATH))
+		atfd = MetricHelper.atfd(clazz)
+	}
+
 	def "tcc"() {
 		expect:
 		tcc < 0.33d
@@ -50,5 +59,21 @@ class MetricHelperTest extends Specification {
 		where:
 		clazz = Test.firstClass(Test.compile(Test.GOD_CLASS_DUMMY_PATH))
 		tcc = MetricHelper.tcc(clazz)
+	}
+
+
+	def "sloc"() {
+		when:
+		int count = MetricHelper.sloc(Test.COMMENT_DUMMY_PATH)
+		then:
+		count == 6
+	}
+
+
+	def "loc"() {
+		when:
+		int count = MetricHelper.loc(Test.COMMENT_DUMMY_PATH)
+		then:
+		count == 18
 	}
 }

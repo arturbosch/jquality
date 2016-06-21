@@ -10,7 +10,10 @@ import com.github.javaparser.ast.expr.MethodCallExpr
 import com.gitlab.artismarti.smartsmells.common.visitor.CyclomaticComplexityVisitor
 import com.gitlab.artismarti.smartsmells.smells.godclass.FieldAccessVisitor
 import com.gitlab.artismarti.smartsmells.smells.godclass.TiedClassCohesion
+import com.gitlab.artismarti.smartsmells.util.JavaLoc
 
+import java.nio.file.Files
+import java.nio.file.Path
 import java.util.stream.Collectors
 
 /**
@@ -60,16 +63,28 @@ final class MetricHelper {
 				.map { it.name }
 				.collect(Collectors.toList())
 
-		ASTHelper.getNodesByType(n, MethodCallExpr.class).each {
-			if (isNotMemberOfThisClass(it.name, methods)) {
-				if (isNotAGetterOrSetter(it.name)) {
-					atfd++
-				}
+
+		Set<String> usedScopes = new HashSet<>()
+		ASTHelper.getNodesByType(n, MethodCallExpr.class)
+				.stream()
+				.filter { isNotMemberOfThisClass(it.name, methods) }
+				.filter { isNotAGetterOrSetter(it.name) }
+				.each {
+
+			if (it.scope && !usedScopes.contains(it.scope.toStringWithoutComments())) {
+				usedScopes.add(it.scope.toStringWithoutComments())
+				atfd++
 			}
 		}
 
-		ASTHelper.getNodesByType(n, FieldAccessExpr.class).each {
-			if (isNotMemberOfThisClass(it.field, fields)) {
+		usedScopes = new HashSet<>()
+		ASTHelper.getNodesByType(n, FieldAccessExpr.class)
+				.stream()
+				.filter { isNotMemberOfThisClass(it.field, fields) }
+				.each {
+
+			if (it.scope && !usedScopes.contains(it.scope.toStringWithoutComments())) {
+				usedScopes.add(it.scope.toStringWithoutComments())
 				atfd++
 			}
 		}
@@ -105,6 +120,21 @@ final class MetricHelper {
 		def methodName = n.name
 
 		methodFieldAccesses.put(methodName, accessedFieldNames)
+	}
+
+	static int sloc(Path path) {
+		return locInternal(path, false)
+	}
+
+	private static int locInternal(Path path, boolean comments) {
+		if (!path.toString().endsWith(".java")) return -1
+		return new JavaLoc().analyze(Files.lines(path)
+				.filter { !it.isEmpty() }
+				.collect(Collectors.toList()), comments, false)
+	}
+
+	static int loc(Path path) {
+		return locInternal(path, true)
 	}
 
 }

@@ -9,11 +9,11 @@ package com.gitlab.artismarti.smartsmells.java;
 
 	int i = 5;
 	String s = "hello";
-	ComplexMethodDummy dummy = new ComplexMethodDummy();
+	ComplexMethodDummy dummy, dummy1, dummy2, dummy3, dummy4 = new ComplexMethodDummy();
 
 	public String calc() {
 		dummy.complexMethod(true, true, i);
-		dummy.noComplexMethod(true, true, i);
+		dummy2.noComplexMethod(true, true, i);
 		return s + i;
 	}
 
@@ -44,8 +44,8 @@ package com.gitlab.artismarti.smartsmells.java;
 						break;
 					default:
 						for (int i : new int[] {1, 2, 3, 4, 5}) {
-							dummy.complexMethod(true, true, i);
-							dummy.complexMethod(true, true, i);
+							dummy1.complexMethod(true, true, i);
+							dummy3.complexMethod(true, true, i);
 						}
 				}
 			}
@@ -75,8 +75,8 @@ package com.gitlab.artismarti.smartsmells.java;
 						break;
 					default:
 						for (int i : new int[] {1, 2, 3, 4, 5}) {
-							dummy.complexMethod(true, true, i);
-							dummy.complexMethod(true, true, i);
+							dummy4.complexMethod(true, true, i);
+							dummy4.complexMethod(true, true, i);
 						}
 				}
 			}

@@ -13,9 +13,9 @@ class GodClassDetectorTest extends Specification {
 		smells.size() == 1
 		smells.getAt(0).name == "GodClassDummy"
 		smells.getAt(0).signature == "GodClassDummy"
-		smells.getAt(0).accessToForeignData == 6
+		smells.getAt(0).accessToForeignData == 5
 		smells.getAt(0).weightedMethodPerClass == 22
-		smells.getAt(0).tiedClassCohesion == 0.3d
+		smells.getAt(0).tiedClassCohesion < 0.33d
 		smells.getAt(0).accessToForeignDataThreshold == 4
 		smells.getAt(0).weightedMethodPerClassThreshold == 20
 		smells.getAt(0).tiedClassCohesionThreshold == 0.33d
