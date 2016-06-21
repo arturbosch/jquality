@@ -1,5 +1,6 @@
 package com.gitlab.artismarti.smartsmells.start
 
+import com.gitlab.artismarti.smartsmells.metrics.ClassInfoDetector
 import com.gitlab.artismarti.smartsmells.smells.comment.CommentDetector
 import com.gitlab.artismarti.smartsmells.common.CompilationTree
 import com.gitlab.artismarti.smartsmells.common.Detector
@@ -32,6 +33,14 @@ class DetectorFacade {
 
 	private DetectorFacade(List<Detector> detectors) {
 		this.detectors = detectors
+	}
+
+	static def fullStackFacade() {
+		return new DetectorFacadeBuilder().fullStackFacade()
+	}
+
+	static def metricFacade() {
+		return new DetectorFacadeBuilder().with(new ClassInfoDetector()).build()
 	}
 
 	static def builder() {

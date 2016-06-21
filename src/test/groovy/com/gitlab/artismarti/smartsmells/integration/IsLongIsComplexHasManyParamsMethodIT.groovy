@@ -19,7 +19,7 @@ class IsLongIsComplexHasManyParamsMethodIT extends Specification {
 		def path = Paths.get(getClass().getResource("/invalid/GodClass.java").getFile())
 
 		when:
-		def result = DetectorFacade.builder().fullStackFacade().run(path)
+		def result = DetectorFacade.fullStackFacade().run(path)
 		def lm = ((LongMethod) result.of(Smell.LONG_METHOD).getFirst()).signature
 		def cm = ((ComplexMethod) result.of(Smell.COMPLEX_METHOD).getFirst()).signature
 		def lpl = ((LongParameterList) result.of(Smell.LONG_PARAM).getFirst()).signature

@@ -60,7 +60,7 @@ class Main {
 	private void run() {
 		def project = Paths.get(projectPath)
 		if (fullStackFacade) {
-			run(DetectorFacade.builder().fullStackFacade(), project)
+			run(DetectorFacade.fullStackFacade(), project)
 		} else {
 			run(DetectorFacade.fromConfig(DetectorConfig.load(Paths.get(configPath))), project)
 		}

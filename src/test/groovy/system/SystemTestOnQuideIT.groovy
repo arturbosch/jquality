@@ -13,6 +13,19 @@ import java.util.stream.Collectors
  */
 class SystemTestOnQuideIT extends Specification {
 
+	def "metrics on quide"() {
+		given:
+		def path = "/home/artur/Repos/quide/Implementierung/QuideService/src/main"
+
+		when:
+		def result = DetectorFacade.metricFacade().run(Paths.get(path)).of(Smell.CLASS_INFO)
+		result.each { println(it) }
+		println "size: ${result.size()}"
+
+		then:
+		result.size() > 0
+	}
+
 	def "run on quide and find no same feature envy twice"() {
 		given:
 //		def path = "/home/artur/Repos/quide/Implementierung/QuideService/src/main"

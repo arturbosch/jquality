@@ -35,7 +35,7 @@ class ConfigurationIT extends Specification {
 	def "create detector facade as full stack facade and run over test dummies"() {
 
 		when:
-		def result = DetectorFacade.builder().fullStackFacade().run(Test.PATH)
+		def result = DetectorFacade.fullStackFacade().run(Test.PATH)
 
 		then:
 		result.smellSets.size() == 12

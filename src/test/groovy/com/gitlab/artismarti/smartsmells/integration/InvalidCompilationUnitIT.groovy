@@ -16,7 +16,7 @@ class InvalidCompilationUnitIT extends Specification {
 		def path = Paths.get(getClass().getResource("/invalid/InvalidDummy.java").getFile())
 
 		when:
-		DetectorFacade.builder().fullStackFacade().run(path)
+		DetectorFacade.fullStackFacade().run(path)
 
 		then:
 		notThrown(CompletionException.class)
