@@ -42,4 +42,13 @@ class MetricHelperTest extends Specification {
 		clazz = Test.firstClass(Test.compile(Test.FEATURE_ENVY_PATH))
 		nom = MetricHelper.nom(clazz)
 	}
+
+	def "tcc"() {
+		expect:
+		tcc < 0.33d
+
+		where:
+		clazz = Test.firstClass(Test.compile(Test.GOD_CLASS_DUMMY_PATH))
+		tcc = MetricHelper.tcc(clazz)
+	}
 }
