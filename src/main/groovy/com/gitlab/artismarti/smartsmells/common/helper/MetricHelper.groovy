@@ -22,4 +22,12 @@ final class MetricHelper {
 				.sum()
 	}
 
+	static int noa(ClassOrInterfaceDeclaration n) {
+		NodeHelper.findFields(n).size()
+	}
+
+	static int nom(ClassOrInterfaceDeclaration n) {
+		MethodHelper.filterAnonymousMethods(NodeHelper.findMethods(n)).size()
+	}
+
 }
