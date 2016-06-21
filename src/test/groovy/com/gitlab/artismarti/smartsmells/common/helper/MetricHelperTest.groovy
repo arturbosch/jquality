@@ -26,8 +26,8 @@ class MetricHelperTest extends Specification {
 	}
 
 	def "noa"() {
-		expect: "5 +1 from inner class"
-		noa == 6
+		expect: "5 without inner classes"
+		noa == 5
 
 		where:
 		clazz = Test.firstClass(Test.compile(Test.FEATURE_ENVY_PATH))
@@ -35,8 +35,8 @@ class MetricHelperTest extends Specification {
 	}
 
 	def "nom"() {
-		expect: "2+1+3+1"
-		nom == 7
+		expect: "2 without inner classes"
+		nom == 2
 
 		where:
 		clazz = Test.firstClass(Test.compile(Test.FEATURE_ENVY_PATH))

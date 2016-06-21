@@ -13,4 +13,5 @@ class ClassHelper {
 				.filter { it.name == className }
 				.isPresent()
 	}
+
 }

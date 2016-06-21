@@ -15,7 +15,7 @@ class TiedClassCohesion {
 		return tcc;
 	}
 
-	static double determineMethodPairs(Map<String, Set<String>> methodFieldAccesses) {
+	private static double determineMethodPairs(Map<String, Set<String>> methodFieldAccesses) {
 		def methods = methodFieldAccesses.keySet().toList();
 		def methodCount = methods.size();
 		def pairs = 0.0;
@@ -38,7 +38,7 @@ class TiedClassCohesion {
 		return pairs;
 	}
 
-	static double calculateTotalMethodPairs(Map<String, Set<String>> methodFieldAccesses) {
+	private static double calculateTotalMethodPairs(Map<String, Set<String>> methodFieldAccesses) {
 		int n = methodFieldAccesses.size();
 		return n * (n - 1) / 2.0;
 	}

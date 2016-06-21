@@ -66,8 +66,6 @@ class GodClassVisitor extends Visitor<GodClass> {
 		private String currentClassName = ""
 		private List<String> fields = new ArrayList<>()
 		private List<String> methods = new ArrayList<>()
-		private Map<String, Set<String>> methodFieldAccesses = new HashMap<>()
-		private List<String> publicMethods = new ArrayList<>()
 
 		void visit(ClassOrInterfaceDeclaration n) {
 			if (TypeHelper.isEmptyBody(n)) return
@@ -85,19 +83,19 @@ class GodClassVisitor extends Visitor<GodClass> {
 
 			fields = NameHelper.toFieldNames(filteredFields)
 			methods = NameHelper.toMethodNames(filteredMethods)
-			publicMethods = NameHelper.toMethodNames(ModifierHelper.findPublicMethods(filteredMethods))
 
 			// traverse all nodes and calculate values before evaluate for god class
 			super.visit(n, null)
 
-			tcc = TiedClassCohesion.calc(methodFieldAccesses)
+			tcc = MetricHelper.tcc(n)
+			wmc = MetricHelper.wmc(n)
 
-			if (checkThresholds(tcc)) {
+			if (checkThresholds()) {
 				addSmell(n)
 			}
 		}
 
-		private boolean checkThresholds(BigDecimal tcc) {
+		private boolean checkThresholds() {
 			atfd > accessToForeignDataThreshold &&
 					wmc > weightedMethodCountThreshold &&
 					tcc < tiedClassCohesionThreshold
@@ -132,9 +130,6 @@ class GodClassVisitor extends Visitor<GodClass> {
 			inScope(n) {
 
 				wmc += MetricHelper.mcCabe(n)
-				if (publicMethods.contains(n.name)) {
-					collectFieldAccesses(n)
-				}
 
 				ASTHelper.getNodesByType(n, MethodCallExpr.class).each {
 					if (isNotMemberOfThisClass(it.name, methods)) {
@@ -152,16 +147,6 @@ class GodClassVisitor extends Visitor<GodClass> {
 
 				super.visit(n, arg)
 			}
-		}
-
-		private void collectFieldAccesses(MethodDeclaration n) {
-			def visitor = new FieldAccessVisitor()
-			n.accept(visitor, null)
-
-			def accessedFieldNames = visitor.fieldNames
-			def methodName = n.name
-
-			methodFieldAccesses.put(methodName, accessedFieldNames)
 		}
 
 		private static boolean isNotMemberOfThisClass(String name, List<String> members) {
