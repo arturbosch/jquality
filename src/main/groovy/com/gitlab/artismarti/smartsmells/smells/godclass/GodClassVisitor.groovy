@@ -122,7 +122,7 @@ class GodClassVisitor extends Visitor<GodClass> {
 		@Override
 		void visit(ConstructorDeclaration n, Object arg) {
 			inScope(n) {
-				wmc += MethodHelper.calcMcCabe(n)
+				wmc += MetricHelper.mcCabe(n)
 				super.visit(n, arg)
 			}
 		}
@@ -131,7 +131,7 @@ class GodClassVisitor extends Visitor<GodClass> {
 		void visit(MethodDeclaration n, Object arg) {
 			inScope(n) {
 
-				wmc += MethodHelper.calcMcCabe(n)
+				wmc += MetricHelper.mcCabe(n)
 				if (publicMethods.contains(n.name)) {
 					collectFieldAccesses(n)
 				}

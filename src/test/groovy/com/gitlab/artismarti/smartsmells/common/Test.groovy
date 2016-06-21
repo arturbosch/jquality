@@ -1,5 +1,12 @@
 package com.gitlab.artismarti.smartsmells.common
 
+import com.github.javaparser.ASTHelper
+import com.github.javaparser.JavaParser
+import com.github.javaparser.ast.CompilationUnit
+import com.github.javaparser.ast.body.MethodDeclaration
+import org.codehaus.groovy.runtime.IOGroovyMethods
+
+import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
 
@@ -34,4 +41,14 @@ class Test {
 			Paths.get("./src/test/groovy/com/gitlab/artismarti/smartsmells/java/MiddleManDummy.java")
 	static Path FEATURE_ENVY_PATH =
 			Paths.get("./src/test/groovy/com/gitlab/artismarti/smartsmells/java/FeatureEnvyDummy.java")
+
+	static CompilationUnit compile(Path path) {
+		return IOGroovyMethods.withCloseable(Files.newInputStream(path)) {
+			JavaParser.parse(it)
+		}
+	}
+
+	static MethodDeclaration nth(CompilationUnit unit, int n) {
+		ASTHelper.getNodesByType(unit, MethodDeclaration.class).get(n)
+	}
 }

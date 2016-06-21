@@ -1,6 +1,5 @@
 package com.gitlab.artismarti.smartsmells.common.helper
 
-import com.github.javaparser.ast.Node
 import com.github.javaparser.ast.body.BodyDeclaration
 import com.github.javaparser.ast.body.ConstructorDeclaration
 import com.github.javaparser.ast.body.MethodDeclaration
@@ -11,23 +10,11 @@ import com.github.javaparser.ast.expr.ObjectCreationExpr
 import com.github.javaparser.ast.stmt.ExpressionStmt
 import com.github.javaparser.ast.stmt.ReturnStmt
 import com.github.javaparser.ast.stmt.Statement
-import com.gitlab.artismarti.smartsmells.common.visitor.CyclomaticComplexityVisitor
 import com.gitlab.artismarti.smartsmells.smells.featureenvy.MethodInvocationCountVisitor
-
 /**
  * @author artur
  */
-class MethodHelper {
-
-	static int calcMcCabe(BodyDeclaration n) {
-		return mcCabeIntern(n) + 1
-	}
-
-	private static int mcCabeIntern(Node n) {
-		def complexityVisitor = new CyclomaticComplexityVisitor()
-		n.accept(complexityVisitor, null)
-		return complexityVisitor.mcCabeComplexity
-	}
+final class MethodHelper {
 
 	static List<Parameter> extractParameters(BodyDeclaration n) {
 		return n instanceof ConstructorDeclaration ?
