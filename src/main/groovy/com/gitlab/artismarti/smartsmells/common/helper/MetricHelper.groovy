@@ -16,7 +16,10 @@ final class MetricHelper {
 	}
 
 	static int wmc(ClassOrInterfaceDeclaration n) {
-
+		MethodHelper.filterAnonymousMethods(NodeHelper.findMethods(n))
+				.stream()
+				.mapToInt { mcCabe(it) }
+				.sum()
 	}
 
 }

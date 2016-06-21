@@ -3,6 +3,7 @@ package com.gitlab.artismarti.smartsmells.common
 import com.github.javaparser.ASTHelper
 import com.github.javaparser.JavaParser
 import com.github.javaparser.ast.CompilationUnit
+import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration
 import com.github.javaparser.ast.body.MethodDeclaration
 import org.codehaus.groovy.runtime.IOGroovyMethods
 
@@ -50,5 +51,9 @@ class Test {
 
 	static MethodDeclaration nth(CompilationUnit unit, int n) {
 		ASTHelper.getNodesByType(unit, MethodDeclaration.class).get(n)
+	}
+
+	static ClassOrInterfaceDeclaration firstClass(CompilationUnit unit) {
+		ASTHelper.getNodesByType(unit, ClassOrInterfaceDeclaration.class).first()
 	}
 }
