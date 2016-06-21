@@ -1,5 +1,6 @@
 package com.gitlab.artismarti.smartsmells.config
 
+import com.gitlab.artismarti.smartsmells.metrics.ClassInfoDetector
 import com.gitlab.artismarti.smartsmells.smells.comment.CommentDetector
 import com.gitlab.artismarti.smartsmells.common.Detector
 import com.gitlab.artismarti.smartsmells.smells.complexmethod.ComplexMethodDetector
@@ -26,6 +27,12 @@ import static com.gitlab.artismarti.smartsmells.util.Numbers.toInt
  */
 enum Smell {
 
+	CLASS_INFO{
+		@Override
+		Optional<Detector> initialize(DetectorConfig detectorConfig) {
+			return initDefault(detectorConfig, Constants.CLASS_INFO, { new ClassInfoDetector() });
+		}
+	},
 	COMMENT{
 		@Override
 		Optional<Detector> initialize(DetectorConfig detectorConfig) {

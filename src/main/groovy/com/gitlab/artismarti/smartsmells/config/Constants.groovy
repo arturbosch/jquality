@@ -32,4 +32,5 @@ class Constants {
 	static final String BASE = "base"
 	static final String COMPLEX_METHOD = "complexmethod"
 
+	static final String CLASS_INFO = "metrics"
 }
