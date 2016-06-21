@@ -6,6 +6,7 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration
 import com.gitlab.artismarti.smartsmells.common.Visitor
 import com.gitlab.artismarti.smartsmells.common.helper.BadSmellHelper
 import com.gitlab.artismarti.smartsmells.common.helper.MetricHelper
+import com.gitlab.artismarti.smartsmells.common.source.SourcePath
 
 import java.nio.file.Path
 
@@ -26,7 +27,8 @@ class ClassInfoVisitor extends Visitor<ClassInfo> {
 			smells.add(new ClassInfo(
 					name: it.name,
 					signature: BadSmellHelper.createClassSignature(it),
-					path: path.toString(),
+					sourcePath: SourcePath.of(path),
+					sourceRange: BadSmellHelper.createSourceRangeFromNode(it),
 					wmc: MetricHelper.wmc(it),
 					tcc: MetricHelper.tcc(it),
 					atfd: MetricHelper.atfd(it),

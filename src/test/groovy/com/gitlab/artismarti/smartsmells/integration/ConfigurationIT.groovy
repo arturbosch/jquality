@@ -47,4 +47,19 @@ class ConfigurationIT extends Specification {
 		xml.startsWith("<SmartSmells>")
 		xml.endsWith("</SmartSmells>")
 	}
+
+
+	def "create metrics facade"() {
+		when:
+		def result = DetectorFacade.metricFacade().run(Test.PATH)
+
+		then:
+		result.smellSets.size() == 1
+
+		when:
+		def xml = XMLWriter.toXml(result)
+
+		then:
+		xml.contains("ClassInfo")
+	}
 }

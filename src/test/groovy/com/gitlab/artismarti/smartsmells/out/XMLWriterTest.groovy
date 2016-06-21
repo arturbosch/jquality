@@ -28,4 +28,5 @@ class XMLWriterTest extends Specification {
 		xml.contains("&lt;&quot;&apos;&gt;&amp;")
 		!xml.contains("null")
 	}
+
 }

@@ -12,7 +12,6 @@ class ClassInfoDetectorTest extends Specification {
 
 		expect: "dummy, two envies and static class"
 		smells.size() == 4
-		smells.each { println it }
 
 		where:
 		smells = new ClassInfoDetector().run(Test.FEATURE_ENVY_PATH)
