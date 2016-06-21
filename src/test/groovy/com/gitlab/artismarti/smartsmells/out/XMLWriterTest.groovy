@@ -2,7 +2,7 @@ package com.gitlab.artismarti.smartsmells.out
 
 import com.gitlab.artismarti.smartsmells.common.source.SourcePath
 import com.gitlab.artismarti.smartsmells.common.source.SourceRange
-import com.gitlab.artismarti.smartsmells.featureenvy.FeatureEnvy
+import com.gitlab.artismarti.smartsmells.smells.featureenvy.FeatureEnvy
 import spock.lang.Specification
 
 import java.nio.file.Paths

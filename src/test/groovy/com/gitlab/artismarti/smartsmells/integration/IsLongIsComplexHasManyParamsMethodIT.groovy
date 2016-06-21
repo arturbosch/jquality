@@ -1,9 +1,9 @@
 package com.gitlab.artismarti.smartsmells.integration
 
-import com.gitlab.artismarti.smartsmells.complexmethod.ComplexMethod
+import com.gitlab.artismarti.smartsmells.smells.complexmethod.ComplexMethod
 import com.gitlab.artismarti.smartsmells.config.Smell
-import com.gitlab.artismarti.smartsmells.longmethod.LongMethod
-import com.gitlab.artismarti.smartsmells.longparam.LongParameterList
+import com.gitlab.artismarti.smartsmells.smells.longmethod.LongMethod
+import com.gitlab.artismarti.smartsmells.smells.longparam.LongParameterList
 import com.gitlab.artismarti.smartsmells.start.DetectorFacade
 import spock.lang.Specification
 

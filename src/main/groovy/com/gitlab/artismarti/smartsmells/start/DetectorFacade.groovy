@@ -1,22 +1,22 @@
 package com.gitlab.artismarti.smartsmells.start
 
-import com.gitlab.artismarti.smartsmells.comment.CommentDetector
+import com.gitlab.artismarti.smartsmells.smells.comment.CommentDetector
 import com.gitlab.artismarti.smartsmells.common.CompilationTree
 import com.gitlab.artismarti.smartsmells.common.Detector
 import com.gitlab.artismarti.smartsmells.common.Smelly
-import com.gitlab.artismarti.smartsmells.complexmethod.ComplexMethodDetector
+import com.gitlab.artismarti.smartsmells.smells.complexmethod.ComplexMethodDetector
 import com.gitlab.artismarti.smartsmells.config.DetectorConfig
 import com.gitlab.artismarti.smartsmells.config.DetectorInitializer
-import com.gitlab.artismarti.smartsmells.cycle.CycleDetector
-import com.gitlab.artismarti.smartsmells.dataclass.DataClassDetector
-import com.gitlab.artismarti.smartsmells.deadcode.DeadCodeDetector
-import com.gitlab.artismarti.smartsmells.featureenvy.FeatureEnvyDetector
-import com.gitlab.artismarti.smartsmells.godclass.GodClassDetector
-import com.gitlab.artismarti.smartsmells.largeclass.LargeClassDetector
-import com.gitlab.artismarti.smartsmells.longmethod.LongMethodDetector
-import com.gitlab.artismarti.smartsmells.longparam.LongParameterListDetector
-import com.gitlab.artismarti.smartsmells.messagechain.MessageChainDetector
-import com.gitlab.artismarti.smartsmells.middleman.MiddleManDetector
+import com.gitlab.artismarti.smartsmells.smells.cycle.CycleDetector
+import com.gitlab.artismarti.smartsmells.smells.dataclass.DataClassDetector
+import com.gitlab.artismarti.smartsmells.smells.deadcode.DeadCodeDetector
+import com.gitlab.artismarti.smartsmells.smells.featureenvy.FeatureEnvyDetector
+import com.gitlab.artismarti.smartsmells.smells.godclass.GodClassDetector
+import com.gitlab.artismarti.smartsmells.smells.largeclass.LargeClassDetector
+import com.gitlab.artismarti.smartsmells.smells.longmethod.LongMethodDetector
+import com.gitlab.artismarti.smartsmells.smells.longparam.LongParameterListDetector
+import com.gitlab.artismarti.smartsmells.smells.messagechain.MessageChainDetector
+import com.gitlab.artismarti.smartsmells.smells.middleman.MiddleManDetector
 import com.gitlab.artismarti.smartsmells.util.StreamCloser
 
 import java.nio.file.Files

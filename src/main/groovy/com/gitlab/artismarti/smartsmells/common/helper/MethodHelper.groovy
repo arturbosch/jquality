@@ -12,7 +12,7 @@ import com.github.javaparser.ast.stmt.ExpressionStmt
 import com.github.javaparser.ast.stmt.ReturnStmt
 import com.github.javaparser.ast.stmt.Statement
 import com.gitlab.artismarti.smartsmells.common.visitor.CyclomaticComplexityVisitor
-import com.gitlab.artismarti.smartsmells.featureenvy.MethodInvocationCountVisitor
+import com.gitlab.artismarti.smartsmells.smells.featureenvy.MethodInvocationCountVisitor
 
 /**
  * @author artur

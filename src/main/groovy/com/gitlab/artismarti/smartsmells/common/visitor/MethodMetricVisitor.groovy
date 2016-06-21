@@ -9,7 +9,7 @@ import com.gitlab.artismarti.smartsmells.common.Smelly
 import com.gitlab.artismarti.smartsmells.common.Visitor
 import com.gitlab.artismarti.smartsmells.common.source.SourcePath
 import com.gitlab.artismarti.smartsmells.common.source.SourceRange
-import com.gitlab.artismarti.smartsmells.longmethod.LongMethod
+import com.gitlab.artismarti.smartsmells.smells.longmethod.LongMethod
 
 import java.nio.file.Path
 
