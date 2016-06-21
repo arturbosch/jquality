@@ -7,6 +7,7 @@ import spock.lang.Specification
 
 import java.nio.file.Paths
 import java.util.stream.Collectors
+
 /**
  * @author artur
  */
@@ -25,6 +26,8 @@ class SystemTestOnQuideIT extends Specification {
 				.filter { Collections.frequency(envies, it) > 1 }
 				.collect(Collectors.toSet())
 //		envies.each { println it.toString() }
+//		result.of(Smell.GOD_CLASS).each { println it.toString() }
+//		println result.of(Smell.GOD_CLASS).size()
 		then:
 		duplicates.isEmpty()
 		when:

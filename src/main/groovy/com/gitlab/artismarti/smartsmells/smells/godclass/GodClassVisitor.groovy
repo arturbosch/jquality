@@ -2,21 +2,17 @@ package com.gitlab.artismarti.smartsmells.smells.godclass
 
 import com.github.javaparser.ASTHelper
 import com.github.javaparser.ast.CompilationUnit
-import com.github.javaparser.ast.Node
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration
-import com.github.javaparser.ast.body.ConstructorDeclaration
-import com.github.javaparser.ast.body.MethodDeclaration
-import com.github.javaparser.ast.expr.FieldAccessExpr
-import com.github.javaparser.ast.expr.MethodCallExpr
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter
 import com.gitlab.artismarti.smartsmells.common.Visitor
-import com.gitlab.artismarti.smartsmells.common.helper.*
+import com.gitlab.artismarti.smartsmells.common.helper.BadSmellHelper
+import com.gitlab.artismarti.smartsmells.common.helper.MetricHelper
+import com.gitlab.artismarti.smartsmells.common.helper.TypeHelper
 import com.gitlab.artismarti.smartsmells.common.source.SourcePath
 import com.gitlab.artismarti.smartsmells.common.source.SourcePosition
 import com.gitlab.artismarti.smartsmells.common.source.SourceRange
 
 import java.nio.file.Path
-import java.util.stream.Collectors
 
 /**
  * GodClasses := ((ATFD, TopValues(20%)) ∧ (ATFD, HigherThan(4))) ∧
@@ -33,7 +29,7 @@ class GodClassVisitor extends Visitor<GodClass> {
 
 	private int accessToForeignDataThreshold
 	private int weightedMethodCountThreshold
-	private BigDecimal tiedClassCohesionThreshold
+	private double tiedClassCohesionThreshold
 
 	GodClassVisitor(int accessToForeignDataThreshold,
 	                int weightedMethodCountThreshold,
@@ -63,32 +59,13 @@ class GodClassVisitor extends Visitor<GodClass> {
 		private int wmc = 0
 		private double tcc = 0.0
 
-		private String currentClassName = ""
-		private List<String> fields = new ArrayList<>()
-		private List<String> methods = new ArrayList<>()
-
 		void visit(ClassOrInterfaceDeclaration n) {
 			if (TypeHelper.isEmptyBody(n)) return
 			if (TypeHelper.hasNoMethods(n)) return
 
-			this.currentClassName = n.name
-
-			def filteredFields = NodeHelper.findFields(n).stream()
-					.filter { ClassHelper.inCurrentClass(it, currentClassName) }
-					.collect(Collectors.toList())
-
-			def filteredMethods = NodeHelper.findMethods(n).stream()
-					.filter { ClassHelper.inCurrentClass(it, currentClassName) }
-					.collect(Collectors.toList())
-
-			fields = NameHelper.toFieldNames(filteredFields)
-			methods = NameHelper.toMethodNames(filteredMethods)
-
-			// traverse all nodes and calculate values before evaluate for god class
-			super.visit(n, null)
-
 			tcc = MetricHelper.tcc(n)
 			wmc = MetricHelper.wmc(n)
+			atfd = MetricHelper.atfd(n)
 
 			if (checkThresholds()) {
 				addSmell(n)
@@ -107,54 +84,6 @@ class GodClassVisitor extends Visitor<GodClass> {
 					accessToForeignDataThreshold, SourcePath.of(path),
 					SourceRange.of(SourcePosition.of(n.beginLine, n.beginColumn),
 							SourcePosition.of(n.endLine, n.endColumn))))
-		}
-
-		def inScope(Node node, Closure code) {
-			def declaredClass = NodeHelper.findDeclaringClass(node)
-					.filter { it.name == currentClassName }
-			if (declaredClass.isPresent()) {
-				code()
-			}
-		}
-
-		@Override
-		void visit(ConstructorDeclaration n, Object arg) {
-			inScope(n) {
-				wmc += MetricHelper.mcCabe(n)
-				super.visit(n, arg)
-			}
-		}
-
-		@Override
-		void visit(MethodDeclaration n, Object arg) {
-			inScope(n) {
-
-				wmc += MetricHelper.mcCabe(n)
-
-				ASTHelper.getNodesByType(n, MethodCallExpr.class).each {
-					if (isNotMemberOfThisClass(it.name, methods)) {
-						if (isNotAGetterOrSetter(it.name)) {
-							atfd++
-						}
-					}
-				}
-
-				ASTHelper.getNodesByType(n, FieldAccessExpr.class).each {
-					if (isNotMemberOfThisClass(it.field, fields)) {
-						atfd++
-					}
-				}
-
-				super.visit(n, arg)
-			}
-		}
-
-		private static boolean isNotMemberOfThisClass(String name, List<String> members) {
-			!members.contains(name)
-		}
-
-		static boolean isNotAGetterOrSetter(String name) {
-			!name.startsWith("get") && !name.startsWith("set") && !name.startsWith("is")
 		}
 
 	}
