@@ -13,7 +13,6 @@ import groovy.transform.ToString
 @ToString(includePackage = false, includeNames = true)
 class ClassInfo implements Smelly {
 	String name
-	String signature
 	int wmc
 	double tcc
 	int atfd
@@ -21,6 +20,7 @@ class ClassInfo implements Smelly {
 	int nom
 	int loc
 	int sloc
+	String signature
 	@Delegate
 	SourcePath sourcePath
 	@Delegate

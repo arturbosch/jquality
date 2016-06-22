@@ -33,8 +33,8 @@ class ClassInfoVisitor extends Visitor<ClassInfo> {
 					atfd: Metrics.atfd(it),
 					noa: Metrics.noa(it),
 					nom: Metrics.nom(it),
-					loc: Metrics.loc(path),
-					sloc: Metrics.sloc(path),
+					loc: Metrics.loc(it, path),
+					sloc: Metrics.sloc(it, path),
 			))
 		}
 

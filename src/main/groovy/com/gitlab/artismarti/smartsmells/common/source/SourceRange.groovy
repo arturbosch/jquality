@@ -18,6 +18,13 @@ class SourceRange extends Tuple2<SourcePosition, SourcePosition> {
 		return new SourceRange(begin, end)
 	}
 
+	int startLine() {
+		return first.line
+	}
+
+	int endLine() {
+		return second.line
+	}
 
 	@Override
 	public String toString() {

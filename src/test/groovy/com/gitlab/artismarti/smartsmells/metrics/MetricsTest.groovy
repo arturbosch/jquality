@@ -1,12 +1,11 @@
-package com.gitlab.artismarti.smartsmells.common.helper
+package com.gitlab.artismarti.smartsmells.metrics
 
 import com.gitlab.artismarti.smartsmells.common.Test
-import com.gitlab.artismarti.smartsmells.metrics.Metrics
 import spock.lang.Specification
 /**
  * @author artur
  */
-class MetricHelperTest extends Specification {
+class MetricsTest extends Specification {
 
 	def "mccabe"() {
 		expect:
@@ -66,7 +65,8 @@ class MetricHelperTest extends Specification {
 
 	def "sloc"() {
 		when:
-		int count = Metrics.sloc(Test.COMMENT_DUMMY_PATH)
+		def clazz = Test.firstClass(Test.compile(Test.COMMENT_DUMMY_PATH))
+		int count = Metrics.sloc(clazz, Test.COMMENT_DUMMY_PATH)
 		then:
 		count == 6
 	}
@@ -74,7 +74,8 @@ class MetricHelperTest extends Specification {
 
 	def "loc"() {
 		when:
-		int count = Metrics.loc(Test.COMMENT_DUMMY_PATH)
+		def clazz = Test.firstClass(Test.compile(Test.COMMENT_DUMMY_PATH))
+		int count = Metrics.loc(clazz, Test.COMMENT_DUMMY_PATH)
 		then:
 		count == 18
 	}

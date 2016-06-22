@@ -4,15 +4,12 @@ import com.github.javaparser.ASTHelper
 import com.github.javaparser.ast.body.*
 import com.github.javaparser.ast.expr.FieldAccessExpr
 import com.github.javaparser.ast.expr.MethodCallExpr
-import com.gitlab.artismarti.smartsmells.common.helper.ClassHelper
-import com.gitlab.artismarti.smartsmells.common.helper.MethodHelper
-import com.gitlab.artismarti.smartsmells.common.helper.NameHelper
-import com.gitlab.artismarti.smartsmells.common.helper.NodeHelper
-import com.gitlab.artismarti.smartsmells.common.helper.VariableHelper
+import com.gitlab.artismarti.smartsmells.common.helper.*
 import com.gitlab.artismarti.smartsmells.common.visitor.CyclomaticComplexityVisitor
 import com.gitlab.artismarti.smartsmells.smells.godclass.FieldAccessVisitor
 import com.gitlab.artismarti.smartsmells.smells.godclass.TiedClassCohesion
 import com.gitlab.artismarti.smartsmells.util.JavaLoc
+import com.gitlab.artismarti.smartsmells.util.StreamCloser
 
 import java.nio.file.Files
 import java.nio.file.Path
@@ -132,20 +129,38 @@ final class Metrics {
 		methodFieldAccesses.put(methodName, accessedFieldNames)
 	}
 
-	static int sloc(Path path) {
-		return locInternal(path, false)
+	static int sloc(ClassOrInterfaceDeclaration n, Path path) {
+		return locInternal(n, path, false)
 	}
 
-	private static int locInternal(Path path, boolean comments) {
+	static int loc(ClassOrInterfaceDeclaration n, Path path) {
+		return locInternal(n, path, true)
+	}
+
+	private static int locInternal(ClassOrInterfaceDeclaration n, Path path, boolean comments) {
 		if (!path.toString().endsWith(".java")) return -1
-		return new JavaLoc().analyze(Files.lines(path)
-				.filter { !it.isEmpty() }
-				.collect(Collectors.toList()), comments, false)
-	}
 
-	static int loc(Path path) {
-		return locInternal(path, true)
+		def javaDoc = Optional.ofNullable(n.comment)
+				.map { it.endLine - it.beginLine + 1 }
+				.orElse(0)
+
+		def sourceRange = BadSmellHelper.createSourceRangeFromNode(n)
+		def i = sourceRange.startLine() - 1 - javaDoc
+
+		def start = i > 0 ? i : 0
+		def end = sourceRange.endLine() - sourceRange.startLine() + 1 + javaDoc
+
+		def stream = Files.lines(path)
+		def collect = stream
+				.skip(start)
+				.limit(end)
+				.filter { !it.empty }
+				.collect(Collectors.toList())
+		StreamCloser.quietly(stream)
+
+		return new JavaLoc().analyze(collect, comments, false)
 	}
 
 }
+
 
