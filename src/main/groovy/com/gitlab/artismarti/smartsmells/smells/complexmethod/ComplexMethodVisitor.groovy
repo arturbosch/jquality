@@ -2,7 +2,7 @@ package com.gitlab.artismarti.smartsmells.smells.complexmethod
 
 import com.github.javaparser.ast.body.BodyDeclaration
 import com.github.javaparser.ast.stmt.Statement
-import com.gitlab.artismarti.smartsmells.common.helper.MetricHelper
+import com.gitlab.artismarti.smartsmells.metrics.Metrics
 import com.gitlab.artismarti.smartsmells.common.visitor.MethodMetricVisitor
 
 import java.nio.file.Path
@@ -19,7 +19,7 @@ class ComplexMethodVisitor extends MethodMetricVisitor<ComplexMethod> {
 
 	@Override
 	protected byThreshold(BodyDeclaration n, List<Statement> stmt) {
-		mcc = MetricHelper.mcCabe(n)
+		mcc = Metrics.mcCabe(n)
 		return mcc >= threshold
 	}
 

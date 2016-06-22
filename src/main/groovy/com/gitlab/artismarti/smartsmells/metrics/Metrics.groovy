@@ -1,12 +1,14 @@
-package com.gitlab.artismarti.smartsmells.common.helper
+package com.gitlab.artismarti.smartsmells.metrics
 
 import com.github.javaparser.ASTHelper
-import com.github.javaparser.ast.body.BodyDeclaration
-import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration
-import com.github.javaparser.ast.body.MethodDeclaration
-import com.github.javaparser.ast.body.ModifierSet
+import com.github.javaparser.ast.body.*
 import com.github.javaparser.ast.expr.FieldAccessExpr
 import com.github.javaparser.ast.expr.MethodCallExpr
+import com.gitlab.artismarti.smartsmells.common.helper.ClassHelper
+import com.gitlab.artismarti.smartsmells.common.helper.MethodHelper
+import com.gitlab.artismarti.smartsmells.common.helper.NameHelper
+import com.gitlab.artismarti.smartsmells.common.helper.NodeHelper
+import com.gitlab.artismarti.smartsmells.common.helper.VariableHelper
 import com.gitlab.artismarti.smartsmells.common.visitor.CyclomaticComplexityVisitor
 import com.gitlab.artismarti.smartsmells.smells.godclass.FieldAccessVisitor
 import com.gitlab.artismarti.smartsmells.smells.godclass.TiedClassCohesion
@@ -19,7 +21,7 @@ import java.util.stream.Collectors
 /**
  * @author artur
  */
-final class MetricHelper {
+final class Metrics {
 
 	static int noa(ClassOrInterfaceDeclaration n) {
 		NodeHelper.findFields(n)
@@ -102,18 +104,26 @@ final class MetricHelper {
 	static double tcc(ClassOrInterfaceDeclaration n) {
 		Map<String, Set<String>> methodFieldAccesses = new HashMap<>()
 
+		List<FieldDeclaration> declarations = NodeHelper.findFields(n)
+				.stream()
+				.filter { ClassHelper.inCurrentClass(it, n.name) }
+				.collect()
+		List<String> fields = VariableHelper.fromFieldToCustomVariableDeclarations(declarations)
+				.collect { it.name }
+
 		NodeHelper.findMethods(n)
 				.stream()
 				.filter { ClassHelper.inCurrentClass(it, n.name) }
 				.filter { ModifierSet.isPublic(it.modifiers) }
-				.each { collectFieldAccesses(it, methodFieldAccesses) }
+				.each { collectFieldAccesses(it, methodFieldAccesses, fields) }
 
 		return TiedClassCohesion.calc(methodFieldAccesses)
 	}
 
 	private static void collectFieldAccesses(MethodDeclaration n,
-	                                         Map<String, Set<String>> methodFieldAccesses) {
-		def visitor = new FieldAccessVisitor()
+	                                         Map<String, Set<String>> methodFieldAccesses,
+	                                         List<String> fields) {
+		def visitor = new FieldAccessVisitor(fields)
 		n.accept(visitor, null)
 
 		def accessedFieldNames = visitor.fieldNames

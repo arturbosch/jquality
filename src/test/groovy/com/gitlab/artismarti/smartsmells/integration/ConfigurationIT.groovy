@@ -58,6 +58,7 @@ class ConfigurationIT extends Specification {
 
 		when:
 		def xml = XMLWriter.toXml(result)
+		println xml
 
 		then:
 		xml.contains("ClassInfo")

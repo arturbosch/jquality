@@ -6,10 +6,10 @@ package com.gitlab.artismarti.smartsmells.smells.godclass
 class TiedClassCohesion {
 
 	static double calc(Map<String, Set<String>> methodFieldAccesses) {
-		double tcc = 0.0
+		double tcc = 1.0d
 		double methodPairs = determineMethodPairs(methodFieldAccesses)
 		double totalMethodPairs = calculateTotalMethodPairs(methodFieldAccesses)
-		if (totalMethodPairs > 0.0d) {
+		if (totalMethodPairs > 0.0d && methodPairs > 1.0d) {
 			tcc = methodPairs / totalMethodPairs
 		}
 		return tcc;

@@ -1,6 +1,7 @@
 package com.gitlab.artismarti.smartsmells.common.helper
 
 import com.gitlab.artismarti.smartsmells.common.Test
+import com.gitlab.artismarti.smartsmells.metrics.Metrics
 import spock.lang.Specification
 /**
  * @author artur
@@ -13,7 +14,7 @@ class MetricHelperTest extends Specification {
 
 		where:
 		method = Test.nth(Test.compile(Test.GOD_CLASS_DUMMY_PATH), 3)
-		mcc = MetricHelper.mcCabe(method)
+		mcc = Metrics.mcCabe(method)
 	}
 
 	def "wmc"() {
@@ -22,7 +23,7 @@ class MetricHelperTest extends Specification {
 
 		where:
 		clazz = Test.firstClass(Test.compile(Test.GOD_CLASS_DUMMY_PATH))
-		wmc = MetricHelper.wmc(clazz)
+		wmc = Metrics.wmc(clazz)
 	}
 
 	def "noa"() {
@@ -31,7 +32,7 @@ class MetricHelperTest extends Specification {
 
 		where:
 		clazz = Test.firstClass(Test.compile(Test.FEATURE_ENVY_PATH))
-		noa = MetricHelper.noa(clazz)
+		noa = Metrics.noa(clazz)
 	}
 
 	def "nom"() {
@@ -40,7 +41,7 @@ class MetricHelperTest extends Specification {
 
 		where:
 		clazz = Test.firstClass(Test.compile(Test.FEATURE_ENVY_PATH))
-		nom = MetricHelper.nom(clazz)
+		nom = Metrics.nom(clazz)
 	}
 
 	def "atfd"() {
@@ -49,22 +50,23 @@ class MetricHelperTest extends Specification {
 
 		where:
 		clazz = Test.firstClass(Test.compile(Test.GOD_CLASS_DUMMY_PATH))
-		atfd = MetricHelper.atfd(clazz)
+		atfd = Metrics.atfd(clazz)
 	}
 
 	def "tcc"() {
 		expect:
-		tcc < 0.33d
+		tcc == 0.7d
+		println tcc
 
 		where:
 		clazz = Test.firstClass(Test.compile(Test.GOD_CLASS_DUMMY_PATH))
-		tcc = MetricHelper.tcc(clazz)
+		tcc = Metrics.tcc(clazz)
 	}
 
 
 	def "sloc"() {
 		when:
-		int count = MetricHelper.sloc(Test.COMMENT_DUMMY_PATH)
+		int count = Metrics.sloc(Test.COMMENT_DUMMY_PATH)
 		then:
 		count == 6
 	}
@@ -72,7 +74,7 @@ class MetricHelperTest extends Specification {
 
 	def "loc"() {
 		when:
-		int count = MetricHelper.loc(Test.COMMENT_DUMMY_PATH)
+		int count = Metrics.loc(Test.COMMENT_DUMMY_PATH)
 		then:
 		count == 18
 	}

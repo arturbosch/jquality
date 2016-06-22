@@ -6,7 +6,7 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter
 import com.gitlab.artismarti.smartsmells.common.Visitor
 import com.gitlab.artismarti.smartsmells.common.helper.BadSmellHelper
-import com.gitlab.artismarti.smartsmells.common.helper.MetricHelper
+import com.gitlab.artismarti.smartsmells.metrics.Metrics
 import com.gitlab.artismarti.smartsmells.common.helper.TypeHelper
 import com.gitlab.artismarti.smartsmells.common.source.SourcePath
 import com.gitlab.artismarti.smartsmells.common.source.SourcePosition
@@ -63,9 +63,9 @@ class GodClassVisitor extends Visitor<GodClass> {
 			if (TypeHelper.isEmptyBody(n)) return
 			if (TypeHelper.hasNoMethods(n)) return
 
-			tcc = MetricHelper.tcc(n)
-			wmc = MetricHelper.wmc(n)
-			atfd = MetricHelper.atfd(n)
+			tcc = Metrics.tcc(n)
+			wmc = Metrics.wmc(n)
+			atfd = Metrics.atfd(n)
 
 			if (checkThresholds()) {
 				addSmell(n)

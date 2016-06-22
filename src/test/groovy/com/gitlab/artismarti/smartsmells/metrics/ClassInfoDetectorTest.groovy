@@ -8,7 +8,7 @@ import spock.lang.Specification
  */
 class ClassInfoDetectorTest extends Specification {
 
-	def "three class info for feature envy dummy"() {
+	def "four class info for feature envy dummy"() {
 
 		expect: "dummy, two envies and static class"
 		smells.size() == 4

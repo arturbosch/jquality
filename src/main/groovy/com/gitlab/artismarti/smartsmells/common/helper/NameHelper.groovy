@@ -1,8 +1,6 @@
 package com.gitlab.artismarti.smartsmells.common.helper
 
 import com.github.javaparser.ast.body.FieldDeclaration
-import com.github.javaparser.ast.body.MethodDeclaration
-
 /**
  * @author artur
  */
@@ -19,7 +17,8 @@ class NameHelper {
 				.collect { (String) it }
 	}
 
-	static List<String> toMethodNames(List<MethodDeclaration> methods) {
-		methods.collect({ it.name })
+	static String extractName(FieldDeclaration field) {
+		return field.variables.id.name
 	}
+
 }

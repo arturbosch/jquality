@@ -6,7 +6,7 @@ import com.github.javaparser.ast.expr.MethodCallExpr
 import com.github.javaparser.ast.stmt.ReturnStmt
 import com.gitlab.artismarti.smartsmells.common.Visitor
 import com.gitlab.artismarti.smartsmells.common.helper.BadSmellHelper
-import com.gitlab.artismarti.smartsmells.common.helper.MetricHelper
+import com.gitlab.artismarti.smartsmells.metrics.Metrics
 import com.gitlab.artismarti.smartsmells.common.helper.NodeHelper
 import com.gitlab.artismarti.smartsmells.common.helper.TypeHelper
 import com.gitlab.artismarti.smartsmells.common.source.SourcePath
@@ -91,7 +91,7 @@ class MiddleManVisitor extends Visitor<MiddleMan> {
 	}
 
 	private static boolean hasComplexityOfOne(MethodDeclaration it) {
-		MetricHelper.mcCabe(it) == 1
+		Metrics.mcCabe(it) == 1
 	}
 
 	private static boolean hasNoFilteredAnnotations(MethodDeclaration method) {
