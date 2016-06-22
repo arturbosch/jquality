@@ -3,6 +3,7 @@ package com.gitlab.artismarti.smartsmells.common
 import com.github.javaparser.ASTHelper
 import com.github.javaparser.JavaParser
 import com.github.javaparser.ParseException
+import com.github.javaparser.TokenMgrError
 import com.github.javaparser.ast.CompilationUnit
 import com.github.javaparser.ast.expr.MethodCallExpr
 import com.github.javaparser.ast.type.ClassOrInterfaceType
@@ -37,6 +38,8 @@ class CompilationTree {
 				pathToCompilationUnitCache.putPair(path, compilationUnit)
 				Optional.of(compilationUnit)
 			} catch (ParseException ignored) {
+				Optional.empty()
+			} catch (TokenMgrError ignored) {
 				Optional.empty()
 			}
 		}
@@ -86,7 +89,6 @@ class CompilationTree {
 	static void findReferencesFor(QualifiedType qualifiedType, Consumer<CompilationUnit> code) {
 		def walker = Files.walk(root)
 		walker.forEach {
-
 			getCompilationUnit(it)
 					.ifPresent {
 

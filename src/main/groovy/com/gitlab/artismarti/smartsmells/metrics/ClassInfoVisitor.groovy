@@ -35,6 +35,8 @@ class ClassInfoVisitor extends Visitor<ClassInfo> {
 					nom: Metrics.nom(it),
 					loc: Metrics.loc(it, path),
 					sloc: Metrics.sloc(it, path),
+					cc: 0/*Metrics.cc(it)*/,
+					cm: 0/*Metrics.cm(it)*/
 			))
 		}
 

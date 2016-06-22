@@ -20,6 +20,8 @@ class ClassInfo implements Smelly {
 	int nom
 	int loc
 	int sloc
+	int cc
+	int cm
 	String signature
 	@Delegate
 	SourcePath sourcePath

@@ -57,7 +57,6 @@ class MetricsTest extends AbstractCompilationTreeTest {
 	def "tcc"() {
 		expect:
 		tcc == 0.7d
-		println tcc
 
 		where:
 		clazz = Test.firstClass(Test.compile(Test.GOD_CLASS_DUMMY_PATH))

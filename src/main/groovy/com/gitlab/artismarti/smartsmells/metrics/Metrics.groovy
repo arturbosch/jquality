@@ -43,7 +43,6 @@ final class Metrics {
 		TypeHelper.getQualifiedType(n)
 				.ifPresent {
 			cc = CompilationTree.findReferencesFor(it)
-			println "$it: $cc"
 		}
 		return cc
 	}
