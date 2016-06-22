@@ -5,7 +5,7 @@ import com.gitlab.artismarti.smartsmells.common.Test
 /**
  * @author artur
  */
-class SingletonsAreNoCyclesTest extends AbstractCycleTest {
+class SingletonsAreNoCyclesTest extends AbstractCompilationTreeTest {
 
 	def "singleton's are no cycles"() {
 		expect:

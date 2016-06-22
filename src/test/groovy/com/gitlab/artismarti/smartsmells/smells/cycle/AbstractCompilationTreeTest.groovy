@@ -6,7 +6,7 @@ import spock.lang.Specification
 /**
  * @author artur
  */
-abstract class AbstractCycleTest extends Specification {
+abstract class AbstractCompilationTreeTest extends Specification {
 
 	def cleanup() {
 		CompilationTree.reset()

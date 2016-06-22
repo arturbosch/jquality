@@ -1,22 +1,28 @@
 package com.gitlab.artismarti.smartsmells.common
 
+import com.github.javaparser.ASTHelper
 import com.github.javaparser.JavaParser
 import com.github.javaparser.ParseException
 import com.github.javaparser.ast.CompilationUnit
+import com.github.javaparser.ast.expr.MethodCallExpr
+import com.github.javaparser.ast.type.ClassOrInterfaceType
 import com.gitlab.artismarti.smartsmells.util.Cache
 import com.gitlab.artismarti.smartsmells.util.StreamCloser
 import org.codehaus.groovy.runtime.IOGroovyMethods
 
 import java.nio.file.Files
 import java.nio.file.Path
+import java.util.function.Consumer
 
 /**
  * @author artur
  */
 class CompilationTree {
 
-	private static Cache<String, Path> qualifiedNameToPathCache = new Cache<String, Path>() {}
-	private static Cache<Path, CompilationUnit> pathToCompilationUnitCache = new Cache<Path, CompilationUnit>() {}
+	private static Cache<String, Path> qualifiedNameToPathCache =
+			new Cache<String, Path>() {}
+	private static Cache<Path, CompilationUnit> pathToCompilationUnitCache =
+			new Cache<Path, CompilationUnit>() {}
 
 	private static Path root
 
@@ -57,6 +63,55 @@ class CompilationTree {
 			return pathToQualifier
 		}
 
+	}
+
+	static int findReferencesFor(QualifiedType qualifiedType) {
+		int references = 0
+		findReferencesFor(qualifiedType, { references++ })
+		return references
+	}
+
+	static int countMethodInvocations(QualifiedType qualifiedType, Collection<String> methods) {
+		int calls = 0
+		findReferencesFor(qualifiedType, {
+			calls = ASTHelper.getNodesByType(it, MethodCallExpr.class)
+					.stream()
+					.filter { methods.contains(it.name) }
+					.mapToInt { 1 }
+					.sum()
+		})
+		return calls
+	}
+
+	static void findReferencesFor(QualifiedType qualifiedType, Consumer<CompilationUnit> code) {
+		def walker = Files.walk(root)
+		walker.forEach {
+
+			getCompilationUnit(it)
+					.ifPresent {
+
+				def imports = it.imports
+
+				def maybeImport = imports.stream()
+						.filter { it.name.toStringWithoutComments() == qualifiedType.name }
+						.findFirst()
+
+				if (maybeImport.isPresent()) {
+					code.accept(it)
+				} else if (searchForTypeWithinUnit(it, qualifiedType)) {
+					code.accept(it)
+				}
+
+			}
+
+		}
+		StreamCloser.quietly(walker)
+	}
+
+	static boolean searchForTypeWithinUnit(CompilationUnit unit, QualifiedType qualifiedType) {
+		def shortName = qualifiedType.shortName()
+		def types = ASTHelper.getNodesByType(unit, ClassOrInterfaceType.class)
+		return types.any { it.name == shortName }
 	}
 
 	static Optional<CompilationUnit> getCompilationUnit(Path path) {

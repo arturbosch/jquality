@@ -1,6 +1,7 @@
 package com.gitlab.artismarti.smartsmells.common.helper
 
 import com.github.javaparser.ASTHelper
+import com.github.javaparser.ast.CompilationUnit
 import com.github.javaparser.ast.Node
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration
 import com.github.javaparser.ast.body.FieldDeclaration
@@ -49,6 +50,16 @@ class NodeHelper {
 		Looper.loop {
 			parent = parent.getParentNode()
 		} until { parent instanceof ClassOrInterfaceDeclaration || parent == null }
+
+		return parent == null ? Optional.empty() : Optional.of(parent)
+	}
+
+	static Optional<CompilationUnit> getCompilationUnit(Node node) {
+
+		def parent = node
+		Looper.loop {
+			parent = parent.getParentNode()
+		} until { parent instanceof CompilationUnit || parent == null }
 
 		return parent == null ? Optional.empty() : Optional.of(parent)
 	}

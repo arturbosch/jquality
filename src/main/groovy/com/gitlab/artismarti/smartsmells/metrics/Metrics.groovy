@@ -4,6 +4,7 @@ import com.github.javaparser.ASTHelper
 import com.github.javaparser.ast.body.*
 import com.github.javaparser.ast.expr.FieldAccessExpr
 import com.github.javaparser.ast.expr.MethodCallExpr
+import com.gitlab.artismarti.smartsmells.common.CompilationTree
 import com.gitlab.artismarti.smartsmells.common.helper.*
 import com.gitlab.artismarti.smartsmells.common.visitor.CyclomaticComplexityVisitor
 import com.gitlab.artismarti.smartsmells.smells.godclass.FieldAccessVisitor
@@ -19,6 +20,33 @@ import java.util.stream.Collectors
  * @author artur
  */
 final class Metrics {
+
+	static int cm(ClassOrInterfaceDeclaration n) {
+		int cm = -1
+		TypeHelper.getQualifiedType(n)
+				.ifPresent {
+
+			def methods = NodeHelper.findMethods(n)
+					.stream()
+					.filter { ClassHelper.inCurrentClass(it, n.name) }
+					.map { it.name }
+					.collect()
+
+			cm = CompilationTree.countMethodInvocations(it, methods)
+
+		}
+		return cm
+	}
+
+	static int cc(ClassOrInterfaceDeclaration n) {
+		int cc = -1
+		TypeHelper.getQualifiedType(n)
+				.ifPresent {
+			cc = CompilationTree.findReferencesFor(it)
+			println "$it: $cc"
+		}
+		return cc
+	}
 
 	static int noa(ClassOrInterfaceDeclaration n) {
 		NodeHelper.findFields(n)
@@ -52,15 +80,9 @@ final class Metrics {
 
 	static int atfd(ClassOrInterfaceDeclaration n) {
 		int atfd = 0
-		def fields = NameHelper.toFieldNames(
-				NodeHelper.findFields(n).stream()
-						.filter { ClassHelper.inCurrentClass(it, n.name) }
-						.collect(Collectors.toList()))
 
-		def methods = NodeHelper.findMethods(n).stream()
-				.filter { ClassHelper.inCurrentClass(it, n.name) }
-				.map { it.name }
-				.collect(Collectors.toList())
+		def fields = getClassFieldNames(n)
+		def methods = getClassMethodNames(n)
 
 
 		Set<String> usedScopes = new HashSet<>()
@@ -88,6 +110,20 @@ final class Metrics {
 			}
 		}
 		return atfd
+	}
+
+	private static List getClassMethodNames(ClassOrInterfaceDeclaration n) {
+		NodeHelper.findMethods(n).stream()
+				.filter { ClassHelper.inCurrentClass(it, n.name) }
+				.map { it.name }
+				.collect(Collectors.toList())
+	}
+
+	private static List<String> getClassFieldNames(ClassOrInterfaceDeclaration n) {
+		NameHelper.toFieldNames(
+				NodeHelper.findFields(n).stream()
+						.filter { ClassHelper.inCurrentClass(it, n.name) }
+						.collect(Collectors.toList()))
 	}
 
 	private static boolean isNotMemberOfThisClass(String name, List<String> members) {
@@ -162,5 +198,3 @@ final class Metrics {
 	}
 
 }
-
-

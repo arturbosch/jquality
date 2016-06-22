@@ -8,7 +8,7 @@ import java.nio.file.Paths
 /**
  * @author artur
  */
-class CycleDetectorTest extends AbstractCycleTest {
+class CycleDetectorTest extends AbstractCompilationTreeTest {
 
 	def "find one cycle in CycleDummy and OtherCycle, one as inner classes of CycleDummy"() {
 		expect:
