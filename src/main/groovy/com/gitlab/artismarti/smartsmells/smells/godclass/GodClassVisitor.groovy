@@ -74,8 +74,8 @@ class GodClassVisitor extends Visitor<GodClass> {
 
 		private boolean checkThresholds() {
 			atfd > accessToForeignDataThreshold &&
-					wmc > weightedMethodCountThreshold &&
-					tcc < tiedClassCohesionThreshold
+					(wmc > weightedMethodCountThreshold ||
+					tcc < tiedClassCohesionThreshold)
 		}
 
 		private boolean addSmell(ClassOrInterfaceDeclaration n) {
