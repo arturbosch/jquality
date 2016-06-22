@@ -18,6 +18,8 @@ class SystemTestOnQuideIT extends Specification {
 		given:
 		def path = "/home/artur/Repos/quide/Implementierung/QuideService/src/main"
 //		def path = "/home/artur/Arbeit/tools/ismell/src/main"
+//		def path = "/home/artur/Repos/elasticsearch"
+//		def path = "/home/artur/Repos/RxJava/src/main"
 //		def path = "/home/artur/Arbeit/pooka-co/trunk/pooka/src"
 
 		when:
