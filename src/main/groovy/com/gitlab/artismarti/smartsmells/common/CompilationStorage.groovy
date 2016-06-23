@@ -26,7 +26,8 @@ final class CompilationStorage {
 	private final static Logger LOGGER = Logger.getLogger(CompilationStorage.simpleName)
 
 	private final Path root
-	private final SmartCache<QualifiedType, CompilationInfo> cache = new SmartCache<>()
+	private final SmartCache<QualifiedType, CompilationInfo> typeCache = new SmartCache<>()
+	private final SmartCache<Path, CompilationInfo> pathCache = new SmartCache<>()
 
 	private CompilationStorage(Path path) { root = path }
 
@@ -63,7 +64,9 @@ final class CompilationStorage {
 			try {
 				def unit = JavaParser.parse(it)
 				def type = TypeHelper.getQualifiedType(getFirstDeclaredClass(unit), unit.package)
-				cache.put(type, CompilationInfo.of(type, unit, path))
+				def compilationInfo = CompilationInfo.of(type, unit, path)
+				typeCache.put(type, compilationInfo)
+				pathCache.put(path, compilationInfo)
 			} catch (ParseException | TokenMgrError ignored) {
 			}
 		}
@@ -83,6 +86,6 @@ final class CompilationStorage {
 	}
 
 	Set<QualifiedType> getAllQualifiedTypes() {
-		cache.internalCache.keySet()
+		typeCache.internalCache.keySet()
 	}
 }
