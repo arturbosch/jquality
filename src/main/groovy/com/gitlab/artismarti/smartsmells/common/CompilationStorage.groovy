@@ -38,13 +38,23 @@ final class CompilationStorage {
 		return storage
 	}
 
+	Optional<CompilationUnit> getCompilationUnit(Path path) {
+		def info = pathCache.get(path)
+		return info.isPresent() ? info.map { it.unit } : Optional.empty()
+	}
+
+	Optional<CompilationUnit> getCompilationUnit(QualifiedType qualifiedType) {
+		def info = typeCache.get(qualifiedType)
+		return info.isPresent() ? info.map { it.unit } : Optional.empty()
+	}
+
 	private void createInternal() {
 
 		def forkJoinPool = new ForkJoinPool(
 				Runtime.getRuntime().availableProcessors(),
 				ForkJoinPool.defaultForkJoinWorkerThreadFactory, null, true)
 
-		List<CompletableFuture> futures = new ArrayList<>()
+		List<CompletableFuture> futures = new ArrayList<>(1000)
 
 		def walker = getJavaFilteredFileStream()
 		walker.forEach { path ->
@@ -87,5 +97,9 @@ final class CompilationStorage {
 
 	Set<QualifiedType> getAllQualifiedTypes() {
 		typeCache.internalCache.keySet()
+	}
+
+	List<CompilationInfo> getAllCompilationInfo() {
+		typeCache.internalCache.values().toList()
 	}
 }

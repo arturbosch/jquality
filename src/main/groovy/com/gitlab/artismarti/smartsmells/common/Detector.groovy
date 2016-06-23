@@ -1,20 +1,17 @@
 package com.gitlab.artismarti.smartsmells.common
 
+import com.github.javaparser.ast.CompilationUnit
 import com.gitlab.artismarti.smartsmells.config.Smell
 import com.gitlab.artismarti.smartsmells.util.StreamCloser
 
 import java.nio.file.Files
 import java.nio.file.Path
 import java.util.function.BinaryOperator
-import java.util.logging.Logger
 import java.util.stream.Collectors
-
 /**
  * @author artur
  */
 abstract class Detector<T extends Smelly> {
-
-	protected Logger logger = Logger.getLogger(getClass().simpleName)
 
 	protected Smell type = getType()
 	private Deque<T> smells = new ArrayDeque<>(100)
@@ -43,7 +40,7 @@ abstract class Detector<T extends Smelly> {
 		def walker = Files.walk(startPath)
 		def result = walker
 				.filter({ it.fileName.toString().endsWith("java") })
-				.map({ execute(it) })
+				.map({ execute(CompilationStorage.getCompilationUnit(it), it) })
 				.collect(Collectors.reducing(new HashSet(), op))
 		StreamCloser.quietly(walker)
 		return result
@@ -55,17 +52,11 @@ abstract class Detector<T extends Smelly> {
 	 * @param path current file path
 	 * @return smells of current analyzed file
 	 */
-	Set<T> execute(Path path) {
+	Set<T> execute(CompilationUnit unit, Path path) {
 		def visitor = getVisitor(path)
-		def maybeUnit = CompilationTree.getCompilationUnit(path)
-		def newSmells = Collections.emptySet()
-		if (maybeUnit.isPresent()) {
-			visitor.visit(maybeUnit.get(), null)
-			newSmells = visitor.smells
-			smells.addAll(newSmells)
-		} else {
-			logger.warning("Could not create compilation unit from: $path due to syntax errors.")
-		}
+		visitor.visit(unit, null)
+		def newSmells = visitor.smells
+		smells.addAll(newSmells)
 		return newSmells
 	}
 

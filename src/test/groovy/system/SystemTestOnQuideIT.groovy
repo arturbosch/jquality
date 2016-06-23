@@ -17,9 +17,9 @@ class SystemTestOnQuideIT extends Specification {
 
 	def "compilation storage"() {
 		given:
-//		def path = "/home/artur/Repos/quide/Implementierung/QuideService/src/main"
+		def path = "/home/artur/Repos/quide/Implementierung/QuideService/src/main"
 //		def path = "/home/artur/Arbeit/tools/ismell/src/main"
-		def path = "/home/artur/Repos/elasticsearch"
+//		def path = "/home/artur/Repos/elasticsearch"
 //		def path = "/home/artur/Repos/RxJava/src/main"
 //		def path = "/home/artur/Arbeit/pooka-co/trunk/pooka/src"
 
@@ -55,7 +55,8 @@ class SystemTestOnQuideIT extends Specification {
 //		def path = "/home/artur/Repos/quide/Implementierung/QuideService/src/main"
 //		def path = "/home/artur/Arbeit/tools/ismell/src/main"
 //		def path = "/home/artur/Arbeit/pooka-co/trunk/pooka/src"
-		def path = Paths.getResource("/cornercases").getFile()
+		def path = "/home/artur/Repos/elasticsearch"
+//		def path = Paths.getResource("/cornercases").getFile()
 		def result = DetectorFacade.builder().fullStackFacade().run(Paths.get(path))
 		def envies = result.of(Smell.FEATURE_ENVY)
 		when:
