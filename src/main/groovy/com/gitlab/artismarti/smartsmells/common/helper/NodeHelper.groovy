@@ -54,7 +54,7 @@ class NodeHelper {
 		return parent == null ? Optional.empty() : Optional.of(parent)
 	}
 
-	static Optional<CompilationUnit> getCompilationUnit(Node node) {
+	static Optional<CompilationUnit> findDeclaringCompilationUnit(Node node) {
 
 		def parent = node
 		Looper.loop {

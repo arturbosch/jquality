@@ -5,6 +5,7 @@ import com.github.javaparser.JavaParser
 import com.github.javaparser.ParseException
 import com.github.javaparser.TokenMgrError
 import com.github.javaparser.ast.CompilationUnit
+import com.github.javaparser.ast.ImportDeclaration
 import com.github.javaparser.ast.expr.MethodCallExpr
 import com.github.javaparser.ast.type.ClassOrInterfaceType
 import com.gitlab.artismarti.smartsmells.util.Cache
@@ -14,6 +15,7 @@ import org.codehaus.groovy.runtime.IOGroovyMethods
 import java.nio.file.Files
 import java.nio.file.Path
 import java.util.function.Consumer
+import java.util.stream.Stream
 
 /**
  * @author artur
@@ -24,6 +26,8 @@ class CompilationTree {
 			new Cache<String, Path>() {}
 	private static Cache<Path, CompilationUnit> pathToCompilationUnitCache =
 			new Cache<Path, CompilationUnit>() {}
+	private static Cache<Path, List<ImportDeclaration>> pathToImportsCache =
+			new Cache<Path, List<ImportDeclaration>>() { }
 
 	private static Path root
 
@@ -54,7 +58,7 @@ class CompilationTree {
 		} else {
 			def search = qualifiedType.asStringPathToJavaFile()
 
-			def walker = Files.walk(root)
+			def walker = getJavaFilteredFileStream()
 			def pathToQualifier = walker
 					.filter { it.endsWith(search) }
 					.findFirst()
@@ -108,6 +112,10 @@ class CompilationTree {
 
 		}
 		StreamCloser.quietly(walker)
+	}
+
+	private static Stream<Path> getJavaFilteredFileStream() {
+		Files.walk(root).filter { it.toString().endsWith(".java") }
 	}
 
 	static boolean searchForTypeWithinUnit(CompilationUnit unit, QualifiedType qualifiedType) {

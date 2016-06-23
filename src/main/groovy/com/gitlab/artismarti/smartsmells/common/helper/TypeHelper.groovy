@@ -34,7 +34,7 @@ class TypeHelper {
 	}
 
 	static Optional<QualifiedType> getQualifiedType(ClassOrInterfaceDeclaration n) {
-		def maybeUnit = NodeHelper.getCompilationUnit(n)
+		def maybeUnit = NodeHelper.findDeclaringCompilationUnit(n)
 
 		if (maybeUnit.isPresent()) {
 			def name = n.name
