@@ -1,5 +1,7 @@
 package com.gitlab.artismarti.smartsmells.common.helper
 
+import com.github.javaparser.ast.CompilationUnit
+import com.github.javaparser.ast.PackageDeclaration
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration
 import com.github.javaparser.ast.body.MethodDeclaration
 import com.github.javaparser.ast.type.ClassOrInterfaceType
@@ -46,4 +48,15 @@ class TypeHelper {
 		}
 		return Optional.empty()
 	}
+
+	static QualifiedType getQualifiedType(ClassOrInterfaceDeclaration n, CompilationUnit unit) {
+		def name = n.name
+		def holder = new PackageImportHolder(unit.package, unit.imports)
+		PackageImportHelper.getQualifiedType(holder, new ClassOrInterfaceType(name))
+	}
+
+	static QualifiedType getQualifiedType(ClassOrInterfaceDeclaration n, PackageDeclaration declaration) {
+		new QualifiedType("$declaration.packageName.$n.name", QualifiedType.TypeToken.REFERENCE)
+	}
+
 }

@@ -1,4 +1,4 @@
-package com.gitlab.artismarti.smartsmells.util;
+package com.gitlab.artismarti.smartsmells.common;
 
 import java.util.Map;
 import java.util.Objects;
@@ -72,7 +72,7 @@ public class SmartCache<K, V> {
 	 *
 	 * @return Internal representation of this cache
 	 */
-	protected Map<K, V> getInternalCache() {
+	Map<K, V> getInternalCache() {
 		return cache;
 	}
 

@@ -1,5 +1,6 @@
 package system
 
+import com.gitlab.artismarti.smartsmells.common.CompilationStorage
 import com.gitlab.artismarti.smartsmells.config.Smell
 import com.gitlab.artismarti.smartsmells.metrics.ClassInfo
 import com.gitlab.artismarti.smartsmells.out.XMLWriter
@@ -13,6 +14,23 @@ import java.util.stream.Collectors
  * @author artur
  */
 class SystemTestOnQuideIT extends Specification {
+
+	def "compilation storage"() {
+		given:
+		def path = "/home/artur/Repos/quide/Implementierung/QuideService/src/main"
+//		def path = "/home/artur/Arbeit/tools/ismell/src/main"
+//		def path = "/home/artur/Repos/elasticsearch"
+//		def path = "/home/artur/Repos/RxJava/src/main"
+//		def path = "/home/artur/Arbeit/pooka-co/trunk/pooka/src"
+
+		when:
+		def storage = CompilationStorage.create(Paths.get(path))
+		def types = storage.getAllQualifiedTypes()
+
+		then:
+		types.each { println it }
+		println "size: ${types.size()}"
+	}
 
 	def "metrics on quide"() {
 		given:
