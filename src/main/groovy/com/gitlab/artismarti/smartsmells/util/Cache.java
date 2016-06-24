@@ -32,14 +32,6 @@ public abstract class Cache<K, V> {
 		cache.put(key, value);
 	}
 
-	public boolean hasKey(K key) {
-		return key != null && cache.containsKey(key);
-	}
-
-	public boolean hasValue(V value) {
-		return value != null && cache.containsValue(value);
-	}
-
 	public int size() {
 		return cache.size();
 	}
@@ -52,15 +44,6 @@ public abstract class Cache<K, V> {
 	 */
 	public V defaultValue() {
 		return null;
-	}
-
-	/**
-	 * Internal representation of this cache.
-	 *
-	 * @return Internal representation of this cache
-	 */
-	Map<K, V> getInternalCache() {
-		return cache;
 	}
 
 }

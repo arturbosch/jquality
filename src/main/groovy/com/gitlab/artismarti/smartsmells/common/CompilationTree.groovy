@@ -5,7 +5,6 @@ import com.github.javaparser.JavaParser
 import com.github.javaparser.ParseException
 import com.github.javaparser.TokenMgrError
 import com.github.javaparser.ast.CompilationUnit
-import com.github.javaparser.ast.ImportDeclaration
 import com.github.javaparser.ast.expr.MethodCallExpr
 import com.github.javaparser.ast.type.ClassOrInterfaceType
 import com.gitlab.artismarti.smartsmells.util.Cache
@@ -16,7 +15,6 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.util.function.Consumer
 import java.util.stream.Stream
-
 /**
  * @author artur
  */
@@ -26,8 +24,6 @@ class CompilationTree {
 			new Cache<String, Path>() {}
 	private static Cache<Path, CompilationUnit> pathToCompilationUnitCache =
 			new Cache<Path, CompilationUnit>() {}
-	private static Cache<Path, List<ImportDeclaration>> pathToImportsCache =
-			new Cache<Path, List<ImportDeclaration>>() { }
 
 	private static Path root
 
@@ -91,7 +87,7 @@ class CompilationTree {
 	}
 
 	static void findReferencesFor(QualifiedType qualifiedType, Consumer<CompilationUnit> code) {
-		def walker = Files.walk(root)
+		def walker = getJavaFilteredFileStream()
 		walker.forEach {
 			getCompilationUnit(it)
 					.ifPresent {

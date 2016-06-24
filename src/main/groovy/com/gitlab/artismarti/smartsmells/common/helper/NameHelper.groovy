@@ -17,8 +17,4 @@ class NameHelper {
 				.collect { (String) it }
 	}
 
-	static String extractName(FieldDeclaration field) {
-		return field.variables.id.name
-	}
-
 }
