@@ -4,7 +4,7 @@ import com.github.javaparser.ASTHelper
 import com.github.javaparser.ast.body.*
 import com.github.javaparser.ast.expr.FieldAccessExpr
 import com.github.javaparser.ast.expr.MethodCallExpr
-import com.gitlab.artismarti.smartsmells.common.CompilationTree
+import com.gitlab.artismarti.smartsmells.common.CompilationStorage
 import com.gitlab.artismarti.smartsmells.common.helper.*
 import com.gitlab.artismarti.smartsmells.common.visitor.CyclomaticComplexityVisitor
 import com.gitlab.artismarti.smartsmells.smells.godclass.FieldAccessVisitor
@@ -24,7 +24,7 @@ final class Metrics {
 	static int cm(ClassOrInterfaceDeclaration n) {
 		int cm = -1
 		TypeHelper.getQualifiedType(n)
-				.ifPresent {
+				.ifPresent { type ->
 
 			def methods = NodeHelper.findMethods(n)
 					.stream()
@@ -32,7 +32,14 @@ final class Metrics {
 					.map { it.name }
 					.collect()
 
-			cm = CompilationTree.countMethodInvocations(it, methods)
+			cm = CompilationStorage.getAllCompilationInfo()
+					.stream()
+					.filter { it.isWithinScope(type) }
+					.map { ASTHelper.getNodesByType(it.unit, MethodCallExpr.class) }
+					.flatMap { it.stream() }
+					.filter { methods.contains(it.name) }
+					.mapToInt { 1 }
+					.sum()
 
 		}
 		return cm
@@ -41,8 +48,12 @@ final class Metrics {
 	static int cc(ClassOrInterfaceDeclaration n) {
 		int cc = -1
 		TypeHelper.getQualifiedType(n)
-				.ifPresent {
-			cc = CompilationTree.findReferencesFor(it)
+				.ifPresent { type ->
+			cc = CompilationStorage.getAllCompilationInfo()
+					.stream()
+					.filter { it.isWithinScope(type) }
+					.mapToInt { 1 }
+					.sum()
 		}
 		return cc
 	}

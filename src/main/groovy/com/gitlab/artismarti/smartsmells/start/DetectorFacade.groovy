@@ -1,6 +1,9 @@
 package com.gitlab.artismarti.smartsmells.start
 
-import com.gitlab.artismarti.smartsmells.common.*
+import com.gitlab.artismarti.smartsmells.common.CompilationInfo
+import com.gitlab.artismarti.smartsmells.common.CompilationStorage
+import com.gitlab.artismarti.smartsmells.common.Detector
+import com.gitlab.artismarti.smartsmells.common.Smelly
 import com.gitlab.artismarti.smartsmells.config.DetectorConfig
 import com.gitlab.artismarti.smartsmells.config.DetectorInitializer
 import com.gitlab.artismarti.smartsmells.metrics.ClassInfoDetector
@@ -15,9 +18,7 @@ import com.gitlab.artismarti.smartsmells.smells.longmethod.LongMethodDetector
 import com.gitlab.artismarti.smartsmells.smells.longparam.LongParameterListDetector
 import com.gitlab.artismarti.smartsmells.smells.messagechain.MessageChainDetector
 import com.gitlab.artismarti.smartsmells.smells.middleman.MiddleManDetector
-import com.gitlab.artismarti.smartsmells.util.StreamCloser
 
-import java.nio.file.Files
 import java.nio.file.Path
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.ForkJoinPool
@@ -69,32 +70,6 @@ class DetectorFacade {
 		forkJoinPool.shutdown()
 		new SmellResult(detectors.collectEntries { [it.type, it.smells] })
 
-	}
-
-	def runMetrics(Path startPath) {
-
-		def storage = CompilationStorage.create(startPath)
-		def infos = storage.getAllCompilationInfo()
-
-		def forkJoinPool = new ForkJoinPool(
-				Runtime.getRuntime().availableProcessors(),
-				ForkJoinPool.defaultForkJoinWorkerThreadFactory, null, true)
-
-		List<CompletableFuture> futures = new ArrayList<>()
-		CompilationTree.registerRoot(startPath)
-
-		def walker = Files.walk(startPath)
-		walker.filter { it.fileName.toString().endsWith(".java") }
-				.forEach { path ->
-			futures.add(CompletableFuture
-					.supplyAsync({ detectors[0].execute(null) }, forkJoinPool)
-					.exceptionally { handle(it) })
-		}
-
-		CompletableFuture.allOf(futures.toArray(new CompletableFuture<?>[0])).join()
-		forkJoinPool.shutdown()
-		StreamCloser.quietly(walker)
-		new SmellResult(detectors.collectEntries { [it.type, it.smells] })
 	}
 
 	def numberOfDetectors() {

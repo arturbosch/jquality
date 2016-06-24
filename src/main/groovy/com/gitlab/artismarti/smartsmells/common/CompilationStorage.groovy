@@ -26,6 +26,11 @@ final class CompilationStorage {
 
 	private static CompilationStorage storage;
 
+	private static CompilationStorage getInstance() {
+		Validate.notNull(storage)
+		return storage;
+	}
+
 	private final static Logger LOGGER = Logger.getLogger(CompilationStorage.simpleName)
 
 	private final Path root
@@ -43,18 +48,17 @@ final class CompilationStorage {
 
 	static Optional<CompilationUnit> getCompilationUnit(Path path) {
 		Validate.notNull(path)
-		return getCUInternal { storage.pathCache.get(path) }
+		return getCUInternal { instance.pathCache.get(path) }
 	}
 
 	private static Optional<CompilationUnit> getCUInternal(Supplier<Optional<CompilationInfo>> cu) {
-		Validate.notNull(storage)
 		def info = cu.get()
 		return info.isPresent() ? info.map { it.unit } : Optional.empty()
 	}
 
 	static Optional<CompilationUnit> getCompilationUnit(QualifiedType qualifiedType) {
 		Validate.notNull(qualifiedType)
-		return getCUInternal { storage.typeCache.get(qualifiedType) }
+		return getCUInternal { instance.typeCache.get(qualifiedType) }
 	}
 
 	private void createInternal() {
@@ -92,7 +96,7 @@ final class CompilationStorage {
 	}
 
 	private static ClassOrInterfaceDeclaration getFirstDeclaredClass(CompilationUnit compilationUnit) {
-		ASTHelper.getNodesByType(compilationUnit, ClassOrInterfaceDeclaration).first()
+		ASTHelper.getNodesByType(compilationUnit, ClassOrInterfaceDeclaration.class).first()
 	}
 
 	private static logCompilationFailure(Path path) {
@@ -104,11 +108,11 @@ final class CompilationStorage {
 				.filter { !it.toString().endsWith("package-info.java") }
 	}
 
-	Set<QualifiedType> getAllQualifiedTypes() {
-		typeCache.internalCache.keySet()
+	static Set<QualifiedType> getAllQualifiedTypes() {
+		instance.typeCache.internalCache.keySet()
 	}
 
-	List<CompilationInfo> getAllCompilationInfo() {
-		typeCache.internalCache.values().toList()
+	static List<CompilationInfo> getAllCompilationInfo() {
+		instance.typeCache.internalCache.values().toList()
 	}
 }

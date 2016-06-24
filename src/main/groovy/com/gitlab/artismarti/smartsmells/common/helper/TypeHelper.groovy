@@ -39,12 +39,7 @@ class TypeHelper {
 		def maybeUnit = NodeHelper.findDeclaringCompilationUnit(n)
 
 		if (maybeUnit.isPresent()) {
-			def name = n.name
-			def unit = maybeUnit.get()
-			def holder = new PackageImportHolder(unit.package, unit.imports)
-			def qualifiedType = PackageImportHelper.getQualifiedType(
-					holder, new ClassOrInterfaceType(name))
-			return Optional.of(qualifiedType)
+			return Optional.of(getQualifiedType(n, maybeUnit.get()))
 		}
 		return Optional.empty()
 	}
