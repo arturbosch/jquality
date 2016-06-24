@@ -13,4 +13,11 @@ public final class Validate {
 			throw new IllegalArgumentException(message);
 		}
 	}
+
+	public static <T> T notNull(T object) {
+		if (object == null) {
+			throw new IllegalArgumentException("Provided parameter is null!");
+		}
+		return object;
+	}
 }

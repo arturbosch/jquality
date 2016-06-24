@@ -69,15 +69,12 @@ class DetectorFacade {
 		forkJoinPool.shutdown()
 		new SmellResult(detectors.collectEntries { [it.type, it.smells] })
 
-//		def walker = Files.walk(startPath)
-//		walker.filter { it.fileName.toString().endsWith("java") }
-//				.forEach { internal(detectors, it) }
-//		StreamCloser.quietly(walker)
-//
-//		new SmellResult(detectors.collectEntries { [it.type, it.smells] })
 	}
 
 	def runMetrics(Path startPath) {
+
+		def storage = CompilationStorage.create(startPath)
+		def infos = storage.getAllCompilationInfo()
 
 		def forkJoinPool = new ForkJoinPool(
 				Runtime.getRuntime().availableProcessors(),

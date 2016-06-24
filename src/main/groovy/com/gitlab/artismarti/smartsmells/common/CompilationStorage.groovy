@@ -15,6 +15,7 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.ForkJoinPool
+import java.util.function.Supplier
 import java.util.logging.Logger
 import java.util.stream.Stream
 
@@ -22,6 +23,8 @@ import java.util.stream.Stream
  * @author artur
  */
 final class CompilationStorage {
+
+	private static CompilationStorage storage;
 
 	private final static Logger LOGGER = Logger.getLogger(CompilationStorage.simpleName)
 
@@ -33,19 +36,25 @@ final class CompilationStorage {
 
 	static CompilationStorage create(Path root) {
 		Validate.isTrue(root != null, "Project path must be not null!")
-		def storage = new CompilationStorage(root)
+		storage = new CompilationStorage(root)
 		storage.createInternal()
 		return storage
 	}
 
-	Optional<CompilationUnit> getCompilationUnit(Path path) {
-		def info = pathCache.get(path)
+	static Optional<CompilationUnit> getCompilationUnit(Path path) {
+		Validate.notNull(path)
+		return getCUInternal { storage.pathCache.get(path) }
+	}
+
+	private static Optional<CompilationUnit> getCUInternal(Supplier<Optional<CompilationInfo>> cu) {
+		Validate.notNull(storage)
+		def info = cu.get()
 		return info.isPresent() ? info.map { it.unit } : Optional.empty()
 	}
 
-	Optional<CompilationUnit> getCompilationUnit(QualifiedType qualifiedType) {
-		def info = typeCache.get(qualifiedType)
-		return info.isPresent() ? info.map { it.unit } : Optional.empty()
+	static Optional<CompilationUnit> getCompilationUnit(QualifiedType qualifiedType) {
+		Validate.notNull(qualifiedType)
+		return getCUInternal { storage.typeCache.get(qualifiedType) }
 	}
 
 	private void createInternal() {
