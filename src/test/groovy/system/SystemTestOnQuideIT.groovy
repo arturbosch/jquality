@@ -16,7 +16,8 @@ class SystemTestOnQuideIT extends Specification {
 
 	def "metrics on quide"() {
 		given:
-		def path = "/home/artur/Repos/quide/Implementierung/QuideService/src/main"
+//		def path = "/home/artur/Repos/quide/Implementierung/QuideService/src/main"
+		def path = "/home/artur/Repos/quide/Implementierung/QuIDE_Plugin/"
 //		def path = "/home/artur/Arbeit/tools/ismell/src/main"
 //		def path = "/home/artur/Repos/elasticsearch"
 //		def path = "/home/artur/Repos/RxJava/src/main"
@@ -26,7 +27,29 @@ class SystemTestOnQuideIT extends Specification {
 		def result = DetectorFacade.metricFacade().run(Paths.get(path)).of(Smell.CLASS_INFO)
 		result.each { println(it.toString()) }
 		println "size: ${result.size()}"
-		println "project sloc: ${result.stream().mapToInt { (it as ClassInfo).sloc }.sum()}"
+
+		def locSum = result.stream().mapToInt { (it as ClassInfo).sloc }.sum()
+		def locCount = result.stream().mapToInt { (it as ClassInfo).sloc }.count()
+		println "project sloc: ${locSum / locCount}"
+
+		def wmcSum = result.stream().mapToInt { (it as ClassInfo).wmc }.sum()
+		def wmcCount = result.stream().mapToInt { (it as ClassInfo).wmc }.count()
+		println "project wmc: ${wmcSum / wmcCount}.}"
+
+		def aftdSum = result.stream().mapToInt { (it as ClassInfo).atfd }.sum()
+		def aftdCount = result.stream().mapToInt { (it as ClassInfo).atfd }.count()
+		println "project atfd: ${aftdSum / aftdCount}"
+
+		def nomSum = result.stream().mapToInt { (it as ClassInfo).nom }.sum()
+		def nomCount = result.stream().mapToInt { (it as ClassInfo).nom }.count()
+		println "project nom: ${nomSum / nomCount}"
+
+		def noaSum = result.stream().mapToInt { (it as ClassInfo).noa }.sum()
+		def noaCount = result.stream().mapToInt { (it as ClassInfo).noa }.count()
+		println "project noa: ${noaSum / noaCount}"
+
+
+//		println "project tcc: ${result.stream().mapToInt { (it as ClassInfo).tcc }.sum()}"
 
 		then:
 		result.size() > 0
