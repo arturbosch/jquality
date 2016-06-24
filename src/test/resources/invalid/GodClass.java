@@ -1,3 +1,7 @@
+package invalid;
+
+import java.util.Date;
+
 public class Godclass {
 
 	public void bigMethod(final String vorname, final String nachname, final int alter, final Date bday,

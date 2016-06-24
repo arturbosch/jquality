@@ -1,13 +1,13 @@
 package com.gitlab.artismarti.smartsmells.metrics
 
-import com.gitlab.artismarti.smartsmells.common.CompilationTree
+import com.gitlab.artismarti.smartsmells.common.CompilationStorage
 import com.gitlab.artismarti.smartsmells.common.Test
-import com.gitlab.artismarti.smartsmells.smells.cycle.AbstractCompilationTreeTest
+import spock.lang.Specification
 
 /**
  * @author artur
  */
-class MetricsTest extends AbstractCompilationTreeTest {
+class MetricsTest extends Specification {
 
 	def "mccabe"() {
 		expect:
@@ -83,7 +83,7 @@ class MetricsTest extends AbstractCompilationTreeTest {
 
 	def "cc"() {
 		given:
-		CompilationTree.registerRoot(Test.PATH)
+		CompilationStorage.create(Test.PATH)
 		when:
 		def clazz = Test.firstClass(Test.compile(Test.GOD_CLASS_DUMMY_PATH))
 		int cc = Metrics.cc(clazz)
@@ -93,7 +93,7 @@ class MetricsTest extends AbstractCompilationTreeTest {
 
 	def "cm"() {
 		given:
-		CompilationTree.registerRoot(Test.PATH)
+		CompilationStorage.create(Test.PATH)
 		when:
 		def clazz = Test.firstClass(Test.compile(Test.COMPLEX_METHOD_DUMMY_PATH))
 		int cm = Metrics.cm(clazz)

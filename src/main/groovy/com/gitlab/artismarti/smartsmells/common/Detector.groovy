@@ -8,6 +8,7 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.util.function.BinaryOperator
 import java.util.stream.Collectors
+
 /**
  * @author artur
  */
@@ -40,7 +41,10 @@ abstract class Detector<T extends Smelly> {
 		def walker = Files.walk(startPath)
 		def result = walker
 				.filter({ it.fileName.toString().endsWith("java") })
-				.map({ execute(CompilationStorage.getCompilationUnit(it), it) })
+				.map({
+			def maybeUnit = CompilationTree.getCompilationUnit(it)
+			maybeUnit.isPresent() ? execute(maybeUnit.get(), it) : empty()
+		})
 				.collect(Collectors.reducing(new HashSet(), op))
 		StreamCloser.quietly(walker)
 		return result

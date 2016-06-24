@@ -2,6 +2,7 @@ package com.gitlab.artismarti.smartsmells.start
 
 import com.gitlab.artismarti.smartsmells.common.CompilationInfo
 import com.gitlab.artismarti.smartsmells.common.CompilationStorage
+import com.gitlab.artismarti.smartsmells.common.CompilationTree
 import com.gitlab.artismarti.smartsmells.common.Detector
 import com.gitlab.artismarti.smartsmells.common.Smelly
 import com.gitlab.artismarti.smartsmells.config.DetectorConfig
@@ -9,6 +10,7 @@ import com.gitlab.artismarti.smartsmells.config.DetectorInitializer
 import com.gitlab.artismarti.smartsmells.metrics.ClassInfoDetector
 import com.gitlab.artismarti.smartsmells.smells.comment.CommentDetector
 import com.gitlab.artismarti.smartsmells.smells.complexmethod.ComplexMethodDetector
+import com.gitlab.artismarti.smartsmells.smells.cycle.CycleDetector
 import com.gitlab.artismarti.smartsmells.smells.dataclass.DataClassDetector
 import com.gitlab.artismarti.smartsmells.smells.deadcode.DeadCodeDetector
 import com.gitlab.artismarti.smartsmells.smells.featureenvy.FeatureEnvyDetector
@@ -22,6 +24,7 @@ import com.gitlab.artismarti.smartsmells.smells.middleman.MiddleManDetector
 import java.nio.file.Path
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.ForkJoinPool
+
 /**
  * @author artur
  */
@@ -51,6 +54,7 @@ class DetectorFacade {
 
 	def run(Path startPath) {
 
+		CompilationTree.registerRoot(startPath)
 		def storage = CompilationStorage.create(startPath)
 		def infos = storage.getAllCompilationInfo()
 
@@ -104,7 +108,7 @@ class DetectorFacade {
 			detectors = [new ComplexMethodDetector(), new CommentDetector(), new LongMethodDetector(),
 			             new LongParameterListDetector(), new DeadCodeDetector(), new LargeClassDetector(),
 			             new MessageChainDetector(), new MiddleManDetector(), new FeatureEnvyDetector(),
-			             /*new CycleDetector(),*/ new DataClassDetector(), new GodClassDetector()]
+			             new CycleDetector(), new DataClassDetector(), new GodClassDetector()]
 			build()
 		}
 
