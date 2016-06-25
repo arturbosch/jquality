@@ -59,6 +59,10 @@ class SystemTestOnQuideIT extends Specification {
 		def aftdCount = result.stream().mapToInt { (it as ClassInfo).atfd }.count()
 		println "project atfd: ${aftdSum / aftdCount}"
 
+		def tccSum = result.stream().mapToDouble() { (it as ClassInfo).tcc }.sum()
+		def tccCount = result.stream().mapToDouble { (it as ClassInfo).tcc }.count()
+		println "project tcc: ${tccSum / tccCount}"
+
 		def nomSum = result.stream().mapToInt { (it as ClassInfo).nom }.sum()
 		def nomCount = result.stream().mapToInt { (it as ClassInfo).nom }.count()
 		println "project nom: ${nomSum / nomCount}"
@@ -67,17 +71,21 @@ class SystemTestOnQuideIT extends Specification {
 		def noaCount = result.stream().mapToInt { (it as ClassInfo).noa }.count()
 		println "project noa: ${noaSum / noaCount}"
 
-		def amlSum = result.stream().mapToDouble() { (it as ClassInfo).aml }.sum()
-		def amlCount = result.stream().mapToDouble() { (it as ClassInfo).aml }.count()
-		println "project aml: ${amlSum / amlCount}"
+		def amlSum = result.stream().mapToDouble() { (it as ClassInfo).mlm }.sum()
+		def amlCount = result.stream().mapToDouble() { (it as ClassInfo).mlm }.count()
+		println "project mlm: ${amlSum / amlCount}"
 
-		def aplSum = result.stream().mapToDouble { (it as ClassInfo).apl }.sum()
-		def aplCount = result.stream().mapToDouble { (it as ClassInfo).apl }.count()
-		println "project apl: ${aplSum / aplCount}"
+		def aplSum = result.stream().mapToDouble { (it as ClassInfo).plm }.sum()
+		def aplCount = result.stream().mapToDouble { (it as ClassInfo).plm }.count()
+		println "project plm: ${aplSum / aplCount}"
 
-		def tccSum = result.stream().mapToDouble() { (it as ClassInfo).tcc }.sum()
-		def tccCount = result.stream().mapToDouble { (it as ClassInfo).tcc }.count()
-		println "project tcc: ${tccSum / tccCount}"
+		def smlSum = result.stream().mapToDouble { (it as ClassInfo).mld }.sum()
+		def smlCount = result.stream().mapToDouble { (it as ClassInfo).mld }.count()
+		println "project mld: ${smlSum / smlCount}"
+
+		def splSum = result.stream().mapToDouble { (it as ClassInfo).pld }.sum()
+		def splCount = result.stream().mapToDouble { (it as ClassInfo).pld }.count()
+		println "project pld: ${splSum / splCount}"
 
 		then:
 		result.size() > 0

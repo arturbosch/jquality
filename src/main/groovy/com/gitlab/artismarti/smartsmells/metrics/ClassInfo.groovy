@@ -20,8 +20,10 @@ class ClassInfo implements Smelly {
 	int nom
 	int loc
 	int sloc
-	double aml
-	double apl
+	double mlm
+	double plm
+	double mld
+	double pld
 	int cc
 	int cm
 	String signature

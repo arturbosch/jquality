@@ -27,11 +27,21 @@ class ClassInfoVisitor extends Visitor<ClassInfo> {
 		classes.each {
 
 			def methods = ASTHelper.getNodesByType(it, MethodDeclaration.class)
-			def methodCount = methods.isEmpty() ? 1 : methods.size()
+			int methodCount = methods.isEmpty() ? 1 : methods.size()
 
-			def apl = methods.stream().mapToInt { it.parameters.size() }.sum() / methodCount
-			def aml = methods.stream().map { Optional.ofNullable(it.body) }.filter { it.isPresent() }.map { it.get() }
-					.mapToInt { it.stmts.size() }.sum() / methodCount
+
+			def methodSizes = methods.stream().map { Optional.ofNullable(it.body) }.filter { it.isPresent() }
+					.map { it.get() }.mapToInt() { it.stmts.size() }
+			def amlSum = methodSizes.sum()
+			def aml = amlSum / methodCount
+			def sml = Math.sqrt(methods.stream().map { Optional.ofNullable(it.body) }.filter { it.isPresent() }
+					.map { it.get() }.mapToInt { it.stmts.size() }
+					.mapToDouble { Math.pow(it - amlSum, 2) }.sum() / methodCount)
+
+			def aplSum = methods.stream().mapToInt { it.parameters.size() }.sum()
+			def apl = aplSum / methodCount
+			def spl = Math.sqrt(methods.stream().mapToInt { it.parameters.size() }
+					.mapToDouble { Math.pow(it - aplSum, 2) }.sum() / methodCount)
 
 			smells.add(new ClassInfo(
 					name: it.name,
@@ -45,8 +55,10 @@ class ClassInfoVisitor extends Visitor<ClassInfo> {
 					nom: Metrics.nom(it),
 					loc: Metrics.loc(it, path),
 					sloc: Metrics.sloc(it, path),
-					aml: aml,
-					apl: apl,
+					mlm: aml,
+					plm: apl,
+					mld: sml,
+					pld: spl,
 					cc: -1/*Metrics.cc(it)*/,
 					cm: -1/*Metrics.cm(it)*/
 			))
