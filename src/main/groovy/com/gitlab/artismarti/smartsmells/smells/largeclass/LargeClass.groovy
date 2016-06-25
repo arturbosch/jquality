@@ -17,6 +17,7 @@ class LargeClass implements Smelly {
 	String signature
 
 	int size
+	int threshold
 
 	@Delegate
 	SourcePath sourcePath
