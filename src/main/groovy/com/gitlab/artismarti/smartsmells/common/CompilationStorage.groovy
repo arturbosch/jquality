@@ -15,7 +15,6 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.ForkJoinPool
-import java.util.function.Supplier
 import java.util.logging.Logger
 import java.util.stream.Stream
 
@@ -27,7 +26,7 @@ final class CompilationStorage {
 	private static CompilationStorage storage;
 
 	private static CompilationStorage getInstance() {
-		Validate.notNull(storage)
+		Validate.notNull(storage, "Compilation storage not yet initialized!")
 		return storage;
 	}
 
@@ -38,28 +37,6 @@ final class CompilationStorage {
 	private final SmartCache<Path, CompilationInfo> pathCache = new SmartCache<>()
 
 	private CompilationStorage(Path path) { root = path }
-
-	static CompilationStorage create(Path root) {
-		Validate.isTrue(root != null, "Project path must be not null!")
-		storage = new CompilationStorage(root)
-		storage.createInternal()
-		return storage
-	}
-
-	static Optional<CompilationUnit> getCompilationUnit(Path path) {
-		Validate.notNull(path)
-		return getCUInternal { instance.pathCache.get(path) }
-	}
-
-	private static Optional<CompilationUnit> getCUInternal(Supplier<Optional<CompilationInfo>> cu) {
-		def info = cu.get()
-		return info.isPresent() ? info.map { it.unit } : Optional.empty()
-	}
-
-	static Optional<CompilationUnit> getCompilationUnit(QualifiedType qualifiedType) {
-		Validate.notNull(qualifiedType)
-		return getCUInternal { instance.typeCache.get(qualifiedType) }
-	}
 
 	private void createInternal() {
 
@@ -108,11 +85,32 @@ final class CompilationStorage {
 				.filter { !it.toString().endsWith("package-info.java") }
 	}
 
+	static CompilationStorage create(Path root) {
+		Validate.isTrue(root != null, "Project path must be not null!")
+		storage = new CompilationStorage(root)
+		storage.createInternal()
+		return storage
+	}
+
 	static Set<QualifiedType> getAllQualifiedTypes() {
 		instance.typeCache.internalCache.keySet()
 	}
 
 	static List<CompilationInfo> getAllCompilationInfo() {
 		instance.typeCache.internalCache.values().toList()
+	}
+
+	static Optional<CompilationInfo> getCompilationUnit(Path path) {
+		Validate.notNull(path)
+		return instance.pathCache.get(path)
+	}
+
+	static Optional<CompilationInfo> getCompilationInfo(QualifiedType qualifiedType) {
+		Validate.notNull(qualifiedType)
+		return instance.typeCache.get(qualifiedType.asOuterClass())
+	}
+
+	static boolean isInitialized() {
+		return storage != null
 	}
 }

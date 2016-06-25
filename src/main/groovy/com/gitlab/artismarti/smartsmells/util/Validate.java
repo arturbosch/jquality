@@ -20,4 +20,11 @@ public final class Validate {
 		}
 		return object;
 	}
+
+	public static <T> T notNull(T object, String message) {
+		if (object == null) {
+			throw new IllegalArgumentException(message);
+		}
+		return object;
+	}
 }

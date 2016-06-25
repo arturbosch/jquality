@@ -20,6 +20,8 @@ class InnerClassesHandler {
 			def mainClass = types[0]
 			innerClassesNames = NodeHelper.findNamesOfInnerClasses(mainClass)
 			outerClassName = mainClass.name
+		} else {
+			throw new NoClassesException()
 		}
 	}
 

@@ -24,4 +24,18 @@ class QualifiedTypeTest extends Specification {
 		then:
 		!qualifiedType.isInnerClass()
 	}
+
+	def "from inner class type to outer class type"() {
+
+		given: "types of outer class and its inner class"
+		def name = "com.gitlab.artismarti.smartsmells.java.CycleDummy.InnerCycleOne"
+		def outerType = new QualifiedType("com.gitlab.artismarti.smartsmells.java.CycleDummy",
+				QualifiedType.TypeToken.REFERENCE)
+		when: "when calling inner class as outer class"
+		def qualifiedType = new QualifiedType(name, QualifiedType.TypeToken.REFERENCE)
+		def outerClass = qualifiedType.asOuterClass()
+
+		then: "returned class should be outer class"
+		outerType == outerClass
+	}
 }

@@ -1,11 +1,13 @@
 package com.gitlab.artismarti.smartsmells.common
 
+import groovy.transform.EqualsAndHashCode
 import groovy.transform.ToString
 
 /**
  * @author artur
  */
 @ToString(includeNames = false, includePackage = false)
+@EqualsAndHashCode
 class QualifiedType {
 
 	String name
@@ -46,6 +48,13 @@ class QualifiedType {
 			tmp = name.substring(0, lastIndexOf)
 		}
 		return "${tmp.replaceAll("\\.", "/")}.java"
+	}
+
+	QualifiedType asOuterClass() {
+		if (isInnerClass()) {
+			return new QualifiedType(name.substring(0, name.lastIndexOf(".")), typeToken)
+		}
+		return this
 	}
 
 	boolean isInnerClass() {

@@ -9,12 +9,14 @@ import com.github.javaparser.ast.expr.MethodCallExpr
 import com.github.javaparser.ast.type.ClassOrInterfaceType
 import com.gitlab.artismarti.smartsmells.util.Cache
 import com.gitlab.artismarti.smartsmells.util.StreamCloser
+import com.gitlab.artismarti.smartsmells.util.Validate
 import org.codehaus.groovy.runtime.IOGroovyMethods
 
 import java.nio.file.Files
 import java.nio.file.Path
 import java.util.function.Consumer
 import java.util.stream.Stream
+
 /**
  * @author artur
  */
@@ -111,6 +113,7 @@ class CompilationTree {
 	}
 
 	private static Stream<Path> getJavaFilteredFileStream() {
+		Validate.notNull(root, "Compilation tree must be initialized first!")
 		Files.walk(root).filter { it.toString().endsWith(".java") }
 	}
 

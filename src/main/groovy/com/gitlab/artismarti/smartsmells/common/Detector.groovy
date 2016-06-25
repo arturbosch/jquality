@@ -44,8 +44,7 @@ abstract class Detector<T extends Smelly> {
 				.map({
 			def maybeUnit = CompilationTree.getCompilationUnit(it)
 			maybeUnit.isPresent() ? execute(maybeUnit.get(), it) : empty()
-		})
-				.collect(Collectors.reducing(new HashSet(), op))
+		}).collect(Collectors.reducing(new HashSet(), op))
 		StreamCloser.quietly(walker)
 		return result
 	}

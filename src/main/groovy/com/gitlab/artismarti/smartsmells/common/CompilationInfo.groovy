@@ -3,6 +3,7 @@ package com.gitlab.artismarti.smartsmells.common
 import com.github.javaparser.ASTHelper
 import com.github.javaparser.ast.CompilationUnit
 import com.github.javaparser.ast.type.ClassOrInterfaceType
+import com.gitlab.artismarti.smartsmells.common.helper.TypeHelper
 
 import java.nio.file.Path
 
@@ -15,13 +16,16 @@ class CompilationInfo {
 	CompilationUnit unit
 	Path path
 	List<QualifiedType> usedTypes
+	Set<QualifiedType> innerClasses
 
 	private CompilationInfo(QualifiedType qualifiedType, CompilationUnit unit, Path path,
-	                        List<QualifiedType> usedTypes) {
+	                        List<QualifiedType> usedTypes, Set<QualifiedType> innerClasses) {
+
 		this.qualifiedType = qualifiedType
 		this.unit = unit
 		this.path = path
 		this.usedTypes = usedTypes
+		this.innerClasses = innerClasses
 	}
 
 	static CompilationInfo of(QualifiedType qualifiedType, CompilationUnit unit, Path path) {
@@ -31,7 +35,8 @@ class CompilationInfo {
 				.filter { it.startsWith("java") }
 				.map { new QualifiedType(it, QualifiedType.TypeToken.REFERENCE) }
 				.collect()
-		new CompilationInfo(qualifiedType, unit, path, types)
+		def innerClasses = TypeHelper.getQualifiedTypesOfInnerClasses(unit)
+		return new CompilationInfo(qualifiedType, unit, path, types, innerClasses)
 	}
 
 	boolean isWithinScope(QualifiedType type) {

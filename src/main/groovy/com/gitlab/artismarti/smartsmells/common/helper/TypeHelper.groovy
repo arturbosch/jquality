@@ -9,6 +9,7 @@ import com.github.javaparser.ast.type.ReferenceType
 import com.github.javaparser.ast.type.Type
 import com.gitlab.artismarti.smartsmells.common.PackageImportHolder
 import com.gitlab.artismarti.smartsmells.common.QualifiedType
+import com.gitlab.artismarti.smartsmells.smells.cycle.NoClassesException
 
 /**
  * @author artur
@@ -52,6 +53,21 @@ class TypeHelper {
 
 	static QualifiedType getQualifiedType(ClassOrInterfaceDeclaration n, PackageDeclaration declaration) {
 		new QualifiedType("$declaration.packageName.$n.name", QualifiedType.TypeToken.REFERENCE)
+	}
+
+	static Set<QualifiedType> getQualifiedTypesOfInnerClasses(CompilationUnit unit) {
+		def types = unit.getTypes()
+		if (types.size() >= 1) {
+			def mainClass = types[0]
+			String packageName = unit?.package?.packageName ?: ""
+			Set<String> innerClassesNames = NodeHelper.findNamesOfInnerClasses(mainClass)
+			String outerClassName = mainClass.name
+			return innerClassesNames.collect {
+				new QualifiedType("$packageName.$outerClassName.$it", QualifiedType.TypeToken.REFERENCE)
+			}
+		} else {
+			throw new NoClassesException()
+		}
 	}
 
 }

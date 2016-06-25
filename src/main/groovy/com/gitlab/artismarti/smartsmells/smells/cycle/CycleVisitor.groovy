@@ -4,13 +4,10 @@ import com.github.javaparser.ast.CompilationUnit
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration
 import com.github.javaparser.ast.body.FieldDeclaration
 import com.github.javaparser.ast.type.ClassOrInterfaceType
+import com.gitlab.artismarti.smartsmells.common.*
 import com.gitlab.artismarti.smartsmells.common.helper.BadSmellHelper
-import com.gitlab.artismarti.smartsmells.common.CompilationTree
 import com.gitlab.artismarti.smartsmells.common.helper.NodeHelper
 import com.gitlab.artismarti.smartsmells.common.helper.PackageImportHelper
-import com.gitlab.artismarti.smartsmells.common.PackageImportHolder
-import com.gitlab.artismarti.smartsmells.common.QualifiedType
-import com.gitlab.artismarti.smartsmells.common.Visitor
 import com.gitlab.artismarti.smartsmells.common.source.SourcePath
 
 import java.nio.file.Path
@@ -42,49 +39,65 @@ class CycleVisitor extends Visitor<Cycle> {
 
 		def fields = NodeHelper.findFields(n)
 
-		fields.each {
+		fields.each { field ->
 
 			def qualifiedType = PackageImportHelper.getQualifiedType(
-					packageImportHolder, it.type)
+					packageImportHolder, field.type)
 
 			if (qualifiedType.isReference()) {
 
-				def unqualifiedFieldName = innerClassesHandler.getUnqualifiedNameForInnerClass(it.type)
+				def unqualifiedFieldName = innerClassesHandler.getUnqualifiedNameForInnerClass(field.type)
 				qualifiedType = PackageImportHelper.getQualifiedType(
 						packageImportHolder, new ClassOrInterfaceType(unqualifiedFieldName))
-				def maybeType = CompilationTree.findReferencedType(qualifiedType)
 
-				if (maybeType.isPresent()) {
-					searchForCycles(maybeType.get(), thisClassType, it)
-				}
+				searchForCycles(qualifiedType, thisClassType, field)
+
 			}
 		}
 
 		super.visit(n, arg)
 	}
 
-	def searchForCycles(Path path, QualifiedType thisClass, FieldDeclaration field) {
+	def searchForCycles(QualifiedType otherType, QualifiedType thisType, FieldDeclaration field) {
 
-		CompilationTree.getCompilationUnit(path).ifPresent {
-			def visitor = new SameFieldTypeVisitor(thisClass)
-			visitor.visit(it, null)
+		if (CompilationStorage.isInitialized()) {
 
-			if (visitor.haveFound()) {
-				addCycle(visitor, thisClass, field, path)
+			CompilationStorage.getCompilationInfo(otherType).ifPresent {
+				def visitor = new SameFieldTypeVisitor(thisType)
+				visitor.visit(it.unit, null)
+
+				if (visitor.haveFound()) {
+					addCycle(visitor, thisType, field, it.path)
+				}
 			}
-		}
 
+		} else {
+
+			def maybePath = CompilationTree.findReferencedType(otherType)
+			if (maybePath.isPresent()) {
+				def otherPath = maybePath.get()
+				CompilationTree.getCompilationUnit(otherPath).ifPresent {
+					def visitor = new SameFieldTypeVisitor(thisType)
+					visitor.visit(it, null)
+
+					if (visitor.haveFound()) {
+						addCycle(visitor, thisType, field, otherPath)
+					}
+				}
+			}
+
+		}
 	}
 
-	private void addCycle(SameFieldTypeVisitor visitor, QualifiedType thisClass, FieldDeclaration field, Path path) {
+	private void addCycle(SameFieldTypeVisitor visitor, QualifiedType thisClass, FieldDeclaration field, Path otherPath) {
 		def tuple = visitor.foundFieldWithType
 		def otherType = tuple.first
 		def otherField = tuple.second
 
 		def dep1 = new Dependency(thisClass.shortName(), thisClass.name,
-				SourcePath.of(this.path), BadSmellHelper.createSourceRangeFromNode(field))
+				SourcePath.of(path), BadSmellHelper.createSourceRangeFromNode(field))
 		def dep2 = new Dependency(otherType.shortName(), otherType.name,
-				SourcePath.of(path), BadSmellHelper.createSourceRangeFromNode(otherField))
+				SourcePath.of(otherPath), BadSmellHelper.createSourceRangeFromNode(otherField))
 		def cycle = new Cycle(dep1, dep2)
 
 		if (!smells.contains(cycle)) {

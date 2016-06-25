@@ -1,10 +1,12 @@
 package com.gitlab.artismarti.smartsmells.smells.cycle
 
+import com.gitlab.artismarti.smartsmells.common.CompilationStorage
 import com.gitlab.artismarti.smartsmells.common.Test
 import com.gitlab.artismarti.smartsmells.common.source.SourcePath
 import com.gitlab.artismarti.smartsmells.common.source.SourceRange
 
 import java.nio.file.Paths
+
 /**
  * @author artur
  */
@@ -18,15 +20,9 @@ class CycleDetectorTest extends AbstractCompilationTreeTest {
 		smells = new CycleDetector(Test.PATH).run(Test.CYCLE_DUMMY_PATH)
 	}
 
-	def "find cycle in inner classes of CycleDummy"() {
-		expect:
-		smells.size() == 1
-
-		where:
-		smells = new CycleDetector(Test.CYCLE_DUMMY_PATH).run(Test.CYCLE_DUMMY_PATH)
-	}
-
 	def "cycles are equals, dependency position doesn't matter"() {
+		given:
+		CompilationStorage.create(Test.PATH)
 		expect:
 		cycle == cycle2
 
