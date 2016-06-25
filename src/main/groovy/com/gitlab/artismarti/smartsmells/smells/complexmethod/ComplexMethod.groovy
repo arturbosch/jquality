@@ -15,5 +15,4 @@ class ComplexMethod implements Smelly {
 	LongMethod longMethod
 
 	int cyclomaticComplexity
-	int threshold
 }
