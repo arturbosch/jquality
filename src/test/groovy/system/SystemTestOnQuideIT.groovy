@@ -18,9 +18,9 @@ class SystemTestOnQuideIT extends Specification {
 	def "compilation storage"() {
 		given:
 //		def path = "/home/artur/Repos/quide/Implementierung/QuideService/src/main"
-		def path = "/home/artur/Repos/quide/Implementierung/QuIDE_Plugin/"
+//		def path = "/home/artur/Repos/quide/Implementierung/QuIDE_Plugin/"
 //		def path = "/home/artur/Arbeit/tools/ismell/src/main"
-//		def path = "/home/artur/Repos/elasticsearch"
+		def path = "/home/artur/Repos/elasticsearch/core/src/main/"
 //		def path = "/home/artur/Repos/RxJava/src/main"
 //		def path = "/home/artur/Arbeit/pooka-co/trunk/pooka/src"
 
@@ -37,9 +37,9 @@ class SystemTestOnQuideIT extends Specification {
 		given:
 //		def path = "/home/artur/Repos/quide/Implementierung/QuideService/src/main"
 //		def path = "/home/artur/Arbeit/tools/ismell/src/main"
-		def path = "/home/artur/Repos/elasticsearch"
+//		def path = "/home/artur/Repos/elasticsearch/core/src/main/"
 //		def path = "/home/artur/Repos/RxJava/src/main"
-//		def path = "/home/artur/Arbeit/pooka-co/trunk/pooka/src"
+		def path = "/home/artur/Arbeit/pooka-co/trunk/pooka/src"
 
 		when:
 		def result = DetectorFacade.metricFacade().run(Paths.get(path)).of(Smell.CLASS_INFO)
@@ -67,7 +67,17 @@ class SystemTestOnQuideIT extends Specification {
 		def noaCount = result.stream().mapToInt { (it as ClassInfo).noa }.count()
 		println "project noa: ${noaSum / noaCount}"
 
-//		println "project tcc: ${result.stream().mapToInt { (it as ClassInfo).tcc }.sum()}"
+		def amlSum = result.stream().mapToDouble() { (it as ClassInfo).aml }.sum()
+		def amlCount = result.stream().mapToDouble() { (it as ClassInfo).aml }.count()
+		println "project aml: ${amlSum / amlCount}"
+
+		def aplSum = result.stream().mapToDouble { (it as ClassInfo).apl }.sum()
+		def aplCount = result.stream().mapToDouble { (it as ClassInfo).apl }.count()
+		println "project apl: ${aplSum / aplCount}"
+
+		def tccSum = result.stream().mapToDouble() { (it as ClassInfo).tcc }.sum()
+		def tccCount = result.stream().mapToDouble { (it as ClassInfo).tcc }.count()
+		println "project tcc: ${tccSum / tccCount}"
 
 		then:
 		result.size() > 0
@@ -75,10 +85,10 @@ class SystemTestOnQuideIT extends Specification {
 
 	def "run on quide and find no same feature envy twice"() {
 		given:
-//		def path = "/home/artur/Repos/quide/Implementierung/QuideService/src/main"
+		def path = "/home/artur/Repos/quide/Implementierung/QuideService/src/main"
 //		def path = "/home/artur/Arbeit/tools/ismell/src/main"
 //		def path = "/home/artur/Arbeit/pooka-co/trunk/pooka/src"
-		def path = "/home/artur/Repos/elasticsearch"
+//		def path = "/home/artur/Repos/elasticsearch/core/src/main/"
 //		def path = Paths.getResource("/cornercases").getFile()
 		def result = DetectorFacade.builder().fullStackFacade().run(Paths.get(path))
 		def envies = result.of(Smell.FEATURE_ENVY)

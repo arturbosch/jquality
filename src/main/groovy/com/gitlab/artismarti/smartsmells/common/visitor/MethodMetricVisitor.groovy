@@ -37,6 +37,8 @@ abstract class MethodMetricVisitor<T extends Smelly> extends Visitor<T> {
 		)
 	}
 
+
+
 	@Override
 	void visit(MethodDeclaration node, Object arg) {
 		visitBlock(Optional.ofNullable(node.body), node)
