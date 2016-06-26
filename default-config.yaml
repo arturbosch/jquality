@@ -11,6 +11,7 @@ deadcode:
   active: 'true'
 featureenvy:
   active: 'true'
+  ignoreStatic: 'false'
   threshold: '0.52'
   base: '0.5'
   weight: '0.5'
@@ -34,3 +35,5 @@ middleman:
 messagechain:
   active: 'true'
   threshold: '2'
+metrics:
+  active: 'true'
