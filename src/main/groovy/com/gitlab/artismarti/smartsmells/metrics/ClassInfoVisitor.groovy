@@ -15,8 +15,11 @@ import java.nio.file.Path
  */
 class ClassInfoVisitor extends Visitor<ClassInfo> {
 
-	ClassInfoVisitor(Path path) {
+	private boolean skipCC_CM
+
+	ClassInfoVisitor(Path path, boolean skipCC_CM) {
 		super(path)
+		this.skipCC_CM = skipCC_CM
 	}
 
 	@Override
@@ -43,6 +46,13 @@ class ClassInfoVisitor extends Visitor<ClassInfo> {
 			def spl = Math.sqrt(methods.stream().mapToInt { it.parameters.size() }
 					.mapToDouble { Math.pow(it - aplSum, 2) }.sum() / methodCount)
 
+			def cc = -1
+			def cm = -1
+			if(!skipCC_CM) {
+				cc = Metrics.cc(it)
+				cm = Metrics.cm(it)
+			}
+
 			smells.add(new ClassInfo(
 					name: it.name,
 					signature: BadSmellHelper.createClassSignature(it),
@@ -59,8 +69,8 @@ class ClassInfoVisitor extends Visitor<ClassInfo> {
 					plm: apl,
 					mld: sml,
 					pld: spl,
-					cc: -1/*Metrics.cc(it)*/,
-					cm: -1/*Metrics.cm(it)*/
+					cc: cc,
+					cm: cm
 			))
 		}
 

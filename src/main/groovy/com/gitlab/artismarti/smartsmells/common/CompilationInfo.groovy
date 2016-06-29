@@ -32,7 +32,7 @@ class CompilationInfo {
 		List<QualifiedType> types = unit.imports.stream()
 				.filter { !it.isEmptyImportDeclaration() }
 				.map { it.name.toStringWithoutComments() }
-				.filter { it.startsWith("java") }
+				.filter { !it.startsWith("java") }
 				.map { new QualifiedType(it, QualifiedType.TypeToken.REFERENCE) }
 				.collect()
 		def innerClasses = TypeHelper.getQualifiedTypesOfInnerClasses(unit)
@@ -40,12 +40,33 @@ class CompilationInfo {
 	}
 
 	boolean isWithinScope(QualifiedType type) {
-		return usedTypes.contains(type) || searchForTypeWithinUnit(unit, type)
+		return usedTypes.contains(type) || searchForTypeWithinUnit(this, type)
 	}
 
-	private static boolean searchForTypeWithinUnit(CompilationUnit unit, QualifiedType qualifiedType) {
+	private static boolean searchForTypeWithinUnit(CompilationInfo info, QualifiedType qualifiedType) {
+		def name = qualifiedType.asOuterClass().name
+		def packageName = name.substring(0, name.lastIndexOf("."))
+
+		def samePackage = Optional.ofNullable(info.unit.package).map { it.packageName == packageName }
+
+		if (samePackage.isPresent()) {
+			return searchInternal(qualifiedType, info)
+		} else {
+			def sameImport = info.usedTypes.stream()
+					.filter { it.name.contains('*') }
+					.map { it.name.substring(0, it.name.lastIndexOf('.')) }
+					.filter { it == packageName }
+					.findFirst()
+			if (sameImport.isPresent()) {
+				return searchInternal(qualifiedType, info)
+			}
+		}
+		return false
+	}
+
+	private static boolean searchInternal(QualifiedType qualifiedType, CompilationInfo info) {
 		def shortName = qualifiedType.shortName()
-		def types = ASTHelper.getNodesByType(unit, ClassOrInterfaceType.class)
+		def types = ASTHelper.getNodesByType(info.unit, ClassOrInterfaceType.class)
 		return types.any { it.name == shortName }
 	}
 

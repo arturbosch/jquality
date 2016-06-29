@@ -35,3 +35,6 @@ middleman:
 messagechain:
   active: 'true'
   threshold: '2'
+metrics:
+  active: 'false'
+  skipCC_CM: 'true'

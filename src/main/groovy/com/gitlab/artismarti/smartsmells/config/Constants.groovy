@@ -33,4 +33,5 @@ class Constants {
 	static final String COMPLEX_METHOD = "complexmethod"
 
 	static final String CLASS_INFO = "metrics"
+	static final String SKIP_CC_CM = "skipCC_CM"
 }

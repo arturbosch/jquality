@@ -3,6 +3,7 @@ package system
 import com.gitlab.artismarti.smartsmells.common.CompilationStorage
 import com.gitlab.artismarti.smartsmells.config.Smell
 import com.gitlab.artismarti.smartsmells.metrics.ClassInfo
+import com.gitlab.artismarti.smartsmells.metrics.ClassInfoDetector
 import com.gitlab.artismarti.smartsmells.out.XMLWriter
 import com.gitlab.artismarti.smartsmells.start.DetectorFacade
 import spock.lang.Specification
@@ -37,12 +38,13 @@ class SystemTestOnQuideIT extends Specification {
 		given:
 //		def path = "/home/artur/Repos/quide/Implementierung/QuideService/src/main"
 //		def path = "/home/artur/Arbeit/tools/ismell/src/main"
-//		def path = "/home/artur/Repos/elasticsearch/core/src/main/"
+		def path = "/home/artur/Repos/elasticsearch/core/src/main/"
 //		def path = "/home/artur/Repos/RxJava/src/main"
-		def path = "/home/artur/Arbeit/pooka-co/trunk/pooka/src"
+//		def path = "/home/artur/Arbeit/pooka-co/trunk/pooka/src"
 
 		when:
-		def result = DetectorFacade.metricFacade().run(Paths.get(path)).of(Smell.CLASS_INFO)
+		def result = DetectorFacade.builder().with(new ClassInfoDetector(true)).build()
+				.run(Paths.get(path)).of(Smell.CLASS_INFO)
 		result.each { println(it.toString()) }
 		println "size: ${result.size()}"
 

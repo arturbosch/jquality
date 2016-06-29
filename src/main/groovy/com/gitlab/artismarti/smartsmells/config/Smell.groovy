@@ -1,8 +1,8 @@
 package com.gitlab.artismarti.smartsmells.config
 
+import com.gitlab.artismarti.smartsmells.common.Detector
 import com.gitlab.artismarti.smartsmells.metrics.ClassInfoDetector
 import com.gitlab.artismarti.smartsmells.smells.comment.CommentDetector
-import com.gitlab.artismarti.smartsmells.common.Detector
 import com.gitlab.artismarti.smartsmells.smells.complexmethod.ComplexMethodDetector
 import com.gitlab.artismarti.smartsmells.smells.cycle.CycleDetector
 import com.gitlab.artismarti.smartsmells.smells.dataclass.DataClassDetector
@@ -17,7 +17,7 @@ import com.gitlab.artismarti.smartsmells.smells.messagechain.MessageChainDetecto
 import com.gitlab.artismarti.smartsmells.smells.middleman.MiddleManDetector
 import com.gitlab.artismarti.smartsmells.smells.middleman.MiddleManVisitor
 
-import java.util.function.Supplier
+import java.util.function.Function
 
 import static com.gitlab.artismarti.smartsmells.util.Numbers.toDouble
 import static com.gitlab.artismarti.smartsmells.util.Numbers.toInt
@@ -30,7 +30,9 @@ enum Smell {
 	CLASS_INFO{
 		@Override
 		Optional<Detector> initialize(DetectorConfig detectorConfig) {
-			return initDefault(detectorConfig, Constants.CLASS_INFO, { new ClassInfoDetector() });
+			return initDefault(detectorConfig, Constants.CLASS_INFO, {
+				new ClassInfoDetector(isActive(it, Constants.SKIP_CC_CM))
+			});
 		}
 	},
 	COMMENT{
@@ -151,10 +153,10 @@ enum Smell {
 
 	private static Optional<Detector> initDefault(DetectorConfig detectorConfig,
 	                                              String key,
-	                                              Supplier<Detector> supplier) {
+	                                              Function<Map<String, String>, Detector> supplier) {
 		Map<String, String> config = detectorConfig.getKey(key);
 		if (isActive(config)) {
-			return Optional.of(supplier.get());
+			return Optional.of(supplier.apply(config));
 		}
 		Optional.empty()
 	}

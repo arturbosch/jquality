@@ -11,9 +11,15 @@ import java.nio.file.Path
  */
 class ClassInfoDetector extends Detector<ClassInfo> {
 
+	private boolean skipCC_CM
+
+	ClassInfoDetector(boolean skipCC_CM = false) {
+		this.skipCC_CM = skipCC_CM
+	}
+
 	@Override
 	protected Visitor getVisitor(Path path) {
-		return new ClassInfoVisitor(path)
+		return new ClassInfoVisitor(path, skipCC_CM)
 	}
 
 	@Override
