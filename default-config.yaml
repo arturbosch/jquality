@@ -37,3 +37,4 @@ messagechain:
   threshold: '2'
 metrics:
   active: 'true'
+  skipCC_CM: 'true'
