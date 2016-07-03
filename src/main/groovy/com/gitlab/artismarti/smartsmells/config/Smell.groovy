@@ -16,6 +16,7 @@ import com.gitlab.artismarti.smartsmells.smells.longparam.LongParameterListDetec
 import com.gitlab.artismarti.smartsmells.smells.messagechain.MessageChainDetector
 import com.gitlab.artismarti.smartsmells.smells.middleman.MiddleManDetector
 import com.gitlab.artismarti.smartsmells.smells.middleman.MiddleManVisitor
+import com.gitlab.artismarti.smartsmells.util.Strings
 
 import java.util.function.Function
 
@@ -31,7 +32,7 @@ enum Smell {
 		@Override
 		Optional<Detector> initialize(DetectorConfig detectorConfig) {
 			return initDefault(detectorConfig, Constants.CLASS_INFO, {
-				new ClassInfoDetector(isActive(it, Constants.SKIP_CC_CM))
+				new ClassInfoDetector(Strings.isTrue(it.get(Constants.SKIP_CC_CM)))
 			});
 		}
 	},
@@ -43,12 +44,9 @@ enum Smell {
 	}, COMPLEX_METHOD{
 		@Override
 		Optional<Detector> initialize(DetectorConfig detectorConfig) {
-			Map<String, String> config = detectorConfig.getKey(Constants.COMPLEX_METHOD);
-			if (isActive(config)) {
-				return Optional.of(new ComplexMethodDetector(
-						toInt(config.get(Constants.THRESHOLD), Defaults.COMPLEX_METHOD)));
-			}
-			Optional.empty()
+			return initDefault(detectorConfig, Constants.COMPLEX_METHOD, {
+				new ComplexMethodDetector(toInt(it.get(Constants.THRESHOLD), Defaults.COMPLEX_METHOD))
+			});
 		}
 	}, CYCLE{
 		@Override
@@ -68,78 +66,71 @@ enum Smell {
 	}, FEATURE_ENVY{
 		@Override
 		Optional<Detector> initialize(DetectorConfig detectorConfig) {
-			Map<String, String> config = detectorConfig.getKey(Constants.FEATURE_ENVY);
-			if (isActive(config)) {
-				return Optional.of(new FeatureEnvyDetector(FeatureEnvyFactor.newInstance(
-						toDouble(config.get(Constants.THRESHOLD), Defaults.FEATURE_ENVY_FACTOR),
-						toDouble(config.get(Constants.BASE), Defaults.FEATURE_ENVY_BASE),
-						toDouble(config.get(Constants.WEIGHT), Defaults.FEATURE_ENVY_WEIGHT)),
-						isActive(config, Constants.FEATURE_ENVY_IGNORE_STATIC))
-				);
-			}
-			Optional.empty()
+			initDefault(detectorConfig, Constants.FEATURE_ENVY,
+					{
+						new FeatureEnvyDetector(FeatureEnvyFactor.newInstance(
+								toDouble(it.get(Constants.THRESHOLD), Defaults.FEATURE_ENVY_FACTOR),
+								toDouble(it.get(Constants.BASE), Defaults.FEATURE_ENVY_BASE),
+								toDouble(it.get(Constants.WEIGHT), Defaults.FEATURE_ENVY_WEIGHT)),
+								Strings.isTrue(it.get(Constants.FEATURE_ENVY_IGNORE_STATIC)))
+					})
 		}
 
 	}, GOD_CLASS{
 		@Override
 		Optional<Detector> initialize(DetectorConfig detectorConfig) {
-			Map<String, String> config = detectorConfig.getKey(Constants.GOD_CLASS);
-			if (isActive(config)) {
-				return Optional.of(new GodClassDetector(
-						toInt(config.get(Constants.WMC), Defaults.WEIGHTED_METHOD_COUNT),
-						toInt(config.get(Constants.ATFD), Defaults.ACCESS_TO_FOREIGN_DATA),
-						toDouble(config.get(Constants.TCC), Defaults.TIED_CLASS_COHESION)))
-			}
-			Optional.empty()
+			initDefault(detectorConfig, Constants.GOD_CLASS,
+					{
+						new GodClassDetector(
+								toInt(it.get(Constants.WMC), Defaults.WEIGHTED_METHOD_COUNT),
+								toInt(it.get(Constants.ATFD), Defaults.ACCESS_TO_FOREIGN_DATA),
+								toDouble(it.get(Constants.TCC), Defaults.TIED_CLASS_COHESION))
+					})
 		}
 	}, LARGE_CLASS{
 		@Override
 		Optional<Detector> initialize(DetectorConfig detectorConfig) {
-			Map<String, String> config = detectorConfig.getKey(Constants.LARGE_CLASS);
-			if (isActive(config)) {
-				return Optional.of(new LargeClassDetector(
-						toInt(config.get(Constants.THRESHOLD), Defaults.LARGE_CLASS)));
-			}
-			Optional.empty()
+			initDefault(detectorConfig, Constants.LARGE_CLASS,
+					{
+						new LargeClassDetector(
+								toInt(it.get(Constants.THRESHOLD), Defaults.LARGE_CLASS))
+					})
 		}
 	}, LONG_METHOD{
 		@Override
 		Optional<Detector> initialize(DetectorConfig detectorConfig) {
-			Map<String, String> config = detectorConfig.getKey(Constants.LONG_METHOD);
-			if (isActive(config)) {
-				return Optional.of(new LongMethodDetector(
-						toInt(config.get(Constants.THRESHOLD), Defaults.LONG_METHOD)));
-			}
-			Optional.empty()
+			initDefault(detectorConfig, Constants.LONG_METHOD,
+					{
+						new LongMethodDetector(
+								toInt(it.get(Constants.THRESHOLD), Defaults.LONG_METHOD))
+					})
 		}
 	}, LONG_PARAM{
 		@Override
 		Optional<Detector> initialize(DetectorConfig detectorConfig) {
-			Map<String, String> config = detectorConfig.getKey(Constants.LONG_PARAM);
-			if (isActive(config)) {
-				return Optional.of(new LongParameterListDetector(
-						toInt(config.get(Constants.THRESHOLD), Defaults.LONG_PARAMETER_LIST)));
-			}
-			Optional.empty()
+			initDefault(detectorConfig, Constants.LONG_PARAM,
+					{
+						new LongParameterListDetector(
+								toInt(it.get(Constants.THRESHOLD), Defaults.LONG_PARAMETER_LIST))
+					})
 		}
 	}, MESSAGE_CHAIN{
 		@Override
 		Optional<Detector> initialize(DetectorConfig detectorConfig) {
-			Map<String, String> config = detectorConfig.getKey(Constants.MESSAGE_CHAIN);
-			if (isActive(config)) {
-				return Optional.of(new MessageChainDetector(
-						toInt(config.get(Constants.THRESHOLD), Defaults.CHAIN_SIZE)));
-			}
-			Optional.empty()
+			initDefault(detectorConfig, Constants.MESSAGE_CHAIN,
+					{
+						new MessageChainDetector(
+								toInt(it.get(Constants.THRESHOLD), Defaults.CHAIN_SIZE))
+					})
 		}
 	}, MIDDLE_MAN{
 		@Override
 		Optional<Detector> initialize(DetectorConfig detectorConfig) {
-			Map<String, String> config = detectorConfig.getKey(Constants.MIDDLE_MAN);
-			if (isActive(config)) {
-				return Optional.of(new MiddleManDetector(MiddleManVisitor.MMT.valueOf(config.get(Constants.THRESHOLD))));
-			}
-			Optional.empty()
+			initDefault(detectorConfig, Constants.MIDDLE_MAN,
+					{
+						new MiddleManDetector(
+								MiddleManVisitor.MMT.valueOf(it.get(Constants.THRESHOLD)))
+					})
 		}
 	}, UNKNOWN{
 		@Override
@@ -147,7 +138,6 @@ enum Smell {
 			return Optional.empty()
 		}
 	}
-
 
 	abstract Optional<Detector> initialize(DetectorConfig detectorConfig)
 
@@ -162,10 +152,7 @@ enum Smell {
 	}
 
 	private static boolean isActive(final Map<String, String> config) {
-		return isActive(config, Constants.ACTIVE);
+		return config != null && !config.isEmpty() && "true".equals(config.get(Constants.ACTIVE));
 	}
 
-	private static boolean isActive(final Map<String, String> config, String attribute) {
-		return config != null && !config.isEmpty() && "true".equals(config.get(attribute));
-	}
 }

@@ -18,4 +18,7 @@ class Strings {
 		return pos >= 0 ? string.substring(pos + delimiter.length()) : "";
 	}
 
+	static boolean isTrue(String value) {
+		return value != null && !value.isEmpty() && "true".equalsIgnoreCase(value)
+	}
 }
