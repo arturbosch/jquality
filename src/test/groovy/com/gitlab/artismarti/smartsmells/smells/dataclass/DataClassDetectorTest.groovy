@@ -13,7 +13,7 @@ class DataClassDetectorTest extends Specification {
 		smells.size() == 1
 		smells.getAt(0).name == "DataClassDummy"
 		smells.getAt(0).signature == "DataClassDummy"
-		smells.getAt(0).sourcePath.path == "/home/artur/Repos/SmartSmells/src/test/groovy/com/gitlab/artismarti/smartsmells/java/DataClassDummy.java"
+		smells.getAt(0).sourcePath.path.endsWith("DataClassDummy.java")
 
 		where:
 		smells = new DataClassDetector().run(Test.DATA_CLASS_DUMMY_PATH)
