@@ -1,5 +1,5 @@
 group 'com.gitlab.artismarti.smartsmells'
-version 'M4'
+version 'M6'
 
 apply plugin: 'groovy'
 
