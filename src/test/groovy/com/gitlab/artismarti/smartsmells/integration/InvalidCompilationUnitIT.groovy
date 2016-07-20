@@ -1,6 +1,6 @@
 package com.gitlab.artismarti.smartsmells.integration
 
-import com.gitlab.artismarti.smartsmells.start.DetectorFacade
+import com.gitlab.artismarti.smartsmells.api.DetectorFacade
 import spock.lang.Specification
 
 import java.nio.file.Paths

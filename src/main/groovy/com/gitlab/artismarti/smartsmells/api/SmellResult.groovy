@@ -1,4 +1,4 @@
-package com.gitlab.artismarti.smartsmells.start
+package com.gitlab.artismarti.smartsmells.api
 
 import com.gitlab.artismarti.smartsmells.config.Smell
 import com.gitlab.artismarti.smartsmells.common.Smelly
@@ -20,7 +20,7 @@ class SmellResult {
 		smellSets.getOrDefault(smell, new ArrayDeque<>())
 	}
 
-	def prettyPrint(Smell... smells) {
+	void prettyPrint(Smell... smells) {
 
 		def printList = Arrays.asList(smells)
 		smellSets.entrySet().each {

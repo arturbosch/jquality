@@ -5,7 +5,7 @@ import com.gitlab.artismarti.smartsmells.config.Smell
 import com.gitlab.artismarti.smartsmells.metrics.ClassInfo
 import com.gitlab.artismarti.smartsmells.metrics.ClassInfoDetector
 import com.gitlab.artismarti.smartsmells.out.XMLWriter
-import com.gitlab.artismarti.smartsmells.start.DetectorFacade
+import com.gitlab.artismarti.smartsmells.api.DetectorFacade
 import spock.lang.Specification
 
 import java.nio.file.Paths

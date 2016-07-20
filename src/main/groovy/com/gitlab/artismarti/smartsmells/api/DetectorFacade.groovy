@@ -1,4 +1,4 @@
-package com.gitlab.artismarti.smartsmells.start
+package com.gitlab.artismarti.smartsmells.api
 
 import com.gitlab.artismarti.smartsmells.common.CompilationInfo
 import com.gitlab.artismarti.smartsmells.common.CompilationStorage
@@ -36,23 +36,23 @@ class DetectorFacade {
 		this.detectors = detectors
 	}
 
-	static def fullStackFacade() {
+	static DetectorFacade fullStackFacade() {
 		return new DetectorFacadeBuilder().fullStackFacade()
 	}
 
-	static def metricFacade() {
+	static DetectorFacade metricFacade() {
 		return new DetectorFacadeBuilder().with(new ClassInfoDetector()).build()
 	}
 
-	static def builder() {
+	static DetectorFacadeBuilder builder() {
 		return new DetectorFacadeBuilder()
 	}
 
-	static def fromConfig(final DetectorConfig config) {
+	static DetectorFacade fromConfig(final DetectorConfig config) {
 		return new DetectorFacade(DetectorInitializer.init(config));
 	}
 
-	def run(Path startPath) {
+	SmellResult run(Path startPath) {
 
 		CompilationTree.registerRoot(startPath)
 		def storage = CompilationStorage.create(startPath)
@@ -72,15 +72,15 @@ class DetectorFacade {
 
 		CompletableFuture.allOf(futures.toArray(new CompletableFuture<?>[0])).join()
 		forkJoinPool.shutdown()
-		new SmellResult(detectors.collectEntries { [it.type, it.smells] })
+		return new SmellResult(detectors.collectEntries { [it.type, it.smells] })
 
 	}
 
-	def numberOfDetectors() {
+	int numberOfDetectors() {
 		return detectors.size()
 	}
 
-	private static def internal(List<Detector> detectors, CompilationInfo info) {
+	private static void internal(List<Detector> detectors, CompilationInfo info) {
 		List<CompletableFuture> futures = new ArrayList<>()
 		detectors.each { detector ->
 			futures.add(CompletableFuture
@@ -92,19 +92,19 @@ class DetectorFacade {
 
 	private static ArrayList handle(Throwable throwable) {
 		println throwable.printStackTrace()
-		new ArrayList<>()
+		return new ArrayList<>()
 	}
 
 	private static class DetectorFacadeBuilder {
 
 		private List<Detector> detectors = new LinkedList<>()
 
-		def with(Detector detector) {
+		DetectorFacadeBuilder with(Detector detector) {
 			detectors.add(detector)
 			return this
 		}
 
-		def fullStackFacade() {
+		DetectorFacade fullStackFacade() {
 			detectors = [new ComplexMethodDetector(), new CommentDetector(), new LongMethodDetector(),
 			             new LongParameterListDetector(), new DeadCodeDetector(), new LargeClassDetector(),
 			             new MessageChainDetector(), new MiddleManDetector(), new FeatureEnvyDetector(),
@@ -112,7 +112,7 @@ class DetectorFacade {
 			build()
 		}
 
-		def build() {
+		DetectorFacade build() {
 			return new DetectorFacade(detectors)
 		}
 	}

@@ -1,4 +1,4 @@
-package com.gitlab.artismarti.smartsmells.start
+package com.gitlab.artismarti.smartsmells.api
 
 import com.gitlab.artismarti.smartsmells.config.DetectorConfig
 import com.gitlab.artismarti.smartsmells.smells.complexmethod.ComplexMethodDetector

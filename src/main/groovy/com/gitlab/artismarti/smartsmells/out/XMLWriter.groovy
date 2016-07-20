@@ -2,7 +2,7 @@ package com.gitlab.artismarti.smartsmells.out
 
 import com.gitlab.artismarti.smartsmells.common.Smelly
 import com.gitlab.artismarti.smartsmells.config.Smell
-import com.gitlab.artismarti.smartsmells.start.SmellResult
+import com.gitlab.artismarti.smartsmells.api.SmellResult
 import com.gitlab.artismarti.smartsmells.util.Strings
 
 import java.lang.reflect.Field

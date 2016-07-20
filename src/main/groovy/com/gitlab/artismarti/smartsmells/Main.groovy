@@ -4,8 +4,8 @@ import com.beust.jcommander.JCommander
 import com.beust.jcommander.Parameter
 import com.gitlab.artismarti.smartsmells.config.DetectorConfig
 import com.gitlab.artismarti.smartsmells.out.XMLWriter
-import com.gitlab.artismarti.smartsmells.start.DetectorFacade
-import com.gitlab.artismarti.smartsmells.start.SmellResult
+import com.gitlab.artismarti.smartsmells.api.DetectorFacade
+import com.gitlab.artismarti.smartsmells.api.SmellResult
 import com.gitlab.artismarti.smartsmells.util.Validate
 
 import java.nio.file.Files
