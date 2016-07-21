@@ -32,4 +32,9 @@ class DeadCode implements Smelly {
 				", positions=" + sourceRange +
 				'}';
 	}
+
+	@Override
+	String asCompactString() {
+		"Deadcode \n\nName: $name\nType: $entityType"
+	}
 }

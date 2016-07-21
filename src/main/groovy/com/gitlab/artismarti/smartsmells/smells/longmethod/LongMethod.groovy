@@ -23,4 +23,8 @@ class LongMethod implements Smelly {
 	@Delegate
 	SourcePath sourcePath
 
+	@Override
+	String asCompactString() {
+		"LongMethod \n\nSize: $size with threshold: $threshold"
+	}
 }

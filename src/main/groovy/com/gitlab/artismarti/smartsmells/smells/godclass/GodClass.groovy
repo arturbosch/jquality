@@ -29,6 +29,12 @@ class GodClass implements Smelly {
 	@Delegate
 	SourceRange sourceRange
 
+	@Override
+	String asCompactString() {
+		"GodClass \n\nWMC: $weightedMethodPerClass with threshold: $weightedMethodPerClassThreshold" +
+				"\nTCC: $tiedClassCohesion with threshold: $tiedClassCohesionThreshold" +
+				"\nATFD: $accessToForeignData with threshold: $accessToForeignDataThreshold"
+	}
 
 	@Override
 	public String toString() {

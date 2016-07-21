@@ -15,4 +15,9 @@ class ComplexMethod implements Smelly {
 	LongMethod longMethod
 
 	int cyclomaticComplexity
+
+	@Override
+	String asCompactString() {
+		"ComplexMethod \n\nCyclomaticComplexity: $cyclomaticComplexity"
+	}
 }

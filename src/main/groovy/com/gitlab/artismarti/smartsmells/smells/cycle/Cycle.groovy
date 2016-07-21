@@ -18,6 +18,11 @@ class Cycle implements Smelly {
 	}
 
 	@Override
+	String asCompactString() {
+		"Cycle \n\nSource: $source.name\nTarget: $target.name"
+	}
+
+	@Override
 	boolean equals(Object obj) {
 		if (obj instanceof Cycle) {
 			return (source.equals(obj.source) && target.equals(obj.target)) ||

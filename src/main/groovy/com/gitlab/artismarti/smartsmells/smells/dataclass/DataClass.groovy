@@ -18,4 +18,8 @@ class DataClass implements Smelly {
 	@Delegate
 	SourcePath sourcePath
 
+	@Override
+	String asCompactString() {
+		"DataClass \n\nContains only getter and setters, no logic."
+	}
 }

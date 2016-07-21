@@ -20,4 +20,10 @@ class MiddleMan implements Smelly {
 	SourcePath sourcePath
 	@Delegate
 	SourceRange sourceRange
+
+	@Override
+	String asCompactString() {
+		"MiddleMan \n\nMethods only delegate to others. No real logic."
+	}
+
 }

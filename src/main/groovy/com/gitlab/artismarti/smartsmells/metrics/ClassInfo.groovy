@@ -31,4 +31,9 @@ class ClassInfo implements Smelly {
 	SourcePath sourcePath
 	@Delegate
 	SourceRange sourceRange
+
+	@Override
+	String asCompactString() {
+		"ClassInfo - not supported yet"
+	}
 }

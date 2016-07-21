@@ -24,4 +24,9 @@ class LargeClass implements Smelly {
 
 	@Delegate
 	SourceRange sourceRange
+
+	@Override
+	String asCompactString() {
+		"LargeClass \n\nLOC: $size with threshold: $threshold"
+	}
 }

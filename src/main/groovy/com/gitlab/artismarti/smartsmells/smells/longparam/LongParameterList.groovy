@@ -15,8 +15,10 @@ class LongParameterList implements Smelly {
 	LongMethod longMethod
 	List<String> parameters
 	int numberOfParams
+	int numberOfParamsThreshold
 
-	def getPath() {
-		longMethod.path
+	@Override
+	String asCompactString() {
+		"LongParameterList \n\nSize: $numberOfParams with threshold: $numberOfParamsThreshold"
 	}
 }

@@ -27,4 +27,9 @@ class Dependency implements Smelly {
 		return "{$name, $signature, $sourcePath, $sourceRange}"
 	}
 
+	@Override
+	String asCompactString() {
+		"Dependency \n\nName: $name"
+	}
+
 }

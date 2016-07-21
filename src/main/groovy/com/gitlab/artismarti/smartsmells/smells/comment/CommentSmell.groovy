@@ -29,4 +29,8 @@ class CommentSmell implements Smelly {
 	@Delegate
 	SourceRange sourceRange
 
+	@Override
+	String asCompactString() {
+		"CommentSmell - $type\n\n$message"
+	}
 }

@@ -22,5 +22,11 @@ class MessageChain implements Smelly {
 	@Delegate
 	SourcePath sourcePath
 	@Delegate
-	SourceRange sourceRange
+	SourceRange SourceRange
+
+	@Override
+	String asCompactString() {
+		"MessageChain\n\nchain size: $chainSize with threshold " +
+				"$chainSizeThreshold\nSource: $sourceEntity\nTarget: $targetEntity"
+	}
 }

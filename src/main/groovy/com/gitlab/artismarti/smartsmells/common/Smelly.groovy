@@ -10,6 +10,8 @@ import com.gitlab.artismarti.smartsmells.smells.longparam.LongParameterList
  */
 trait Smelly {
 
+	abstract String asCompactString()
+
 	SourceRange getPositions() {
 		return getAttribute(this, "sourceRange") as SourceRange
 	}

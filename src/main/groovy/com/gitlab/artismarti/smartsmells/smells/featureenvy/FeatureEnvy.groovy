@@ -34,6 +34,12 @@ class FeatureEnvy implements Smelly {
 	@Delegate
 	SourceRange sourceRange
 
+	@Override
+	String asCompactString() {
+		"FeatureEnvy \n\nMethod $name is jealousy of $objectName: $objectType" +
+				"\nFactor: $factor with threshold: $factorThreshold"
+	}
+
 	boolean equals(o) {
 		if (this.is(o)) return true
 		if (!(o instanceof FeatureEnvy)) return false
