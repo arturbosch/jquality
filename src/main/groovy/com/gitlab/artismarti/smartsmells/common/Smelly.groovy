@@ -1,6 +1,9 @@
 package com.gitlab.artismarti.smartsmells.common
 
+import com.gitlab.artismarti.smartsmells.api.SmellExchange
 import com.gitlab.artismarti.smartsmells.common.source.SourceRange
+import com.gitlab.artismarti.smartsmells.smells.complexmethod.ComplexMethod
+import com.gitlab.artismarti.smartsmells.smells.longparam.LongParameterList
 
 /**
  * @author artur
@@ -16,9 +19,12 @@ trait Smelly {
 	}
 
 	private static Object getAttribute(Smelly smelly, String name) {
-		return smelly.class.getDeclaredField(name).with {
-			setAccessible(true)
-			get(smelly)
+		switch (smelly) {
+			case ComplexMethod:
+			case LongParameterList: return SmellExchange.getAttribute(
+					SmellExchange.getAttribute(smelly, "longMethod") as Smelly, name)
+			default: return SmellExchange.getAttribute(smelly, name)
 		}
 	}
+
 }

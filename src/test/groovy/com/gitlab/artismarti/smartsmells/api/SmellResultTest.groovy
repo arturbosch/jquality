@@ -4,6 +4,8 @@ import com.gitlab.artismarti.smartsmells.common.source.SourcePath
 import com.gitlab.artismarti.smartsmells.common.source.SourceRange
 import com.gitlab.artismarti.smartsmells.config.Smell
 import com.gitlab.artismarti.smartsmells.smells.comment.CommentSmell
+import com.gitlab.artismarti.smartsmells.smells.complexmethod.ComplexMethod
+import com.gitlab.artismarti.smartsmells.smells.longmethod.LongMethod
 import spock.lang.Specification
 
 /**
@@ -33,10 +35,14 @@ class SmellResultTest extends Specification {
 	def "test reflection methods on smelly objects"() {
 		when:
 		def smell = getSmell()
+		def complexMethod = new ComplexMethod(new LongMethod("header", "name", "signature", 5, 5,
+				SourceRange.of(1, 1, 1, 1), new SourcePath("path")), 5)
 
 		then:
 		smell.positions.toString() == "1,1,1,1"
 		smell.pathAsString == "path"
+		complexMethod.pathAsString == "path"
+		complexMethod.positions.toString() == "1,1,1,1"
 
 	}
 }

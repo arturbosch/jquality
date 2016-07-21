@@ -22,8 +22,16 @@ class SourceRange extends Tuple2<SourcePosition, SourcePosition> {
 		return first.line
 	}
 
+	int startColumn() {
+		return first.column
+	}
+
 	int endLine() {
 		return second.line
+	}
+
+	int endColumn() {
+		return second.column
 	}
 
 	@Override
