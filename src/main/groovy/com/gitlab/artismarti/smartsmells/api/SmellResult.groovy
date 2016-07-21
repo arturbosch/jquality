@@ -1,7 +1,7 @@
 package com.gitlab.artismarti.smartsmells.api
 
-import com.gitlab.artismarti.smartsmells.config.Smell
 import com.gitlab.artismarti.smartsmells.common.Smelly
+import com.gitlab.artismarti.smartsmells.config.Smell
 import groovy.transform.PackageScope
 
 /**
@@ -23,15 +23,8 @@ class SmellResult {
 	List<Smelly> filter(String path) {
 		return smellSets.values().stream()
 				.flatMap { it.stream() }
-				.filter { bySourcePath(it).equals(path) }
+				.filter { it.pathAsString.equals(path) }
 				.collect()
-	}
-
-	private static String bySourcePath(Smelly smelly) {
-		return smelly.class.getDeclaredField("sourcePath").with {
-			setAccessible(true)
-			get(smelly).toString()
-		}
 	}
 
 	void prettyPrint(Smell... smells) {

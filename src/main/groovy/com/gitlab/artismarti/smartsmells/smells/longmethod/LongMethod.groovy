@@ -19,7 +19,6 @@ class LongMethod implements Smelly {
 	int size
 	int threshold
 
-	@Delegate
 	SourceRange sourceRange
 	@Delegate
 	SourcePath sourcePath

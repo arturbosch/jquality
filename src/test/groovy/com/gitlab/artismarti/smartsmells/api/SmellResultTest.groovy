@@ -1,6 +1,5 @@
 package com.gitlab.artismarti.smartsmells.api
 
-import com.gitlab.artismarti.smartsmells.common.Smelly
 import com.gitlab.artismarti.smartsmells.common.source.SourcePath
 import com.gitlab.artismarti.smartsmells.common.source.SourceRange
 import com.gitlab.artismarti.smartsmells.config.Smell
@@ -29,5 +28,15 @@ class SmellResultTest extends Specification {
 
 	private static CommentSmell getSmell() {
 		new CommentSmell("type", "message", false, false, new SourcePath("path"), SourceRange.of(1, 1, 1, 1))
+	}
+
+	def "test reflection methods on smelly objects"() {
+		when:
+		def smell = getSmell()
+
+		then:
+		smell.positions.toString() == "1,1,1,1"
+		smell.pathAsString == "path"
+
 	}
 }
