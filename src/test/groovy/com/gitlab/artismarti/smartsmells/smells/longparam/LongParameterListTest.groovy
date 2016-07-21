@@ -21,6 +21,6 @@ class LongParameterListTest extends Specification {
 
 		where:
 		lpl = new LongParameterList(new LongMethod("header", "name", "signature", 1, 1,
-				SourceRange.of(1, 1, 1, 1), SourcePath.of(Test.PATH)), ["1", "2"], 2)
+				SourceRange.of(1, 1, 1, 1), SourcePath.of(Test.PATH)), ["1", "2"], 2, 2)
 	}
 }

@@ -22,7 +22,7 @@ class MessageChain implements Smelly {
 	@Delegate
 	SourcePath sourcePath
 	@Delegate
-	SourceRange SourceRange
+	SourceRange sourceRange
 
 	@Override
 	String asCompactString() {
