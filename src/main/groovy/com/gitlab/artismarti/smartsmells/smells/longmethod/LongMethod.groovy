@@ -18,8 +18,9 @@ class LongMethod implements Smelly {
 	String signature
 	int size
 	int threshold
-	SourceRange sourceRange
 
+	@Delegate
+	SourceRange sourceRange
 	@Delegate
 	SourcePath sourcePath
 

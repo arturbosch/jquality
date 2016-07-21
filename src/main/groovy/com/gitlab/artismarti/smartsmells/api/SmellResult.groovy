@@ -20,6 +20,20 @@ class SmellResult {
 		smellSets.getOrDefault(smell, new ArrayDeque<>())
 	}
 
+	List<Smelly> filter(String path) {
+		return smellSets.values().stream()
+				.flatMap { it.stream() }
+				.filter { bySourcePath(it).equals(path) }
+				.collect()
+	}
+
+	private static String bySourcePath(Smelly smelly) {
+		return smelly.class.getDeclaredField("sourcePath").with {
+			setAccessible(true)
+			get(smelly).toString()
+		}
+	}
+
 	void prettyPrint(Smell... smells) {
 
 		def printList = Arrays.asList(smells)
