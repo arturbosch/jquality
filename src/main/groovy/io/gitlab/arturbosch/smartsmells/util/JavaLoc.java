@@ -9,10 +9,10 @@ import java.util.List;
  */
 public class JavaLoc {
 
-	private final String[] comments = new String[]{"//", "/*", "*/", "*"};
-	private final String[] escapes = new String[]{"import", "package"};
+	private static final String[] comments = new String[]{"//", "/*", "*/", "*"};
+	private static final String[] escapes = new String[]{"import", "package"};
 
-	public int analyze(List<String> lines, boolean isCommentMode, boolean isFullMode) {
+	public static int analyze(List<String> lines, boolean isCommentMode, boolean isFullMode) {
 
 		int counter = 0, openedBrackets = 0, closedBrackets = 0;
 		boolean escape;
@@ -48,26 +48,18 @@ public class JavaLoc {
 			}
 
 			if (trimmed.contains("{")) {
-				openedBrackets++;
+				openedBrackets += Strings.amountOf(trimmed, "{");
 			}
 
 			if (trimmed.contains("}")) {
-				closedBrackets++;
+				closedBrackets += Strings.amountOf(trimmed, "}");
 			}
 		}
 
-		int div = openedBrackets - closedBrackets;
-
-		if (div == 0) {
-			counter += openedBrackets;
-		} else {
-			counter = -1;
-		}
-
-		return counter;
+		return counter + (openedBrackets - closedBrackets == 0 ? openedBrackets : -1);
 	}
 
-	private boolean isEscaped(String trimmed, String[] rules) {
+	private static boolean isEscaped(String trimmed, String[] rules) {
 		for (String rule : rules) {
 			if (trimmed.startsWith(rule)) {
 				return true;

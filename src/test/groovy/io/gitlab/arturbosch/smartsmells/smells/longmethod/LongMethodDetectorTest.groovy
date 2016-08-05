@@ -8,6 +8,15 @@ import spock.lang.Specification
  */
 class LongMethodDetectorTest extends Specification {
 
+	def "a complex method is too long"() {
+		expect:
+		smells.size() == 2
+		smells.each { println it.toString() }
+
+		where:
+		smells = new LongMethodDetector().run(Test.COMPLEX_METHOD_DUMMY_PATH)
+	}
+
 	def "find one long method with size 15 and threshold 14"() {
 		expect:
 		smells.size() == 1

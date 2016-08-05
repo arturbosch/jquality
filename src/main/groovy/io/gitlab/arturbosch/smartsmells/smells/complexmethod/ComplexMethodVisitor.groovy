@@ -1,7 +1,6 @@
 package io.gitlab.arturbosch.smartsmells.smells.complexmethod
 
 import com.github.javaparser.ast.body.BodyDeclaration
-import com.github.javaparser.ast.stmt.Statement
 import io.gitlab.arturbosch.smartsmells.common.visitor.MethodMetricVisitor
 import io.gitlab.arturbosch.smartsmells.metrics.Metrics
 
@@ -19,13 +18,13 @@ class ComplexMethodVisitor extends MethodMetricVisitor<ComplexMethod> {
 	}
 
 	@Override
-	protected byThreshold(BodyDeclaration n, List<Statement> stmt) {
+	protected byThreshold(BodyDeclaration n) {
 		mcc = Metrics.mcCabe(n)
 		return mcc >= threshold
 	}
 
 	@Override
-	protected addSmell(BodyDeclaration n, List<Statement> stmt) {
-		smells.add(new ComplexMethod(newLongMethod(n, stmt), mcc))
+	protected addSmell(BodyDeclaration n) {
+		smells.add(new ComplexMethod(newLongMethod(n, mcc), mcc))
 	}
 }

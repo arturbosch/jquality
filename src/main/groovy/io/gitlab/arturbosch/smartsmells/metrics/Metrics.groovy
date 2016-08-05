@@ -205,7 +205,7 @@ final class Metrics {
 				.collect(Collectors.toList())
 		StreamCloser.quietly(stream)
 
-		return new JavaLoc().analyze(collect, comments, false)
+		return JavaLoc.analyze(collect, comments, false)
 	}
 
 }

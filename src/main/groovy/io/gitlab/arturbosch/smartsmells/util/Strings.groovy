@@ -21,4 +21,21 @@ class Strings {
 	static boolean isTrue(String value) {
 		return value != null && !value.isEmpty() && "true".equalsIgnoreCase(value)
 	}
+
+	public static boolean isEmpty(final String str) {
+		return str == null || str.length() == 0;
+	}
+
+	static int amountOf(String text, String part) {
+		if (isEmpty(text) || isEmpty(part)) {
+			return 0;
+		}
+
+		int count = 0;
+		for (int pos = 0; (pos = text.indexOf(part, pos)) != -1; count++) {
+			pos += part.length();
+		}
+
+		return count;
+	}
 }

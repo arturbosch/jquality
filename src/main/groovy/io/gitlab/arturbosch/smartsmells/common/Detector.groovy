@@ -43,7 +43,7 @@ abstract class Detector<T extends Smelly> {
 				.filter({ it.fileName.toString().endsWith("java") })
 				.map({
 			def maybeUnit = CompilationTree.getCompilationUnit(it)
-			maybeUnit.isPresent() ? execute(maybeUnit.get(), it) : empty()
+			maybeUnit.isPresent() ? execute(maybeUnit.get(), it) : Collections.emptySet()
 		}).collect(Collectors.reducing(new HashSet(), op))
 		StreamCloser.quietly(walker)
 		return result
@@ -64,9 +64,9 @@ abstract class Detector<T extends Smelly> {
 	}
 
 	/**
-	 * All subclasses must specify visitor.
+	 * All subclasses must specify a visitor.
 	 *
-	 * @param path of current file
+	 * @param path of current file which the visitor needs to save
 	 * @return visitor for specific smell
 	 */
 	protected abstract Visitor getVisitor(Path path)
