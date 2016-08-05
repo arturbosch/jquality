@@ -11,7 +11,6 @@ class LongMethodDetectorTest extends Specification {
 	def "a complex method is too long"() {
 		expect:
 		smells.size() == 2
-		smells.each { println it.toString() }
 
 		where:
 		smells = new LongMethodDetector().run(Test.COMPLEX_METHOD_DUMMY_PATH)
@@ -23,7 +22,7 @@ class LongMethodDetectorTest extends Specification {
 		smells[0].name == "longMethod"
 		smells[0].signature ==
 				"void longMethod(String s1, String s2, String s3, String s4, String s5, String s6)"
-		smells[0].size == 15
+		smells[0].size == 16
 		smells[0].threshold == 14
 		smells[0].header ==
 				"public void longMethod(String s1, String s2, String s3, String s4, String s5, String s6)"
