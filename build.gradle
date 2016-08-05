@@ -1,4 +1,4 @@
-group 'com.gitlab.artismarti.smartsmells'
+group 'io.gitlab.arturbosch.smartsmells'
 version 'M6'
 
 apply plugin: 'groovy'
@@ -21,7 +21,7 @@ task fatJar(type: Jar) {
 	manifest {
 		attributes 'Implementation-Title': 'SmartSmells',
 				'Implementation-Version': version,
-				'Main-Class': 'com.gitlab.artismarti.smartsmells.Main'
+				'Main-Class': 'io.gitlab.arturbosch.smartsmells.Main'
 	}
 	baseName = project.name
 	from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
@@ -33,7 +33,7 @@ test {
 }
 
 task systemTest( type: Test ) {
-	exclude '/com/gitlab/artismarti/**'
+	exclude '/io/gitlab/arturbosch/**'
 }
 
 task unitTest( type: Test ) {
