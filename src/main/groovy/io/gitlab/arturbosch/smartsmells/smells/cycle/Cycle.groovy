@@ -17,6 +17,10 @@ class Cycle implements Smelly {
 		this.target = target
 	}
 
+	boolean comparePath(String path) {
+		return source.path == path || target.path == path
+	}
+
 	@Override
 	String asCompactString() {
 		"Cycle \n\nSource: $source.name\nTarget: $target.name"

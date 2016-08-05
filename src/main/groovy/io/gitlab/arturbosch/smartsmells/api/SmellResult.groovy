@@ -3,6 +3,7 @@ package io.gitlab.arturbosch.smartsmells.api
 import groovy.transform.PackageScope
 import io.gitlab.arturbosch.smartsmells.common.Smelly
 import io.gitlab.arturbosch.smartsmells.config.Smell
+import io.gitlab.arturbosch.smartsmells.smells.cycle.Cycle
 
 /**
  * @author artur
@@ -23,8 +24,16 @@ class SmellResult {
 	List<Smelly> filter(String path) {
 		return smellSets.values().stream()
 				.flatMap { it.stream() }
-				.filter { it.pathAsString == path }
+				.filter { checkSmellPaths(it, path) }
 				.collect()
+	}
+
+	private static boolean checkSmellPaths(Smelly it, String path) {
+		switch (it) {
+			case Cycle: (it as Cycle).comparePath(path)
+				break
+			default: it.pathAsString == path
+		}
 	}
 
 	void prettyPrint(Smell... smells) {
