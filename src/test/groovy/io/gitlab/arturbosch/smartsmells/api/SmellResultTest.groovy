@@ -1,10 +1,13 @@
 package io.gitlab.arturbosch.smartsmells.api
 
+import io.gitlab.arturbosch.smartsmells.common.Smelly
 import io.gitlab.arturbosch.smartsmells.common.source.SourcePath
 import io.gitlab.arturbosch.smartsmells.common.source.SourceRange
 import io.gitlab.arturbosch.smartsmells.config.Smell
 import io.gitlab.arturbosch.smartsmells.smells.comment.CommentSmell
 import io.gitlab.arturbosch.smartsmells.smells.complexmethod.ComplexMethod
+import io.gitlab.arturbosch.smartsmells.smells.cycle.Cycle
+import io.gitlab.arturbosch.smartsmells.smells.cycle.Dependency
 import io.gitlab.arturbosch.smartsmells.smells.longmethod.LongMethod
 import spock.lang.Specification
 
@@ -15,8 +18,8 @@ class SmellResultTest extends Specification {
 
 	def testFilter() {
 		given: "smell result with three comment smells"
-		Deque deque = new ArrayDeque<CommentSmell>()
-		deque.addAll(getSmell(), getSmell(), getSmell())
+		Deque deque = new ArrayDeque<Smelly>()
+		deque.addAll(getComplexMethod(), getCycle(), getComplexMethod())
 		def map = new HashMap()
 		map.put(Smell.COMMENT, deque)
 		def smells = new SmellResult(map)
@@ -28,13 +31,18 @@ class SmellResultTest extends Specification {
 		filtered.size() == 3
 	}
 
-	private static CommentSmell getSmell() {
+	private static CommentSmell getComplexMethod() {
 		new CommentSmell("type", "message", false, false, new SourcePath("path"), SourceRange.of(1, 1, 1, 1))
+	}
+
+	private static Cycle getCycle() {
+		new Cycle(new Dependency("1", "1", new SourcePath("path"), SourceRange.of(1, 1, 1, 1)),
+				new Dependency("2", "2", new SourcePath("path"), SourceRange.of(2, 2, 2, 2)))
 	}
 
 	def "test reflection methods on smelly objects"() {
 		when:
-		def smell = getSmell()
+		def smell = getComplexMethod()
 		def complexMethod = new ComplexMethod(new LongMethod("header", "name", "signature", 5, 5,
 				SourceRange.of(1, 1, 1, 1), new SourcePath("path")), 5)
 

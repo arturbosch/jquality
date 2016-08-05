@@ -3,6 +3,7 @@ package io.gitlab.arturbosch.smartsmells.common
 import io.gitlab.arturbosch.smartsmells.api.SmellExchange
 import io.gitlab.arturbosch.smartsmells.common.source.SourceRange
 import io.gitlab.arturbosch.smartsmells.smells.complexmethod.ComplexMethod
+import io.gitlab.arturbosch.smartsmells.smells.cycle.Cycle
 import io.gitlab.arturbosch.smartsmells.smells.longparam.LongParameterList
 
 /**
@@ -25,6 +26,8 @@ trait Smelly {
 			case ComplexMethod:
 			case LongParameterList: return SmellExchange.getAttribute(
 					SmellExchange.getAttribute(smelly, "longMethod") as Smelly, name)
+			case Cycle: return SmellExchange.getAttribute(
+					SmellExchange.getAttribute(smelly, "source") as Smelly, name)
 			default: return SmellExchange.getAttribute(smelly, name)
 		}
 	}
