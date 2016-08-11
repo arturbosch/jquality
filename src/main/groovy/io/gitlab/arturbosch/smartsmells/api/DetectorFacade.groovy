@@ -20,6 +20,7 @@ import io.gitlab.arturbosch.smartsmells.smells.longmethod.LongMethodDetector
 import io.gitlab.arturbosch.smartsmells.smells.longparam.LongParameterListDetector
 import io.gitlab.arturbosch.smartsmells.smells.messagechain.MessageChainDetector
 import io.gitlab.arturbosch.smartsmells.smells.middleman.MiddleManDetector
+import io.gitlab.arturbosch.smartsmells.util.Validate
 
 import java.nio.file.Path
 import java.util.concurrent.CompletableFuture
@@ -49,10 +50,12 @@ class DetectorFacade {
 	}
 
 	static DetectorFacade fromConfig(final DetectorConfig config) {
+		Validate.notNull(config, "Configuration must not be null!")
 		return new DetectorFacade(DetectorInitializer.init(config));
 	}
 
 	SmellResult run(Path startPath) {
+		Validate.notNull(startPath)
 
 		CompilationTree.registerRoot(startPath)
 		def storage = CompilationStorage.create(startPath)
@@ -100,6 +103,7 @@ class DetectorFacade {
 		private List<Detector> detectors = new LinkedList<>()
 
 		DetectorFacadeBuilder with(Detector detector) {
+			Validate.notNull(detector)
 			detectors.add(detector)
 			return this
 		}

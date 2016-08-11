@@ -49,9 +49,9 @@ class LargeClassVisitor extends Visitor<LargeClass> {
 	private static int calcSizeFromNode(ClassOrInterfaceDeclaration n) {
 		def commentsSize = Stream.of(n.getAllContainedComments())
 				.flatMap { it.stream() }
-				.mapToInt { (it.endLine - it.beginLine) + 1 }
+				.mapToInt { (it.end.line - it.begin.line) + 1 }
 				.sum()
-		def size = n.endLine - n.beginLine + 1
+		def size = n.end.line - n.begin.line + 1
 		return size - commentsSize
 	}
 
