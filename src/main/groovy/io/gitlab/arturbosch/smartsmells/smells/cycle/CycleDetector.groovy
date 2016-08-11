@@ -1,6 +1,6 @@
 package io.gitlab.arturbosch.smartsmells.smells.cycle
 
-import io.gitlab.arturbosch.smartsmells.common.CompilationTree
+import io.gitlab.arturbosch.jpal.core.CompilationTree
 import io.gitlab.arturbosch.smartsmells.common.Detector
 import io.gitlab.arturbosch.smartsmells.common.Visitor
 import io.gitlab.arturbosch.smartsmells.config.Smell

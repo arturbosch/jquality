@@ -4,11 +4,16 @@ import com.github.javaparser.ast.CompilationUnit
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration
 import com.github.javaparser.ast.body.FieldDeclaration
 import com.github.javaparser.ast.type.ClassOrInterfaceType
-import com.gitlab.artismarti.smartsmells.common.*
-import io.gitlab.arturbosch.smartsmells.common.*
+import io.gitlab.arturbosch.jpal.ast.ClassHelper
+import io.gitlab.arturbosch.jpal.ast.NodeHelper
+import io.gitlab.arturbosch.jpal.core.CompilationStorage
+import io.gitlab.arturbosch.jpal.core.CompilationTree
+import io.gitlab.arturbosch.jpal.nested.InnerClassesHandler
+import io.gitlab.arturbosch.jpal.resolve.QualifiedType
+import io.gitlab.arturbosch.jpal.resolve.ResolutionData
+import io.gitlab.arturbosch.jpal.resolve.Resolver
+import io.gitlab.arturbosch.smartsmells.common.Visitor
 import io.gitlab.arturbosch.smartsmells.common.helper.BadSmellHelper
-import io.gitlab.arturbosch.smartsmells.common.helper.NodeHelper
-import io.gitlab.arturbosch.smartsmells.common.helper.PackageImportHelper
 import io.gitlab.arturbosch.smartsmells.common.source.SourcePath
 
 import java.nio.file.Path
@@ -18,7 +23,7 @@ import java.nio.file.Path
  */
 class CycleVisitor extends Visitor<Cycle> {
 
-	private PackageImportHolder packageImportHolder
+	private ResolutionData packageImportHolder
 	private InnerClassesHandler innerClassesHandler
 
 	CycleVisitor(Path path) {
@@ -27,28 +32,25 @@ class CycleVisitor extends Visitor<Cycle> {
 
 	@Override
 	void visit(CompilationUnit n, Object arg) {
-		packageImportHolder = new PackageImportHolder(n.package, n.imports)
+		packageImportHolder = ResolutionData.of(n)
 		innerClassesHandler = new InnerClassesHandler(n)
 		super.visit(n, arg)
 	}
 
 	@Override
 	void visit(ClassOrInterfaceDeclaration n, Object arg) {
-		String unqualifiedName = innerClassesHandler.appendOuterClassIfInnerClass(n)
-		def thisClassType = PackageImportHelper.getQualifiedType(
+		String unqualifiedName = ClassHelper.appendOuterClassIfInnerClass(n)
+		def thisClassType = Resolver.getQualifiedType(
 				packageImportHolder, new ClassOrInterfaceType(unqualifiedName))
 
 		def fields = NodeHelper.findFields(n)
-
 		fields.each { field ->
 
-			def qualifiedType = PackageImportHelper.getQualifiedType(
-					packageImportHolder, field.type)
-
+			def qualifiedType = Resolver.getQualifiedType(packageImportHolder, field.type)
 			if (qualifiedType.isReference()) {
 
 				def unqualifiedFieldName = innerClassesHandler.getUnqualifiedNameForInnerClass(field.type)
-				qualifiedType = PackageImportHelper.getQualifiedType(
+				qualifiedType = Resolver.getQualifiedType(
 						packageImportHolder, new ClassOrInterfaceType(unqualifiedFieldName))
 
 				searchForCycles(qualifiedType, thisClassType, field)
@@ -74,10 +76,10 @@ class CycleVisitor extends Visitor<Cycle> {
 
 		} else {
 
-			def maybePath = CompilationTree.findReferencedType(otherType)
+			def maybePath = CompilationTree.findPathFor(otherType)
 			if (maybePath.isPresent()) {
 				def otherPath = maybePath.get()
-				CompilationTree.getCompilationUnit(otherPath).ifPresent {
+				CompilationTree.findCompilationUnit(otherPath).ifPresent {
 					def visitor = new SameFieldTypeVisitor(thisType)
 					visitor.visit(it, null)
 

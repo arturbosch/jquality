@@ -1,6 +1,6 @@
 package io.gitlab.arturbosch.smartsmells.smells.cycle
 
-import io.gitlab.arturbosch.smartsmells.common.CompilationStorage
+import io.gitlab.arturbosch.jpal.core.CompilationStorage
 import io.gitlab.arturbosch.smartsmells.common.Test
 import io.gitlab.arturbosch.smartsmells.common.source.SourcePath
 import io.gitlab.arturbosch.smartsmells.common.source.SourceRange

@@ -2,6 +2,7 @@ package io.gitlab.arturbosch.smartsmells.common
 
 import com.github.javaparser.ast.CompilationUnit
 import io.gitlab.arturbosch.smartsmells.config.Smell
+import io.gitlab.arturbosch.jpal.core.CompilationTree
 import io.gitlab.arturbosch.smartsmells.util.StreamCloser
 
 import java.nio.file.Files
@@ -42,7 +43,7 @@ abstract class Detector<T extends Smelly> {
 		def result = walker
 				.filter({ it.fileName.toString().endsWith("java") })
 				.map({
-			def maybeUnit = CompilationTree.getCompilationUnit(it)
+			def maybeUnit = CompilationTree.findCompilationUnit(it)
 			maybeUnit.isPresent() ? execute(maybeUnit.get(), it) : Collections.emptySet()
 		}).collect(Collectors.reducing(new HashSet(), op))
 		StreamCloser.quietly(walker)

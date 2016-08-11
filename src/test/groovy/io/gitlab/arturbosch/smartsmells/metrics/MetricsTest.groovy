@@ -1,6 +1,6 @@
 package io.gitlab.arturbosch.smartsmells.metrics
 
-import io.gitlab.arturbosch.smartsmells.common.CompilationStorage
+import io.gitlab.arturbosch.jpal.core.CompilationStorage
 import io.gitlab.arturbosch.smartsmells.common.Test
 import spock.lang.Specification
 

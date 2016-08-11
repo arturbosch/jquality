@@ -5,9 +5,11 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration
 import com.github.javaparser.ast.body.FieldDeclaration
 import com.github.javaparser.ast.type.ClassOrInterfaceType
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter
-import io.gitlab.arturbosch.smartsmells.common.PackageImportHolder
-import io.gitlab.arturbosch.smartsmells.common.QualifiedType
-import io.gitlab.arturbosch.smartsmells.common.helper.PackageImportHelper
+import io.gitlab.arturbosch.jpal.ast.ClassHelper
+import io.gitlab.arturbosch.jpal.nested.InnerClassesHandler
+import io.gitlab.arturbosch.jpal.resolve.QualifiedType
+import io.gitlab.arturbosch.jpal.resolve.ResolutionData
+import io.gitlab.arturbosch.jpal.resolve.Resolver
 
 /**
  * @author artur
@@ -15,7 +17,7 @@ import io.gitlab.arturbosch.smartsmells.common.helper.PackageImportHelper
 class SameFieldTypeVisitor extends VoidVisitorAdapter {
 
 	private QualifiedType searchedType
-	private PackageImportHolder packageImportHolder
+	private ResolutionData packageImportHolder
 	private InnerClassesHandler innerClassesHandler
 
 	private boolean found
@@ -28,15 +30,15 @@ class SameFieldTypeVisitor extends VoidVisitorAdapter {
 
 	@Override
 	void visit(CompilationUnit n, Object arg) {
-		packageImportHolder = new PackageImportHolder(n.package, n.imports)
+		packageImportHolder = ResolutionData.of(n)
 		innerClassesHandler = new InnerClassesHandler(n)
 		super.visit(n, arg)
 	}
 
 	@Override
 	void visit(ClassOrInterfaceDeclaration n, Object arg) {
-		String unqualifiedName = innerClassesHandler.appendOuterClassIfInnerClass(n)
-		currentClass = PackageImportHelper.getQualifiedType(
+		String unqualifiedName = ClassHelper.appendOuterClassIfInnerClass(n)
+		currentClass = Resolver.getQualifiedType(
 				packageImportHolder, new ClassOrInterfaceType(unqualifiedName))
 		if (currentClass.name == searchedType.name) {
 			// Note: Singletons are no cycles
@@ -50,7 +52,7 @@ class SameFieldTypeVisitor extends VoidVisitorAdapter {
 	@Override
 	void visit(FieldDeclaration n, Object arg) {
 		def unqualifiedFieldName = innerClassesHandler.getUnqualifiedNameForInnerClass(n.type)
-		def qualifiedType = PackageImportHelper.getQualifiedType(
+		def qualifiedType = Resolver.getQualifiedType(
 				packageImportHolder, new ClassOrInterfaceType(unqualifiedFieldName))
 
 		if (qualifiedType.isReference()) {
