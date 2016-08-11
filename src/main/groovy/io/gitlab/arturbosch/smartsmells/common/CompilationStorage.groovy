@@ -3,7 +3,7 @@ package io.gitlab.arturbosch.smartsmells.common
 import com.github.javaparser.ASTHelper
 import com.github.javaparser.JavaParser
 import com.github.javaparser.ParseException
-import com.github.javaparser.TokenMgrError
+import com.github.javaparser.TokenMgrException
 import com.github.javaparser.ast.CompilationUnit
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration
 import io.gitlab.arturbosch.smartsmells.common.helper.TypeHelper
@@ -67,7 +67,7 @@ final class CompilationStorage {
 				def compilationInfo = CompilationInfo.of(type, unit, path)
 				typeCache.put(type, compilationInfo)
 				pathCache.put(path, compilationInfo)
-			} catch (ParseException | TokenMgrError ignored) {
+			} catch (ParseException | TokenMgrException ignored) {
 			}
 		}
 	}
