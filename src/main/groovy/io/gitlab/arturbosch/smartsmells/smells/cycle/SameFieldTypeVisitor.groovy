@@ -17,7 +17,7 @@ import io.gitlab.arturbosch.jpal.resolve.Resolver
 class SameFieldTypeVisitor extends VoidVisitorAdapter {
 
 	private QualifiedType searchedType
-	private ResolutionData packageImportHolder
+	private ResolutionData resolutionData
 	private InnerClassesHandler innerClassesHandler
 
 	private boolean found
@@ -30,7 +30,7 @@ class SameFieldTypeVisitor extends VoidVisitorAdapter {
 
 	@Override
 	void visit(CompilationUnit n, Object arg) {
-		packageImportHolder = ResolutionData.of(n)
+		resolutionData = ResolutionData.of(n)
 		innerClassesHandler = new InnerClassesHandler(n)
 		super.visit(n, arg)
 	}
@@ -39,7 +39,7 @@ class SameFieldTypeVisitor extends VoidVisitorAdapter {
 	void visit(ClassOrInterfaceDeclaration n, Object arg) {
 		String unqualifiedName = ClassHelper.appendOuterClassIfInnerClass(n)
 		currentClass = Resolver.getQualifiedType(
-				packageImportHolder, new ClassOrInterfaceType(unqualifiedName))
+				resolutionData, new ClassOrInterfaceType(unqualifiedName))
 		if (currentClass.name == searchedType.name) {
 			// Note: Singletons are no cycles
 			found = false
@@ -53,7 +53,7 @@ class SameFieldTypeVisitor extends VoidVisitorAdapter {
 	void visit(FieldDeclaration n, Object arg) {
 		def unqualifiedFieldName = innerClassesHandler.getUnqualifiedNameForInnerClass(n.type)
 		def qualifiedType = Resolver.getQualifiedType(
-				packageImportHolder, new ClassOrInterfaceType(unqualifiedFieldName))
+				resolutionData, new ClassOrInterfaceType(unqualifiedFieldName))
 
 		if (qualifiedType.isReference()) {
 			if (qualifiedType.name == searchedType.name) {

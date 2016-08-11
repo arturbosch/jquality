@@ -1,8 +1,8 @@
 package io.gitlab.arturbosch.smartsmells.common
 
 import com.github.javaparser.ast.CompilationUnit
-import io.gitlab.arturbosch.smartsmells.config.Smell
 import io.gitlab.arturbosch.jpal.core.CompilationTree
+import io.gitlab.arturbosch.smartsmells.config.Smell
 import io.gitlab.arturbosch.smartsmells.util.StreamCloser
 
 import java.nio.file.Files

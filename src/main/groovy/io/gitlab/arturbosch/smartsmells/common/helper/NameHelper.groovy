@@ -1,6 +1,7 @@
 package io.gitlab.arturbosch.smartsmells.common.helper
 
 import com.github.javaparser.ast.body.FieldDeclaration
+
 /**
  * @author artur
  */

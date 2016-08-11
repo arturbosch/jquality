@@ -4,12 +4,10 @@ import com.github.javaparser.ASTHelper
 import com.github.javaparser.ast.CompilationUnit
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter
+import io.gitlab.arturbosch.jpal.ast.ClassHelper
 import io.gitlab.arturbosch.smartsmells.common.Visitor
 import io.gitlab.arturbosch.smartsmells.common.helper.BadSmellHelper
-import io.gitlab.arturbosch.smartsmells.common.helper.TypeHelper
 import io.gitlab.arturbosch.smartsmells.common.source.SourcePath
-import io.gitlab.arturbosch.smartsmells.common.source.SourcePosition
-import io.gitlab.arturbosch.smartsmells.common.source.SourceRange
 import io.gitlab.arturbosch.smartsmells.metrics.Metrics
 
 import java.nio.file.Path
@@ -60,8 +58,8 @@ class GodClassVisitor extends Visitor<GodClass> {
 		private double tcc = 0.0
 
 		void visit(ClassOrInterfaceDeclaration n) {
-			if (TypeHelper.isEmptyBody(n)) return
-			if (TypeHelper.hasNoMethods(n)) return
+			if (ClassHelper.isEmptyBody(n)) return
+			if (ClassHelper.hasNoMethods(n)) return
 
 			tcc = Metrics.tcc(n)
 			wmc = Metrics.wmc(n)
@@ -82,8 +80,7 @@ class GodClassVisitor extends Visitor<GodClass> {
 			smells.add(new GodClass(n.name, BadSmellHelper.createClassSignature(n), wmc, tcc, atfd,
 					weightedMethodCountThreshold, tiedClassCohesionThreshold,
 					accessToForeignDataThreshold, SourcePath.of(path),
-					SourceRange.of(SourcePosition.of(n.beginLine, n.beginColumn),
-							SourcePosition.of(n.endLine, n.endColumn))))
+					BadSmellHelper.createSourceRangeFromNode(n)))
 		}
 
 	}

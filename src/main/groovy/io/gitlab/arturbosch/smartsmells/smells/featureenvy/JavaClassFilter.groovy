@@ -2,9 +2,9 @@ package io.gitlab.arturbosch.smartsmells.smells.featureenvy
 
 import com.github.javaparser.ast.ImportDeclaration
 import com.github.javaparser.ast.type.PrimitiveType
-import io.gitlab.arturbosch.smartsmells.common.CustomVariableDeclaration
-import io.gitlab.arturbosch.smartsmells.common.helper.JdkHelper
-import io.gitlab.arturbosch.smartsmells.common.helper.TypeHelper
+import io.gitlab.arturbosch.jpal.ast.TypeHelper
+import io.gitlab.arturbosch.jpal.ast.custom.JpalVariable
+import io.gitlab.arturbosch.jpal.internal.JdkHelper
 
 import static java.util.stream.Collectors.toSet
 
@@ -21,16 +21,16 @@ class JavaClassFilter {
 		}
 	}
 
-	public Set<CustomVariableDeclaration> forJavaClasses(Set<CustomVariableDeclaration> variables) {
+	public Set<JpalVariable> forJavaClasses(Set<JpalVariable> variables) {
 		return variables.stream().filter { isNoPrimitiveType(it) }
 				.filter { !isJavaType(it) }.collect(toSet());
 	}
 
-	private static boolean isNoPrimitiveType(CustomVariableDeclaration variable) {
+	private static boolean isNoPrimitiveType(JpalVariable variable) {
 		return !(variable.getType() instanceof PrimitiveType);
 	}
 
-	private boolean isJavaType(CustomVariableDeclaration variable) {
+	private boolean isJavaType(JpalVariable variable) {
 
 		def maybeType = TypeHelper.getClassOrInterfaceType(variable.getType())
 

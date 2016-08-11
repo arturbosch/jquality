@@ -4,10 +4,10 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration
 import com.github.javaparser.ast.body.MethodDeclaration
 import com.github.javaparser.ast.expr.MethodCallExpr
 import com.github.javaparser.ast.stmt.ReturnStmt
+import io.gitlab.arturbosch.jpal.ast.ClassHelper
+import io.gitlab.arturbosch.jpal.ast.NodeHelper
 import io.gitlab.arturbosch.smartsmells.common.Visitor
 import io.gitlab.arturbosch.smartsmells.common.helper.BadSmellHelper
-import io.gitlab.arturbosch.smartsmells.common.helper.NodeHelper
-import io.gitlab.arturbosch.smartsmells.common.helper.TypeHelper
 import io.gitlab.arturbosch.smartsmells.common.source.SourcePath
 import io.gitlab.arturbosch.smartsmells.metrics.Metrics
 
@@ -31,8 +31,8 @@ class MiddleManVisitor extends Visitor<MiddleMan> {
 
 	@Override
 	void visit(ClassOrInterfaceDeclaration n, Object arg) {
-		if (TypeHelper.isEmptyBody(n)) return
-		if (TypeHelper.hasNoMethods(n)) return
+		if (ClassHelper.isEmptyBody(n)) return
+		if (ClassHelper.hasNoMethods(n)) return
 
 		def methods = NodeHelper.findMethods(n)
 

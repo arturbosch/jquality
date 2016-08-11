@@ -7,13 +7,17 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration
 import com.github.javaparser.ast.body.MethodDeclaration
 import com.github.javaparser.ast.body.ModifierSet
 import com.github.javaparser.ast.type.ClassOrInterfaceType
-import com.gitlab.artismarti.smartsmells.common.helper.*
-import io.gitlab.arturbosch.smartsmells.common.CustomVariableDeclaration
-import io.gitlab.arturbosch.smartsmells.common.PackageImportHolder
+import io.gitlab.arturbosch.jpal.ast.ClassHelper
+import io.gitlab.arturbosch.jpal.ast.LocaleVariableHelper
+import io.gitlab.arturbosch.jpal.ast.MethodHelper
+import io.gitlab.arturbosch.jpal.ast.NodeHelper
+import io.gitlab.arturbosch.jpal.ast.VariableHelper
+import io.gitlab.arturbosch.jpal.ast.custom.JpalVariable
+import io.gitlab.arturbosch.jpal.nested.InnerClassesHandler
+import io.gitlab.arturbosch.jpal.resolve.ResolutionData
 import io.gitlab.arturbosch.smartsmells.common.Visitor
-import io.gitlab.arturbosch.smartsmells.common.helper.*
+import io.gitlab.arturbosch.smartsmells.common.helper.BadSmellHelper
 import io.gitlab.arturbosch.smartsmells.common.source.SourcePath
-import io.gitlab.arturbosch.smartsmells.smells.cycle.InnerClassesHandler
 
 import java.nio.file.Path
 import java.util.stream.Collectors
@@ -25,11 +29,11 @@ class FeatureEnvyVisitor extends Visitor<FeatureEnvy> {
 
 	private FeatureEnvyFactor featureEnvyFactor
 
-	private Set<CustomVariableDeclaration> fields
+	private Set<JpalVariable> fields
 	private List<ImportDeclaration> imports
 
 	private String currentClassName
-	private PackageImportHolder packageImportHolder
+	private ResolutionData resolutionData
 	private InnerClassesHandler innerClassesHandler
 
 	private boolean ignoreStatic
@@ -43,7 +47,7 @@ class FeatureEnvyVisitor extends Visitor<FeatureEnvy> {
 	@Override
 	void visit(CompilationUnit n, Object arg) {
 		imports = ASTHelper.getNodesByType(n, ImportDeclaration.class)
-		packageImportHolder = new PackageImportHolder(n.package, n.imports)
+		resolutionData = ResolutionData.of(n)
 		innerClassesHandler = new InnerClassesHandler(n)
 		super.visit(n, arg)
 	}
@@ -54,15 +58,15 @@ class FeatureEnvyVisitor extends Visitor<FeatureEnvy> {
 		ASTHelper.getNodesByType(n, ClassOrInterfaceDeclaration.class)
 				.each { visit(it, null) }
 
-		if (TypeHelper.isEmptyBody(n)) return
-		if (TypeHelper.hasNoMethods(n)) return
+		if (ClassHelper.isEmptyBody(n)) return
+		if (ClassHelper.hasNoMethods(n)) return
 
 		currentClassName = n.name
 		def filteredFields = NodeHelper.findFields(n).stream()
-				.filter { ClassHelper.inCurrentClass(it, currentClassName) }
+				.filter { ClassHelper.inClassScope(it, currentClassName) }
 				.collect(Collectors.toList())
 
-		fields = VariableHelper.fromFieldToCustomVariableDeclarations(filteredFields)
+		fields = VariableHelper.toJpalFromFields(filteredFields)
 
 		analyzeMethods(NodeHelper.findMethods(n))
 	}
@@ -83,8 +87,8 @@ class FeatureEnvyVisitor extends Visitor<FeatureEnvy> {
 
 			def allCalls = MethodHelper.getAllMethodInvocations(it)
 
-			def parameters = VariableHelper.toCustomVariableDeclarations(MethodHelper.extractParameters(it))
-			def variables = VariableHelper.toCustomVariableDeclarations(LocaleVariableHelper.find(it))
+			def parameters = VariableHelper.toJpalVariables(MethodHelper.extractParameters(it))
+			def variables = VariableHelper.toJpalFromLocales(LocaleVariableHelper.find(it).toList())
 
 			analyzeVariables(it, allCalls, filter.forJavaClasses(variables))
 			analyzeVariables(it, allCalls, filter.forJavaClasses(parameters))
@@ -93,7 +97,7 @@ class FeatureEnvyVisitor extends Visitor<FeatureEnvy> {
 		}
 	}
 
-	private analyzeVariables(MethodDeclaration method, int allCalls, Set<CustomVariableDeclaration> variables) {
+	private analyzeVariables(MethodDeclaration method, int allCalls, Set<JpalVariable> variables) {
 		variables.forEach {
 			int count = MethodHelper.getAllMethodInvocationsForEntityWithName(it.name, method)
 			double factor = calc(count, allCalls)

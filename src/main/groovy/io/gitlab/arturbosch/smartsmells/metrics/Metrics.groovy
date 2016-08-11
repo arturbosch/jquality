@@ -12,11 +12,11 @@ import io.gitlab.arturbosch.jpal.ast.ClassHelper
 import io.gitlab.arturbosch.jpal.ast.MethodHelper
 import io.gitlab.arturbosch.jpal.ast.NodeHelper
 import io.gitlab.arturbosch.jpal.ast.TypeHelper
+import io.gitlab.arturbosch.jpal.ast.VariableHelper
 import io.gitlab.arturbosch.jpal.core.CompilationStorage
 import io.gitlab.arturbosch.jpal.internal.StreamCloser
 import io.gitlab.arturbosch.smartsmells.common.helper.BadSmellHelper
 import io.gitlab.arturbosch.smartsmells.common.helper.NameHelper
-import io.gitlab.arturbosch.smartsmells.common.helper.VariableHelper
 import io.gitlab.arturbosch.smartsmells.common.visitor.CyclomaticComplexityVisitor
 import io.gitlab.arturbosch.smartsmells.smells.godclass.FieldAccessVisitor
 import io.gitlab.arturbosch.smartsmells.smells.godclass.TiedClassCohesion
@@ -161,7 +161,7 @@ final class Metrics {
 				.stream()
 				.filter { ClassHelper.inClassScope(it, n.name) }
 				.collect()
-		List<String> fields = VariableHelper.fromFieldToCustomVariableDeclarations(declarations)
+		List<String> fields = VariableHelper.toJpalFromFields(declarations)
 				.collect { it.name }
 
 		NodeHelper.findMethods(n)

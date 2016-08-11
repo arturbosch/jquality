@@ -2,7 +2,7 @@ package io.gitlab.arturbosch.smartsmells.smells.longparam
 
 import com.github.javaparser.ast.body.BodyDeclaration
 import com.github.javaparser.ast.body.Parameter
-import io.gitlab.arturbosch.smartsmells.common.helper.MethodHelper
+import io.gitlab.arturbosch.jpal.ast.MethodHelper
 import io.gitlab.arturbosch.smartsmells.common.visitor.MethodMetricVisitor
 
 import java.nio.file.Path

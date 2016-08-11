@@ -6,8 +6,8 @@ import com.github.javaparser.ast.body.MethodDeclaration
 import com.github.javaparser.ast.stmt.BlockStmt
 import io.gitlab.arturbosch.smartsmells.common.Smelly
 import io.gitlab.arturbosch.smartsmells.common.Visitor
+import io.gitlab.arturbosch.smartsmells.common.helper.BadSmellHelper
 import io.gitlab.arturbosch.smartsmells.common.source.SourcePath
-import io.gitlab.arturbosch.smartsmells.common.source.SourceRange
 import io.gitlab.arturbosch.smartsmells.smells.longmethod.LongMethod
 
 import java.nio.file.Path
@@ -51,8 +51,7 @@ abstract class MethodMetricVisitor<T extends Smelly> extends Visitor<T> {
 
 	private LongMethod longMethodIntern(String header, String name, String signature, BodyDeclaration n, int size) {
 		new LongMethod(header, name, signature, size, threshold,
-				SourceRange.of(n.getBeginLine(), n.getEndLine(), n.getBeginColumn(), n.getEndColumn()),
-				SourcePath.of(path)
+				BadSmellHelper.createSourceRangeFromNode(n), SourcePath.of(path)
 		)
 	}
 

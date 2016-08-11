@@ -2,6 +2,7 @@ package io.gitlab.arturbosch.smartsmells.common.helper
 
 import com.github.javaparser.ast.Node
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration
+import io.gitlab.arturbosch.jpal.ast.NodeHelper
 import io.gitlab.arturbosch.smartsmells.common.source.SourceRange
 
 /**
@@ -26,7 +27,7 @@ class BadSmellHelper {
 	}
 
 	static SourceRange createSourceRangeFromNode(Node it) {
-		SourceRange.of(it.getBeginLine(), it.getEndLine(), it.getBeginColumn(), it.getEndColumn())
+		SourceRange.of(it.begin.line, it.end.line, it.begin.column, it.end.column)
 	}
 
 }

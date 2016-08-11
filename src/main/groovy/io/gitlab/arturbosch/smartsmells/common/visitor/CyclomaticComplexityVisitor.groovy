@@ -1,11 +1,18 @@
 package io.gitlab.arturbosch.smartsmells.common.visitor
 
 import com.github.javaparser.ast.expr.ConditionalExpr
-import com.github.javaparser.ast.stmt.*
+import com.github.javaparser.ast.stmt.DoStmt
+import com.github.javaparser.ast.stmt.ForStmt
+import com.github.javaparser.ast.stmt.ForeachStmt
+import com.github.javaparser.ast.stmt.IfStmt
+import com.github.javaparser.ast.stmt.SwitchEntryStmt
+import com.github.javaparser.ast.stmt.SwitchStmt
+import com.github.javaparser.ast.stmt.TryStmt
+import com.github.javaparser.ast.stmt.WhileStmt
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter
 
 /**
- * Attention! You have to add one to McCabeComplexity. Use MethodHelper.calcMcc() to be sure.
+ * Attention! You have to add one to McCabeComplexity.
  * @author artur
  */
 class CyclomaticComplexityVisitor extends VoidVisitorAdapter<Object> {

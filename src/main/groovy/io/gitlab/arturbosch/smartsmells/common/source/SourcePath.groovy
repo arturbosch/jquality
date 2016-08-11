@@ -18,7 +18,6 @@ class SourcePath {
 		new SourcePath(path.toAbsolutePath().normalize().toString())
 	}
 
-
 	@Override
 	public String toString() {
 		return path
