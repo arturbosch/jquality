@@ -1,9 +1,9 @@
 package io.gitlab.arturbosch.smartsmells.smells.comment
 
 import groovy.transform.Immutable
+import io.gitlab.arturbosch.jpal.ast.source.SourcePath
+import io.gitlab.arturbosch.jpal.ast.source.SourceRange
 import io.gitlab.arturbosch.smartsmells.common.Smelly
-import io.gitlab.arturbosch.smartsmells.common.source.SourcePath
-import io.gitlab.arturbosch.smartsmells.common.source.SourceRange
 
 /**
  * Represents a comment smell. There are two types of comment smell.

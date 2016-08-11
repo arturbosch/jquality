@@ -20,9 +20,9 @@ import com.github.javaparser.ast.stmt.SwitchStmt
 import com.github.javaparser.ast.stmt.WhileStmt
 import io.gitlab.arturbosch.jpal.ast.LocaleVariableHelper
 import io.gitlab.arturbosch.jpal.ast.NodeHelper
+import io.gitlab.arturbosch.jpal.ast.source.SourcePath
+import io.gitlab.arturbosch.jpal.ast.source.SourceRange
 import io.gitlab.arturbosch.smartsmells.common.Visitor
-import io.gitlab.arturbosch.smartsmells.common.helper.BadSmellHelper
-import io.gitlab.arturbosch.smartsmells.common.source.SourcePath
 
 import java.nio.file.Path
 
@@ -97,7 +97,7 @@ class DeadCodeVisitor extends Visitor<DeadCode> {
 				.map { methodToMethodDeclaration.get(it.key) }
 				.forEach {
 			smells.add(new DeadCode(it.name, it.declarationAsString, "Method", SourcePath.of(path),
-					BadSmellHelper.createSourceRangeFromNode(it)))
+					SourceRange.fromNode(it)))
 		}
 
 		fieldsToReferenceCount.entrySet().stream()
@@ -105,7 +105,7 @@ class DeadCodeVisitor extends Visitor<DeadCode> {
 				.forEach {
 			def field = fieldsToFieldDeclaration.get(it.key)
 			smells.add(new DeadCode(it.key, field.toStringWithoutComments(), "Field", SourcePath.of(path),
-					BadSmellHelper.createSourceRangeFromNode(field)))
+					SourceRange.fromNode(field)))
 		}
 
 		parameterToReferenceCount.entrySet().stream()
@@ -113,7 +113,7 @@ class DeadCodeVisitor extends Visitor<DeadCode> {
 				.map { parameterToParameterDeclaration.get(it.key) }
 				.forEach {
 			smells.add(new DeadCode(it.id.name, it.toStringWithoutComments(), "Parameter", SourcePath.of(path),
-					BadSmellHelper.createSourceRangeFromNode(it)))
+					SourceRange.fromNode(it)))
 		}
 
 		localeVariableToReferenceCount.entrySet().stream()
@@ -121,7 +121,7 @@ class DeadCodeVisitor extends Visitor<DeadCode> {
 				.forEach {
 			def var = localeVariableToVariableDeclaration.get(it.key)
 			smells.add(new DeadCode(it.key, var.toStringWithoutComments(), "Variable", SourcePath.of(path),
-					BadSmellHelper.createSourceRangeFromNode(var)))
+					SourceRange.fromNode(var)))
 		}
 	}
 

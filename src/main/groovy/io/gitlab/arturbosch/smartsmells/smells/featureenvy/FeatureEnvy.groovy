@@ -2,16 +2,11 @@ package io.gitlab.arturbosch.smartsmells.smells.featureenvy
 
 import groovy.transform.Immutable
 import groovy.transform.ToString
+import io.gitlab.arturbosch.jpal.ast.source.SourcePath
+import io.gitlab.arturbosch.jpal.ast.source.SourceRange
 import io.gitlab.arturbosch.smartsmells.common.Smelly
-import io.gitlab.arturbosch.smartsmells.common.source.SourcePath
-import io.gitlab.arturbosch.smartsmells.common.source.SourceRange
 
 /**
- * TODO for quide:
- * equals is overridden so variables declared in anonymous methods are not
- * considered as feature envies, if they are already declared in the method containing the
- * anonymous method.
- *
  * @author artur
  */
 @Immutable

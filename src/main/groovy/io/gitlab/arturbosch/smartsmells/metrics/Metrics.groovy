@@ -13,9 +13,9 @@ import io.gitlab.arturbosch.jpal.ast.MethodHelper
 import io.gitlab.arturbosch.jpal.ast.NodeHelper
 import io.gitlab.arturbosch.jpal.ast.TypeHelper
 import io.gitlab.arturbosch.jpal.ast.VariableHelper
+import io.gitlab.arturbosch.jpal.ast.source.SourceRange
 import io.gitlab.arturbosch.jpal.core.CompilationStorage
 import io.gitlab.arturbosch.jpal.internal.StreamCloser
-import io.gitlab.arturbosch.smartsmells.common.helper.BadSmellHelper
 import io.gitlab.arturbosch.smartsmells.common.helper.NameHelper
 import io.gitlab.arturbosch.smartsmells.common.visitor.CyclomaticComplexityVisitor
 import io.gitlab.arturbosch.smartsmells.smells.godclass.FieldAccessVisitor
@@ -200,11 +200,11 @@ final class Metrics {
 				.map { it.end.line - it.begin.line + 1 }
 				.orElse(0)
 
-		def sourceRange = BadSmellHelper.createSourceRangeFromNode(n)
-		def i = sourceRange.startLine() - 1 - javaDoc
+		def sourceRange = SourceRange.fromNode(n)
+		def i = sourceRange.startLine - 1 - javaDoc
 
 		def start = i > 0 ? i : 0
-		def end = sourceRange.endLine() - sourceRange.startLine() + 1 + javaDoc
+		def end = sourceRange.endLine - sourceRange.startLine + 1 + javaDoc
 
 		def stream = Files.lines(path)
 		def collect = stream

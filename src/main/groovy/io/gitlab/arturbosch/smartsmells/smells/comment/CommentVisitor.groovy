@@ -3,9 +3,9 @@ package io.gitlab.arturbosch.smartsmells.smells.comment
 import com.github.javaparser.ast.body.MethodDeclaration
 import com.github.javaparser.ast.body.ModifierSet
 import com.github.javaparser.ast.comments.Comment
+import io.gitlab.arturbosch.jpal.ast.source.SourcePath
+import io.gitlab.arturbosch.jpal.ast.source.SourceRange
 import io.gitlab.arturbosch.smartsmells.common.Visitor
-import io.gitlab.arturbosch.smartsmells.common.helper.BadSmellHelper
-import io.gitlab.arturbosch.smartsmells.common.source.SourcePath
 
 import java.nio.file.Path
 
@@ -46,7 +46,7 @@ class CommentVisitor extends Visitor {
 
 		smells.add(new CommentSmell(type, message,
 				hasTodoOrFixme(comment, "TODO"), hasTodoOrFixme(comment, "FIXME"),
-				SourcePath.of(path), BadSmellHelper.createSourceRangeFromNode(comment)))
+				SourcePath.of(path), SourceRange.fromNode(comment)))
 	}
 
 	private static boolean hasTodoOrFixme(Comment comment, String pattern) {

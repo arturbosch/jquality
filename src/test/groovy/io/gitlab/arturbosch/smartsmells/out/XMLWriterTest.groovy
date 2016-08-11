@@ -1,7 +1,7 @@
 package io.gitlab.arturbosch.smartsmells.out
 
-import io.gitlab.arturbosch.smartsmells.common.source.SourcePath
-import io.gitlab.arturbosch.smartsmells.common.source.SourceRange
+import io.gitlab.arturbosch.jpal.ast.source.SourcePath
+import io.gitlab.arturbosch.jpal.ast.source.SourceRange
 import io.gitlab.arturbosch.smartsmells.smells.featureenvy.FeatureEnvy
 import spock.lang.Specification
 

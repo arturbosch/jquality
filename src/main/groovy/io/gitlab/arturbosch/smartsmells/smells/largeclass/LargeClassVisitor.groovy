@@ -1,9 +1,10 @@
 package io.gitlab.arturbosch.smartsmells.smells.largeclass
 
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration
+import io.gitlab.arturbosch.jpal.ast.ClassHelper
+import io.gitlab.arturbosch.jpal.ast.source.SourcePath
+import io.gitlab.arturbosch.jpal.ast.source.SourceRange
 import io.gitlab.arturbosch.smartsmells.common.Visitor
-import io.gitlab.arturbosch.smartsmells.common.helper.BadSmellHelper
-import io.gitlab.arturbosch.smartsmells.common.source.SourcePath
 import io.gitlab.arturbosch.smartsmells.util.StreamCloser
 
 import java.nio.file.Files
@@ -42,8 +43,9 @@ class LargeClassVisitor extends Visitor<LargeClass> {
 		}
 
 		if (sum >= sizeThreshold)
-			smells.add(new LargeClass(n.name, BadSmellHelper.createClassSignature(n), sum.toInteger(), sizeThreshold,
-					SourcePath.of(path), BadSmellHelper.createSourceRangeFromNode(n)))
+			smells.add(new LargeClass(n.name, ClassHelper.createFullSignature(n),
+					sum.toInteger(), sizeThreshold,
+					SourcePath.of(path), SourceRange.fromNode(n)))
 	}
 
 	private static int calcSizeFromNode(ClassOrInterfaceDeclaration n) {

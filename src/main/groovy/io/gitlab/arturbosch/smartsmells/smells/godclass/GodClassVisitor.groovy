@@ -5,9 +5,9 @@ import com.github.javaparser.ast.CompilationUnit
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter
 import io.gitlab.arturbosch.jpal.ast.ClassHelper
+import io.gitlab.arturbosch.jpal.ast.source.SourcePath
+import io.gitlab.arturbosch.jpal.ast.source.SourceRange
 import io.gitlab.arturbosch.smartsmells.common.Visitor
-import io.gitlab.arturbosch.smartsmells.common.helper.BadSmellHelper
-import io.gitlab.arturbosch.smartsmells.common.source.SourcePath
 import io.gitlab.arturbosch.smartsmells.metrics.Metrics
 
 import java.nio.file.Path
@@ -30,9 +30,9 @@ class GodClassVisitor extends Visitor<GodClass> {
 	private double tiedClassCohesionThreshold
 
 	GodClassVisitor(int accessToForeignDataThreshold,
-	                int weightedMethodCountThreshold,
-	                double tiedClassCohesionThreshold,
-	                Path path) {
+					int weightedMethodCountThreshold,
+					double tiedClassCohesionThreshold,
+					Path path) {
 		super(path)
 		this.accessToForeignDataThreshold = accessToForeignDataThreshold
 		this.weightedMethodCountThreshold = weightedMethodCountThreshold
@@ -45,7 +45,7 @@ class GodClassVisitor extends Visitor<GodClass> {
 		def classes = ASTHelper.getNodesByType(n, ClassOrInterfaceDeclaration.class)
 
 		classes.each {
-			def classVisitor = new InternalGodClassVisitor()
+			def classVisitor = new InternalGodClassVisitor(path)
 			classVisitor.visit(it)
 		}
 
@@ -56,6 +56,11 @@ class GodClassVisitor extends Visitor<GodClass> {
 		private int atfd = 0
 		private int wmc = 0
 		private double tcc = 0.0
+		private Path thePath
+
+		InternalGodClassVisitor(Path thePath) {
+			this.thePath = thePath
+		}
 
 		void visit(ClassOrInterfaceDeclaration n) {
 			if (ClassHelper.isEmptyBody(n)) return
@@ -73,14 +78,13 @@ class GodClassVisitor extends Visitor<GodClass> {
 		private boolean checkThresholds() {
 			atfd > accessToForeignDataThreshold &&
 					(wmc > weightedMethodCountThreshold ||
-					tcc < tiedClassCohesionThreshold)
+							tcc < tiedClassCohesionThreshold)
 		}
 
 		private boolean addSmell(ClassOrInterfaceDeclaration n) {
-			smells.add(new GodClass(n.name, BadSmellHelper.createClassSignature(n), wmc, tcc, atfd,
+			smells.add(new GodClass(n.name, ClassHelper.createFullSignature(n), wmc, tcc, atfd,
 					weightedMethodCountThreshold, tiedClassCohesionThreshold,
-					accessToForeignDataThreshold, SourcePath.of(path),
-					BadSmellHelper.createSourceRangeFromNode(n)))
+					accessToForeignDataThreshold, SourcePath.of(thePath), SourceRange.fromNode(n)))
 		}
 
 	}

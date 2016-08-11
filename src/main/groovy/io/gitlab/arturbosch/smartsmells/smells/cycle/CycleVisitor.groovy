@@ -6,6 +6,8 @@ import com.github.javaparser.ast.body.FieldDeclaration
 import com.github.javaparser.ast.type.ClassOrInterfaceType
 import io.gitlab.arturbosch.jpal.ast.ClassHelper
 import io.gitlab.arturbosch.jpal.ast.NodeHelper
+import io.gitlab.arturbosch.jpal.ast.source.SourcePath
+import io.gitlab.arturbosch.jpal.ast.source.SourceRange
 import io.gitlab.arturbosch.jpal.core.CompilationStorage
 import io.gitlab.arturbosch.jpal.core.CompilationTree
 import io.gitlab.arturbosch.jpal.nested.InnerClassesHandler
@@ -13,8 +15,6 @@ import io.gitlab.arturbosch.jpal.resolve.QualifiedType
 import io.gitlab.arturbosch.jpal.resolve.ResolutionData
 import io.gitlab.arturbosch.jpal.resolve.Resolver
 import io.gitlab.arturbosch.smartsmells.common.Visitor
-import io.gitlab.arturbosch.smartsmells.common.helper.BadSmellHelper
-import io.gitlab.arturbosch.smartsmells.common.source.SourcePath
 
 import java.nio.file.Path
 
@@ -98,9 +98,9 @@ class CycleVisitor extends Visitor<Cycle> {
 		def otherField = tuple.second
 
 		def dep1 = new Dependency(thisClass.shortName(), thisClass.name,
-				SourcePath.of(path), BadSmellHelper.createSourceRangeFromNode(field))
+				SourcePath.of(path), SourceRange.fromNode(field))
 		def dep2 = new Dependency(otherType.shortName(), otherType.name,
-				SourcePath.of(otherPath), BadSmellHelper.createSourceRangeFromNode(otherField))
+				SourcePath.of(otherPath), SourceRange.fromNode(otherField))
 		def cycle = new Cycle(dep1, dep2)
 
 		if (!smells.contains(cycle)) {

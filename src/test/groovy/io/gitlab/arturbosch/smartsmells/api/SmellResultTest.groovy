@@ -1,8 +1,8 @@
 package io.gitlab.arturbosch.smartsmells.api
 
+import io.gitlab.arturbosch.jpal.ast.source.SourcePath
+import io.gitlab.arturbosch.jpal.ast.source.SourceRange
 import io.gitlab.arturbosch.smartsmells.common.Smelly
-import io.gitlab.arturbosch.smartsmells.common.source.SourcePath
-import io.gitlab.arturbosch.smartsmells.common.source.SourceRange
 import io.gitlab.arturbosch.smartsmells.config.Smell
 import io.gitlab.arturbosch.smartsmells.smells.comment.CommentSmell
 import io.gitlab.arturbosch.smartsmells.smells.complexmethod.ComplexMethod
@@ -47,10 +47,10 @@ class SmellResultTest extends Specification {
 				SourceRange.of(1, 1, 1, 1), new SourcePath("path")), 5)
 
 		then:
-		smell.positions.toString() == "1,1,1,1"
+		smell.positions.toString() == "SourceRange(1, 1, 1, 1)"
 		smell.pathAsString == "path"
 		complexMethod.pathAsString == "path"
-		complexMethod.positions.toString() == "1,1,1,1"
+		complexMethod.positions.toString() == "SourceRange(1, 1, 1, 1)"
 
 	}
 }

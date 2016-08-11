@@ -4,9 +4,10 @@ import com.github.javaparser.ASTHelper
 import com.github.javaparser.ast.CompilationUnit
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration
 import com.github.javaparser.ast.body.MethodDeclaration
+import io.gitlab.arturbosch.jpal.ast.ClassHelper
+import io.gitlab.arturbosch.jpal.ast.source.SourcePath
+import io.gitlab.arturbosch.jpal.ast.source.SourceRange
 import io.gitlab.arturbosch.smartsmells.common.Visitor
-import io.gitlab.arturbosch.smartsmells.common.helper.BadSmellHelper
-import io.gitlab.arturbosch.smartsmells.common.source.SourcePath
 
 import java.nio.file.Path
 
@@ -48,16 +49,16 @@ class ClassInfoVisitor extends Visitor<ClassInfo> {
 
 			def cc = -1
 			def cm = -1
-			if(!skipCC_CM) {
+			if (!skipCC_CM) {
 				cc = Metrics.cc(it)
 				cm = Metrics.cm(it)
 			}
 
 			smells.add(new ClassInfo(
 					name: it.name,
-					signature: BadSmellHelper.createClassSignature(it),
+					signature: ClassHelper.createFullSignature(it),
 					sourcePath: SourcePath.of(path),
-					sourceRange: BadSmellHelper.createSourceRangeFromNode(it),
+					sourceRange: SourceRange.fromNode(it),
 					wmc: Metrics.wmc(it),
 					tcc: Metrics.tcc(it),
 					atfd: Metrics.atfd(it),

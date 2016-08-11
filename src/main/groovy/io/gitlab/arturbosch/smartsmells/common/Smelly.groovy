@@ -1,7 +1,7 @@
 package io.gitlab.arturbosch.smartsmells.common
 
+import io.gitlab.arturbosch.jpal.ast.source.SourceRange
 import io.gitlab.arturbosch.smartsmells.api.SmellExchange
-import io.gitlab.arturbosch.smartsmells.common.source.SourceRange
 import io.gitlab.arturbosch.smartsmells.smells.complexmethod.ComplexMethod
 import io.gitlab.arturbosch.smartsmells.smells.cycle.Cycle
 import io.gitlab.arturbosch.smartsmells.smells.longparam.LongParameterList

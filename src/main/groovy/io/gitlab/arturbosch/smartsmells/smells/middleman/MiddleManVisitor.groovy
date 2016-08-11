@@ -6,9 +6,9 @@ import com.github.javaparser.ast.expr.MethodCallExpr
 import com.github.javaparser.ast.stmt.ReturnStmt
 import io.gitlab.arturbosch.jpal.ast.ClassHelper
 import io.gitlab.arturbosch.jpal.ast.NodeHelper
+import io.gitlab.arturbosch.jpal.ast.source.SourcePath
+import io.gitlab.arturbosch.jpal.ast.source.SourceRange
 import io.gitlab.arturbosch.smartsmells.common.Visitor
-import io.gitlab.arturbosch.smartsmells.common.helper.BadSmellHelper
-import io.gitlab.arturbosch.smartsmells.common.source.SourcePath
 import io.gitlab.arturbosch.smartsmells.metrics.Metrics
 
 import java.nio.file.Path
@@ -44,8 +44,8 @@ class MiddleManVisitor extends Visitor<MiddleMan> {
 		}
 
 		if (checkThreshold(partition)) {
-			smells.add(new MiddleMan(n.name, BadSmellHelper.createClassSignature(n),
-					SourcePath.of(path), BadSmellHelper.createSourceRangeFromNode(n)))
+			smells.add(new MiddleMan(n.name, ClassHelper.createFullSignature(n),
+					SourcePath.of(path), SourceRange.fromNode(n)))
 		}
 
 		super.visit(n, arg)

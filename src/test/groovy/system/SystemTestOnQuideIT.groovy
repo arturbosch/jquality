@@ -21,9 +21,9 @@ class SystemTestOnQuideIT extends Specification {
 //		def path = "/home/artur/Repos/quide/Implementierung/QuideService/src/main"
 //		def path = "/home/artur/Repos/quide/Implementierung/QuIDE_Plugin/"
 //		def path = "/home/artur/Arbeit/tools/ismell/src/main"
-		def path = "/home/artur/Repos/elasticsearch/core/src/main/"
+//		def path = "/home/artur/Repos/elasticsearch/core/src/main/"
 //		def path = "/home/artur/Repos/RxJava/src/main"
-//		def path = "/home/artur/Arbeit/pooka-co/trunk/pooka/src"
+		def path = "/home/artur/Arbeit/agst/pooka-co/trunk/pooka/src"
 
 		when:
 		def storage = CompilationStorage.create(Paths.get(path))
@@ -38,9 +38,9 @@ class SystemTestOnQuideIT extends Specification {
 		given:
 //		def path = "/home/artur/Repos/quide/Implementierung/QuideService/src/main"
 //		def path = "/home/artur/Arbeit/tools/ismell/src/main"
-		def path = "/home/artur/Repos/elasticsearch/core/src/main/"
+//		def path = "/home/artur/Repos/elasticsearch/core/src/main/"
 //		def path = "/home/artur/Repos/RxJava/src/main"
-//		def path = "/home/artur/Arbeit/pooka-co/trunk/pooka/src"
+		def path = "/home/artur/Arbeit/agst/pooka-co/trunk/pooka/src"
 
 		when:
 		def result = DetectorFacade.builder().with(new ClassInfoDetector(true)).build()
@@ -108,12 +108,12 @@ class SystemTestOnQuideIT extends Specification {
 				.collect(Collectors.toSet())
 //		envies.each { println it.toString() }
 //		result.of(Smell.GOD_CLASS).each { println it.toString() }
-		println result.of(Smell.CYCLE).size()
+//		println result.of(Smell.CYCLE).size()
 		then:
 		duplicates.isEmpty()
 		when:
 		def xml = XMLWriter.toXml(result)
-//		println xml
+		println xml
 		then:
 		xml.contains("FeatureEnvy")
 	}

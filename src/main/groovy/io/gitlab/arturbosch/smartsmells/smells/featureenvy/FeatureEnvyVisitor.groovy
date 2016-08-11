@@ -13,11 +13,11 @@ import io.gitlab.arturbosch.jpal.ast.MethodHelper
 import io.gitlab.arturbosch.jpal.ast.NodeHelper
 import io.gitlab.arturbosch.jpal.ast.VariableHelper
 import io.gitlab.arturbosch.jpal.ast.custom.JpalVariable
+import io.gitlab.arturbosch.jpal.ast.source.SourcePath
+import io.gitlab.arturbosch.jpal.ast.source.SourceRange
 import io.gitlab.arturbosch.jpal.nested.InnerClassesHandler
 import io.gitlab.arturbosch.jpal.resolve.ResolutionData
 import io.gitlab.arturbosch.smartsmells.common.Visitor
-import io.gitlab.arturbosch.smartsmells.common.helper.BadSmellHelper
-import io.gitlab.arturbosch.smartsmells.common.source.SourcePath
 
 import java.nio.file.Path
 import java.util.stream.Collectors
@@ -109,7 +109,7 @@ class FeatureEnvyVisitor extends Visitor<FeatureEnvy> {
 						method.name, method.declarationAsString, currentClassName,
 						it.name, it.type.toString(), it.nature.toString(),
 						roundedFactor, featureEnvyFactor.threshold,
-						SourcePath.of(path), BadSmellHelper.createSourceRangeFromNode(method))
+						SourcePath.of(path), SourceRange.fromNode(method))
 
 				smells.add(featureEnvy)
 			}

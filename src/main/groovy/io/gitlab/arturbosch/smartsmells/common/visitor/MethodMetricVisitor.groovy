@@ -4,10 +4,10 @@ import com.github.javaparser.ast.body.BodyDeclaration
 import com.github.javaparser.ast.body.ConstructorDeclaration
 import com.github.javaparser.ast.body.MethodDeclaration
 import com.github.javaparser.ast.stmt.BlockStmt
+import io.gitlab.arturbosch.jpal.ast.source.SourcePath
+import io.gitlab.arturbosch.jpal.ast.source.SourceRange
 import io.gitlab.arturbosch.smartsmells.common.Smelly
 import io.gitlab.arturbosch.smartsmells.common.Visitor
-import io.gitlab.arturbosch.smartsmells.common.helper.BadSmellHelper
-import io.gitlab.arturbosch.smartsmells.common.source.SourcePath
 import io.gitlab.arturbosch.smartsmells.smells.longmethod.LongMethod
 
 import java.nio.file.Path
@@ -50,9 +50,7 @@ abstract class MethodMetricVisitor<T extends Smelly> extends Visitor<T> {
 	}
 
 	private LongMethod longMethodIntern(String header, String name, String signature, BodyDeclaration n, int size) {
-		new LongMethod(header, name, signature, size, threshold,
-				BadSmellHelper.createSourceRangeFromNode(n), SourcePath.of(path)
-		)
+		new LongMethod(header, name, signature, size, threshold, SourceRange.fromNode(n), SourcePath.of(path))
 	}
 
 	protected abstract byThreshold(BodyDeclaration n)

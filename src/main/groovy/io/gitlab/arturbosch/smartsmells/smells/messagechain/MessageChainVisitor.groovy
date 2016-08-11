@@ -2,9 +2,9 @@ package io.gitlab.arturbosch.smartsmells.smells.messagechain
 
 import com.github.javaparser.ast.CompilationUnit
 import com.github.javaparser.ast.expr.MethodCallExpr
+import io.gitlab.arturbosch.jpal.ast.source.SourcePath
+import io.gitlab.arturbosch.jpal.ast.source.SourceRange
 import io.gitlab.arturbosch.smartsmells.common.Visitor
-import io.gitlab.arturbosch.smartsmells.common.helper.BadSmellHelper
-import io.gitlab.arturbosch.smartsmells.common.source.SourcePath
 
 import java.nio.file.Path
 import java.util.stream.Collectors
@@ -32,7 +32,7 @@ class MessageChainVisitor extends Visitor<MessageChain> {
 
 			new MessageChain(it.value.toStringWithoutComments(), extractSourceString(it.value),
 					it.value.name, countOccurrences(it.key, "get"), chainSizeThreshold,
-					SourcePath.of(path), BadSmellHelper.createSourceRangeFromNode(it.value)
+					SourcePath.of(path), SourceRange.fromNode(it.value)
 
 			)
 		}.each { smells.add(it) }
