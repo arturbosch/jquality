@@ -1,5 +1,5 @@
 group 'io.gitlab.arturbosch.smartsmells'
-version 'M6'
+version 'M7'
 
 apply plugin: 'groovy'
 apply plugin: 'maven-publish'
