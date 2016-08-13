@@ -1,6 +1,7 @@
 package io.gitlab.arturbosch.smartsmells.smells.comment
 
 import groovy.transform.Immutable
+import groovy.transform.ToString
 import io.gitlab.arturbosch.jpal.ast.source.SourcePath
 import io.gitlab.arturbosch.jpal.ast.source.SourceRange
 import io.gitlab.arturbosch.smartsmells.common.Smelly
@@ -13,6 +14,7 @@ import io.gitlab.arturbosch.smartsmells.common.Smelly
  * @author artur
  */
 @Immutable
+@ToString(includePackage = false)
 class CommentSmell implements Smelly {
 
 	static String ORPHAN = "ORPHAN"
