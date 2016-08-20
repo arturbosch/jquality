@@ -34,6 +34,7 @@ class ClassInfo implements Smelly {
 
 	@Override
 	String asCompactString() {
-		"ClassInfo - not supported yet"
+		return toString()
 	}
+
 }
