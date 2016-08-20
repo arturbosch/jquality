@@ -40,7 +40,9 @@ class SystemTestOnQuideIT extends Specification {
 //		def path = "/home/artur/Arbeit/tools/ismell/src/main"
 //		def path = "/home/artur/Repos/elasticsearch/core/src/main/"
 //		def path = "/home/artur/Repos/RxJava/src/main"
-		def path = "/home/artur/Arbeit/agst/pooka-co/trunk/pooka/src"
+//		def path = "/home/artur/Arbeit/agst/pooka-co/trunk/pooka/src"
+//		def path = "/home/artur/Repos/vert.x/src/main/java"
+		def path = "/home/artur/Repos/netty"
 
 		when:
 		def result = DetectorFacade.builder().with(new ClassInfoDetector(true)).build()
@@ -95,9 +97,9 @@ class SystemTestOnQuideIT extends Specification {
 
 	def "run on quide and find no same feature envy twice"() {
 		given:
-//		def path = "/home/artur/Repos/quide/Implementierung/QuideService/src/main"
+		def path = "/home/artur/Repos/quide/Implementierung/QuideService/src/main"
 //		def path = "/home/artur/Arbeit/tools/ismell/src/main"
-		def path = "/home/artur/Arbeit/agst/pooka-co/trunk/pooka/src"
+//		def path = "/home/artur/Arbeit/agst/pooka-co/trunk/pooka/src"
 //		def path = "/home/artur/Repos/elasticsearch/core/src/main/"
 //		def path = Paths.getResource("/cornercases").getFile()
 		def result = DetectorFacade.builder().fullStackFacade().run(Paths.get(path))
