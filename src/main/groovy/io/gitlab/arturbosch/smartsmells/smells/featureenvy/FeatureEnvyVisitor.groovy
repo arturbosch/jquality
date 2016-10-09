@@ -87,7 +87,8 @@ class FeatureEnvyVisitor extends Visitor<FeatureEnvy> {
 
 			def allCalls = MethodHelper.getAllMethodInvocations(it)
 
-			def parameters = VariableHelper.toJpalFromParameters(MethodHelper.extractParameters(it))
+			def parameters = MethodHelper.extractParameters(it).stream()
+					.map { VariableHelper.toJpalFromParameter(it) }.collect(Collectors.toSet())
 			def variables = VariableHelper.toJpalFromLocales(LocaleVariableHelper.find(it).toList())
 
 			analyzeVariables(it, allCalls, filter.forJavaClasses(variables))
