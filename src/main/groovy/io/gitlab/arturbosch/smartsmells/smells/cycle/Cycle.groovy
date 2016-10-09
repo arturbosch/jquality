@@ -1,13 +1,13 @@
 package io.gitlab.arturbosch.smartsmells.smells.cycle
 
 import groovy.transform.ToString
-import io.gitlab.arturbosch.smartsmells.common.Smelly
+import io.gitlab.arturbosch.smartsmells.common.DetectionResult
 
 /**
  * @author artur
  */
 @ToString(includeNames = false, includePackage = false)
-class Cycle implements Smelly {
+class Cycle implements DetectionResult {
 
 	Dependency source
 	Dependency target

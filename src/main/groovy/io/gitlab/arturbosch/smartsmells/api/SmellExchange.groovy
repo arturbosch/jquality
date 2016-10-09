@@ -1,6 +1,6 @@
 package io.gitlab.arturbosch.smartsmells.api
 
-import io.gitlab.arturbosch.smartsmells.common.Smelly
+import io.gitlab.arturbosch.smartsmells.common.DetectionResult
 import io.gitlab.arturbosch.smartsmells.config.Smell
 import io.gitlab.arturbosch.smartsmells.smells.comment.CommentSmell
 import io.gitlab.arturbosch.smartsmells.smells.complexmethod.ComplexMethod
@@ -20,7 +20,7 @@ import io.gitlab.arturbosch.smartsmells.smells.middleman.MiddleMan
  */
 final class SmellExchange {
 
-	static Object getAttribute(Smelly smelly, String name) {
+	static Object getAttribute(DetectionResult smelly, String name) {
 		return smelly.class.getDeclaredField(name).with {
 			setAccessible(true)
 			get(smelly)

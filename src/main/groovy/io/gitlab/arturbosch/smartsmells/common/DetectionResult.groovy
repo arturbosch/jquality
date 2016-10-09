@@ -9,7 +9,7 @@ import io.gitlab.arturbosch.smartsmells.smells.longparam.LongParameterList
 /**
  * @author artur
  */
-trait Smelly {
+trait DetectionResult {
 
 	abstract String asCompactString()
 
@@ -21,14 +21,14 @@ trait Smelly {
 		return getAttribute(this, "sourcePath").toString()
 	}
 
-	private static Object getAttribute(Smelly smelly, String name) {
-		switch (smelly) {
+	private static Object getAttribute(DetectionResult detectionResult, String name) {
+		switch (detectionResult) {
 			case ComplexMethod:
 			case LongParameterList: return SmellExchange.getAttribute(
-					SmellExchange.getAttribute(smelly, "longMethod") as Smelly, name)
+					SmellExchange.getAttribute(detectionResult, "longMethod") as DetectionResult, name)
 			case Cycle: return SmellExchange.getAttribute(
-					SmellExchange.getAttribute(smelly, "source") as Smelly, name)
-			default: return SmellExchange.getAttribute(smelly, name)
+					SmellExchange.getAttribute(detectionResult, "source") as DetectionResult, name)
+			default: return SmellExchange.getAttribute(detectionResult, name)
 		}
 	}
 

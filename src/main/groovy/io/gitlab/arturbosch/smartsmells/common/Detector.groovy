@@ -13,7 +13,7 @@ import java.util.stream.Collectors
 /**
  * @author artur
  */
-abstract class Detector<T extends Smelly> {
+abstract class Detector<T extends DetectionResult> {
 
 	protected Smell type = getType()
 	private Deque<T> smells = new ArrayDeque<>(100)

@@ -4,14 +4,14 @@ import groovy.transform.Immutable
 import groovy.transform.ToString
 import io.gitlab.arturbosch.jpal.ast.source.SourcePath
 import io.gitlab.arturbosch.jpal.ast.source.SourceRange
-import io.gitlab.arturbosch.smartsmells.common.Smelly
+import io.gitlab.arturbosch.smartsmells.common.DetectionResult
 
 /**
  * @author artur
  */
 @Immutable
 @ToString(includeNames = false, includePackage = false)
-class MiddleMan implements Smelly {
+class MiddleMan implements DetectionResult {
 
 	String name
 	String signature

@@ -1,7 +1,7 @@
 package io.gitlab.arturbosch.smartsmells.api
 
 import groovy.transform.PackageScope
-import io.gitlab.arturbosch.smartsmells.common.Smelly
+import io.gitlab.arturbosch.smartsmells.common.DetectionResult
 import io.gitlab.arturbosch.smartsmells.config.Smell
 import io.gitlab.arturbosch.smartsmells.smells.cycle.Cycle
 
@@ -10,25 +10,25 @@ import io.gitlab.arturbosch.smartsmells.smells.cycle.Cycle
  */
 class SmellResult {
 
-	private Map<Smell, Deque<Smelly>> smellSets
+	private Map<Smell, Deque<DetectionResult>> smellSets
 
 	@PackageScope
-	SmellResult(Map<Smell, Deque<Smelly>> smellSets) {
+	SmellResult(Map<Smell, Deque<DetectionResult>> smellSets) {
 		this.smellSets = smellSets
 	}
 
-	Deque<Smelly> of(Smell smell) {
+	Deque<DetectionResult> of(Smell smell) {
 		smellSets.getOrDefault(smell, new ArrayDeque<>())
 	}
 
-	List<Smelly> filter(String path) {
+	List<DetectionResult> filter(String path) {
 		return smellSets.values().stream()
 				.flatMap { it.stream() }
 				.filter { checkSmellPaths(it, path) }
 				.collect()
 	}
 
-	private static boolean checkSmellPaths(Smelly it, String path) {
+	private static boolean checkSmellPaths(DetectionResult it, String path) {
 		switch (it) {
 			case Cycle: (it as Cycle).comparePath(path)
 				break
@@ -47,7 +47,7 @@ class SmellResult {
 		}
 	}
 
-	Map<Smell, Deque<Smelly>> getSmellSets() {
+	Map<Smell, Deque<DetectionResult>> getSmellSets() {
 		return smellSets
 	}
 }

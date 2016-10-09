@@ -3,13 +3,13 @@ package io.gitlab.arturbosch.smartsmells.smells.dataclass
 import groovy.transform.Immutable
 import io.gitlab.arturbosch.jpal.ast.source.SourcePath
 import io.gitlab.arturbosch.jpal.ast.source.SourceRange
-import io.gitlab.arturbosch.smartsmells.common.Smelly
+import io.gitlab.arturbosch.smartsmells.common.DetectionResult
 
 /**
  * @author artur
  */
 @Immutable
-class DataClass implements Smelly {
+class DataClass implements DetectionResult {
 
 	String name
 	String signature

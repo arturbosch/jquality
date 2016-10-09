@@ -1,7 +1,7 @@
 package io.gitlab.arturbosch.smartsmells.out
 
 import io.gitlab.arturbosch.smartsmells.api.SmellResult
-import io.gitlab.arturbosch.smartsmells.common.Smelly
+import io.gitlab.arturbosch.smartsmells.common.DetectionResult
 import io.gitlab.arturbosch.smartsmells.config.Smell
 import io.gitlab.arturbosch.smartsmells.util.Strings
 
@@ -30,43 +30,43 @@ class XMLWriter {
 		return "<SmartSmells>\n" + entries.join("\n") + "\n</SmartSmells>"
 	}
 
-	private static String handleDependencyDelegates(Smelly smelly) {
+	private static String handleDependencyDelegates(DetectionResult smelly) {
 		def name = smelly.class.simpleName
-		def source = (Smelly) extractField(smelly, "source")
-		def target = (Smelly) extractField(smelly, "target")
+		def source = (DetectionResult) extractField(smelly, "source")
+		def target = (DetectionResult) extractField(smelly, "target")
 
 		def sourceEntry = "<Source " + Strings.substringAfter(toXmlEntry(source), " ")
 		def targetEntry = "<Target " + Strings.substringAfter(toXmlEntry(target), " ")
 		return "<$name>$sourceEntry$targetEntry</$name>"
 	}
 
-	private static Object extractField(Smelly smelly, String fieldName) {
+	private static Object extractField(DetectionResult smelly, String fieldName) {
 		smelly.class.getDeclaredField(fieldName).with {
 			setAccessible(true)
 			get(smelly)
 		}
 	}
 
-	private static String handleLongMethodDelegates(Smelly smelly) {
+	private static String handleLongMethodDelegates(DetectionResult smelly) {
 
 		def name = smelly.class.simpleName
 		def longMethod = extractField(smelly, "longMethod")
 
 		String attributes = getAttributesFromFields(smelly)
 
-		def base = toXmlEntry((Smelly) longMethod)
+		def base = toXmlEntry((DetectionResult) longMethod)
 		def appendStart = "<$name " + Strings.substringAfter(base, " ")
 		def appendEnd = Strings.substringBefore(appendStart, "/>") + "$attributes/>"
 		return appendEnd
 	}
 
-	private static String getAttributesFromFields(Smelly smelly) {
+	private static String getAttributesFromFields(DetectionResult smelly) {
 		List<Field> fields = extractFields(smelly)
 		def entries = joinFieldsToNameValueMap(fields, smelly)
 		joinToXmlAttribute(entries)
 	}
 
-	static String toXmlEntry(Smelly smelly) {
+	static String toXmlEntry(DetectionResult smelly) {
 
 		def name = smelly.class.simpleName
 		def path = extractPath(smelly)
@@ -79,7 +79,7 @@ class XMLWriter {
 		return "<$name " + joinToXmlAttribute(entries) + "/>"
 	}
 
-	private static List<Field> extractFields(Smelly smelly) {
+	private static List<Field> extractFields(DetectionResult smelly) {
 		Arrays.stream(smelly.class.declaredFields)
 				.filter { !it.synthetic }
 				.filter { it.name != "sourceRange" }
@@ -111,7 +111,7 @@ class XMLWriter {
 		content
 	}
 
-	private static LinkedHashMap<String, String> extractSourceRange(Smelly smelly) {
+	private static LinkedHashMap<String, String> extractSourceRange(DetectionResult smelly) {
 		smelly.class.getDeclaredField("sourceRange").with {
 			setAccessible(true)
 			def pos = get(smelly).toString().split(',')
@@ -119,7 +119,7 @@ class XMLWriter {
 		}
 	}
 
-	private static LinkedHashMap<String, String> extractPath(Smelly smelly) {
+	private static LinkedHashMap<String, String> extractPath(DetectionResult smelly) {
 		smelly.class.getDeclaredField("sourcePath").with {
 			setAccessible(true)
 			["path": get(smelly).toString()]

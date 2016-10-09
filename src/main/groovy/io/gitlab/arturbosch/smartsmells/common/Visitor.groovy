@@ -7,7 +7,7 @@ import java.nio.file.Path
 /**
  * @author artur
  */
-abstract class Visitor<T extends Smelly> extends VoidVisitorAdapter<Object> {
+abstract class Visitor<T extends DetectionResult> extends VoidVisitorAdapter<Object> {
 
 	protected Path path
 

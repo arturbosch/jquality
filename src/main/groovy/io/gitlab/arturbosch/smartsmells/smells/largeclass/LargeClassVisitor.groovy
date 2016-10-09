@@ -58,7 +58,8 @@ class LargeClassVisitor extends Visitor<LargeClass> {
 	}
 
 	private static boolean isNoComment(String it) {
-		!(it.trim().startsWith("/*") || it.trim().startsWith("*") || it.trim().startsWith("*/") || it.trim().startsWith("//"))
+		def trimmed = it.trim()
+		!(trimmed.startsWith("/*") || trimmed.startsWith("*") || trimmed.startsWith("*/") || trimmed.startsWith("//"))
 	}
 
 	private static boolean isNoImportStatement(String it) {

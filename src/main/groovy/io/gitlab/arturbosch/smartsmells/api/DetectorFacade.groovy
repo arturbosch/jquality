@@ -4,7 +4,7 @@ import io.gitlab.arturbosch.jpal.core.CompilationInfo
 import io.gitlab.arturbosch.jpal.core.CompilationStorage
 import io.gitlab.arturbosch.jpal.core.CompilationTree
 import io.gitlab.arturbosch.smartsmells.common.Detector
-import io.gitlab.arturbosch.smartsmells.common.Smelly
+import io.gitlab.arturbosch.smartsmells.common.DetectionResult
 import io.gitlab.arturbosch.smartsmells.config.DetectorConfig
 import io.gitlab.arturbosch.smartsmells.config.DetectorInitializer
 import io.gitlab.arturbosch.smartsmells.metrics.ClassInfoDetector
@@ -31,7 +31,7 @@ import java.util.concurrent.ForkJoinPool
  */
 class DetectorFacade {
 
-	private List<Detector<Smelly>> detectors = new LinkedList<>()
+	private List<Detector<DetectionResult>> detectors = new LinkedList<>()
 
 	private DetectorFacade(List<Detector> detectors) {
 		this.detectors = detectors
