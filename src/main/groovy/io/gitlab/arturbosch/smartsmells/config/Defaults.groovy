@@ -7,7 +7,7 @@ import io.gitlab.arturbosch.smartsmells.smells.middleman.MiddleManVisitor
  */
 class Defaults {
 
-	static int LONG_METHOD = 7
+	static int LONG_METHOD = 20
 	static int LONG_PARAMETER_LIST = 5
 	static int COMPLEX_METHOD = 10
 	static int  WEIGHTED_METHOD_COUNT = 20

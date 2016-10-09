@@ -13,7 +13,7 @@ class LongMethodDetectorTest extends Specification {
 		smells.size() == 2
 
 		where:
-		smells = new LongMethodDetector().run(Test.COMPLEX_METHOD_DUMMY_PATH)
+		smells = new LongMethodDetector(7).run(Test.COMPLEX_METHOD_DUMMY_PATH)
 	}
 
 	def "find one long method with size 15 and threshold 14"() {
@@ -37,7 +37,7 @@ class LongMethodDetectorTest extends Specification {
 		smells[0].name == "longMethod" || smells[1].name == "longMethod"
 
 		where:
-		smells = new LongMethodDetector().run(Test.LONG_METHOD_DUMMY_PATH)
+		smells = new LongMethodDetector(7).run(Test.LONG_METHOD_DUMMY_PATH)
 	}
 
 	def "find no long method with custom threshold"() {
