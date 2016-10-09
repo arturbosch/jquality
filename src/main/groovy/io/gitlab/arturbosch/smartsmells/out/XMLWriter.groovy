@@ -114,7 +114,7 @@ class XMLWriter {
 	private static LinkedHashMap<String, String> extractSourceRange(DetectionResult smelly) {
 		smelly.class.getDeclaredField("sourceRange").with {
 			setAccessible(true)
-			def pos = get(smelly).toString().split(',')
+			def pos = get(smelly).toString().replace("SourceRange(", "").replace(")", "").split(',')
 			["startLine": pos[0], "startColumn": pos[1], "endLine": pos[2], "endColumn": pos[3]]
 		}
 	}
