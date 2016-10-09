@@ -5,7 +5,7 @@ import io.gitlab.arturbosch.jpal.ast.ClassHelper
 import io.gitlab.arturbosch.jpal.ast.source.SourcePath
 import io.gitlab.arturbosch.jpal.ast.source.SourceRange
 import io.gitlab.arturbosch.smartsmells.common.Visitor
-import io.gitlab.arturbosch.smartsmells.util.StreamCloser
+import io.gitlab.arturbosch.smartsmells.util.JavaLoc
 
 import java.nio.file.Files
 import java.nio.file.Path
@@ -29,16 +29,8 @@ class LargeClassVisitor extends Visitor<LargeClass> {
 
 		def sum
 		try {
-			def walker = Files.lines(path)
-			sum = walker
-					.filter { isNotEmpty(it) }
-					.filter { hasNotSizeOneWhichIndicatesBraces(it) }
-					.filter { isNoPackageDeclaration(it) }
-					.filter { isNoImportStatement(it) }
-					.filter { isNoComment(it) }
-					.count()
-			StreamCloser.quietly(walker)
-		} catch (UncheckedIOException | IOException ignored) {
+			sum = JavaLoc.analyze(Files.readAllLines(path), false, false)
+		} catch (IOException ignored) {
 			sum = calcSizeFromNode(n)
 		}
 
@@ -57,24 +49,4 @@ class LargeClassVisitor extends Visitor<LargeClass> {
 		return size - commentsSize
 	}
 
-	private static boolean isNoComment(String it) {
-		def trimmed = it.trim()
-		!(trimmed.startsWith("/*") || trimmed.startsWith("*") || trimmed.startsWith("*/") || trimmed.startsWith("//"))
-	}
-
-	private static boolean isNoImportStatement(String it) {
-		!it.trim().startsWith("import")
-	}
-
-	private static boolean isNoPackageDeclaration(String it) {
-		!it.trim().startsWith("package")
-	}
-
-	private static boolean hasNotSizeOneWhichIndicatesBraces(String it) {
-		it.trim().size() != 1
-	}
-
-	private static boolean isNotEmpty(String it) {
-		!it.trim().empty
-	}
 }
