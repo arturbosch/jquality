@@ -17,14 +17,16 @@ import java.nio.file.Paths
  */
 class Main {
 
-	@Parameter(names = ["--input", "-i"], description = "Project path to analyze")
+	@Parameter(names = ["--input", "-i"], description = "Specify a path where your project is located for the analysis.")
 	String projectPath;
-	@Parameter(names = ["--output", "-o"], description = "Xml output path")
+	@Parameter(names = ["--output", "-o"], description = "Point to a path where the xml output file with the detection result should be saved.")
 	String outputPath;
-	@Parameter(names = ["--config", "-c"], description = "Config path to use")
+	@Parameter(names = ["--config", "-c"], description = "Point to your SmartSmells configuration file. Prefer this over -f if only specified detectors are needed. Take a look at the default-config.yml file within SmartSmells git repository for an example.")
 	String configPath;
-	@Parameter(names = ["--fullStack", "-f"], description = "Use all available detectors with default thresholds")
+	@Parameter(names = ["--fullStack", "-f"], description = "Use all available detectors with default thresholds.")
 	Boolean fullStackFacade;
+	@Parameter(names = ["--help", "-h"], description = "Shows this help message.")
+	Boolean help;
 
 	def static benchmark = { closure ->
 		def start = System.currentTimeMillis()
@@ -36,7 +38,16 @@ class Main {
 	@SuppressWarnings("GroovyResultOfObjectAllocationIgnored")
 	static void main(String... args) {
 		Main main = new Main()
-		new JCommander(main, args)
+		try {
+			def jCommander = new JCommander(main, args)
+			jCommander.setProgramName("SmartSmells")
+			if (main.help) {
+				jCommander.usage();
+				return;
+			}
+		} catch (any) {
+			exitExceptionally(any.message)
+		}
 		main.validateParsedArguments()
 
 		println "\n Duration: " + benchmark {
@@ -44,17 +55,26 @@ class Main {
 		} / 1000
 	}
 
+	private static void exitExceptionally(String message) {
+		System.err.println(message)
+		System.exit(-1)
+	}
+
 	private void validateParsedArguments() {
 		def pathError = "The path to the project file is not specified."
 		def configError = "The path to the config file is not specified."
 		def outputError = "The path to the output file is not specified."
 
-		Validate.isTrue(projectPath != null && Files.exists(Paths.get(projectPath)), pathError)
-		Validate.isTrue(outputPath != null, outputError)
+		try {
+			Validate.isTrue(projectPath != null && Files.exists(Paths.get(projectPath)), pathError)
+			Validate.isTrue(outputPath != null, outputError)
 
-		if (!fullStackFacade) {
-			Validate.isTrue(configPath != null, configError)
-			Validate.isTrue(Files.exists(Paths.get(configPath)), configError)
+			if (!fullStackFacade) {
+				Validate.isTrue(configPath != null, configError)
+				Validate.isTrue(Files.exists(Paths.get(configPath)), configError)
+			}
+		} catch (any) {
+			exitExceptionally(any.message)
 		}
 	}
 
