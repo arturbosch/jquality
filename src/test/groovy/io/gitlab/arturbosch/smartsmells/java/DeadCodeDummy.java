@@ -22,5 +22,9 @@ package io.gitlab.arturbosch.smartsmells.java;
 		return Integer.valueOf(usedField).compareTo(usedLocaleVariable);
 	}
 
-
+	public void usedParameterInAssignment(String uri, long j) {
+		int i = (int) j;
+		String fullUrl = uri + ("/commits/new" + 6);
+		System.out.println(i + fullUrl);
+	}
 }

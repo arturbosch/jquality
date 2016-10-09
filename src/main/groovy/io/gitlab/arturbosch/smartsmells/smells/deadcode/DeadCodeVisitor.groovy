@@ -6,6 +6,8 @@ import com.github.javaparser.ast.body.FieldDeclaration
 import com.github.javaparser.ast.body.MethodDeclaration
 import com.github.javaparser.ast.body.Parameter
 import com.github.javaparser.ast.expr.AssignExpr
+import com.github.javaparser.ast.expr.BinaryExpr
+import com.github.javaparser.ast.expr.CastExpr
 import com.github.javaparser.ast.expr.Expression
 import com.github.javaparser.ast.expr.FieldAccessExpr
 import com.github.javaparser.ast.expr.MethodCallExpr
@@ -18,6 +20,7 @@ import com.github.javaparser.ast.stmt.IfStmt
 import com.github.javaparser.ast.stmt.ReturnStmt
 import com.github.javaparser.ast.stmt.SwitchStmt
 import com.github.javaparser.ast.stmt.WhileStmt
+import com.github.javaparser.ast.visitor.VoidVisitorAdapter
 import io.gitlab.arturbosch.jpal.ast.LocaleVariableHelper
 import io.gitlab.arturbosch.jpal.ast.NodeHelper
 import io.gitlab.arturbosch.jpal.ast.source.SourcePath
@@ -70,12 +73,7 @@ class DeadCodeVisitor extends Visitor<DeadCode> {
 		def localeVariables = LocaleVariableHelper.find(allMethods)
 		createLocaleVariableMaps(localeVariables)
 
-		super.visit(n, arg)
-
-//		if (!methodsToReferenceCount.isEmpty()) println methodsToReferenceCount
-//		if (!fieldsToReferenceCount.isEmpty()) println fieldsToReferenceCount
-//		if (!parameterToReferenceCount.isEmpty()) println parameterToReferenceCount
-//		if (!localeVariableToReferenceCount.isEmpty()) println localeVariableToReferenceCount
+		new ReferenceVisitor().visit(n, arg)
 
 		addSmells()
 
@@ -144,23 +142,6 @@ class DeadCodeVisitor extends Visitor<DeadCode> {
 		}
 	}
 
-	@Override
-	void visit(MethodReferenceExpr n, Object arg) {
-		methodsToReferenceCount.computeIfPresent(n.identifier, { key, value -> value + 1 })
-		super.visit(n, arg)
-	}
-
-	@Override
-	void visit(AssignExpr n, Object arg) {
-		checkArguments(n.value)
-		super.visit(n, arg)
-	}
-
-	@Override
-	void visit(ReturnStmt n, Object arg) {
-		checkArguments(n.expr)
-		super.visit(n, arg)
-	}
 
 	private void checkArguments(Expression it) {
 		Optional.ofNullable(it)
@@ -178,64 +159,95 @@ class DeadCodeVisitor extends Visitor<DeadCode> {
 				.forEach { it.value++ }
 	}
 
-	@Override
-	void visit(MethodCallExpr n, Object arg) {
-		methodsToReferenceCount.computeIfPresent(n.name, { key, value -> value + 1 })
+	private class ReferenceVisitor extends VoidVisitorAdapter {
 
-		checkMethodCaller(n)
-
-		n.args.each {
-			checkArguments(it)
+		@Override
+		void visit(MethodReferenceExpr n, Object arg) {
+			methodsToReferenceCount.computeIfPresent(n.identifier, { key, value -> value + 1 })
+			super.visit(n, arg)
 		}
 
-		super.visit(n, arg)
-	}
-
-	private checkMethodCaller(MethodCallExpr n) {
-		checkArguments(n.scope)
-	}
-
-	@Override
-	void visit(FieldAccessExpr n, Object arg) {
-		fieldsToReferenceCount.computeIfPresent(n.field, { key, value -> value + 1 })
-		super.visit(n, arg)
-	}
-
-	@Override
-	void visit(ObjectCreationExpr n, Object arg) {
-		n.args.each {
-			checkArguments(it)
+		@Override
+		void visit(AssignExpr n, Object arg) {
+			checkArguments(n.value)
+			super.visit(n, arg)
 		}
-		super.visit(n, arg)
+
+		@Override
+		void visit(CastExpr n, Object arg) {
+			checkArguments(n.expr)
+			super.visit(n, arg)
+		}
+
+		@Override
+		void visit(BinaryExpr n, Object arg) {
+			checkArguments(n.left)
+			checkArguments(n.right)
+			super.visit(n, arg)
+		}
+
+		@Override
+		void visit(ReturnStmt n, Object arg) {
+			checkArguments(n.expr)
+			super.visit(n, arg)
+		}
+
+		@Override
+		void visit(MethodCallExpr n, Object arg) {
+			methodsToReferenceCount.computeIfPresent(n.name, { key, value -> value + 1 })
+
+			checkArguments(n.scope)
+
+			n.args.each {
+				checkArguments(it)
+			}
+
+			super.visit(n, arg)
+		}
+
+		@Override
+		void visit(FieldAccessExpr n, Object arg) {
+			fieldsToReferenceCount.computeIfPresent(n.field, { key, value -> value + 1 })
+			super.visit(n, arg)
+		}
+
+		@Override
+		void visit(ObjectCreationExpr n, Object arg) {
+			n.args.each {
+				checkArguments(it)
+			}
+			super.visit(n, arg)
+		}
+
+		@Override
+		void visit(ForeachStmt n, Object arg) {
+			checkArguments(n.iterable)
+			super.visit(n, arg)
+		}
+
+		@Override
+		void visit(ForStmt n, Object arg) {
+			checkArguments(n.compare)
+			super.visit(n, arg)
+		}
+
+		@Override
+		void visit(IfStmt n, Object arg) {
+			checkArguments(n.condition)
+			super.visit(n, arg)
+		}
+
+		@Override
+		void visit(WhileStmt n, Object arg) {
+			checkArguments(n.condition)
+			super.visit(n, arg)
+		}
+
+		@Override
+		void visit(SwitchStmt n, Object arg) {
+			checkArguments(n.selector)
+			super.visit(n, arg)
+		}
 	}
 
-	@Override
-	void visit(ForeachStmt n, Object arg) {
-		checkArguments(n.iterable)
-		super.visit(n, arg)
-	}
-
-	@Override
-	void visit(ForStmt n, Object arg) {
-		checkArguments(n.compare)
-		super.visit(n, arg)
-	}
-
-	@Override
-	void visit(IfStmt n, Object arg) {
-		checkArguments(n.condition)
-		super.visit(n, arg)
-	}
-
-	@Override
-	void visit(WhileStmt n, Object arg) {
-		checkArguments(n.condition)
-		super.visit(n, arg)
-	}
-
-	@Override
-	void visit(SwitchStmt n, Object arg) {
-		checkArguments(n.selector)
-		super.visit(n, arg)
-	}
 }
