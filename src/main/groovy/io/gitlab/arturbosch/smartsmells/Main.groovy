@@ -18,15 +18,15 @@ import java.nio.file.Paths
 class Main {
 
 	@Parameter(names = ["--input", "-i"], description = "Specify a path where your project is located for the analysis.")
-	String projectPath;
+	String projectPath
 	@Parameter(names = ["--output", "-o"], description = "Point to a path where the xml output file with the detection result should be saved.")
-	String outputPath;
+	String outputPath
 	@Parameter(names = ["--config", "-c"], description = "Point to your SmartSmells configuration file. Prefer this over -f if only specified detectors are needed. Take a look at the default-config.yml file within SmartSmells git repository for an example.")
-	String configPath;
+	String configPath
 	@Parameter(names = ["--fullStack", "-f"], description = "Use all available detectors with default thresholds.")
-	Boolean fullStackFacade;
+	Boolean fullStackFacade
 	@Parameter(names = ["--help", "-h"], description = "Shows this help message.")
-	Boolean help;
+	Boolean help
 
 	def static benchmark = { closure ->
 		def start = System.currentTimeMillis()
@@ -42,8 +42,8 @@ class Main {
 			def jCommander = new JCommander(main, args)
 			jCommander.setProgramName("SmartSmells")
 			if (main.help) {
-				jCommander.usage();
-				return;
+				jCommander.usage()
+				return
 			}
 		} catch (any) {
 			exitExceptionally(any.message)
@@ -51,7 +51,7 @@ class Main {
 		main.validateParsedArguments()
 
 		println "\n Duration: " + benchmark {
-			main.run();
+			main.run()
 		} / 1000
 	}
 
