@@ -30,6 +30,9 @@ task fatJar(type: Jar) {
 
 test {
 	exclude '**/system/**'
+	testLogging {
+		exceptionFormat = 'full'
+	}
 }
 
 task systemTest( type: Test ) {

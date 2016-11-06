@@ -21,7 +21,7 @@ abstract class Detector<T extends DetectionResult> {
 	/**
 	 * Binary operator combines two sets into one.
 	 */
-	static def op = new BinaryOperator<Set<T>>() {
+	static def combine = new BinaryOperator<Set<T>>() {
 		@Override
 		Set<T> apply(Set<T> l1, Set<T> l2) {
 			Set<T> list = new HashSet<>(l1)
@@ -45,7 +45,7 @@ abstract class Detector<T extends DetectionResult> {
 				.map({
 			def maybeUnit = CompilationTree.findCompilationUnit(it)
 			maybeUnit.isPresent() ? execute(maybeUnit.get(), it) : Collections.emptySet()
-		}).collect(Collectors.reducing(new HashSet(), op))
+		}).collect(Collectors.reducing(new HashSet(), combine))
 		StreamCloser.quietly(walker)
 		return result
 	}

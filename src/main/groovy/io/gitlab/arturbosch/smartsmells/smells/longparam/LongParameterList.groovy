@@ -24,8 +24,8 @@ class LongParameterList implements DetectionResult {
 	 *
 	 * @return the path from delegated source path
 	 */
-	String path() {
-		sourcePath.path
+	String getPath() {
+		longMethod.sourcePath.path
 	}
 
 	@Override
