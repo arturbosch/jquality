@@ -34,9 +34,14 @@ Current found smells are:
 
 ### As Gradle task
 
-Following lines will create a `gradle smartsmells` task which can be executed from the console.
+Add following lines to your `build.gradle` file to create a `gradle smartsmells` task which can be executed from the console.
 
 ```groovy
+repositories {
+	maven {
+		url  "http://dl.bintray.com/arturbosch/code-analysis"
+	}
+}
 configurations {
 	smartsmells
 }
