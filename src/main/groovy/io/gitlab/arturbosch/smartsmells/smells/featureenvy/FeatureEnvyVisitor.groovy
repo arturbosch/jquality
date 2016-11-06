@@ -2,7 +2,6 @@ package io.gitlab.arturbosch.smartsmells.smells.featureenvy
 
 import com.github.javaparser.ASTHelper
 import com.github.javaparser.ast.CompilationUnit
-import com.github.javaparser.ast.ImportDeclaration
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration
 import com.github.javaparser.ast.body.MethodDeclaration
 import com.github.javaparser.ast.body.ModifierSet
@@ -30,7 +29,6 @@ class FeatureEnvyVisitor extends Visitor<FeatureEnvy> {
 	private FeatureEnvyFactor featureEnvyFactor
 
 	private Set<JpalVariable> fields
-	private List<ImportDeclaration> imports
 
 	private String currentClassName
 	private ResolutionData resolutionData
@@ -46,7 +44,6 @@ class FeatureEnvyVisitor extends Visitor<FeatureEnvy> {
 
 	@Override
 	void visit(CompilationUnit n, Object arg) {
-		imports = ASTHelper.getNodesByType(n, ImportDeclaration.class)
 		resolutionData = ResolutionData.of(n)
 		innerClassesHandler = new InnerClassesHandler(n)
 		super.visit(n, arg)
@@ -72,7 +69,7 @@ class FeatureEnvyVisitor extends Visitor<FeatureEnvy> {
 	}
 
 	private analyzeMethods(List<MethodDeclaration> methods) {
-		def filter = new JavaClassFilter(imports)
+		def filter = new JavaClassFilter(resolutionData)
 		MethodHelper.filterAnonymousMethods(methods)
 				.stream()
 				.filter { !(ModifierSet.isStatic(it.modifiers) && ignoreStatic) }
@@ -119,11 +116,11 @@ class FeatureEnvyVisitor extends Visitor<FeatureEnvy> {
 
 	private double calc(int entityCalls, int allCalls) {
 		if (allCalls == 0 || allCalls == 1) {
-			return 0.0;
+			return 0.0
 		}
 
 		def weight = featureEnvyFactor.weight
-		return weight * (entityCalls / allCalls) + (1 - weight) * (1 - Math.pow(featureEnvyFactor.base, entityCalls));
+		return weight * (entityCalls / allCalls) + (1 - weight) * (1 - Math.pow(featureEnvyFactor.base, entityCalls))
 	}
 
 }
