@@ -18,7 +18,7 @@ class JavaClassFilter {
 		this.resolutionData = resolutionData
 	}
 
-	Set<JpalVariable> forJavaClasses(Set<JpalVariable> variables) {
+	Set<JpalVariable> filter(Set<JpalVariable> variables) {
 		return variables.stream().filter { isNoPrimitiveType(it) }
 				.filter { !isJavaType(it) }.collect(Collectors.toSet())
 	}

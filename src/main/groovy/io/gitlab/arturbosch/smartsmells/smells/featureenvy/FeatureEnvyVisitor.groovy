@@ -31,7 +31,7 @@ class FeatureEnvyVisitor extends Visitor<FeatureEnvy> {
 	private Set<JpalVariable> fields
 
 	private String currentClassName
-	private ResolutionData resolutionData
+	private JavaClassFilter javaClassFilter
 	private InnerClassesHandler innerClassesHandler
 
 	private boolean ignoreStatic
@@ -44,7 +44,8 @@ class FeatureEnvyVisitor extends Visitor<FeatureEnvy> {
 
 	@Override
 	void visit(CompilationUnit n, Object arg) {
-		resolutionData = ResolutionData.of(n)
+		def resolutionData = ResolutionData.of(n)
+		javaClassFilter = new JavaClassFilter(resolutionData)
 		innerClassesHandler = new InnerClassesHandler(n)
 		super.visit(n, arg)
 	}
@@ -69,28 +70,25 @@ class FeatureEnvyVisitor extends Visitor<FeatureEnvy> {
 	}
 
 	private analyzeMethods(List<MethodDeclaration> methods) {
-		def filter = new JavaClassFilter(resolutionData)
 		MethodHelper.filterAnonymousMethods(methods)
 				.stream()
 				.filter { !(ModifierSet.isStatic(it.modifiers) && ignoreStatic) }
-				.filter { MethodHelper.sizeBiggerThan(2, it) }.each {
+				.filter { MethodHelper.sizeBiggerThan(2, it) }.each { method ->
 
-
-			def parent = NodeHelper.findDeclaringClass(it)
-			parent.ifPresent {
-				def type = new ClassOrInterfaceType(((ClassOrInterfaceDeclaration) parent.get()).name)
+			NodeHelper.findDeclaringClass(method).ifPresent {
+				def type = new ClassOrInterfaceType(((ClassOrInterfaceDeclaration) it).name)
 				currentClassName = innerClassesHandler.getUnqualifiedNameForInnerClass(type)
 			}
 
-			def allCalls = MethodHelper.getAllMethodInvocations(it)
+			def allCalls = MethodHelper.getAllMethodInvocations(method)
 
-			def parameters = MethodHelper.extractParameters(it).stream()
+			def parameters = MethodHelper.extractParameters(method).stream()
 					.map { VariableHelper.toJpalFromParameter(it) }.collect(Collectors.toSet())
-			def variables = VariableHelper.toJpalFromLocales(LocaleVariableHelper.find(it).toList())
+			def variables = VariableHelper.toJpalFromLocales(LocaleVariableHelper.find(method).toList())
 
-			analyzeVariables(it, allCalls, filter.forJavaClasses(variables))
-			analyzeVariables(it, allCalls, filter.forJavaClasses(parameters))
-			analyzeVariables(it, allCalls, filter.forJavaClasses(fields))
+			analyzeVariables(method, allCalls, javaClassFilter.filter(variables))
+			analyzeVariables(method, allCalls, javaClassFilter.filter(parameters))
+			analyzeVariables(method, allCalls, javaClassFilter.filter(fields))
 
 		}
 	}
