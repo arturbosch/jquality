@@ -1,8 +1,14 @@
-group 'io.gitlab.arturbosch.smartsmells'
-version 'M7'
+
+plugins {
+	id 'com.github.ben-manes.versions' version '0.13.0'
+//	id "com.github.hierynomus.license" version "0.13.1"
+}
 
 apply plugin: 'groovy'
 apply plugin: 'maven-publish'
+
+group 'io.gitlab.arturbosch.smartsmells'
+version 'M7'
 
 repositories {
 	mavenCentral()
