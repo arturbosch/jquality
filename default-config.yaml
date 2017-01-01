@@ -1,5 +1,5 @@
 comment:
-  active: 'true'
+  active: 'false'
 complexmethod:
   active: 'true'
   threshold: '10'
@@ -17,15 +17,15 @@ featureenvy:
   weight: '0.5'
 godclass:
   active: 'true'
-  wmc: '20'
+  wmc: '47'
   atfd: '5'
-  tcc: '0.1'
+  tcc: '0.33'
 largeclass:
   active: 'true'
   threshold: '150'
 longmethod:
   active: 'true'
-  threshold: '10'
+  threshold: '20'
 longparameterlist:
   active: 'true'
   threshold: '5'
@@ -34,7 +34,7 @@ middleman:
   threshold: 'half'
 messagechain:
   active: 'true'
-  threshold: '2'
+  threshold: '3'
 metrics:
-  active: 'true'
+  active: 'false'
   skipCC_CM: 'true'
