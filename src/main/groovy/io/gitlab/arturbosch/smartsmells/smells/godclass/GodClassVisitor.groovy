@@ -1,6 +1,5 @@
 package io.gitlab.arturbosch.smartsmells.smells.godclass
 
-import com.github.javaparser.ASTHelper
 import com.github.javaparser.ast.CompilationUnit
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter
@@ -42,7 +41,7 @@ class GodClassVisitor extends Visitor<GodClass> {
 	@Override
 	void visit(CompilationUnit n, Object arg) {
 
-		def classes = ASTHelper.getNodesByType(n, ClassOrInterfaceDeclaration.class)
+		def classes = n.getNodesByType(ClassOrInterfaceDeclaration.class)
 
 		classes.each {
 			def classVisitor = new InternalGodClassVisitor(path)
@@ -82,7 +81,7 @@ class GodClassVisitor extends Visitor<GodClass> {
 		}
 
 		private boolean addSmell(ClassOrInterfaceDeclaration n) {
-			smells.add(new GodClass(n.name, ClassHelper.createFullSignature(n), wmc, tcc, atfd,
+			smells.add(new GodClass(n.nameAsString, ClassHelper.createFullSignature(n), wmc, tcc, atfd,
 					weightedMethodCountThreshold, tiedClassCohesionThreshold,
 					accessToForeignDataThreshold, SourcePath.of(thePath), SourceRange.fromNode(n)))
 		}

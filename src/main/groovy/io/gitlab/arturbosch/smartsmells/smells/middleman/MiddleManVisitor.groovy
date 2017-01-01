@@ -8,6 +8,7 @@ import io.gitlab.arturbosch.jpal.ast.ClassHelper
 import io.gitlab.arturbosch.jpal.ast.NodeHelper
 import io.gitlab.arturbosch.jpal.ast.source.SourcePath
 import io.gitlab.arturbosch.jpal.ast.source.SourceRange
+import io.gitlab.arturbosch.jpal.internal.Printer
 import io.gitlab.arturbosch.smartsmells.common.Visitor
 import io.gitlab.arturbosch.smartsmells.metrics.Metrics
 
@@ -44,7 +45,7 @@ class MiddleManVisitor extends Visitor<MiddleMan> {
 		}
 
 		if (checkThreshold(partition)) {
-			smells.add(new MiddleMan(n.name, ClassHelper.createFullSignature(n),
+			smells.add(new MiddleMan(n.nameAsString, ClassHelper.createFullSignature(n),
 					SourcePath.of(path), SourceRange.fromNode(n)))
 		}
 
@@ -61,34 +62,36 @@ class MiddleManVisitor extends Visitor<MiddleMan> {
 		switch (threshold) {
 			case threshold.all:
 				match |= (trueSize == allSize && allSize > 1)
-				break;
+				break
 			case threshold.half:
 				match |= (trueSize.toBigDecimal() >= (allSize / 2) && allSize > 3)
-				break;
+				break
 			case threshold.third:
 				match |= (trueSize.toBigDecimal() >= (allSize / 3) && allSize > 5)
-				break;
+				break
 		}
 		return match
 	}
 
 	private static boolean hasBodySizeOne(MethodDeclaration method) {
-		return Optional.ofNullable(method.body)
-				.filter { it.stmts.size() == 1 }
+		return method.body
+				.filter { it.statements.size() == 1 }
 				.isPresent()
 	}
 
 	private static boolean useSameParametersForMethodInvocation(MethodDeclaration method) {
-		def statement = method.body.stmts[0]
-		if (statement instanceof ReturnStmt) {
-			def expr = statement.expr
-			if (expr instanceof MethodCallExpr) {
-				def argsExpr = expr.args.collect { it.toStringWithoutComments() }
-				def argsMethod = method.parameters.collect { it.id.name }
-				return argsExpr.containsAll(argsMethod)
-			}
-		}
-		return false
+		return method.body.filter { it.statements.size() == 1 }
+				.map { it.statements[0] }
+				.filter { it instanceof ReturnStmt }
+				.map { (it as ReturnStmt).expression }
+				.filter { it.isPresent() }
+				.map { it.get() }
+				.filter { it instanceof MethodCallExpr }
+				.map {
+			def argsExpressions = (it as MethodCallExpr).arguments.collect { it.toString(Printer.NO_COMMENTS) }
+			def argsMethod = method.parameters.collect { it.nameAsString }
+			argsExpressions.containsAll(argsMethod)
+		}.isPresent()
 	}
 
 	private static boolean hasComplexityOfOne(MethodDeclaration it) {
@@ -96,7 +99,7 @@ class MiddleManVisitor extends Visitor<MiddleMan> {
 	}
 
 	private static boolean hasNoFilteredAnnotations(MethodDeclaration method) {
-		method.annotations.stream().noneMatch { it.name.name == "Bean" }
+		method.annotations.stream().noneMatch { it.nameAsString == "Bean" }
 	}
 
 }

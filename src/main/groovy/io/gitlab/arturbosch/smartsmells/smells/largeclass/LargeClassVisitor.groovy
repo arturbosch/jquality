@@ -35,7 +35,7 @@ class LargeClassVisitor extends Visitor<LargeClass> {
 		}
 
 		if (sum >= sizeThreshold)
-			smells.add(new LargeClass(n.name, ClassHelper.createFullSignature(n),
+			smells.add(new LargeClass(n.nameAsString, ClassHelper.createFullSignature(n),
 					sum.toInteger(), sizeThreshold,
 					SourcePath.of(path), SourceRange.fromNode(n)))
 	}
@@ -43,9 +43,12 @@ class LargeClassVisitor extends Visitor<LargeClass> {
 	private static int calcSizeFromNode(ClassOrInterfaceDeclaration n) {
 		def commentsSize = Stream.of(n.getAllContainedComments())
 				.flatMap { it.stream() }
-				.mapToInt { (it.end.line - it.begin.line) + 1 }
-				.sum()
-		def size = n.end.line - n.begin.line + 1
+				.mapToInt {
+			def beginLine = it.begin.map { it.line }.orElse(0)
+			def endLine = it.end.map { it.line }.orElse(0)
+			(endLine - beginLine) + 1
+		}.sum()
+		def size = n.end.map { it.line }.orElse(0) - n.begin.map { it.line }.orElse(0) + 1
 		return size - commentsSize
 	}
 

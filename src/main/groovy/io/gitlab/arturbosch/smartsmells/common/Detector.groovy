@@ -21,7 +21,7 @@ abstract class Detector<T extends DetectionResult> {
 	/**
 	 * Binary operator combines two sets into one.
 	 */
-	static def combine = new BinaryOperator<Set<T>>() {
+	static combine = new BinaryOperator<Set<T>>() {
 		@Override
 		Set<T> apply(Set<T> l1, Set<T> l2) {
 			Set<T> list = new HashSet<>(l1)
@@ -39,6 +39,7 @@ abstract class Detector<T extends DetectionResult> {
 	 * @return set of smells
 	 */
 	Set<T> run(Path startPath) {
+		CompilationTree.registerRoot(startPath)
 		def walker = Files.walk(startPath)
 		def result = walker
 				.filter({ it.fileName.toString().endsWith("java") })

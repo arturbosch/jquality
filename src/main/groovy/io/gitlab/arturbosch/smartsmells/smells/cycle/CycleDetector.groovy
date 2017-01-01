@@ -24,6 +24,7 @@ class CycleDetector extends Detector<Cycle> {
 	 * @param startPath base path for compilation tree
 	 */
 	CycleDetector(Path startPath) {
+		CompilationTree.reset()
 		CompilationTree.registerRoot(startPath)
 	}
 

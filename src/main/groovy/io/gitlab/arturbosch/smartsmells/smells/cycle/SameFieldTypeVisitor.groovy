@@ -51,7 +51,7 @@ class SameFieldTypeVisitor extends VoidVisitorAdapter {
 
 	@Override
 	void visit(FieldDeclaration n, Object arg) {
-		def unqualifiedFieldName = innerClassesHandler.getUnqualifiedNameForInnerClass(n.type)
+		def unqualifiedFieldName = innerClassesHandler.getUnqualifiedNameForInnerClass(n.commonType)
 		def qualifiedType = Resolver.getQualifiedType(
 				resolutionData, new ClassOrInterfaceType(unqualifiedFieldName))
 

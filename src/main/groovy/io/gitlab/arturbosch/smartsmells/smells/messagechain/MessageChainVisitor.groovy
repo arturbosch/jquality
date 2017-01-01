@@ -4,6 +4,7 @@ import com.github.javaparser.ast.CompilationUnit
 import com.github.javaparser.ast.expr.MethodCallExpr
 import io.gitlab.arturbosch.jpal.ast.source.SourcePath
 import io.gitlab.arturbosch.jpal.ast.source.SourceRange
+import io.gitlab.arturbosch.jpal.internal.Printer
 import io.gitlab.arturbosch.smartsmells.common.Visitor
 
 import java.nio.file.Path
@@ -30,8 +31,8 @@ class MessageChainVisitor extends Visitor<MessageChain> {
 		methodCallExprMap.entrySet().stream()
 				.collect {
 
-			new MessageChain(it.value.toStringWithoutComments(), extractSourceString(it.value),
-					it.value.name, countOccurrences(it.key, "get"), chainSizeThreshold,
+			new MessageChain(it.value.toString(Printer.NO_COMMENTS), extractSourceString(it.value),
+					it.value.nameAsString, countOccurrences(it.key, "get"), chainSizeThreshold,
 					SourcePath.of(path), SourceRange.fromNode(it.value)
 
 			)
@@ -39,7 +40,7 @@ class MessageChainVisitor extends Visitor<MessageChain> {
 	}
 
 	private static String extractSourceString(MethodCallExpr it) {
-		it.toStringWithoutComments().split("\\.")[0].replace("(", "").replace(")", "")
+		it.toString(Printer.NO_COMMENTS).split("\\.")[0].replace("(", "").replace(")", "")
 	}
 
 	@Override
@@ -69,20 +70,20 @@ class MessageChainVisitor extends Visitor<MessageChain> {
 	}
 
 	def extractExpressionNames(MethodCallExpr n) {
-		if (n.scope == null || !(n.scope instanceof MethodCallExpr)) return n.name
-		return extractExpressionNames((MethodCallExpr) n.scope) + "." + n.name
+		if (n.scope == null || !(n.scope instanceof MethodCallExpr)) return n.nameAsString
+		return extractExpressionNames((MethodCallExpr) n.scope) + "." + n.nameAsString
 	}
 
-	private static def countOccurrences(String source, String pattern) {
+	private static countOccurrences(String source, String pattern) {
 		if (source.isEmpty() || pattern.isEmpty()) {
-			return 0;
+			return 0
 		}
 
-		int count = 0;
+		int count = 0
 		for (int pos = 0; (pos = source.indexOf(pattern, pos)) != -1; count++) {
-			pos += pattern.length();
+			pos += pattern.length()
 		}
 
-		return count;
+		return count
 	}
 }

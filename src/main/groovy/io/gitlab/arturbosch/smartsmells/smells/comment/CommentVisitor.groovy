@@ -1,7 +1,8 @@
 package io.gitlab.arturbosch.smartsmells.smells.comment
 
+import com.github.javaparser.ast.AccessSpecifier
+import com.github.javaparser.ast.Modifier
 import com.github.javaparser.ast.body.MethodDeclaration
-import com.github.javaparser.ast.body.ModifierSet
 import com.github.javaparser.ast.comments.Comment
 import io.gitlab.arturbosch.jpal.ast.source.SourcePath
 import io.gitlab.arturbosch.jpal.ast.source.SourceRange
@@ -30,7 +31,8 @@ class CommentVisitor extends Visitor {
 	void visit(MethodDeclaration n, Object arg) {
 		if (n.comment != null) {
 			def modifiers = n.modifiers
-			if (ModifierSet.isPrivate(modifiers) || ModifierSet.hasPackageLevelAccess(modifiers)) {
+			def specifier = Modifier.getAccessSpecifier(modifiers)
+			if (specifier == AccessSpecifier.PRIVATE || specifier == AccessSpecifier.DEFAULT) {
 				addCommentSmell(CommentSmell.PRIVATE, n.comment, JAVADOC_MESSAGE)
 			}
 		}

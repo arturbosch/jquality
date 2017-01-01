@@ -18,12 +18,12 @@ class SystemTestOnQuideIT extends Specification {
 
 	def "compilation storage"() {
 		given:
-//		def path = "/home/abosch/Repos/quide/Implementierung/QuideService/src/main"
-//		def path = "/home/abosch/Repos/quide/Implementierung/QuIDE_Plugin/"
-//		def path = "/home/abosch/Arbeit/tools/ismell/src/main"
-//		def path = "/home/abosch/Repos/elasticsearch/core/src/main/"
-//		def path = "/home/abosch/Repos/RxJava/src/main"
-		def path = "/home/abosch/Arbeit/agst/pooka-co/trunk/pooka/src"
+		def path = "/home/artur/Repos/quide-master/Implementierung/QuideService/src/main"
+//		def path = "/home/artur/Repos/quide-master/Implementierung/QuIDE_Plugin/"
+//		def path = "/home/artur/Arbeit/tools/ismell/src/main"
+//		def path = "/home/artur/Repos/elasticsearch/core/src/main/"
+//		def path = "/home/artur/Repos/RxJava/src/main"
+//		def path = "/home/artur/Arbeit/agst/pooka-co/trunk/pooka/src"
 
 		when:
 		def storage = CompilationStorage.create(Paths.get(path))
@@ -36,13 +36,13 @@ class SystemTestOnQuideIT extends Specification {
 
 	def "metrics on quide"() {
 		given:
-//		def path = "/home/abosch/Repos/quide/Implementierung/QuideService/src/main"
-//		def path = "/home/abosch/Arbeit/tools/ismell/src/main"
-//		def path = "/home/abosch/Repos/elasticsearch/core/src/main/"
-//		def path = "/home/abosch/Repos/RxJava/src/main"
-//		def path = "/home/abosch/Arbeit/agst/pooka-co/trunk/pooka/src"
-//		def path = "/home/abosch/Repos/vert.x/src/main/java"
-		def path = "/home/abosch/Repos/netty"
+		def path = "/home/artur/Repos/quide-master/Implementierung/QuideService/src/main"
+//		def path = "/home/artur/Arbeit/tools/ismell/src/main"
+//		def path = "/home/artur/Repos/elasticsearch/core/src/main/"
+//		def path = "/home/artur/Repos/RxJava/src/main"
+//		def path = "/home/artur/Arbeit/agst/pooka-co/trunk/pooka/src"
+//		def path = "/home/artur/Repos/vert.x/src/main/java"
+//		def path = "/home/artur/Repos/netty"
 
 		when:
 		def result = DetectorFacade.builder().with(new ClassInfoDetector(true)).build()
@@ -97,10 +97,10 @@ class SystemTestOnQuideIT extends Specification {
 
 	def "run on quide and find no same feature envy twice"() {
 		given:
-		def path = "/home/abosch/Repos/quide/Implementierung/QuideService/src/main"
-//		def path = "/home/abosch/Arbeit/tools/ismell/src/main"
-//		def path = "/home/abosch/Arbeit/agst/pooka-co/trunk/pooka/src"
-//		def path = "/home/abosch/Repos/elasticsearch/core/src/main/"
+		def path = "/home/artur/Repos/quide-master/Implementierung/QuideService/src/main"
+//		def path = "/home/artur/Arbeit/tools/ismell/src/main"
+//		def path = "/home/artur/Arbeit/agst/pooka-co/trunk/pooka/src"
+//		def path = "/home/artur/Repos/elasticsearch/core/src/main/"
 //		def path = Paths.getResource("/cornercases").getFile()
 		def result = DetectorFacade.builder().fullStackFacade().run(Paths.get(path))
 		def envies = result.of(Smell.FEATURE_ENVY)

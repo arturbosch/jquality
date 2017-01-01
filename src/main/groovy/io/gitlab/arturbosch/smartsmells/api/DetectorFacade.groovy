@@ -3,8 +3,8 @@ package io.gitlab.arturbosch.smartsmells.api
 import io.gitlab.arturbosch.jpal.core.CompilationInfo
 import io.gitlab.arturbosch.jpal.core.CompilationStorage
 import io.gitlab.arturbosch.jpal.core.CompilationTree
-import io.gitlab.arturbosch.smartsmells.common.Detector
 import io.gitlab.arturbosch.smartsmells.common.DetectionResult
+import io.gitlab.arturbosch.smartsmells.common.Detector
 import io.gitlab.arturbosch.smartsmells.config.DetectorConfig
 import io.gitlab.arturbosch.smartsmells.config.DetectorInitializer
 import io.gitlab.arturbosch.smartsmells.metrics.ClassInfoDetector
@@ -51,7 +51,7 @@ class DetectorFacade {
 
 	static DetectorFacade fromConfig(final DetectorConfig config) {
 		Validate.notNull(config, "Configuration must not be null!")
-		return new DetectorFacade(DetectorInitializer.init(config));
+		return new DetectorFacade(DetectorInitializer.init(config))
 	}
 
 	SmellResult run(Path startPath) {

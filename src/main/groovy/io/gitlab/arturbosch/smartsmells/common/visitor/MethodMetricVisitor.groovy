@@ -26,26 +26,28 @@ abstract class MethodMetricVisitor<T extends DetectionResult> extends Visitor<T>
 
 	@Override
 	void visit(ConstructorDeclaration node, Object arg) {
-		visitBlock(Optional.ofNullable(node.block), node)
+		visitBlock(Optional.ofNullable(node.body), node)
 	}
 
 	private void visitBlock(Optional<BlockStmt> blockStmt, BodyDeclaration body) {
-		blockStmt.map { it.stmts }
+		blockStmt.map { it.statements }
 				.filter { byThreshold(body) }
 				.ifPresent { addSmell(body) }
 	}
 
 	@Override
 	void visit(MethodDeclaration node, Object arg) {
-		visitBlock(Optional.ofNullable(node.body), node)
+		visitBlock(node.body, node)
 	}
 
 	protected LongMethod newLongMethod(BodyDeclaration n, int size) {
 		if (n instanceof MethodDeclaration)
-			longMethodIntern(n.declarationAsString, n.name, n.getDeclarationAsString(false, false, true), n, size)
+			longMethodIntern(n.declarationAsString, n.nameAsString,
+					n.getDeclarationAsString(false, false, true), n, size)
 		else {
 			def node = (ConstructorDeclaration) n
-			longMethodIntern(node.declarationAsString, node.name, node.getDeclarationAsString(false, false, true), n, size)
+			longMethodIntern(node.declarationAsString, node.nameAsString,
+					node.getDeclarationAsString(false, false, true), n, size)
 		}
 	}
 

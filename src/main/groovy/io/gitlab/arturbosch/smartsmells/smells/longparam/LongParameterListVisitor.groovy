@@ -3,6 +3,7 @@ package io.gitlab.arturbosch.smartsmells.smells.longparam
 import com.github.javaparser.ast.body.BodyDeclaration
 import com.github.javaparser.ast.body.Parameter
 import io.gitlab.arturbosch.jpal.ast.MethodHelper
+import io.gitlab.arturbosch.jpal.internal.Printer
 import io.gitlab.arturbosch.smartsmells.common.visitor.MethodMetricVisitor
 
 import java.nio.file.Path
@@ -28,6 +29,6 @@ class LongParameterListVisitor extends MethodMetricVisitor<LongParameterList> {
 	protected addSmell(BodyDeclaration n) {
 		def size = parameters.size()
 		smells.add(new LongParameterList(newLongMethod(n, size),
-				parameters.collect { it.toStringWithoutComments() }, size, threshold))
+				parameters.collect { it.toString(Printer.NO_COMMENTS) }, size, threshold))
 	}
 }

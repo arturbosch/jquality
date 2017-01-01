@@ -1,6 +1,5 @@
 package io.gitlab.arturbosch.smartsmells.smells.dataclass
 
-import com.github.javaparser.ASTHelper
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration
 import io.gitlab.arturbosch.jpal.ast.ClassHelper
 import io.gitlab.arturbosch.jpal.ast.NodeHelper
@@ -25,7 +24,7 @@ class DataClassVisitor extends Visitor<DataClass> {
 	@Override
 	void visit(ClassOrInterfaceDeclaration n, Object arg) {
 
-		ASTHelper.getNodesByType(n, ClassOrInterfaceDeclaration.class)
+		n.getNodesByType(ClassOrInterfaceDeclaration.class)
 				.each { visit(it, null) }
 
 		if (n.interface) return
@@ -38,7 +37,7 @@ class DataClassVisitor extends Visitor<DataClass> {
 		if (DataClassHelper.checkMethods(filteredMethods)) {
 
 			String signature = ClassHelper.createFullSignature(n)
-			smells.add(new DataClass(n.getName(), signature,
+			smells.add(new DataClass(n.nameAsString, signature,
 					SourceRange.fromNode(n), SourcePath.of(path)))
 		}
 	}

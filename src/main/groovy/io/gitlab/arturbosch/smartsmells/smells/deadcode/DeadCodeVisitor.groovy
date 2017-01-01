@@ -25,6 +25,7 @@ import io.gitlab.arturbosch.jpal.ast.LocaleVariableHelper
 import io.gitlab.arturbosch.jpal.ast.NodeHelper
 import io.gitlab.arturbosch.jpal.ast.source.SourcePath
 import io.gitlab.arturbosch.jpal.ast.source.SourceRange
+import io.gitlab.arturbosch.jpal.internal.Printer
 import io.gitlab.arturbosch.smartsmells.common.Visitor
 
 import java.nio.file.Path
@@ -59,16 +60,16 @@ class DeadCodeVisitor extends Visitor<DeadCode> {
 			return
 
 		def methodDeclarations = DeadCodeHelper.filterMethodsForAnnotations(NodeHelper.findPrivateMethods(n))
-		methodsToReferenceCount = methodDeclarations.collectEntries { [it.name, 0] }
-		methodToMethodDeclaration = methodDeclarations.collectEntries { [it.name, it] }
+		methodsToReferenceCount = methodDeclarations.collectEntries { [it.nameAsString, 0] }
+		methodToMethodDeclaration = methodDeclarations.collectEntries { [it.nameAsString, it] }
 
 		def variableDeclarations = NodeHelper.findPrivateFields(n)
 		createFieldMaps(variableDeclarations)
 
 		def allMethods = NodeHelper.findMethods(n)
 		def parameters = DeadCodeHelper.parametersFromAllMethodDeclarationsAsStringSet(allMethods)
-		parameterToReferenceCount = parameters.collectEntries { [it.id.name, 0] }
-		parameterToParameterDeclaration = parameters.collectEntries { [it.id.name, it] }
+		parameterToReferenceCount = parameters.collectEntries { [it.nameAsString, 0] }
+		parameterToParameterDeclaration = parameters.collectEntries { [it.nameAsString, it] }
 
 		def localeVariables = LocaleVariableHelper.find(allMethods)
 		createLocaleVariableMaps(localeVariables)
@@ -94,7 +95,7 @@ class DeadCodeVisitor extends Visitor<DeadCode> {
 				.filter { it.value == 0 }
 				.map { methodToMethodDeclaration.get(it.key) }
 				.forEach {
-			smells.add(new DeadCode(it.name, it.declarationAsString, "Method", SourcePath.of(path),
+			smells.add(new DeadCode(it.nameAsString, it.declarationAsString, "Method", SourcePath.of(path),
 					SourceRange.fromNode(it)))
 		}
 
@@ -102,7 +103,7 @@ class DeadCodeVisitor extends Visitor<DeadCode> {
 				.filter { it.value == 0 }
 				.forEach {
 			def field = fieldsToFieldDeclaration.get(it.key)
-			smells.add(new DeadCode(it.key, field.toStringWithoutComments(), "Field", SourcePath.of(path),
+			smells.add(new DeadCode(it.key, field.toString(Printer.NO_COMMENTS), "Field", SourcePath.of(path),
 					SourceRange.fromNode(field)))
 		}
 
@@ -110,7 +111,7 @@ class DeadCodeVisitor extends Visitor<DeadCode> {
 				.filter { it.value == 0 }
 				.map { parameterToParameterDeclaration.get(it.key) }
 				.forEach {
-			smells.add(new DeadCode(it.id.name, it.toStringWithoutComments(), "Parameter", SourcePath.of(path),
+			smells.add(new DeadCode(it.nameAsString, it.toString(Printer.NO_COMMENTS), "Parameter", SourcePath.of(path),
 					SourceRange.fromNode(it)))
 		}
 
@@ -118,7 +119,7 @@ class DeadCodeVisitor extends Visitor<DeadCode> {
 				.filter { it.value == 0 }
 				.forEach {
 			def var = localeVariableToVariableDeclaration.get(it.key)
-			smells.add(new DeadCode(it.key, var.toStringWithoutComments(), "Variable", SourcePath.of(path),
+			smells.add(new DeadCode(it.key, var.toString(Printer.NO_COMMENTS), "Variable", SourcePath.of(path),
 					SourceRange.fromNode(var)))
 		}
 	}
@@ -126,18 +127,18 @@ class DeadCodeVisitor extends Visitor<DeadCode> {
 	private void createFieldMaps(List<FieldDeclaration> variableDeclarations) {
 		variableDeclarations.each { declaration ->
 			declaration.variables.stream()
-					.filter({ it.id.name != "serialVersionUID" }).each {
-				fieldsToReferenceCount.put(it.id.name, 0)
-				fieldsToFieldDeclaration.put(it.id.name, declaration)
+					.filter({ it.nameAsString != "serialVersionUID" }).each {
+				fieldsToReferenceCount.put(it.nameAsString, 0)
+				fieldsToFieldDeclaration.put(it.nameAsString, declaration)
 			}
 		}
 	}
 
 	private void createLocaleVariableMaps(List<VariableDeclarationExpr> variableDeclarations) {
 		variableDeclarations.each { declaration ->
-			declaration.vars.each {
-				localeVariableToReferenceCount.put(it.id.name, 0)
-				localeVariableToVariableDeclaration.put(it.id.name, declaration)
+			declaration.variables.each {
+				localeVariableToReferenceCount.put(it.nameAsString, 0)
+				localeVariableToVariableDeclaration.put(it.nameAsString, declaration)
 			}
 		}
 	}
@@ -145,7 +146,7 @@ class DeadCodeVisitor extends Visitor<DeadCode> {
 
 	private void checkArguments(Expression it) {
 		Optional.ofNullable(it)
-				.map { it.toStringWithoutComments() }
+				.map { it.toString(Printer.NO_COMMENTS) }
 				.ifPresent {
 			checkOccurrence(fieldsToReferenceCount, it)
 			checkOccurrence(parameterToReferenceCount, it)
@@ -175,7 +176,7 @@ class DeadCodeVisitor extends Visitor<DeadCode> {
 
 		@Override
 		void visit(CastExpr n, Object arg) {
-			checkArguments(n.expr)
+			checkArguments(n.expression)
 			super.visit(n, arg)
 		}
 
@@ -188,17 +189,17 @@ class DeadCodeVisitor extends Visitor<DeadCode> {
 
 		@Override
 		void visit(ReturnStmt n, Object arg) {
-			checkArguments(n.expr)
+			n.expression.ifPresent { checkArguments(it) }
 			super.visit(n, arg)
 		}
 
 		@Override
 		void visit(MethodCallExpr n, Object arg) {
-			methodsToReferenceCount.computeIfPresent(n.name, { key, value -> value + 1 })
+			methodsToReferenceCount.computeIfPresent(n.nameAsString, { key, value -> value + 1 })
 
 			checkArguments(n.scope)
 
-			n.args.each {
+			n.arguments.each {
 				checkArguments(it)
 			}
 
@@ -207,13 +208,13 @@ class DeadCodeVisitor extends Visitor<DeadCode> {
 
 		@Override
 		void visit(FieldAccessExpr n, Object arg) {
-			fieldsToReferenceCount.computeIfPresent(n.field, { key, value -> value + 1 })
+			fieldsToReferenceCount.computeIfPresent(n.field.identifier, { key, value -> value + 1 })
 			super.visit(n, arg)
 		}
 
 		@Override
 		void visit(ObjectCreationExpr n, Object arg) {
-			n.args.each {
+			n.arguments.each {
 				checkArguments(it)
 			}
 			super.visit(n, arg)
@@ -227,7 +228,7 @@ class DeadCodeVisitor extends Visitor<DeadCode> {
 
 		@Override
 		void visit(ForStmt n, Object arg) {
-			checkArguments(n.compare)
+			n.compare.ifPresent { checkArguments(it) }
 			super.visit(n, arg)
 		}
 

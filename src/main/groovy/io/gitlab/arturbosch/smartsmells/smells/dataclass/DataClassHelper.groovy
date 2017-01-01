@@ -20,7 +20,7 @@ final class DataClassHelper extends VoidVisitorAdapter {
 	}
 
 	static boolean isDataClassMethod(MethodDeclaration method) {
-		def maybeOverride = method.annotations.find { it.name.name == "Override" }
+		def maybeOverride = method.annotations.find { it.nameAsString == "Override" }
 		def is
 		switch (method.name) {
 			case "equals":

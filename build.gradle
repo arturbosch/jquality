@@ -5,20 +5,20 @@ plugins {
 }
 
 apply plugin: 'groovy'
-apply plugin: 'maven-publish'
+apply plugin: 'maven'
 
 group 'io.gitlab.arturbosch.smartsmells'
-version 'M7'
+version 'M8'
 
 repositories {
 	mavenCentral()
 	mavenLocal()
 }
 
-publishing {
-	publications {
-		mavenJava(MavenPublication) {
-			from components.java
+uploadArchives {
+	repositories {
+		mavenDeployer {
+			repository(url: uri('../repo'))
 		}
 	}
 }
@@ -50,10 +50,11 @@ task unitTest( type: Test ) {
 }
 
 dependencies {
-	compile 'org.codehaus.groovy:groovy-all:2.4.6'
-	testCompile 'org.spockframework:spock-core:1.0-groovy-2.4'
-	compile 'com.github.javaparser:javaparser-core:2.5.1'
-	compile 'io.gitlab.arturbosch.jpal:jpal:1.0.RC1'
+	compile 'org.codehaus.groovy:groovy-all:2.4.7'
+	compile 'com.github.javaparser:javaparser-core:3.0.0-RC.4'
+	compile 'com.github.javaparser:java-symbol-solver-core:0.4.0'
+	compile 'io.gitlab.arturbosch.jpal:jpal:1.0.RC2'
 	compile 'org.yaml:snakeyaml:1.17'
 	compile 'com.beust:jcommander:1.48'
+	testCompile 'org.spockframework:spock-core:1.0-groovy-2.4'
 }

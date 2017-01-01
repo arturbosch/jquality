@@ -1,6 +1,5 @@
 package io.gitlab.arturbosch.smartsmells.metrics
 
-import com.github.javaparser.ASTHelper
 import com.github.javaparser.ast.CompilationUnit
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration
 import com.github.javaparser.ast.body.MethodDeclaration
@@ -26,20 +25,20 @@ class ClassInfoVisitor extends Visitor<ClassInfo> {
 	@Override
 	void visit(CompilationUnit n, Object arg) {
 
-		def classes = ASTHelper.getNodesByType(n, ClassOrInterfaceDeclaration.class)
+		def classes = n.getNodesByType(ClassOrInterfaceDeclaration.class)
 
 		classes.each {
 
-			def methods = ASTHelper.getNodesByType(it, MethodDeclaration.class)
+			def methods = it.getNodesByType(MethodDeclaration.class)
 			int methodCount = methods.isEmpty() ? 1 : methods.size()
 
 
 			def methodSizes = methods.stream().map { Optional.ofNullable(it.body) }.filter { it.isPresent() }
-					.map { it.get() }.mapToInt() { it.stmts.size() }
+					.map { it.get() }.mapToInt() { it.map { it.statements.size() }.orElse(0) }
 			def amlSum = methodSizes.sum()
 			def aml = amlSum / methodCount
 			def sml = Math.sqrt(methods.stream().map { Optional.ofNullable(it.body) }.filter { it.isPresent() }
-					.map { it.get() }.mapToInt { it.stmts.size() }
+					.map { it.get() }.mapToInt { it.map { it.statements.size() }.orElse(0) }
 					.mapToDouble { Math.pow(it - amlSum, 2) }.sum() / methodCount)
 
 			def aplSum = methods.stream().mapToInt { it.parameters.size() }.sum()

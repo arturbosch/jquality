@@ -1,10 +1,9 @@
 package io.gitlab.arturbosch.smartsmells.smells.featureenvy
 
-import com.github.javaparser.ASTHelper
 import com.github.javaparser.ast.CompilationUnit
+import com.github.javaparser.ast.Modifier
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration
 import com.github.javaparser.ast.body.MethodDeclaration
-import com.github.javaparser.ast.body.ModifierSet
 import com.github.javaparser.ast.type.ClassOrInterfaceType
 import io.gitlab.arturbosch.jpal.ast.ClassHelper
 import io.gitlab.arturbosch.jpal.ast.LocaleVariableHelper
@@ -53,7 +52,7 @@ class FeatureEnvyVisitor extends Visitor<FeatureEnvy> {
 	@Override
 	void visit(ClassOrInterfaceDeclaration n, Object arg) {
 
-		ASTHelper.getNodesByType(n, ClassOrInterfaceDeclaration.class)
+		n.getNodesByType(ClassOrInterfaceDeclaration.class)
 				.each { visit(it, null) }
 
 		if (ClassHelper.isEmptyBody(n)) return
@@ -72,11 +71,11 @@ class FeatureEnvyVisitor extends Visitor<FeatureEnvy> {
 	private analyzeMethods(List<MethodDeclaration> methods) {
 		MethodHelper.filterAnonymousMethods(methods)
 				.stream()
-				.filter { !(ModifierSet.isStatic(it.modifiers) && ignoreStatic) }
+				.filter { !(it.modifiers.contains(Modifier.STATIC) && ignoreStatic) }
 				.filter { MethodHelper.sizeBiggerThan(2, it) }.each { method ->
 
 			NodeHelper.findDeclaringClass(method).ifPresent {
-				def type = new ClassOrInterfaceType(((ClassOrInterfaceDeclaration) it).name)
+				def type = new ClassOrInterfaceType(((ClassOrInterfaceDeclaration) it).nameAsString)
 				currentClassName = innerClassesHandler.getUnqualifiedNameForInnerClass(type)
 			}
 
@@ -102,7 +101,7 @@ class FeatureEnvyVisitor extends Visitor<FeatureEnvy> {
 				def roundedFactor = (factor * 100).toInteger().toDouble() / 100
 
 				def featureEnvy = new FeatureEnvy(
-						method.name, method.declarationAsString, currentClassName,
+						method.nameAsString, method.declarationAsString, currentClassName,
 						it.name, it.type.toString(), it.nature.toString(),
 						roundedFactor, featureEnvyFactor.threshold,
 						SourcePath.of(path), SourceRange.fromNode(method))

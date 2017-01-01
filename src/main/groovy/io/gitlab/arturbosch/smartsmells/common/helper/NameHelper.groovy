@@ -12,10 +12,9 @@ class NameHelper {
 	static List<String> toFieldNames(List<FieldDeclaration> fields) {
 		fields.stream()
 				.map { it.variables }
-				.map { it.id }
-				.map { it.name }
 				.flatMap { it.stream() }
-				.collect { (String) it }
+				.map { it.nameAsString }
+				.collect { it as String }
 	}
 
 }

@@ -1,6 +1,5 @@
 package io.gitlab.arturbosch.smartsmells.common
 
-import com.github.javaparser.ASTHelper
 import com.github.javaparser.JavaParser
 import com.github.javaparser.ast.CompilationUnit
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration
@@ -38,10 +37,10 @@ class Test {
 	}
 
 	static MethodDeclaration nth(CompilationUnit unit, int n) {
-		ASTHelper.getNodesByType(unit, MethodDeclaration.class).get(n)
+		unit.getNodesByType(MethodDeclaration.class).get(n)
 	}
 
 	static ClassOrInterfaceDeclaration firstClass(CompilationUnit unit) {
-		ASTHelper.getNodesByType(unit, ClassOrInterfaceDeclaration.class).first()
+		unit.getNodesByType(ClassOrInterfaceDeclaration.class).first()
 	}
 }
