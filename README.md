@@ -47,15 +47,23 @@ configurations {
 }
 
 task smartsmells(type: JavaExec) {
-	main = "io.gitlab.arturbosch.smartsmells.Main"
-	classpath = configurations.smartsmells
-	def input = "$project.projectDir.absolutePath"
-	def output = "$project.projectDir/smartsmells.xml"
-	def params = [ '-i', input, '-o', output, '-f']
-	args(params)
+    main = "io.gitlab.arturbosch.smartsmells.Main"
+    classpath = configurations.smartsmells
+    def input = "$project.projectDir.absolutePath/src/main"
+    def baseDir = "$project.projectDir/reports/"
+    Files.createDirectories(Paths.get(baseDir))
+    def output = "$baseDir/smartsmells.xml"
+    def params = [ '-i', input, '-o', output, '-f']
+    args(params)
 }
 
 dependencies {
 	smartsmells 'io.gitlab.arturbosch.smartsmells:SmartSmells:M7'
 }
 ```
+
+As you can see above. the input and output parameters must be specified by yourself.
+Use `Files.createDirectories(Paths.get(baseDir))` if your output path is not the project directory.
+
+
+
