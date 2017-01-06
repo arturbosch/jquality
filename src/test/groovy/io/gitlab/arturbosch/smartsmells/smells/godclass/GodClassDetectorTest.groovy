@@ -23,6 +23,7 @@ class GodClassDetectorTest extends Specification {
 		smells[0].sourceRange != null
 
 		where:
-		smells = new GodClassDetector(tccThreshold: 0.8d).run(Test.GOD_CLASS_DUMMY_PATH)
+		smells = new GodClassDetector(wmcThreshold: 20, tccThreshold: 0.8d, atfdThreshold: 4)
+				.run(Test.GOD_CLASS_DUMMY_PATH)
 	}
 }

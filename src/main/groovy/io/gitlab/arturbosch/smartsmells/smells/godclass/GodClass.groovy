@@ -10,7 +10,7 @@ import io.gitlab.arturbosch.smartsmells.common.DetectionResult
  * @author artur
  */
 @Immutable
-@ToString(includePackage = false)
+@ToString(includePackage = false, excludes = ["weightedMethodPerClassThreshold", "tiedClassCohesionThreshold", "accessToForeignDataThreshold"])
 class GodClass implements DetectionResult {
 
 	String name
@@ -36,16 +36,4 @@ class GodClass implements DetectionResult {
 				"\nATFD: $accessToForeignData with threshold: $accessToForeignDataThreshold"
 	}
 
-	@Override
-	String toString() {
-		return "GodClass{" +
-				"name=" + name +
-				", signature=" + signature +
-				", weightedMethodPerClass=" + weightedMethodPerClass +
-				", tiedClassCohesion=" + tiedClassCohesion +
-				", accessToForeignData=" + accessToForeignData +
-				", path=" + path +
-				", positions=" + sourceRange +
-				'}'
-	}
 }
