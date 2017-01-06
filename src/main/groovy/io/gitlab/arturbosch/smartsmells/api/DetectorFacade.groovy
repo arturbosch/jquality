@@ -1,6 +1,7 @@
 package io.gitlab.arturbosch.smartsmells.api
 
 import io.gitlab.arturbosch.jpal.core.CompilationInfo
+import io.gitlab.arturbosch.jpal.core.CompilationInfoProcessor
 import io.gitlab.arturbosch.jpal.core.CompilationStorage
 import io.gitlab.arturbosch.jpal.core.CompilationTree
 import io.gitlab.arturbosch.smartsmells.common.DetectionResult
@@ -20,6 +21,7 @@ import io.gitlab.arturbosch.smartsmells.smells.longmethod.LongMethodDetector
 import io.gitlab.arturbosch.smartsmells.smells.longparam.LongParameterListDetector
 import io.gitlab.arturbosch.smartsmells.smells.messagechain.MessageChainDetector
 import io.gitlab.arturbosch.smartsmells.smells.middleman.MiddleManDetector
+import io.gitlab.arturbosch.smartsmells.smells.shotgunsurgery.ShotgunSurgeryDetector
 import io.gitlab.arturbosch.smartsmells.util.Validate
 
 import java.nio.file.Path
@@ -55,12 +57,24 @@ class DetectorFacade {
 	}
 
 	SmellResult run(Path startPath) {
+		return internalRun(startPath) { CompilationStorage.create(startPath) }
+	}
+
+	private SmellResult internalRun(Path startPath, Closure<CompilationStorage> create) {
 		Validate.notNull(startPath)
 
 		CompilationTree.registerRoot(startPath)
-		def storage = CompilationStorage.create(startPath)
+		def storage = create()
 		def infos = storage.getAllCompilationInfo()
 
+		return justRun(infos)
+	}
+
+	def <T> SmellResult runWithProcessor(Path startPath, CompilationInfoProcessor<T> processor) {
+		return internalRun(startPath) { CompilationStorage.createWithProcessor(startPath, processor) }
+	}
+
+	SmellResult justRun(List<CompilationInfo> infos) {
 		def forkJoinPool = new ForkJoinPool(
 				Runtime.getRuntime().availableProcessors(),
 				ForkJoinPool.defaultForkJoinWorkerThreadFactory, null, true)
@@ -76,7 +90,6 @@ class DetectorFacade {
 		CompletableFuture.allOf(futures.toArray(new CompletableFuture<?>[0])).join()
 		forkJoinPool.shutdown()
 		return new SmellResult(detectors.collectEntries { [it.type, it.smells] })
-
 	}
 
 	int numberOfDetectors() {
@@ -112,7 +125,7 @@ class DetectorFacade {
 			detectors = [new ComplexMethodDetector(), new CommentDetector(), new LongMethodDetector(),
 						 new LongParameterListDetector(), new DeadCodeDetector(), new LargeClassDetector(),
 						 new MessageChainDetector(), new MiddleManDetector(), new FeatureEnvyDetector(),
-						 new CycleDetector(), new DataClassDetector(), new GodClassDetector()]
+						 new CycleDetector(), new DataClassDetector(), new GodClassDetector(), new ShotgunSurgeryDetector()]
 			build()
 		}
 

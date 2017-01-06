@@ -16,6 +16,7 @@ import io.gitlab.arturbosch.smartsmells.smells.longparam.LongParameterListDetect
 import io.gitlab.arturbosch.smartsmells.smells.messagechain.MessageChainDetector
 import io.gitlab.arturbosch.smartsmells.smells.middleman.MiddleManDetector
 import io.gitlab.arturbosch.smartsmells.smells.middleman.MiddleManVisitor
+import io.gitlab.arturbosch.smartsmells.smells.shotgunsurgery.ShotgunSurgeryDetector
 import io.gitlab.arturbosch.smartsmells.util.Strings
 
 import java.util.function.Function
@@ -132,7 +133,19 @@ enum Smell {
 								MiddleManVisitor.MMT.valueOf(it.get(Constants.THRESHOLD)))
 					})
 		}
-	}, UNKNOWN{
+	}, SHOTGUN_SURGERY{
+
+		@Override
+		Optional<Detector> initialize(DetectorConfig detectorConfig) {
+			initDefault(detectorConfig, Constants.SHOTGUN_SURGERY,
+					{
+						new ShotgunSurgeryDetector(
+								toInt(it.get(Constants.CHANGING_CLASSES), Defaults.CHANGING_CLASSES),
+								toInt(it.get(Constants.CHANGING_METHODS), Defaults.CHANGING_METHODS))
+					})
+		}
+	}
+	, UNKNOWN{
 		@Override
 		Optional<Detector> initialize(DetectorConfig detectorConfig) {
 			return Optional.empty()
@@ -142,8 +155,8 @@ enum Smell {
 	abstract Optional<Detector> initialize(DetectorConfig detectorConfig)
 
 	private static Optional<Detector> initDefault(DetectorConfig detectorConfig,
-	                                              String key,
-	                                              Function<Map<String, String>, Detector> supplier) {
+												  String key,
+												  Function<Map<String, String>, Detector> supplier) {
 		Map<String, String> config = detectorConfig.getKey(key)
 		if (isActive(config)) {
 			return Optional.of(supplier.apply(config))

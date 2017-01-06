@@ -21,4 +21,6 @@ class Defaults {
 	static double FEATURE_ENVY_FACTOR = 0.52
 	static MiddleManVisitor.MMT MIDDLE_MAN_THRESHOLD = MiddleManVisitor.MMT.half
 
+	static int CHANGING_CLASSES = 5
+	static int CHANGING_METHODS = 10
 }
