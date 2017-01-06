@@ -23,7 +23,7 @@ class LongMethodVisitor extends MethodMetricVisitor<LongMethod> {
 		return size > threshold
 	}
 
-	protected def addSmell(BodyDeclaration n) {
+	protected addSmell(BodyDeclaration n) {
 		smells.add(newLongMethod(n, size))
 	}
 }

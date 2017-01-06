@@ -28,7 +28,7 @@ class Main {
 	@Parameter(names = ["--help", "-h"], description = "Shows this help message.")
 	Boolean help
 
-	def static benchmark = { closure ->
+	static benchmark = { closure ->
 		def start = System.currentTimeMillis()
 		closure.call()
 		def now = System.currentTimeMillis()

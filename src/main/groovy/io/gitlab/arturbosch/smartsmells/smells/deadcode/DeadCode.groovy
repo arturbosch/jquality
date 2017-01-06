@@ -24,13 +24,13 @@ class DeadCode implements DetectionResult {
 
 
 	@Override
-	public String toString() {
+	String toString() {
 		return "DeadCode{" +
 				"entityName='" + name + '\'' +
 				", signature='" + signature + '\'' +
 				", path=" + sourcePath +
 				", positions=" + sourceRange +
-				'}';
+				'}'
 	}
 
 	@Override

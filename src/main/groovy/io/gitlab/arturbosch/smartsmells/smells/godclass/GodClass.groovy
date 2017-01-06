@@ -37,7 +37,7 @@ class GodClass implements DetectionResult {
 	}
 
 	@Override
-	public String toString() {
+	String toString() {
 		return "GodClass{" +
 				"name=" + name +
 				", signature=" + signature +
@@ -46,6 +46,6 @@ class GodClass implements DetectionResult {
 				", accessToForeignData=" + accessToForeignData +
 				", path=" + path +
 				", positions=" + sourceRange +
-				'}';
+				'}'
 	}
 }

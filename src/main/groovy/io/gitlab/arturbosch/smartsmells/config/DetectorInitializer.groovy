@@ -7,22 +7,22 @@ import io.gitlab.arturbosch.smartsmells.common.Detector
  */
 class DetectorInitializer {
 
-	private final ArrayList<Detector> detectors;
+	private final ArrayList<Detector> detectors
 
 	private DetectorInitializer() {
-		this.detectors = new ArrayList<>();
+		this.detectors = new ArrayList<>()
 	}
 
 	static List<Detector> init(DetectorConfig config) {
 
-		DetectorInitializer initializer = new DetectorInitializer();
+		DetectorInitializer initializer = new DetectorInitializer()
 
 		Smell.values().each {
 			it.initialize(config)
 					.ifPresent { initializer.detectors.add(it) }
 		}
 
-		return initializer.detectors;
+		return initializer.detectors
 	}
 
 }

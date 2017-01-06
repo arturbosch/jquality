@@ -24,7 +24,7 @@ class Dependency implements DetectionResult {
 	}
 
 	@Override
-	public String toString() {
+	String toString() {
 		return "{$name, $signature, $sourcePath, $sourceRange}"
 	}
 

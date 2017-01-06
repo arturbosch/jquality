@@ -36,11 +36,11 @@ class Cycle implements DetectionResult {
 	}
 
 	@Override
-	public String toString() {
+	String toString() {
 		return "Cycle{" +
 				"source=" + source.toString() +
 				", target=" + target.toString() +
-				'}';
+				'}'
 	}
 
 	@Override

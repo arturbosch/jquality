@@ -33,35 +33,35 @@ enum Smell {
 		Optional<Detector> initialize(DetectorConfig detectorConfig) {
 			return initDefault(detectorConfig, Constants.CLASS_INFO, {
 				new ClassInfoDetector(Strings.isTrue(it.get(Constants.SKIP_CC_CM)))
-			});
+			})
 		}
 	},
 	COMMENT{
 		@Override
 		Optional<Detector> initialize(DetectorConfig detectorConfig) {
-			return initDefault(detectorConfig, Constants.COMMENT, { new CommentDetector() });
+			return initDefault(detectorConfig, Constants.COMMENT, { new CommentDetector() })
 		}
 	}, COMPLEX_METHOD{
 		@Override
 		Optional<Detector> initialize(DetectorConfig detectorConfig) {
 			return initDefault(detectorConfig, Constants.COMPLEX_METHOD, {
 				new ComplexMethodDetector(toInt(it.get(Constants.THRESHOLD), Defaults.COMPLEX_METHOD))
-			});
+			})
 		}
 	}, CYCLE{
 		@Override
 		Optional<Detector> initialize(DetectorConfig detectorConfig) {
-			return initDefault(detectorConfig, Constants.CYCLE, { new CycleDetector() });
+			return initDefault(detectorConfig, Constants.CYCLE, { new CycleDetector() })
 		}
 	}, DATA_CLASS{
 		@Override
 		Optional<Detector> initialize(DetectorConfig detectorConfig) {
-			return initDefault(detectorConfig, Constants.DATA_CLASS, { new DataClassDetector() });
+			return initDefault(detectorConfig, Constants.DATA_CLASS, { new DataClassDetector() })
 		}
 	}, DEAD_CODE{
 		@Override
 		Optional<Detector> initialize(DetectorConfig detectorConfig) {
-			return initDefault(detectorConfig, Constants.DEAD_CODE, { new DeadCodeDetector() });
+			return initDefault(detectorConfig, Constants.DEAD_CODE, { new DeadCodeDetector() })
 		}
 	}, FEATURE_ENVY{
 		@Override
@@ -144,15 +144,15 @@ enum Smell {
 	private static Optional<Detector> initDefault(DetectorConfig detectorConfig,
 	                                              String key,
 	                                              Function<Map<String, String>, Detector> supplier) {
-		Map<String, String> config = detectorConfig.getKey(key);
+		Map<String, String> config = detectorConfig.getKey(key)
 		if (isActive(config)) {
-			return Optional.of(supplier.apply(config));
+			return Optional.of(supplier.apply(config))
 		}
 		Optional.empty()
 	}
 
 	private static boolean isActive(final Map<String, String> config) {
-		return config != null && !config.isEmpty() && "true" == config.get(Constants.ACTIVE);
+		return config != null && !config.isEmpty() && "true" == config.get(Constants.ACTIVE)
 	}
 
 }
