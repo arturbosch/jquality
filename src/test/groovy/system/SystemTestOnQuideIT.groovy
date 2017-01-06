@@ -1,11 +1,13 @@
 package system
 
 import io.gitlab.arturbosch.jpal.core.CompilationStorage
+import io.gitlab.arturbosch.smartsmells.Main
 import io.gitlab.arturbosch.smartsmells.api.DetectorFacade
 import io.gitlab.arturbosch.smartsmells.config.Smell
 import io.gitlab.arturbosch.smartsmells.metrics.ClassInfo
 import io.gitlab.arturbosch.smartsmells.metrics.ClassInfoDetector
 import io.gitlab.arturbosch.smartsmells.out.XMLWriter
+import io.gitlab.arturbosch.smartsmells.smells.godclass.GodClassDetector
 import spock.lang.Specification
 
 import java.nio.file.Paths
@@ -18,9 +20,9 @@ class SystemTestOnQuideIT extends Specification {
 
 	def "compilation storage"() {
 		given:
-		def path = "/home/artur/Repos/quide-master/Implementierung/QuideService/src/main"
+//		def path = "/home/artur/Repos/quide-master/Implementierung/QuideService/src/main"
 //		def path = "/home/artur/Repos/quide-master/Implementierung/QuIDE_Plugin/"
-//		def path = "/home/artur/Arbeit/tools/ismell/src/main"
+		def path = "/home/artur/Arbeit/tools/ismell/src/main"
 //		def path = "/home/artur/Repos/elasticsearch/core/src/main/"
 //		def path = "/home/artur/Repos/RxJava/src/main"
 //		def path = "/home/artur/Arbeit/agst/pooka-co/trunk/pooka/src"
@@ -36,16 +38,16 @@ class SystemTestOnQuideIT extends Specification {
 
 	def "metrics on quide"() {
 		given:
-		def path = "/home/artur/Repos/quide-master/Implementierung/QuideService/src/main"
+//		def path = "/home/artur/Repos/quide-master/Implementierung/QuideService/src/main"
 //		def path = "/home/artur/Arbeit/tools/ismell/src/main"
-//		def path = "/home/artur/Repos/elasticsearch/core/src/main/"
+		def path = "/home/artur/Repos/elasticsearch/core/src/main/" // 26-28s
 //		def path = "/home/artur/Repos/RxJava/src/main"
 //		def path = "/home/artur/Arbeit/agst/pooka-co/trunk/pooka/src"
 //		def path = "/home/artur/Repos/vert.x/src/main/java"
 //		def path = "/home/artur/Repos/netty"
 
 		when:
-		def result = DetectorFacade.builder().with(new ClassInfoDetector(true)).build()
+		def result = DetectorFacade.builder().with(new ClassInfoDetector(false)).build()
 				.run(Paths.get(path)).of(Smell.CLASS_INFO)
 		result.each { println(it.toString()) }
 		println "size: ${result.size()}"
@@ -97,10 +99,10 @@ class SystemTestOnQuideIT extends Specification {
 
 	def "run on quide and find no same feature envy twice"() {
 		given:
-		def path = "/home/artur/Repos/quide-master/Implementierung/QuideService/src/main"
+//		def path = "/home/artur/Repos/quide-master/Implementierung/QuideService/src/main"
 //		def path = "/home/artur/Arbeit/tools/ismell/src/main"
 //		def path = "/home/artur/Arbeit/agst/pooka-co/trunk/pooka/src"
-//		def path = "/home/artur/Repos/elasticsearch/core/src/main/"
+		def path = "/home/artur/Repos/elasticsearch/core/src/main/" // 32-32 s
 //		def path = Paths.getResource("/cornercases").getFile()
 		def result = DetectorFacade.builder().fullStackFacade().run(Paths.get(path))
 		def envies = result.of(Smell.FEATURE_ENVY)
