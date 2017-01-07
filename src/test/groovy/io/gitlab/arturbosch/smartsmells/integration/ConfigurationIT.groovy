@@ -21,7 +21,7 @@ class ConfigurationIT extends Specification {
 		def result = facade.run(Test.PATH)
 
 		then:
-		result.smellSets.size() == 12
+		result.smellSets.size() >= 12
 
 		when:
 		def xml = XMLWriter.toXml(result)
@@ -38,7 +38,7 @@ class ConfigurationIT extends Specification {
 		def result = DetectorFacade.fullStackFacade().run(Test.PATH)
 
 		then:
-		result.smellSets.size() == 12
+		result.smellSets.size() >= 12
 
 		when:
 		def xml = XMLWriter.toXml(result)
