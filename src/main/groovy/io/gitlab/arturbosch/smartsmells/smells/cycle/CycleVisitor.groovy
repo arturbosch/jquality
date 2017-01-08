@@ -46,15 +46,12 @@ class CycleVisitor extends Visitor<Cycle> {
 		def fields = NodeHelper.findFields(n)
 		fields.each { field ->
 
-			def qualifiedType = Resolver.getQualifiedType(packageImportHolder, field.commonType)
+			def unqualifiedFieldName = innerClassesHandler.getUnqualifiedNameForInnerClass(field.commonType)
+			def qualifiedType = Resolver.getQualifiedType(packageImportHolder,
+					new ClassOrInterfaceType(unqualifiedFieldName))
+
 			if (qualifiedType.isReference()) {
-
-				def unqualifiedFieldName = innerClassesHandler.getUnqualifiedNameForInnerClass(field.commonType)
-				qualifiedType = Resolver.getQualifiedType(
-						packageImportHolder, new ClassOrInterfaceType(unqualifiedFieldName))
-
 				searchForCycles(qualifiedType, thisClassType, field)
-
 			}
 		}
 

@@ -1,13 +1,11 @@
 package system
 
 import io.gitlab.arturbosch.jpal.core.CompilationStorage
-import io.gitlab.arturbosch.smartsmells.Main
 import io.gitlab.arturbosch.smartsmells.api.DetectorFacade
 import io.gitlab.arturbosch.smartsmells.config.Smell
 import io.gitlab.arturbosch.smartsmells.metrics.ClassInfo
 import io.gitlab.arturbosch.smartsmells.metrics.ClassInfoDetector
 import io.gitlab.arturbosch.smartsmells.out.XMLWriter
-import io.gitlab.arturbosch.smartsmells.smells.godclass.GodClassDetector
 import spock.lang.Specification
 
 import java.nio.file.Paths
