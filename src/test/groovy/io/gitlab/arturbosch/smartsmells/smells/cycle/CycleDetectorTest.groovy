@@ -2,8 +2,8 @@ package io.gitlab.arturbosch.smartsmells.smells.cycle
 
 import io.gitlab.arturbosch.jpal.ast.source.SourcePath
 import io.gitlab.arturbosch.jpal.ast.source.SourceRange
+import io.gitlab.arturbosch.jpal.core.CompilationStorage
 import io.gitlab.arturbosch.smartsmells.common.Test
-import spock.lang.Ignore
 
 import java.nio.file.Paths
 
@@ -15,23 +15,22 @@ import java.nio.file.Paths
  */
 class CycleDetectorTest extends AbstractCompilationTreeTest {
 
-	@Ignore
 	def "find one cycle in CycleDummy and OtherCycle, one as inner classes of CycleDummy"() {
-		expect:
-		int size = smells.size()
-		size == 2
-
-		where:
-		smells = new CycleDetector(Test.PATH).run(Test.CYCLE_DUMMY_PATH)
+		given:
+		CompilationStorage.create(Test.PATH)
+		when:
+		def smells = new CycleDetector().run(Test.CYCLE_DUMMY_PATH)
+		then:
+		smells.size() == 2
 	}
 
-	@Ignore
 	def "find cycle in inner classes of CycleDummy"() {
-		expect:
+		given:
+		CompilationStorage.create(Test.CYCLE_DUMMY_PATH)
+		when:
+		def smells = new CycleDetector().run(Test.CYCLE_DUMMY_PATH)
+		then:
 		smells.size() == 1
-
-		where:
-		smells = new CycleDetector(Test.CYCLE_DUMMY_PATH).run(Test.CYCLE_DUMMY_PATH)
 	}
 
 	def "cycles are equals, dependency position doesn't matter"() {
