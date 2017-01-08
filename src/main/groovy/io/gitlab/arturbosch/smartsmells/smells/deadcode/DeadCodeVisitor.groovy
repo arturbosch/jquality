@@ -197,7 +197,9 @@ class DeadCodeVisitor extends Visitor<DeadCode> {
 		void visit(MethodCallExpr n, Object arg) {
 			methodsToReferenceCount.computeIfPresent(n.nameAsString, { key, value -> value + 1 })
 
-			checkArguments(n.scope)
+			n.scope.ifPresent {
+				checkArguments(it)
+			}
 
 			n.arguments.each {
 				checkArguments(it)

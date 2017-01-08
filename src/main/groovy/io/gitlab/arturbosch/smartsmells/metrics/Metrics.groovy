@@ -112,8 +112,8 @@ final class Metrics {
 				.filter { isNotAGetterOrSetter(it.nameAsString) }
 				.each {
 
-			if (it.scope && !usedScopes.contains(it.scope.toString(Printer.NO_COMMENTS))) {
-				usedScopes.add(it.scope.toString(Printer.NO_COMMENTS))
+			if (it.scope.isPresent() && !usedScopes.contains(it.scope.get().toString(Printer.NO_COMMENTS))) {
+				usedScopes.add(it.scope.get().toString(Printer.NO_COMMENTS))
 				atfd++
 			}
 		}

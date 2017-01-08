@@ -70,8 +70,8 @@ class MessageChainVisitor extends Visitor<MessageChain> {
 	}
 
 	def extractExpressionNames(MethodCallExpr n) {
-		if (n.scope == null || !(n.scope instanceof MethodCallExpr)) return n.nameAsString
-		return extractExpressionNames((MethodCallExpr) n.scope) + "." + n.nameAsString
+		if (!n.scope.isPresent() || !(n.scope.get() instanceof MethodCallExpr)) return n.nameAsString
+		return extractExpressionNames((MethodCallExpr) n.scope.get()) + "." + n.nameAsString
 	}
 
 	private static countOccurrences(String source, String pattern) {
