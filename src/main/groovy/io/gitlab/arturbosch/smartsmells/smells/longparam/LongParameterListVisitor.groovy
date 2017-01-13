@@ -6,8 +6,6 @@ import io.gitlab.arturbosch.jpal.ast.MethodHelper
 import io.gitlab.arturbosch.jpal.internal.Printer
 import io.gitlab.arturbosch.smartsmells.common.visitor.MethodMetricVisitor
 
-import java.nio.file.Path
-
 /**
  * @author artur
  */
@@ -15,8 +13,8 @@ class LongParameterListVisitor extends MethodMetricVisitor<LongParameterList> {
 
 	List<Parameter> parameters
 
-	LongParameterListVisitor(int threshold, Path path) {
-		super(threshold, path)
+	LongParameterListVisitor(int threshold) {
+		super(threshold)
 	}
 
 	@Override

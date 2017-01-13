@@ -13,9 +13,9 @@ import io.gitlab.arturbosch.jpal.ast.NodeHelper
 import io.gitlab.arturbosch.jpal.ast.TypeHelper
 import io.gitlab.arturbosch.jpal.ast.VariableHelper
 import io.gitlab.arturbosch.jpal.ast.source.SourceRange
-import io.gitlab.arturbosch.jpal.core.CompilationStorage
 import io.gitlab.arturbosch.jpal.internal.Printer
 import io.gitlab.arturbosch.jpal.internal.StreamCloser
+import io.gitlab.arturbosch.jpal.resolution.Resolver
 import io.gitlab.arturbosch.smartsmells.common.helper.NameHelper
 import io.gitlab.arturbosch.smartsmells.common.visitor.CyclomaticComplexityVisitor
 import io.gitlab.arturbosch.smartsmells.smells.godclass.FieldAccessVisitor
@@ -31,7 +31,7 @@ import java.util.stream.Collectors
  */
 final class Metrics {
 
-	static int cm(ClassOrInterfaceDeclaration n) {
+	static int cm(ClassOrInterfaceDeclaration n, Resolver resolver) {
 		int cm = -1
 		TypeHelper.getQualifiedType(n)
 				.ifPresent { type ->
@@ -42,7 +42,7 @@ final class Metrics {
 					.map { it.name }
 					.collect()
 
-			cm = CompilationStorage.getAllCompilationInfo()
+			cm = resolver.storage.getAllCompilationInfo()
 					.stream()
 					.filter { it.isWithinScope(type) }
 					.map { it.unit.getNodesByType(MethodCallExpr.class) }
@@ -55,11 +55,11 @@ final class Metrics {
 		return cm
 	}
 
-	static int cc(ClassOrInterfaceDeclaration n) {
+	static int cc(ClassOrInterfaceDeclaration n, Resolver resolver) {
 		int cc = -1
 		TypeHelper.getQualifiedType(n)
 				.ifPresent { type ->
-			cc = CompilationStorage.getAllCompilationInfo()
+			cc = resolver.storage.getAllCompilationInfo()
 					.stream()
 					.filter { it.isWithinScope(type) }
 					.mapToInt { 1 }

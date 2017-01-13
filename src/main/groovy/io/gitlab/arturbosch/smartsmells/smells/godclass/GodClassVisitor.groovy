@@ -6,6 +6,7 @@ import com.github.javaparser.ast.visitor.VoidVisitorAdapter
 import io.gitlab.arturbosch.jpal.ast.ClassHelper
 import io.gitlab.arturbosch.jpal.ast.source.SourcePath
 import io.gitlab.arturbosch.jpal.ast.source.SourceRange
+import io.gitlab.arturbosch.jpal.resolution.Resolver
 import io.gitlab.arturbosch.smartsmells.common.Visitor
 import io.gitlab.arturbosch.smartsmells.metrics.Metrics
 
@@ -30,16 +31,14 @@ class GodClassVisitor extends Visitor<GodClass> {
 
 	GodClassVisitor(int accessToForeignDataThreshold,
 					int weightedMethodCountThreshold,
-					double tiedClassCohesionThreshold,
-					Path path) {
-		super(path)
+					double tiedClassCohesionThreshold) {
 		this.accessToForeignDataThreshold = accessToForeignDataThreshold
 		this.weightedMethodCountThreshold = weightedMethodCountThreshold
 		this.tiedClassCohesionThreshold = tiedClassCohesionThreshold
 	}
 
 	@Override
-	void visit(CompilationUnit n, Object arg) {
+	void visit(CompilationUnit n, Resolver resolver) {
 
 		def classes = n.getNodesByType(ClassOrInterfaceDeclaration.class)
 

@@ -1,7 +1,7 @@
 package system
 
-import com.github.javaparser.ast.CompilationUnit
-import io.gitlab.arturbosch.jpal.core.CompilationStorage
+import io.gitlab.arturbosch.jpal.core.CompilationInfo
+import io.gitlab.arturbosch.jpal.resolution.Resolver
 import io.gitlab.arturbosch.smartsmells.common.Detector
 import io.gitlab.arturbosch.smartsmells.common.Visitor
 import io.gitlab.arturbosch.smartsmells.config.Defaults
@@ -9,8 +9,6 @@ import io.gitlab.arturbosch.smartsmells.config.Smell
 import io.gitlab.arturbosch.smartsmells.metrics.ClassInfo
 import io.gitlab.arturbosch.smartsmells.metrics.CompilationUnitMetrics
 import io.gitlab.arturbosch.smartsmells.smells.godclass.GodClass
-
-import java.nio.file.Path
 
 /**
  * @author Artur Bosch
@@ -23,16 +21,16 @@ class GodClassMetricVisitor extends Detector<GodClass> {
 	}
 
 	@Override
-	protected Visitor getVisitor(Path path) {
-		return new Visitor(path) {
+	protected Visitor getVisitor() {
+		return new Visitor() {
 
 			int wmcThreshold = Defaults.WEIGHTED_METHOD_COUNT
 			int atfdThreshold = Defaults.ACCESS_TO_FOREIGN_DATA
 			double tccThreshold = Defaults.TIED_CLASS_COHESION
 
 			@Override
-			void visit(CompilationUnit n, Object arg) {
-				CompilationStorage.getCompilationInfo(this.path).ifPresent { info ->
+			void visit(CompilationInfo n, Resolver resolver) {
+				resolver.storage.getCompilationInfo(info.path).ifPresent { info ->
 					def object = info.getProcessedObject(CompilationUnitMetrics.class)
 					object.infos.each {
 						if (checkThresholds(it)) {

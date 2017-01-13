@@ -1,6 +1,6 @@
 package system
 
-import io.gitlab.arturbosch.jpal.core.CompilationStorage
+import io.gitlab.arturbosch.jpal.core.JPAL
 import io.gitlab.arturbosch.smartsmells.api.DetectorFacade
 import io.gitlab.arturbosch.smartsmells.config.Smell
 import io.gitlab.arturbosch.smartsmells.metrics.ClassInfo
@@ -26,7 +26,7 @@ class SystemTestOnQuideIT extends Specification {
 //		def path = "/home/artur/Arbeit/agst/pooka-co/trunk/pooka/src"
 
 		when:
-		def storage = CompilationStorage.create(Paths.get(path))
+		def storage = JPAL.new(Paths.get(path))
 		def types = storage.getAllQualifiedTypes()
 
 		then:

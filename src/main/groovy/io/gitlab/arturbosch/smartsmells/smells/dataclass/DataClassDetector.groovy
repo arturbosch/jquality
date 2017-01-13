@@ -12,8 +12,8 @@ import java.nio.file.Path
 class DataClassDetector extends Detector<DataClass> {
 
 	@Override
-	protected Visitor getVisitor(Path path) {
-		new DataClassVisitor(path)
+	protected Visitor getVisitor() {
+		return new DataClassVisitor()
 	}
 
 	@Override

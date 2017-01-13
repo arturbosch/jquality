@@ -1,23 +1,22 @@
 package io.gitlab.arturbosch.smartsmells.smells.cycle
 
-import com.github.javaparser.ast.CompilationUnit
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration
 import com.github.javaparser.ast.body.FieldDeclaration
 import com.github.javaparser.ast.type.ClassOrInterfaceType
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter
 import io.gitlab.arturbosch.jpal.ast.ClassHelper
-import io.gitlab.arturbosch.jpal.nested.InnerClassesHandler
-import io.gitlab.arturbosch.jpal.resolve.QualifiedType
-import io.gitlab.arturbosch.jpal.resolve.ResolutionData
-import io.gitlab.arturbosch.jpal.resolve.Resolver
+import io.gitlab.arturbosch.jpal.core.CompilationInfo
+import io.gitlab.arturbosch.jpal.resolution.QualifiedType
+import io.gitlab.arturbosch.jpal.resolution.Resolver
+import io.gitlab.arturbosch.jpal.resolution.nested.InnerClassesHandler
 
 /**
  * @author artur
  */
-class SameFieldTypeVisitor extends VoidVisitorAdapter {
+class SameFieldTypeVisitor extends VoidVisitorAdapter<Resolver> {
 
 	private QualifiedType searchedType
-	private ResolutionData resolutionData
+	private CompilationInfo info
 	private InnerClassesHandler innerClassesHandler
 
 	private boolean found
@@ -28,18 +27,16 @@ class SameFieldTypeVisitor extends VoidVisitorAdapter {
 		this.searchedType = searchedType
 	}
 
-	@Override
-	void visit(CompilationUnit n, Object arg) {
-		resolutionData = ResolutionData.of(n)
-		innerClassesHandler = new InnerClassesHandler(n)
-		super.visit(n, arg)
+	void visit(CompilationInfo info, Resolver resolver) {
+		this.info = info
+		innerClassesHandler = info.data.innerClassesHandler
+		super.visit(info.unit, resolver)
 	}
 
 	@Override
-	void visit(ClassOrInterfaceDeclaration n, Object arg) {
+	void visit(ClassOrInterfaceDeclaration n, Resolver arg) {
 		String unqualifiedName = ClassHelper.appendOuterClassIfInnerClass(n)
-		currentClass = Resolver.getQualifiedType(
-				resolutionData, new ClassOrInterfaceType(unqualifiedName))
+		currentClass = arg.resolveType(new ClassOrInterfaceType(unqualifiedName), info)
 		if (currentClass.name == searchedType.name) {
 			// Note: Singletons are no cycles
 			found = false
@@ -50,10 +47,9 @@ class SameFieldTypeVisitor extends VoidVisitorAdapter {
 	}
 
 	@Override
-	void visit(FieldDeclaration n, Object arg) {
+	void visit(FieldDeclaration n, Resolver arg) {
 		def unqualifiedFieldName = innerClassesHandler.getUnqualifiedNameForInnerClass(n.commonType)
-		def qualifiedType = Resolver.getQualifiedType(
-				resolutionData, new ClassOrInterfaceType(unqualifiedFieldName))
+		def qualifiedType = arg.resolveType(new ClassOrInterfaceType(unqualifiedFieldName), info)
 
 		if (qualifiedType.isReference()) {
 			if (qualifiedType.name == searchedType.name) {

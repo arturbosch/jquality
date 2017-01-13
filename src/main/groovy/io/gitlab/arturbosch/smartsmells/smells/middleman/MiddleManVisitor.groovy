@@ -9,10 +9,9 @@ import io.gitlab.arturbosch.jpal.ast.NodeHelper
 import io.gitlab.arturbosch.jpal.ast.source.SourcePath
 import io.gitlab.arturbosch.jpal.ast.source.SourceRange
 import io.gitlab.arturbosch.jpal.internal.Printer
+import io.gitlab.arturbosch.jpal.resolution.Resolver
 import io.gitlab.arturbosch.smartsmells.common.Visitor
 import io.gitlab.arturbosch.smartsmells.metrics.Metrics
-
-import java.nio.file.Path
 
 /**
  * @author artur
@@ -25,13 +24,12 @@ class MiddleManVisitor extends Visitor<MiddleMan> {
 		all, half, third
 	}
 
-	MiddleManVisitor(Path path, MMT threshold) {
-		super(path)
+	MiddleManVisitor(MMT threshold) {
 		this.threshold = threshold
 	}
 
 	@Override
-	void visit(ClassOrInterfaceDeclaration n, Object arg) {
+	void visit(ClassOrInterfaceDeclaration n, Resolver resolver) {
 		if (ClassHelper.isEmptyBody(n)) return
 		if (ClassHelper.hasNoMethods(n)) return
 
@@ -49,7 +47,7 @@ class MiddleManVisitor extends Visitor<MiddleMan> {
 					SourcePath.of(path), SourceRange.fromNode(n)))
 		}
 
-		super.visit(n, arg)
+		super.visit(n, resolver)
 	}
 
 	private boolean checkThreshold(Map<Boolean, List<MethodDeclaration>> map) {

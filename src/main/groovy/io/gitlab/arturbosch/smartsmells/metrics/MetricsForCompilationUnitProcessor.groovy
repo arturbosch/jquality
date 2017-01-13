@@ -10,7 +10,8 @@ class MetricsForCompilationUnitProcessor implements CompilationInfoProcessor<Com
 
 	@Override
 	CompilationUnitMetrics process(CompilationInfo compilationInfo) {
-		def visitor = new ClassInfoVisitor(compilationInfo.path, false)
+		def visitor = new ClassInfoVisitor(false)
+		visitor.initialize(compilationInfo)
 		visitor.visit(compilationInfo.unit, null)
 		return new CompilationUnitMetrics(visitor.getSmells())
 	}

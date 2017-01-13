@@ -16,9 +16,10 @@ import java.nio.file.Paths
 class Test {
 	static Path PATH = Paths.get("./src/test/groovy/io/gitlab/arturbosch/smartsmells/java/")
 	static Path BASE_PATH = Paths.get("./src/test/groovy/io/gitlab/arturbosch/smartsmells/java/")
+	static Path CYLES_PATH = BASE_PATH.resolve("cycles")
 	static Path COMMENT_DUMMY_PATH = BASE_PATH.resolve("CommentDummy.java")
-	static Path CYCLE_DUMMY_PATH = BASE_PATH.resolve("CycleDummy.java")
-	static Path SINGLETON_CYCLE_PATH = BASE_PATH.resolve("SingletonCycleDummy.java")
+	static Path CYCLE_DUMMY_PATH = BASE_PATH.resolve("cycles/CycleDummy.java")
+	static Path SINGLETON_CYCLE_PATH = BASE_PATH.resolve("cycles/SingletonCycleDummy.java")
 	static Path DATA_CLASS_DUMMY_PATH = BASE_PATH.resolve("DataClassDummy.java")
 	static Path EMPTY_DATA_CLASS_DUMMY_PATH = BASE_PATH.resolve("EmptyDataClassDummy.java")
 	static Path COMPLEX_METHOD_DUMMY_PATH = BASE_PATH.resolve("ComplexMethodDummy.java")

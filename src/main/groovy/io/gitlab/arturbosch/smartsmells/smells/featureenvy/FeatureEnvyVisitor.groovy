@@ -13,11 +13,10 @@ import io.gitlab.arturbosch.jpal.ast.VariableHelper
 import io.gitlab.arturbosch.jpal.ast.custom.JpalVariable
 import io.gitlab.arturbosch.jpal.ast.source.SourcePath
 import io.gitlab.arturbosch.jpal.ast.source.SourceRange
-import io.gitlab.arturbosch.jpal.nested.InnerClassesHandler
-import io.gitlab.arturbosch.jpal.resolve.ResolutionData
+import io.gitlab.arturbosch.jpal.resolution.Resolver
+import io.gitlab.arturbosch.jpal.resolution.nested.InnerClassesHandler
 import io.gitlab.arturbosch.smartsmells.common.Visitor
 
-import java.nio.file.Path
 import java.util.stream.Collectors
 
 /**
@@ -35,22 +34,20 @@ class FeatureEnvyVisitor extends Visitor<FeatureEnvy> {
 
 	private boolean ignoreStatic
 
-	FeatureEnvyVisitor(Path path, FeatureEnvyFactor factor, boolean ignoreStatic = false) {
-		super(path)
+	FeatureEnvyVisitor(FeatureEnvyFactor factor, boolean ignoreStatic = false) {
 		this.featureEnvyFactor = factor
 		this.ignoreStatic = ignoreStatic
 	}
 
 	@Override
-	void visit(CompilationUnit n, Object arg) {
-		def resolutionData = ResolutionData.of(n)
-		javaClassFilter = new JavaClassFilter(resolutionData)
-		innerClassesHandler = new InnerClassesHandler(n)
-		super.visit(n, arg)
+	void visit(CompilationUnit n, Resolver resolver) {
+		javaClassFilter = new JavaClassFilter(info, resolver)
+		innerClassesHandler = info.data.innerClassesHandler
+		super.visit(n, resolver)
 	}
 
 	@Override
-	void visit(ClassOrInterfaceDeclaration n, Object arg) {
+	void visit(ClassOrInterfaceDeclaration n, Resolver resolver) {
 
 		n.getNodesByType(ClassOrInterfaceDeclaration.class)
 				.each { visit(it, null) }

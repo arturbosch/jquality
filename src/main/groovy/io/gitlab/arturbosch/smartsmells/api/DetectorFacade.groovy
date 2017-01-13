@@ -3,7 +3,8 @@ package io.gitlab.arturbosch.smartsmells.api
 import io.gitlab.arturbosch.jpal.core.CompilationInfo
 import io.gitlab.arturbosch.jpal.core.CompilationInfoProcessor
 import io.gitlab.arturbosch.jpal.core.CompilationStorage
-import io.gitlab.arturbosch.jpal.core.CompilationTree
+import io.gitlab.arturbosch.jpal.core.JPAL
+import io.gitlab.arturbosch.jpal.resolution.Resolver
 import io.gitlab.arturbosch.smartsmells.common.DetectionResult
 import io.gitlab.arturbosch.smartsmells.common.Detector
 import io.gitlab.arturbosch.smartsmells.config.DetectorConfig
@@ -21,12 +22,10 @@ import io.gitlab.arturbosch.smartsmells.smells.longmethod.LongMethodDetector
 import io.gitlab.arturbosch.smartsmells.smells.longparam.LongParameterListDetector
 import io.gitlab.arturbosch.smartsmells.smells.messagechain.MessageChainDetector
 import io.gitlab.arturbosch.smartsmells.smells.middleman.MiddleManDetector
-import io.gitlab.arturbosch.smartsmells.smells.shotgunsurgery.ShotgunSurgeryDetector
 import io.gitlab.arturbosch.smartsmells.util.Validate
 
 import java.nio.file.Path
 import java.util.concurrent.CompletableFuture
-import java.util.concurrent.ForkJoinPool
 
 /**
  * @author artur
@@ -39,16 +38,12 @@ class DetectorFacade {
 		this.detectors = detectors
 	}
 
-	static DetectorFacade fullStackFacade() {
-		return new DetectorFacadeBuilder().fullStackFacade()
-	}
-
-	static DetectorFacade metricFacade() {
-		return new DetectorFacadeBuilder().with(new ClassInfoDetector()).build()
-	}
-
 	static DetectorFacadeBuilder builder() {
 		return new DetectorFacadeBuilder()
+	}
+
+	static DetectorFacade fullStackFacade() {
+		return new DetectorFacadeBuilder().fullStackFacade()
 	}
 
 	static DetectorFacade fromConfig(final DetectorConfig config) {
@@ -57,24 +52,24 @@ class DetectorFacade {
 	}
 
 	SmellResult run(Path startPath) {
-		return internalRun(startPath) { CompilationStorage.create(startPath) }
+		return internalRun(startPath) { JPAL.new(startPath) }
+	}
+
+	def <T> SmellResult runWithProcessor(Path startPath, CompilationInfoProcessor<T> processor) {
+		return internalRun(startPath) { JPAL.new(startPath, processor) }
 	}
 
 	private SmellResult internalRun(Path startPath, Closure<CompilationStorage> create) {
 		Validate.notNull(startPath)
 
-		CompilationTree.registerRoot(startPath)
 		def storage = create()
+		def resolver = new Resolver(storage)
 		def infos = storage.getAllCompilationInfo()
 
-		return justRun(infos)
+		return justRun(infos, resolver)
 	}
 
-	def <T> SmellResult runWithProcessor(Path startPath, CompilationInfoProcessor<T> processor) {
-		return internalRun(startPath) { CompilationStorage.createWithProcessor(startPath, processor) }
-	}
-
-	SmellResult justRun(List<CompilationInfo> infos) {
+	SmellResult justRun(List<CompilationInfo> infos, Resolver resolver) {
 		def forkJoinPool = new ForkJoinPool(
 				Runtime.getRuntime().availableProcessors(),
 				ForkJoinPool.defaultForkJoinWorkerThreadFactory, null, true)
@@ -82,9 +77,11 @@ class DetectorFacade {
 		List<CompletableFuture> futures = new ArrayList<>(infos.size())
 
 		infos.forEach { info ->
-			futures.add(CompletableFuture
-					.supplyAsync({ internal(detectors, info) }, forkJoinPool)
-					.exceptionally { handle(it) })
+			futures.add(CompletableFuture.runAsync({
+				for (Detector detector : detectors) {
+					detector.execute(info, resolver)
+				}
+			}, forkJoinPool).exceptionally { handle(it) })
 		}
 
 		CompletableFuture.allOf(futures.toArray(new CompletableFuture<?>[0])).join()
@@ -92,23 +89,13 @@ class DetectorFacade {
 		return new SmellResult(detectors.collectEntries { [it.type, it.smells] })
 	}
 
-	int numberOfDetectors() {
-		return detectors.size()
-	}
-
-	private static void internal(List<Detector> detectors, CompilationInfo info) {
-		List<CompletableFuture> futures = new ArrayList<>()
-		detectors.each { detector ->
-			futures.add(CompletableFuture
-					.supplyAsync { detector.execute(info.unit, info.path) }
-					.exceptionally { handle(it) })
-		}
-		CompletableFuture.allOf(futures.toArray(new CompletableFuture<?>[0])).join()
-	}
-
 	private static ArrayList handle(Throwable throwable) {
 		println throwable.printStackTrace()
 		return new ArrayList<>()
+	}
+
+	int numberOfDetectors() {
+		return detectors.size()
 	}
 
 	private static class DetectorFacadeBuilder {
@@ -125,8 +112,12 @@ class DetectorFacade {
 			detectors = [new ComplexMethodDetector(), new CommentDetector(), new LongMethodDetector(),
 						 new LongParameterListDetector(), new DeadCodeDetector(), new LargeClassDetector(),
 						 new MessageChainDetector(), new MiddleManDetector(), new FeatureEnvyDetector(),
-						 new CycleDetector(), new DataClassDetector(), new GodClassDetector(), new ShotgunSurgeryDetector()]
+						 new CycleDetector(), new DataClassDetector(), new GodClassDetector()/*new ShotgunSurgeryDetector()*/]
 			build()
+		}
+
+		static DetectorFacade metricFacade() {
+			return new DetectorFacadeBuilder().with(new ClassInfoDetector()).build()
 		}
 
 		DetectorFacade build() {
@@ -136,3 +127,5 @@ class DetectorFacade {
 
 
 }
+
+import java.util.concurrent.ForkJoinPool

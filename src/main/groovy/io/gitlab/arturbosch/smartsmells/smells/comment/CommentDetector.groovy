@@ -14,8 +14,8 @@ import java.nio.file.Path
 class CommentDetector extends Detector<CommentSmell> {
 
 	@Override
-	protected CommentVisitor getVisitor(Path path) {
-		return new CommentVisitor(path)
+	protected CommentVisitor getVisitor() {
+		return new CommentVisitor()
 	}
 
 	@Override

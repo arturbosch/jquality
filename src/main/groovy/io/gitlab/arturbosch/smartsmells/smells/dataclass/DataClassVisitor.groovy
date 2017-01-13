@@ -5,9 +5,9 @@ import io.gitlab.arturbosch.jpal.ast.ClassHelper
 import io.gitlab.arturbosch.jpal.ast.NodeHelper
 import io.gitlab.arturbosch.jpal.ast.source.SourcePath
 import io.gitlab.arturbosch.jpal.ast.source.SourceRange
+import io.gitlab.arturbosch.jpal.resolution.Resolver
 import io.gitlab.arturbosch.smartsmells.common.Visitor
 
-import java.nio.file.Path
 import java.util.stream.Collectors
 
 /**
@@ -17,15 +17,11 @@ class DataClassVisitor extends Visitor<DataClass> {
 
 	String currentClassName
 
-	DataClassVisitor(Path path) {
-		super(path)
-	}
-
 	@Override
-	void visit(ClassOrInterfaceDeclaration n, Object arg) {
+	void visit(ClassOrInterfaceDeclaration n, Resolver resolver) {
 
 		n.getNodesByType(ClassOrInterfaceDeclaration.class)
-				.each { visit(it, null) }
+				.each { visit(it, resolver) }
 
 		if (n.interface) return
 

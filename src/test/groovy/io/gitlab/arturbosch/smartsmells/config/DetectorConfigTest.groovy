@@ -3,10 +3,11 @@ package io.gitlab.arturbosch.smartsmells.config
 import spock.lang.Specification
 
 import java.nio.file.Paths
+
 /**
  * @author artur
  */
-public class DetectorConfigTest extends Specification {
+class DetectorConfigTest extends Specification {
 
 	def "loadValidConfig"() {
 		expect:

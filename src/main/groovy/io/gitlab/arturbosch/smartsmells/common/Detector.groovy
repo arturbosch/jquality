@@ -1,11 +1,10 @@
 package io.gitlab.arturbosch.smartsmells.common
 
-import com.github.javaparser.ast.CompilationUnit
-import io.gitlab.arturbosch.jpal.core.CompilationTree
+import io.gitlab.arturbosch.jpal.core.CompilationInfo
+import io.gitlab.arturbosch.jpal.core.JPAL
+import io.gitlab.arturbosch.jpal.resolution.Resolver
 import io.gitlab.arturbosch.smartsmells.config.Smell
-import io.gitlab.arturbosch.smartsmells.util.StreamCloser
 
-import java.nio.file.Files
 import java.nio.file.Path
 import java.util.function.BinaryOperator
 import java.util.stream.Collectors
@@ -31,6 +30,21 @@ abstract class Detector<T extends DetectionResult> {
 	}
 
 	/**
+	 * This method is called from detector facade which handles all paths.
+	 *
+	 * @param path current file path
+	 * @return smells of current analyzed file
+	 */
+	Set<T> execute(CompilationInfo info, Resolver resolver) {
+		def visitor = getVisitor()
+		visitor.initialize(info)
+		visitor.visit(info, resolver)
+		def newSmells = visitor.smells
+		smells.addAll(newSmells)
+		return newSmells
+	}
+
+	/**
 	 * Attention!!! Only use this method if running this detector in single mode.
 	 *
 	 * Walks from the given base path down all directories and analyzes java source files.
@@ -39,39 +53,14 @@ abstract class Detector<T extends DetectionResult> {
 	 * @return set of smells
 	 */
 	Set<T> run(Path startPath) {
-		CompilationTree.registerRoot(startPath)
-		def walker = Files.walk(startPath)
-		def result = walker
-				.filter({ it.fileName.toString().endsWith("java") })
-				.map({
-			def maybeUnit = CompilationTree.findCompilationUnit(it)
-			maybeUnit.isPresent() ? execute(maybeUnit.get(), it) : Collections.emptySet()
-		}).collect(Collectors.reducing(new HashSet(), combine))
-		StreamCloser.quietly(walker)
-		return result
+		def storage = JPAL.new(startPath)
+		def resolver = new Resolver(storage)
+		return storage.allCompilationInfo.stream().map {
+			execute(it, resolver)
+		}.collect(Collectors.reducing(new HashSet(), combine))
 	}
 
-	/**
-	 * This method is called from detector facade which handles all paths.
-	 *
-	 * @param path current file path
-	 * @return smells of current analyzed file
-	 */
-	Set<T> execute(CompilationUnit unit, Path path) {
-		def visitor = getVisitor(path)
-		visitor.visit(unit, null)
-		def newSmells = visitor.smells
-		smells.addAll(newSmells)
-		return newSmells
-	}
-
-	/**
-	 * All subclasses must specify a visitor.
-	 *
-	 * @param path of current file which the visitor needs to save
-	 * @return visitor for specific smell
-	 */
-	protected abstract Visitor getVisitor(Path path)
+	protected abstract Visitor getVisitor()
 
 	abstract Smell getType()
 

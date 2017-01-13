@@ -5,8 +5,6 @@ import io.gitlab.arturbosch.smartsmells.common.Visitor
 import io.gitlab.arturbosch.smartsmells.config.Defaults
 import io.gitlab.arturbosch.smartsmells.config.Smell
 
-import java.nio.file.Path
-
 /**
  * @author Artur Bosch
  */
@@ -21,8 +19,8 @@ class ShotgunSurgeryDetector extends Detector<ShotgunSurgery> {
 	}
 
 	@Override
-	protected Visitor getVisitor(Path path) {
-		return new ShotgunSurgeryVisitor(path, cc, cm)
+	protected Visitor getVisitor() {
+		return new ShotgunSurgeryVisitor(cc, cm)
 	}
 
 	@Override

@@ -4,11 +4,11 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration
 import io.gitlab.arturbosch.jpal.ast.ClassHelper
 import io.gitlab.arturbosch.jpal.ast.source.SourcePath
 import io.gitlab.arturbosch.jpal.ast.source.SourceRange
+import io.gitlab.arturbosch.jpal.resolution.Resolver
 import io.gitlab.arturbosch.smartsmells.common.Visitor
 import io.gitlab.arturbosch.smartsmells.util.JavaLoc
 
 import java.nio.file.Files
-import java.nio.file.Path
 import java.util.stream.Stream
 
 /**
@@ -18,13 +18,12 @@ class LargeClassVisitor extends Visitor<LargeClass> {
 
 	private int sizeThreshold
 
-	LargeClassVisitor(Path path, int sizeThreshold) {
-		super(path)
+	LargeClassVisitor(int sizeThreshold) {
 		this.sizeThreshold = sizeThreshold
 	}
 
 	@Override
-	void visit(ClassOrInterfaceDeclaration n, Object arg) {
+	void visit(ClassOrInterfaceDeclaration n, Resolver resolver) {
 		if (n.interface) return
 
 		def sum

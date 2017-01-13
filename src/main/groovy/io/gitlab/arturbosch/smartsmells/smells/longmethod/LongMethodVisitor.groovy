@@ -4,8 +4,6 @@ import com.github.javaparser.ast.body.BodyDeclaration
 import io.gitlab.arturbosch.smartsmells.common.visitor.MethodMetricVisitor
 import io.gitlab.arturbosch.smartsmells.util.JavaLoc
 
-import java.nio.file.Path
-
 /**
  * @author artur
  */
@@ -13,8 +11,8 @@ class LongMethodVisitor extends MethodMetricVisitor<LongMethod> {
 
 	int size
 
-	LongMethodVisitor(int threshold, Path path) {
-		super(threshold, path)
+	LongMethodVisitor(int threshold) {
+		super(threshold)
 	}
 
 	@Override

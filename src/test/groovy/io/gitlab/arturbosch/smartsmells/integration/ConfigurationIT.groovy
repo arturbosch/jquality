@@ -51,7 +51,7 @@ class ConfigurationIT extends Specification {
 
 	def "create metrics facade"() {
 		when:
-		def result = DetectorFacade.metricFacade().run(Test.PATH)
+		def result = DetectorFacade.builder().metricFacade().run(Test.PATH)
 
 		then:
 		result.smellSets.size() == 1

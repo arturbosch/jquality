@@ -5,8 +5,6 @@ import io.gitlab.arturbosch.smartsmells.common.Visitor
 import io.gitlab.arturbosch.smartsmells.config.Defaults
 import io.gitlab.arturbosch.smartsmells.config.Smell
 
-import java.nio.file.Path
-
 /**
  * @author artur
  */
@@ -19,8 +17,8 @@ class LargeClassDetector extends Detector<LargeClass> {
 	}
 
 	@Override
-	protected Visitor getVisitor(Path path) {
-		return new LargeClassVisitor(path, sizeThreshold)
+	protected Visitor getVisitor() {
+		return new LargeClassVisitor(sizeThreshold)
 	}
 
 	@Override

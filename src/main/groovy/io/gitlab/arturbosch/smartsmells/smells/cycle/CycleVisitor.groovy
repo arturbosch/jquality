@@ -1,6 +1,5 @@
 package io.gitlab.arturbosch.smartsmells.smells.cycle
 
-import com.github.javaparser.ast.CompilationUnit
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration
 import com.github.javaparser.ast.body.FieldDeclaration
 import com.github.javaparser.ast.type.ClassOrInterfaceType
@@ -8,12 +7,10 @@ import io.gitlab.arturbosch.jpal.ast.ClassHelper
 import io.gitlab.arturbosch.jpal.ast.NodeHelper
 import io.gitlab.arturbosch.jpal.ast.source.SourcePath
 import io.gitlab.arturbosch.jpal.ast.source.SourceRange
-import io.gitlab.arturbosch.jpal.core.CompilationStorage
-import io.gitlab.arturbosch.jpal.core.CompilationTree
-import io.gitlab.arturbosch.jpal.nested.InnerClassesHandler
-import io.gitlab.arturbosch.jpal.resolve.QualifiedType
-import io.gitlab.arturbosch.jpal.resolve.ResolutionData
-import io.gitlab.arturbosch.jpal.resolve.Resolver
+import io.gitlab.arturbosch.jpal.core.CompilationInfo
+import io.gitlab.arturbosch.jpal.resolution.QualifiedType
+import io.gitlab.arturbosch.jpal.resolution.Resolver
+import io.gitlab.arturbosch.jpal.resolution.nested.InnerClassesHandler
 import io.gitlab.arturbosch.smartsmells.common.Visitor
 
 import java.nio.file.Path
@@ -23,73 +20,49 @@ import java.nio.file.Path
  */
 class CycleVisitor extends Visitor<Cycle> {
 
-	private ResolutionData packageImportHolder
 	private InnerClassesHandler innerClassesHandler
 
-	CycleVisitor(Path path) {
-		super(path)
+	@Override
+	protected void visit(CompilationInfo info, Resolver arg) {
+		innerClassesHandler = info.data.innerClassesHandler
+		super.visit(info.unit, arg)
 	}
 
 	@Override
-	void visit(CompilationUnit n, Object arg) {
-		packageImportHolder = ResolutionData.of(n)
-		innerClassesHandler = new InnerClassesHandler(n)
-		super.visit(n, arg)
-	}
-
-	@Override
-	void visit(ClassOrInterfaceDeclaration n, Object arg) {
+	void visit(ClassOrInterfaceDeclaration n, Resolver resolver) {
 		String unqualifiedName = ClassHelper.appendOuterClassIfInnerClass(n)
-		def thisClassType = Resolver.getQualifiedType(
-				packageImportHolder, new ClassOrInterfaceType(unqualifiedName))
+		def thisClassType = resolver.resolveType(new ClassOrInterfaceType(unqualifiedName), info)
 
 		def fields = NodeHelper.findFields(n)
 		fields.each { field ->
 
 			def unqualifiedFieldName = innerClassesHandler.getUnqualifiedNameForInnerClass(field.commonType)
-			def qualifiedType = Resolver.getQualifiedType(packageImportHolder,
-					new ClassOrInterfaceType(unqualifiedFieldName))
+			def qualifiedType = resolver.resolveType(new ClassOrInterfaceType(unqualifiedFieldName), info)
 
 			if (qualifiedType.isReference()) {
-				searchForCycles(qualifiedType, thisClassType, field)
+				searchForCycles(qualifiedType, thisClassType, field, resolver)
 			}
 		}
 
-		super.visit(n, arg)
+		super.visit(n, resolver)
 	}
 
-	def searchForCycles(QualifiedType otherType, QualifiedType thisType, FieldDeclaration field) {
+	def searchForCycles(QualifiedType otherType, QualifiedType thisType,
+						FieldDeclaration field, Resolver resolver) {
 
-		if (CompilationStorage.isInitialized()) {
+		resolver.storage.getCompilationInfo(otherType).ifPresent {
+			def visitor = new SameFieldTypeVisitor(thisType)
+			visitor.visit(it, resolver)
 
-			CompilationStorage.getCompilationInfo(otherType).ifPresent {
-				def visitor = new SameFieldTypeVisitor(thisType)
-				visitor.visit(it.unit, null)
-
-				if (visitor.haveFound()) {
-					addCycle(visitor, thisType, field, it.path)
-				}
+			if (visitor.haveFound()) {
+				addCycle(visitor, thisType, field, it.path)
 			}
-
-		} else {
-
-			def maybePath = CompilationTree.findPathFor(otherType)
-			if (maybePath.isPresent()) {
-				def otherPath = maybePath.get()
-				CompilationTree.findCompilationUnit(otherPath).ifPresent {
-					def visitor = new SameFieldTypeVisitor(thisType)
-					visitor.visit(it, null)
-
-					if (visitor.haveFound()) {
-						addCycle(visitor, thisType, field, otherPath)
-					}
-				}
-			}
-
 		}
+
 	}
 
-	private void addCycle(SameFieldTypeVisitor visitor, QualifiedType thisClass, FieldDeclaration field, Path otherPath) {
+	private void addCycle(SameFieldTypeVisitor visitor, QualifiedType thisClass,
+						  FieldDeclaration field, Path otherPath) {
 		def tuple = visitor.foundFieldWithType
 		def otherType = tuple.first
 		def otherField = tuple.second

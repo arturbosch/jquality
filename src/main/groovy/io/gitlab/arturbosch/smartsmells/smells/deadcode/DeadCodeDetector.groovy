@@ -5,8 +5,6 @@ import io.gitlab.arturbosch.smartsmells.common.Visitor
 import io.gitlab.arturbosch.smartsmells.config.Defaults
 import io.gitlab.arturbosch.smartsmells.config.Smell
 
-import java.nio.file.Path
-
 /**
  * @author artur
  */
@@ -19,8 +17,8 @@ class DeadCodeDetector extends Detector<DeadCode> {
 	}
 
 	@Override
-	protected Visitor getVisitor(Path path) {
-		return new DeadCodeVisitor(path, onlyPrivate)
+	protected Visitor getVisitor() {
+		return new DeadCodeVisitor(onlyPrivate)
 	}
 
 	@Override

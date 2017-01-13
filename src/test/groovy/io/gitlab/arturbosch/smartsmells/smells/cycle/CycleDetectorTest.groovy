@@ -2,8 +2,8 @@ package io.gitlab.arturbosch.smartsmells.smells.cycle
 
 import io.gitlab.arturbosch.jpal.ast.source.SourcePath
 import io.gitlab.arturbosch.jpal.ast.source.SourceRange
-import io.gitlab.arturbosch.jpal.core.CompilationStorage
 import io.gitlab.arturbosch.smartsmells.common.Test
+import spock.lang.Specification
 
 import java.nio.file.Paths
 
@@ -13,20 +13,16 @@ import java.nio.file.Paths
  *
  * @author artur
  */
-class CycleDetectorTest extends AbstractCompilationTreeTest {
+class CycleDetectorTest extends Specification {
 
 	def "find one cycle in CycleDummy and OtherCycle, one as inner classes of CycleDummy"() {
-		given:
-		CompilationStorage.create(Test.PATH)
 		when:
-		def smells = new CycleDetector().run(Test.CYCLE_DUMMY_PATH)
+		def smells = new CycleDetector().run(Test.CYLES_PATH)
 		then:
 		smells.size() == 2
 	}
 
 	def "find cycle in inner classes of CycleDummy"() {
-		given:
-		CompilationStorage.create(Test.CYCLE_DUMMY_PATH)
 		when:
 		def smells = new CycleDetector().run(Test.CYCLE_DUMMY_PATH)
 		then:

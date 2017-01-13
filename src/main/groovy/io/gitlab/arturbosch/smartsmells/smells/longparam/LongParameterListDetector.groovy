@@ -5,8 +5,6 @@ import io.gitlab.arturbosch.smartsmells.common.Visitor
 import io.gitlab.arturbosch.smartsmells.config.Defaults
 import io.gitlab.arturbosch.smartsmells.config.Smell
 
-import java.nio.file.Path
-
 /**
  * @author artur
  */
@@ -19,8 +17,8 @@ class LongParameterListDetector extends Detector<LongParameterList> {
 	}
 
 	@Override
-	protected Visitor getVisitor(Path path) {
-		new LongParameterListVisitor(threshold, path)
+	protected Visitor getVisitor() {
+		return new LongParameterListVisitor(threshold)
 	}
 
 	@Override

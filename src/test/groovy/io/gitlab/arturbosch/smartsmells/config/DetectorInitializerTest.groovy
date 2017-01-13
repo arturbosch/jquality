@@ -7,7 +7,7 @@ import java.nio.file.Paths
 /**
  * @author artur
  */
-public class DetectorInitializerTest extends Specification {
+class DetectorInitializerTest extends Specification {
 
 	def "config has five detectors"() {
 		expect:

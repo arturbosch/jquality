@@ -1,12 +1,11 @@
 package system
 
 import io.gitlab.arturbosch.jpal.core.CompilationStorage
+import io.gitlab.arturbosch.jpal.core.JPAL
+import io.gitlab.arturbosch.jpal.resolution.Resolver
 import io.gitlab.arturbosch.smartsmells.Main
 import io.gitlab.arturbosch.smartsmells.api.DetectorFacade
 import io.gitlab.arturbosch.smartsmells.common.Detector
-import io.gitlab.arturbosch.smartsmells.config.Smell
-import io.gitlab.arturbosch.smartsmells.metrics.CompilationUnitMetrics
-import io.gitlab.arturbosch.smartsmells.metrics.MetricsForCompilationUnitProcessor
 import io.gitlab.arturbosch.smartsmells.smells.comment.CommentDetector
 import io.gitlab.arturbosch.smartsmells.smells.complexmethod.ComplexMethodDetector
 import io.gitlab.arturbosch.smartsmells.smells.cycle.CycleDetector
@@ -20,7 +19,6 @@ import io.gitlab.arturbosch.smartsmells.smells.longparam.LongParameterListDetect
 import io.gitlab.arturbosch.smartsmells.smells.messagechain.MessageChainDetector
 import io.gitlab.arturbosch.smartsmells.smells.middleman.MiddleManDetector
 import io.gitlab.arturbosch.smartsmells.smells.shotgunsurgery.ShotgunSurgeryDetector
-import spock.lang.Ignore
 import spock.lang.Specification
 
 import java.nio.file.Path
@@ -31,6 +29,7 @@ import java.nio.file.Paths
  */
 class DetectorPerformanceTests extends Specification {
 
+	private static CompilationStorage storage
 
 	def "shotgun surgery detector"() {
 		when: "testing performance"
@@ -123,77 +122,30 @@ class DetectorPerformanceTests extends Specification {
 		true
 	}
 
-	private static init(Path path) {
-		if (!CompilationStorage.initialized) {
+	private static CompilationStorage init(Path path) {
+		if (storage == null) {
 			def time = Main.benchmark {
-				CompilationStorage.create(path)
+				storage = JPAL.new(path)
 			} // 7758 ms
 			println "Compilation: $time ms"
 		}
+		return storage
 	}
 
 	private static run(Detector detector) {
 		println "Testing ${detector.class.simpleName}"
 		def path = Paths.get("/home/artur/Repos/elasticsearch/core/src/main/")
 
-		init(path)
+		def storage = init(path)
 		def facade = DetectorFacade.builder().with(detector).build()
 
 		def result = -1
 		def time = Main.benchmark {
-			result = facade.run(path).of(detector.type).size()
+			result = facade.justRun(storage.allCompilationInfo, new Resolver(storage))
+					.of(detector.type).size()
 		} // 16840 ms
 		println "Detector: $time ms"
 		println result
-	}
-
-	@Ignore
-	def "all detectors"() {
-		given:
-		def path = "/home/artur/Repos/elasticsearch/core/src/main/"
-		def time = Main.benchmark {
-			CompilationStorage.create(Paths.get(path))
-		} // ~7500 to ~8500 ms
-		println "CompilationStorage: $time ms"
-		def facade = DetectorFacade.fullStackFacade()
-
-		when:
-		def result = -1
-		time = Main.benchmark {
-			result = facade.run(Paths.get(path)).smellSets.size()
-		} //  27574 (w/o SS) ms, 35351 (w/ SS) ms
-		println "Detectors: $time ms"
-		println result
-
-		then:
-		result != -1
-	}
-
-	def "god class with processor"() {
-		given:
-		def path = "/home/artur/Repos/elasticsearch/core/src/main/"
-		def time = Main.benchmark {
-			CompilationStorage.createWithProcessor(Paths.get(path), new MetricsForCompilationUnitProcessor())
-		}
-		def infos = CompilationStorage.allCompilationInfo
-		def count = infos.stream().map { it.getProcessedObject(CompilationUnitMetrics.class) }.map {
-			it.infos
-		}.flatMap { it.stream() }
-				.count()
-		println "Infos: $count"
-		println "CompilationStorage: $time ms"
-		def facade = DetectorFacade.builder().with(new GodClassMetricVisitor()).build()
-
-		when:
-		def result = -1
-		time = Main.benchmark {
-			result = facade.justRun(infos).of(Smell.GOD_CLASS).size()
-		}
-		println "Detector: $time ms"
-		println result // should be 411 ... , but why?
-
-		then:
-		result != -1
 	}
 
 }

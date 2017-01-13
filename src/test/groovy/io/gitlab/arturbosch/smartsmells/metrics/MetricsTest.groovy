@@ -1,6 +1,8 @@
 package io.gitlab.arturbosch.smartsmells.metrics
 
 import io.gitlab.arturbosch.jpal.core.CompilationStorage
+import io.gitlab.arturbosch.jpal.core.JPAL
+import io.gitlab.arturbosch.jpal.resolution.Resolver
 import io.gitlab.arturbosch.smartsmells.common.Test
 import spock.lang.Specification
 
@@ -83,20 +85,20 @@ class MetricsTest extends Specification {
 
 	def "cc"() {
 		given:
-		CompilationStorage.create(Test.PATH)
+		def resolver = new Resolver(JPAL.new(Test.PATH))
 		when:
 		def clazz = Test.firstClass(Test.compile(Test.GOD_CLASS_DUMMY_PATH))
-		int cc = Metrics.cc(clazz)
+		int cc = Metrics.cc(clazz, resolver)
 		then:
 		cc == 2
 	}
 
 	def "cm"() {
 		given:
-		CompilationStorage.create(Test.PATH)
+		def resolver = new Resolver(JPAL.new(Test.PATH))
 		when:
 		def clazz = Test.firstClass(Test.compile(Test.COMPLEX_METHOD_DUMMY_PATH))
-		int cm = Metrics.cm(clazz)
+		int cm = Metrics.cm(clazz, resolver)
 		then:
 		cm == 6
 	}

@@ -6,11 +6,10 @@ import com.github.javaparser.ast.body.MethodDeclaration
 import com.github.javaparser.ast.stmt.BlockStmt
 import io.gitlab.arturbosch.jpal.ast.source.SourcePath
 import io.gitlab.arturbosch.jpal.ast.source.SourceRange
+import io.gitlab.arturbosch.jpal.resolution.Resolver
 import io.gitlab.arturbosch.smartsmells.common.DetectionResult
 import io.gitlab.arturbosch.smartsmells.common.Visitor
 import io.gitlab.arturbosch.smartsmells.smells.longmethod.LongMethod
-
-import java.nio.file.Path
 
 /**
  * @author artur
@@ -19,13 +18,12 @@ abstract class MethodMetricVisitor<T extends DetectionResult> extends Visitor<T>
 
 	int threshold
 
-	MethodMetricVisitor(int threshold, Path path) {
-		super(path)
+	MethodMetricVisitor(int threshold) {
 		this.threshold = threshold
 	}
 
 	@Override
-	void visit(ConstructorDeclaration node, Object arg) {
+	void visit(ConstructorDeclaration node, Resolver arg) {
 		visitBlock(Optional.ofNullable(node.body), node)
 	}
 
@@ -36,7 +34,7 @@ abstract class MethodMetricVisitor<T extends DetectionResult> extends Visitor<T>
 	}
 
 	@Override
-	void visit(MethodDeclaration node, Object arg) {
+	void visit(MethodDeclaration node, Resolver arg) {
 		visitBlock(node.body, node)
 	}
 

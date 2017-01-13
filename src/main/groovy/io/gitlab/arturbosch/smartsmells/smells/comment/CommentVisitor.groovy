@@ -6,9 +6,8 @@ import com.github.javaparser.ast.body.MethodDeclaration
 import com.github.javaparser.ast.comments.Comment
 import io.gitlab.arturbosch.jpal.ast.source.SourcePath
 import io.gitlab.arturbosch.jpal.ast.source.SourceRange
+import io.gitlab.arturbosch.jpal.resolution.Resolver
 import io.gitlab.arturbosch.smartsmells.common.Visitor
-
-import java.nio.file.Path
 
 /**
  * Visits all method declaration of a compilation unit and examines them
@@ -16,19 +15,15 @@ import java.nio.file.Path
  *
  * @author artur
  */
-class CommentVisitor extends Visitor {
+class CommentVisitor extends Visitor<CommentSmell> {
 
 	private final
 	static String DEFAULT_MESSAGE = "are considered as a smell, try to refactor your code so others will understand it without a comment."
 	private final static String ORPHAN_MESSAGE = "Loosely comments " + DEFAULT_MESSAGE
 	private final static String JAVADOC_MESSAGE = "Javadoc over private or package private methods " + DEFAULT_MESSAGE
 
-	CommentVisitor(Path path) {
-		super(path)
-	}
-
 	@Override
-	void visit(MethodDeclaration n, Object arg) {
+	void visit(MethodDeclaration n, Resolver arg) {
 		if (n.comment != null) {
 			def modifiers = n.modifiers
 			def specifier = Modifier.getAccessSpecifier(modifiers)

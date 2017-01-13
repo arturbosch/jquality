@@ -5,8 +5,6 @@ import io.gitlab.arturbosch.smartsmells.common.Visitor
 import io.gitlab.arturbosch.smartsmells.config.Defaults
 import io.gitlab.arturbosch.smartsmells.config.Smell
 
-import java.nio.file.Path
-
 /**
  * @author artur
  */
@@ -19,8 +17,8 @@ class MessageChainDetector extends Detector<MessageChain> {
 	}
 
 	@Override
-	protected Visitor getVisitor(Path path) {
-		return new MessageChainVisitor(path, chainSizeThreshold)
+	protected Visitor getVisitor() {
+		return new MessageChainVisitor(chainSizeThreshold)
 	}
 
 	@Override

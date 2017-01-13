@@ -5,8 +5,6 @@ import io.gitlab.arturbosch.smartsmells.common.Visitor
 import io.gitlab.arturbosch.smartsmells.config.Defaults
 import io.gitlab.arturbosch.smartsmells.config.Smell
 
-import java.nio.file.Path
-
 /**
  * @author artur
  */
@@ -27,8 +25,8 @@ class GodClassDetector extends Detector<GodClass> {
 	}
 
 	@Override
-	protected Visitor getVisitor(Path path) {
-		return new GodClassVisitor(atfdThreshold, wmcThreshold, tccThreshold, path)
+	protected Visitor getVisitor() {
+		return new GodClassVisitor(atfdThreshold, wmcThreshold, tccThreshold)
 	}
 
 	@Override

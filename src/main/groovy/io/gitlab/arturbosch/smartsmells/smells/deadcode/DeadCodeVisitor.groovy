@@ -26,9 +26,8 @@ import io.gitlab.arturbosch.jpal.ast.NodeHelper
 import io.gitlab.arturbosch.jpal.ast.source.SourcePath
 import io.gitlab.arturbosch.jpal.ast.source.SourceRange
 import io.gitlab.arturbosch.jpal.internal.Printer
+import io.gitlab.arturbosch.jpal.resolution.Resolver
 import io.gitlab.arturbosch.smartsmells.common.Visitor
-
-import java.nio.file.Path
 
 /**
  * @author artur
@@ -49,13 +48,12 @@ class DeadCodeVisitor extends Visitor<DeadCode> {
 	private Map<String, Integer> localeVariableToReferenceCount = new HashMap<>()
 	private Map<String, VariableDeclarationExpr> localeVariableToVariableDeclaration = new HashMap<>()
 
-	DeadCodeVisitor(Path path, boolean onlyPrivate) {
-		super(path)
+	DeadCodeVisitor(boolean onlyPrivate) {
 		this.onlyPrivate = onlyPrivate
 	}
 
 	@Override
-	void visit(CompilationUnit n, Object arg) {
+	void visit(CompilationUnit n, Resolver resolver) {
 		if (isInterface(n))
 			return
 
@@ -74,7 +72,7 @@ class DeadCodeVisitor extends Visitor<DeadCode> {
 		def localeVariables = LocaleVariableHelper.find(allMethods)
 		createLocaleVariableMaps(localeVariables)
 
-		new ReferenceVisitor().visit(n, arg)
+		new ReferenceVisitor().visit(n, resolver)
 
 		addSmells()
 

@@ -6,9 +6,8 @@ import com.github.javaparser.ast.body.MethodDeclaration
 import io.gitlab.arturbosch.jpal.ast.ClassHelper
 import io.gitlab.arturbosch.jpal.ast.source.SourcePath
 import io.gitlab.arturbosch.jpal.ast.source.SourceRange
+import io.gitlab.arturbosch.jpal.resolution.Resolver
 import io.gitlab.arturbosch.smartsmells.common.Visitor
-
-import java.nio.file.Path
 
 /**
  * @author artur
@@ -17,13 +16,12 @@ class ClassInfoVisitor extends Visitor<ClassInfo> {
 
 	private boolean skipCC_CM
 
-	ClassInfoVisitor(Path path, boolean skipCC_CM) {
-		super(path)
+	ClassInfoVisitor(boolean skipCC_CM) {
 		this.skipCC_CM = skipCC_CM
 	}
 
 	@Override
-	void visit(CompilationUnit n, Object arg) {
+	void visit(CompilationUnit n, Resolver resolver) {
 
 		def classes = n.getNodesByType(ClassOrInterfaceDeclaration.class)
 
@@ -49,8 +47,8 @@ class ClassInfoVisitor extends Visitor<ClassInfo> {
 			def cc = -1
 			def cm = -1
 			if (!skipCC_CM) {
-				cc = Metrics.cc(it)
-				cm = Metrics.cm(it)
+				cc = Metrics.cc(it, resolver)
+				cm = Metrics.cm(it, resolver)
 			}
 
 			smells.add(new ClassInfo(

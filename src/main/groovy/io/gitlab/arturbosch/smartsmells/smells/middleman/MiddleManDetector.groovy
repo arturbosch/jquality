@@ -5,8 +5,6 @@ import io.gitlab.arturbosch.smartsmells.common.Visitor
 import io.gitlab.arturbosch.smartsmells.config.Defaults
 import io.gitlab.arturbosch.smartsmells.config.Smell
 
-import java.nio.file.Path
-
 /**
  * @author artur
  */
@@ -19,8 +17,8 @@ class MiddleManDetector extends Detector<MiddleMan> {
 	}
 
 	@Override
-	protected Visitor getVisitor(Path path) {
-		return new MiddleManVisitor(path, threshold)
+	protected Visitor getVisitor() {
+		return new MiddleManVisitor(threshold)
 	}
 
 	@Override

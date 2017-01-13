@@ -2,8 +2,8 @@ package io.gitlab.arturbosch.smartsmells.smells.featureenvy
 
 import com.github.javaparser.ast.type.PrimitiveType
 import io.gitlab.arturbosch.jpal.ast.custom.JpalVariable
-import io.gitlab.arturbosch.jpal.resolve.ResolutionData
-import io.gitlab.arturbosch.jpal.resolve.Resolver
+import io.gitlab.arturbosch.jpal.core.CompilationInfo
+import io.gitlab.arturbosch.jpal.resolution.Resolver
 
 import java.util.stream.Collectors
 
@@ -12,10 +12,12 @@ import java.util.stream.Collectors
  */
 class JavaClassFilter {
 
-	ResolutionData resolutionData
+	private CompilationInfo info
+	private Resolver resolver
 
-	JavaClassFilter(ResolutionData resolutionData) {
-		this.resolutionData = resolutionData
+	JavaClassFilter(CompilationInfo info, Resolver resolver) {
+		this.resolver = resolver
+		this.info = info
 	}
 
 	Set<JpalVariable> filter(Set<JpalVariable> variables) {
@@ -28,6 +30,6 @@ class JavaClassFilter {
 	}
 
 	private boolean isJavaType(JpalVariable variable) {
-		return Resolver.getQualifiedType(resolutionData, variable.type).isFromJdk()
+		return resolver.resolveType(variable.type, info).isFromJdk()
 	}
 }

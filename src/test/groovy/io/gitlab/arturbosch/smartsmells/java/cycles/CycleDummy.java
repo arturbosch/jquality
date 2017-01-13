@@ -1,4 +1,4 @@
-package io.gitlab.arturbosch.smartsmells.java;
+package io.gitlab.arturbosch.smartsmells.java.cycles;
 
 /**
  * @author artur

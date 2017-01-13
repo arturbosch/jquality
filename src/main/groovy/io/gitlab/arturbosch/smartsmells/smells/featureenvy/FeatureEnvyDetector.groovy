@@ -4,8 +4,6 @@ import io.gitlab.arturbosch.smartsmells.common.Detector
 import io.gitlab.arturbosch.smartsmells.common.Visitor
 import io.gitlab.arturbosch.smartsmells.config.Smell
 
-import java.nio.file.Path
-
 /**
  * @author artur
  */
@@ -16,14 +14,14 @@ class FeatureEnvyDetector extends Detector<FeatureEnvy> {
 
 
 	FeatureEnvyDetector(FeatureEnvyFactor factor = FeatureEnvyFactor.newInstance(),
-	                    boolean ignoreStatic = false) {
+						boolean ignoreStatic = false) {
 		this.factor = factor
 		this.ignoreStatic = ignoreStatic
 	}
 
 	@Override
-	protected Visitor getVisitor(Path path) {
-		return new FeatureEnvyVisitor(path, factor, ignoreStatic)
+	protected Visitor getVisitor() {
+		return new FeatureEnvyVisitor(factor, ignoreStatic)
 	}
 
 	@Override

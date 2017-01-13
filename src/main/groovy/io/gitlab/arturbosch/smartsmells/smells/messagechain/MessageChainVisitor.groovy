@@ -5,9 +5,9 @@ import com.github.javaparser.ast.expr.MethodCallExpr
 import io.gitlab.arturbosch.jpal.ast.source.SourcePath
 import io.gitlab.arturbosch.jpal.ast.source.SourceRange
 import io.gitlab.arturbosch.jpal.internal.Printer
+import io.gitlab.arturbosch.jpal.resolution.Resolver
 import io.gitlab.arturbosch.smartsmells.common.Visitor
 
-import java.nio.file.Path
 import java.util.stream.Collectors
 
 /**
@@ -19,14 +19,13 @@ class MessageChainVisitor extends Visitor<MessageChain> {
 
 	private Map<String, MethodCallExpr> methodCallExprMap = new HashMap<>()
 
-	MessageChainVisitor(Path path, int chainSizeThreshold) {
-		super(path)
+	MessageChainVisitor(int chainSizeThreshold) {
 		this.chainSizeThreshold = chainSizeThreshold
 	}
 
 	@Override
-	void visit(CompilationUnit n, Object arg) {
-		super.visit(n, arg)
+	void visit(CompilationUnit n, Resolver resolver) {
+		super.visit(n, resolver)
 
 		methodCallExprMap.entrySet().stream()
 				.collect {
@@ -44,7 +43,7 @@ class MessageChainVisitor extends Visitor<MessageChain> {
 	}
 
 	@Override
-	void visit(MethodCallExpr n, Object arg) {
+	void visit(MethodCallExpr n, Resolver resolver) {
 		def linkedExpr = extractExpressionNames(n)
 		def expr = filterCollectionGets(linkedExpr)
 		def count = countOccurrences(expr, "get")
@@ -60,7 +59,7 @@ class MessageChainVisitor extends Visitor<MessageChain> {
 				methodCallExprMap.put(expr, n)
 			}
 		}
-		super.visit(n, arg)
+		super.visit(n, resolver)
 	}
 
 	private static String filterCollectionGets(String expressions) {
