@@ -1,5 +1,8 @@
 package io.gitlab.arturbosch.smartsmells.api
 
+import groovy.transform.CompileStatic
+import groovy.transform.PackageScope
+import groovy.util.logging.Log
 import io.gitlab.arturbosch.jpal.core.CompilationInfo
 import io.gitlab.arturbosch.jpal.core.CompilationInfoProcessor
 import io.gitlab.arturbosch.jpal.core.CompilationStorage
@@ -26,15 +29,20 @@ import io.gitlab.arturbosch.smartsmells.util.Validate
 
 import java.nio.file.Path
 import java.util.concurrent.CompletableFuture
+import java.util.concurrent.ForkJoinPool
+import java.util.logging.Level
 
 /**
  * @author artur
  */
+@CompileStatic
+@Log
 class DetectorFacade {
 
 	private List<Detector<DetectionResult>> detectors = new LinkedList<>()
 
-	private DetectorFacade(List<Detector> detectors) {
+	@PackageScope
+	DetectorFacade(List<Detector> detectors) {
 		this.detectors = detectors
 	}
 
@@ -76,7 +84,7 @@ class DetectorFacade {
 
 		List<CompletableFuture> futures = new ArrayList<>(infos.size())
 
-		infos.forEach { info ->
+		infos.forEach { CompilationInfo info ->
 			futures.add(CompletableFuture.runAsync({
 				for (Detector detector : detectors) {
 					detector.execute(info, resolver)
@@ -90,7 +98,7 @@ class DetectorFacade {
 	}
 
 	private static ArrayList handle(Throwable throwable) {
-		println throwable.printStackTrace()
+		log.log(Level.WARNING, throwable) { throwable.message }
 		return new ArrayList<>()
 	}
 
@@ -125,7 +133,4 @@ class DetectorFacade {
 		}
 	}
 
-
 }
-
-import java.util.concurrent.ForkJoinPool
