@@ -19,47 +19,46 @@ class UpdatableDetectorFacade {
 	private final Resolver resolver
 	private final DetectorFacade facade
 
+	private final List<CompilationInfo> infos = new ArrayList<>()
+
 	UpdatableDetectorFacade(Path root, DetectorFacade detectorFacade) {
 		facade = detectorFacade
 		storage = JPAL.updatableFromSource(root)
 		resolver = new Resolver(storage)
 	}
 
-	List<CompilationInfo> addOrUpdate(List<Path> pathsToUpdate) {
-		storage.updateCompilationInfo(pathsToUpdate)
+	void addOrUpdate(List<Path> pathsToUpdate) {
+		infos.addAll(storage.updateCompilationInfo(pathsToUpdate))
 	}
 
-	List<CompilationInfo> addOrUpdate(Map<Path, String> pathsToUpdate) {
-		storage.updateCompilationInfo(pathsToUpdate)
+	void addOrUpdate(Map<Path, String> pathsToUpdate) {
+		infos.addAll(storage.updateCompilationInfo(pathsToUpdate))
 	}
 
-	List<CompilationInfo> relocate(Map<Path, Path> pathsToRelocate) {
-		def infos = new ArrayList<CompilationInfo>()
+	void relocate(Map<Path, Path> pathsToRelocate) {
 		pathsToRelocate.each {
 			storage.relocateCompilationInfo(it.key, it.value).ifPresent {
 				infos.add(it)
 			}
 		}
-		return infos
 	}
 
-	List<CompilationInfo> relocateWithContent(Map<Path, Pair<Path, String>> pathsToRelocate) {
-		def infos = new ArrayList<CompilationInfo>()
+	void relocateWithContent(Map<Path, Pair<Path, String>> pathsToRelocate) {
 		pathsToRelocate.each {
 			storage.relocateCompilationInfo(it.key, it.value).ifPresent {
 				infos.add(it)
 			}
 		}
-		return infos
 	}
 
 	void remove(List<Path> pathsToRemove) {
 		storage.removeCompilationInfo(pathsToRemove)
 	}
 
-	SmellResult run(List<CompilationInfo> infos) {
+	SmellResult run() {
 		def result = facade.justRun(infos, resolver)
 		facade.reset()
+		infos.clear()
 		return result
 	}
 
