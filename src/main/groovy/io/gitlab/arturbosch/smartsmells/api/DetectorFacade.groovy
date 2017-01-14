@@ -25,6 +25,7 @@ import io.gitlab.arturbosch.smartsmells.smells.longmethod.LongMethodDetector
 import io.gitlab.arturbosch.smartsmells.smells.longparam.LongParameterListDetector
 import io.gitlab.arturbosch.smartsmells.smells.messagechain.MessageChainDetector
 import io.gitlab.arturbosch.smartsmells.smells.middleman.MiddleManDetector
+import io.gitlab.arturbosch.smartsmells.smells.shotgunsurgery.ShotgunSurgeryDetector
 import io.gitlab.arturbosch.smartsmells.util.Validate
 
 import java.nio.file.Path
@@ -78,6 +79,8 @@ class DetectorFacade {
 	}
 
 	SmellResult justRun(List<CompilationInfo> infos, Resolver resolver) {
+		if (infos.empty) return new SmellResult(Collections.emptyMap())
+
 		def forkJoinPool = new ForkJoinPool(
 				Runtime.getRuntime().availableProcessors(),
 				ForkJoinPool.defaultForkJoinWorkerThreadFactory, null, true)
@@ -94,7 +97,8 @@ class DetectorFacade {
 
 		CompletableFuture.allOf(futures.toArray(new CompletableFuture<?>[0])).join()
 		forkJoinPool.shutdown()
-		return new SmellResult(detectors.collectEntries { [it.type, it.smells] })
+		def entries = detectors.collectEntries { [it.type, it.smells] }
+		return new SmellResult(entries)
 	}
 
 	private static ArrayList handle(Throwable throwable) {
@@ -104,6 +108,10 @@ class DetectorFacade {
 
 	int numberOfDetectors() {
 		return detectors.size()
+	}
+
+	void reset() {
+		detectors.each { it.clear() }
 	}
 
 	private static class DetectorFacadeBuilder {
@@ -120,7 +128,7 @@ class DetectorFacade {
 			detectors = [new ComplexMethodDetector(), new CommentDetector(), new LongMethodDetector(),
 						 new LongParameterListDetector(), new DeadCodeDetector(), new LargeClassDetector(),
 						 new MessageChainDetector(), new MiddleManDetector(), new FeatureEnvyDetector(),
-						 new CycleDetector(), new DataClassDetector(), new GodClassDetector()/*new ShotgunSurgeryDetector()*/]
+						 new CycleDetector(), new DataClassDetector(), new GodClassDetector(), new ShotgunSurgeryDetector()]
 			build()
 		}
 

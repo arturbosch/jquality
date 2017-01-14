@@ -58,7 +58,9 @@ class UpdatableDetectorFacade {
 	}
 
 	SmellResult run(List<CompilationInfo> infos) {
-		facade.justRun(infos, resolver)
+		def result = facade.justRun(infos, resolver)
+		facade.reset()
+		return result
 	}
 
 }

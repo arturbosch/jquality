@@ -15,7 +15,7 @@ import java.util.stream.Collectors
 abstract class Detector<T extends DetectionResult> {
 
 	protected Smell type = getType()
-	private Deque<T> smells = new ArrayDeque<>(100)
+	private List<T> smells = new ArrayList<>(100)
 
 	/**
 	 * Binary operator combines two sets into one.
@@ -62,9 +62,13 @@ abstract class Detector<T extends DetectionResult> {
 
 	protected abstract Visitor getVisitor()
 
+	void clear() {
+		smells.clear()
+	}
+
 	abstract Smell getType()
 
-	Deque<T> getSmells() {
-		return smells
+	List<T> getSmells() {
+		return new ArrayList<T>(smells)
 	}
 }

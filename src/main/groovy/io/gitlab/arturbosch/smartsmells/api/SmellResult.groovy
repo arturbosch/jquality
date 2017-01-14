@@ -10,15 +10,15 @@ import io.gitlab.arturbosch.smartsmells.smells.cycle.Cycle
  */
 class SmellResult {
 
-	private Map<Smell, Deque<DetectionResult>> smellSets
+	private Map<Smell, List<DetectionResult>> smellSets
 
 	@PackageScope
-	SmellResult(Map<Smell, Deque<DetectionResult>> smellSets) {
+	SmellResult(Map<Smell, List<DetectionResult>> smellSets) {
 		this.smellSets = smellSets
 	}
 
-	Deque<DetectionResult> of(Smell smell) {
-		smellSets.getOrDefault(smell, new ArrayDeque<>())
+	List<DetectionResult> of(Smell smell) {
+		smellSets.getOrDefault(smell, new ArrayList<>())
 	}
 
 	List<DetectionResult> filter(String path) {
@@ -47,7 +47,7 @@ class SmellResult {
 		}
 	}
 
-	Map<Smell, Deque<DetectionResult>> getSmellSets() {
+	Map<Smell, List<DetectionResult>> getSmellSets() {
 		return smellSets
 	}
 }
