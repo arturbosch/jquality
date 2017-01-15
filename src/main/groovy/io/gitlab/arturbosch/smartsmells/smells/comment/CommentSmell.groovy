@@ -19,6 +19,9 @@ class CommentSmell implements DetectionResult {
 
 	static String ORPHAN = "ORPHAN"
 	static String PRIVATE = "PRIVATE"
+	static String MISSING_PARAMETER = "MISSING_PARAMETER"
+	static String MISSING_RETURN = "MISSING_RETURN"
+	static String MISSING_JAVADOC = "MISSING_JAVADOC"
 
 	String type
 	String message

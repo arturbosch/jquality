@@ -1,13 +1,13 @@
 package io.gitlab.arturbosch.smartsmells.java;
 
-/**
- * @author artur
- */
 @SuppressWarnings("ALL")
 public class CommentDummy {
 
 	/**
 	 * Ich bin ein Kommentar!
+	 *
+	 * Test!
+	 * @param i
 	 */
 	public void publicMethod(String in, int i) {
 		// TODO Kommentar
