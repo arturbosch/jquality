@@ -16,7 +16,8 @@ class XMLWriter {
 
 		List<String> entries = new ArrayList<>()
 		smellResult.smellSets.each { key, value ->
-			entries.addAll(value.collect {
+			entries.addAll(value.stream().filter { it != null }.collect {
+				println it
 				if (key == Smell.COMPLEX_METHOD || key == Smell.LONG_PARAM) {
 					"\t" + handleLongMethodDelegates(it)
 				} else if (key == Smell.CYCLE) {
@@ -53,8 +54,7 @@ class XMLWriter {
 		def longMethod = extractField(smelly, "longMethod")
 
 		String attributes = getAttributesFromFields(smelly)
-
-		def base = toXmlEntry((DetectionResult) longMethod)
+		def base = toXmlEntry(longMethod as DetectionResult)
 		def appendStart = "<$name " + Strings.substringAfter(base, " ")
 		def appendEnd = Strings.substringBefore(appendStart, "/>") + "$attributes/>"
 		return appendEnd
