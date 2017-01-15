@@ -8,7 +8,7 @@ apply plugin: 'groovy'
 apply plugin: 'maven'
 
 group 'io.gitlab.arturbosch.smartsmells'
-version 'M8'
+version 'M9'
 
 repositories {
 	mavenCentral()
@@ -52,7 +52,7 @@ task unitTest( type: Test ) {
 dependencies {
 	compile 'org.codehaus.groovy:groovy-all:2.4.6'
 	compile 'com.github.javaparser:javaparser-core:3.0.1'
-	compile 'io.gitlab.arturbosch.jpal:jpal:1.0.RC2'
+	compile 'io.gitlab.arturbosch.jpal:jpal:1.0.RC3'
 	compile 'org.yaml:snakeyaml:1.17'
 	compile 'com.beust:jcommander:1.48'
 	testCompile 'org.spockframework:spock-core:1.0-groovy-2.4'
