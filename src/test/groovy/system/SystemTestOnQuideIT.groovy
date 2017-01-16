@@ -97,10 +97,10 @@ class SystemTestOnQuideIT extends Specification {
 
 	def "run on quide and find no same feature envy twice"() {
 		given:
-//		def path = "/home/artur/Repos/quide-master/Implementierung/QuideService/src/main"
+		def path = "/home/artur/Repos/quide-master/Implementierung/QuideService/src/main"
 //		def path = "/home/artur/Arbeit/tools/ismell/src/main"
 //		def path = "/home/artur/Arbeit/agst/pooka-co/trunk/pooka/src"
-		def path = "/home/artur/Repos/elasticsearch/core/src/main/" // 32-32 s
+//		def path = "/home/artur/Repos/elasticsearch/core/src/main/" // 32-32 s
 //		def path = Paths.getResource("/cornercases").getFile()
 		def result = DetectorFacade.builder().fullStackFacade().run(Paths.get(path))
 		def envies = result.of(Smell.FEATURE_ENVY)
@@ -109,13 +109,13 @@ class SystemTestOnQuideIT extends Specification {
 				.filter { Collections.frequency(envies, it) > 1 }
 				.collect(Collectors.toSet())
 //		envies.each { println it.toString() }
-//		result.of(Smell.GOD_CLASS).each { println it.toString() }
+		result.of(Smell.GOD_CLASS).each { println it.toString() }
 //		println result.of(Smell.CYCLE).size()
 		then:
 		duplicates.isEmpty()
 		when:
 		def xml = XMLWriter.toXml(result)
-		println xml
+//		println xml
 		then:
 		xml.contains("FeatureEnvy")
 	}

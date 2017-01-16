@@ -13,13 +13,17 @@ import io.gitlab.arturbosch.smartsmells.metrics.Metrics
 import java.nio.file.Path
 
 /**
- * GodClasses := ((ATFD, TopValues(20%)) ∧ (ATFD, HigherThan(4))) ∧
- * ((WMC, HigherThan(20)) ∨ (TCC, LowerThan(0.33)).
+ * GodClasses := ATFD > 5 ∧ WMC > 43 ∧ TCC < 0.33
  *
  * Metric proposed by:
  * R. Marinescu, Measurement and quality in object-oriented design, Ph.D. thesis in
  * the Faculty of Automatics and Computer Science of the Politehnica University of
  * Timisoara, 2003.
+ *
+ * proposed by http://www.cs.ubbcluj.ro/~studia-i/2011-4/03-Serban.pdf
+ *
+ * GodClasses := ((ATFD, TopValues(20%)) ∧ (ATFD, HigherThan(4))) ∧
+ * ((WMC, HigherThan(20)) ∨ (TCC, LowerThan(0.33)).
  *
  * @author artur
  */
@@ -75,8 +79,8 @@ class GodClassVisitor extends Visitor<GodClass> {
 
 		private boolean checkThresholds() {
 			atfd > accessToForeignDataThreshold &&
-					(wmc > weightedMethodCountThreshold ||
-							tcc < tiedClassCohesionThreshold)
+					wmc > weightedMethodCountThreshold &&
+					tcc < tiedClassCohesionThreshold
 		}
 
 		private boolean addSmell(ClassOrInterfaceDeclaration n) {
