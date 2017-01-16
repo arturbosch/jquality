@@ -17,6 +17,7 @@ import io.gitlab.arturbosch.smartsmells.smells.messagechain.MessageChainDetector
 import io.gitlab.arturbosch.smartsmells.smells.middleman.MiddleManDetector
 import io.gitlab.arturbosch.smartsmells.smells.middleman.MiddleManVisitor
 import io.gitlab.arturbosch.smartsmells.smells.shotgunsurgery.ShotgunSurgeryDetector
+import io.gitlab.arturbosch.smartsmells.smells.statechecking.StateCheckingDetector
 import io.gitlab.arturbosch.smartsmells.util.Strings
 
 import java.util.function.Function
@@ -145,7 +146,14 @@ enum Smell {
 					})
 		}
 	}
-	, UNKNOWN{
+	, STATE_CHECKING{
+		@Override
+		Optional<Detector> initialize(DetectorConfig detectorConfig) {
+			return initDefault(detectorConfig, Constants.STATE_CHECKING, {
+				new StateCheckingDetector()
+			})
+		}
+	}, UNKNOWN{
 		@Override
 		Optional<Detector> initialize(DetectorConfig detectorConfig) {
 			return Optional.empty()

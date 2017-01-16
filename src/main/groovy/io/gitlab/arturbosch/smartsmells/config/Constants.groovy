@@ -38,4 +38,6 @@ class Constants {
 	static final String SHOTGUN_SURGERY = "shotgunsurgery"
 	static final String CHANGING_METHODS = "cm"
 	static final String CHANGING_CLASSES = "cc"
+
+	static final String STATE_CHECKING = "statechecking"
 }

@@ -30,6 +30,7 @@ class Test {
 	static Path MESSAGE_CHAIN_PATH = BASE_PATH.resolve("MessageChainDummy.java")
 	static Path MIDDLE_MAN_PATH = BASE_PATH.resolve("MiddleManDummy.java")
 	static Path FEATURE_ENVY_PATH = BASE_PATH.resolve("FeatureEnvyDummy.java")
+	static Path STATE_CHECKING_PATH = BASE_PATH.resolve("StateCheckingDummy.java")
 
 	static CompilationUnit compile(Path path) {
 		return IOGroovyMethods.withCloseable(Files.newInputStream(path)) {
