@@ -24,6 +24,7 @@ class DataClassVisitor extends Visitor<DataClass> {
 				.each { visit(it, resolver) }
 
 		if (n.interface) return
+		if (isException(n)) return
 
 		currentClassName = n.name
 		def filteredMethods = NodeHelper.findMethods(n).stream()
@@ -38,4 +39,12 @@ class DataClassVisitor extends Visitor<DataClass> {
 		}
 	}
 
+	private static boolean isException(ClassOrInterfaceDeclaration node) {
+		if (!node.extendedTypes.isEmpty()) {
+			def extended = node.extendedTypes[0]
+			def name = extended.nameAsString
+			return name.contains("Exception") || name.contains("Error")
+		}
+		return false
+	}
 }

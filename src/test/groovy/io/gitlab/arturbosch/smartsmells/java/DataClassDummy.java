@@ -5,6 +5,13 @@ package io.gitlab.arturbosch.smartsmells.java;
  */
 @SuppressWarnings("ALL") public class DataClassDummy {
 
+	// Exceptions are no DataClasses
+	class MyError extends RuntimeException {
+		public MyError(String message, Throwable cause) {
+			super(message, cause);
+		}
+	}
+
 	String test;
 	int i;
 
