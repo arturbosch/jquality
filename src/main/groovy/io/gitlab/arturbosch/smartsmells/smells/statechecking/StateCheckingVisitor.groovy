@@ -58,7 +58,8 @@ class StateCheckingVisitor extends Visitor<StateChecking> {
 			def casesAndSymbols = collectSymbolsAndCases(n)
 			def cases = casesAndSymbols.a
 			def symbolMap = casesAndSymbols.b
-			if (cases.size() > 1 && symbolMap.size() > 0) {
+			// cases > 2 on variables is a heuristic value to prevent simple (x < 1 and x >= 1 cases)
+			if (cases.size() > 2 && symbolMap.size() > 0) {
 				def symbol = mostUsedSymbolMeetsCaseCount(symbolMap, cases)
 				if (symbol) {
 					arg.resolve(symbol, info)
@@ -114,7 +115,6 @@ class StateCheckingVisitor extends Visitor<StateChecking> {
 	}
 
 	private void addStateSmell(Statement n, List<String> cases) {
-		println "State checking - $n"
 		def methodName = NodeHelper.findDeclaringMethod(n)
 				.map { it.nameAsString }
 				.orElse(UNKNOWN_METHOD)
