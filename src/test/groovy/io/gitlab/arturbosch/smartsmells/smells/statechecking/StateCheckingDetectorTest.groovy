@@ -1,7 +1,6 @@
 package io.gitlab.arturbosch.smartsmells.smells.statechecking
 
 import io.gitlab.arturbosch.smartsmells.common.Test
-import spock.lang.Ignore
 import spock.lang.Specification
 
 /**
@@ -9,7 +8,6 @@ import spock.lang.Specification
  */
 class StateCheckingDetectorTest extends Specification {
 
-	@Ignore
 	def "find state checking methods"() {
 		expect:
 		smells.size() == 3

@@ -14,7 +14,7 @@ import io.gitlab.arturbosch.smartsmells.common.DetectionResult
 class StateChecking implements DetectionResult {
 
 	String inMethod
-	List<String> cases = new HashSet<>()
+	List<String> cases = new ArrayList<>()
 
 	@Delegate
 	SourcePath sourcePath
