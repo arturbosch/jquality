@@ -10,7 +10,7 @@ class StateCheckingDetectorTest extends Specification {
 
 	def "find state checking methods"() {
 		expect:
-		smells.size() == 4
+		smells.size() == 3
 		where:
 		smells = new StateCheckingDetector().run(Test.STATE_CHECKING_PATH)
 	}

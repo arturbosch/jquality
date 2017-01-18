@@ -26,6 +26,8 @@ public class StateCheckingDummy {
 		}
 	}
 
+	// No state checking as it is a common case to check variables in two directions
+	// eg. greaterThan and lesserThan
 	public void doStuff(int number) {
 		if (number > 0) {
 			doHeavyStuff();
