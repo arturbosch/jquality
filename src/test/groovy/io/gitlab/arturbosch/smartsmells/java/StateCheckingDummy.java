@@ -1,5 +1,8 @@
 package io.gitlab.arturbosch.smartsmells.java;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 /**
  * @author Artur Bosch
  */
@@ -45,6 +48,36 @@ public class StateCheckingDummy {
 	}
 
 	public void doHeavyStuff() {
+		int type = 0;
+		int i = 5;
+		InputStream in = System.in;
+		Object[] sortValues = new Object[100];
+		if (type == 0) {
+			sortValues[i] = null;
+		} else if (type == 1) {
+			sortValues[i] = 5;
+		} else if (type == 2) {
+			sortValues[i] = Long.getLong("2");
+		} else if (type == 3) {
+			sortValues[i] = 3;
+		} else if (type == 4) {
+			sortValues[i] = 5;
+		} else if (type == 5) {
+			sortValues[i] = 5;
+		} else if (type == 6) {
+			sortValues[i] = 6;
+		} else if (type == 7) {
+			sortValues[i] = 7;
+		} else if (type == 8) {
+			sortValues[i] = 9;
+		} else {
+			try {
+				throw new IOException("Can't match type [" + type + "]");
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
 	}
 
 	public void doComplicatedStuff() {

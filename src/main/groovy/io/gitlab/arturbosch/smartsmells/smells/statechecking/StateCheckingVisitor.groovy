@@ -17,6 +17,7 @@ import io.gitlab.arturbosch.jpal.resolution.symbols.SymbolReference
 import io.gitlab.arturbosch.smartsmells.common.Visitor
 import sun.awt.util.IdentityArrayList
 
+import java.util.function.BinaryOperator
 import java.util.stream.Collectors
 
 /**
@@ -24,6 +25,8 @@ import java.util.stream.Collectors
  */
 @CompileStatic
 class StateCheckingVisitor extends Visitor<StateChecking> {
+
+	final static String UNKNOWN_METHOD = "UNKNOWN_METHOD"
 
 	private List<Statement> statementsFromElseBlock = new IdentityArrayList<>()
 
@@ -52,7 +55,17 @@ class StateCheckingVisitor extends Visitor<StateChecking> {
 			def cases = instanceOfExprs.collect { it.toString(Printer.NO_COMMENTS) }
 			addStateSmell(n, cases)
 		} else {
-			checkStateVariablesInIf(n, arg)
+			def casesAndSymbols = collectSymbolsAndCases(n)
+			def cases = casesAndSymbols.a
+			def symbolMap = casesAndSymbols.b
+			if (cases.size() > 1 && symbolMap.size() > 0) {
+				def symbol = mostUsedSymbolMeetsCaseCount(symbolMap, cases)
+				if (symbol) {
+					arg.resolve(symbol, info)
+							.filter { SymbolReference reference -> reference.isVariable() }
+							.ifPresent { addStateSmell(n, cases) }
+				}
+			}
 		}
 		n.elseStmt.ifPresent {
 			statementsFromElseBlock.add(it)
@@ -73,24 +86,22 @@ class StateCheckingVisitor extends Visitor<StateChecking> {
 		return cases
 	}
 
-	private void checkStateVariablesInIf(IfStmt n, Resolver arg) {
-		def casesAndSymbols = collectSymbolsAndCases(n)
-		def cases = casesAndSymbols.a
-		def symbolMap = casesAndSymbols.b
-		if (symbolMap.size() > 0) {
-			SimpleName symbol = symbolMap.inject {
-				Map.Entry<SimpleName, Integer> one, Map.Entry<SimpleName, Integer> two ->
-					one.value >= two.value ? one.key : two.key
-			} as SimpleName
-			arg.resolve(symbol, info)
-					.filter { SymbolReference reference -> reference.isVariable() }
-					.ifPresent { addStateSmell(n, cases) }
-		}
+	private static SimpleName mostUsedSymbolMeetsCaseCount(Map<SimpleName, Integer> symbolMap,
+														   List<String> cases) {
+		symbolMap.entrySet().stream().reduce(
+				new BinaryOperator<Map.Entry<SimpleName, Integer>>() {
+					@Override
+					Map.Entry<SimpleName, Integer> apply(Map.Entry<SimpleName, Integer> e1,
+														 Map.Entry<SimpleName, Integer> e2) {
+						return e1.value >= e2.value ? e1 : e2
+					}
+				}
+		).map { it.value == cases.size() ? it.key : null }.orElse(null)
 	}
 
 	private static Pair<List<String>, Map<SimpleName, Integer>> collectSymbolsAndCases(
 			IfStmt node, List<String> cases = new ArrayList<>(),
-			Map<SimpleName, Integer> map = new IdentityHashMap<>()) {
+			Map<SimpleName, Integer> map = new HashMap<>()) {
 		cases.add(node.condition.toString(Printer.NO_COMMENTS))
 		node.condition.getNodesByType(SimpleName.class)
 				.each { map.merge(it, 1, { Integer v1, Integer v2 -> v1 + v2 }) }
@@ -103,11 +114,11 @@ class StateCheckingVisitor extends Visitor<StateChecking> {
 	}
 
 	private void addStateSmell(Statement n, List<String> cases) {
+		println "State checking - $n"
 		def methodName = NodeHelper.findDeclaringMethod(n)
 				.map { it.nameAsString }
-				.orElse("NoMethodName")
+				.orElse(UNKNOWN_METHOD)
 		def stateCheck = new StateChecking(methodName, cases, SourcePath.of(path), SourceRange.fromNode(n))
-		println stateCheck
 		smells.add(stateCheck)
 	}
 }

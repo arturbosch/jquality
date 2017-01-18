@@ -19,6 +19,7 @@ import io.gitlab.arturbosch.smartsmells.smells.longparam.LongParameterListDetect
 import io.gitlab.arturbosch.smartsmells.smells.messagechain.MessageChainDetector
 import io.gitlab.arturbosch.smartsmells.smells.middleman.MiddleManDetector
 import io.gitlab.arturbosch.smartsmells.smells.shotgunsurgery.ShotgunSurgeryDetector
+import io.gitlab.arturbosch.smartsmells.smells.statechecking.StateCheckingDetector
 import spock.lang.Specification
 
 import java.nio.file.Path
@@ -118,6 +119,13 @@ class DetectorPerformanceTests extends Specification {
 	def "large class detector"() {
 		when: "testing performance"
 		run(new LargeClassDetector())
+		then: "it takes: 6006 ms"
+		true
+	}
+
+	def "state checking detector"() {
+		when: "testing performance"
+		run(new StateCheckingDetector())
 		then: "it takes: 6006 ms"
 		true
 	}
