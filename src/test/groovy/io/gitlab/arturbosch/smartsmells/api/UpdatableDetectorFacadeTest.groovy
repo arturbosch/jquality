@@ -12,7 +12,7 @@ class UpdatableDetectorFacadeTest extends Specification {
 	def "test running two times over same project"() {
 		given:
 		def fullStackFacade = DetectorFacade.builder().fullStackFacade()
-		def facade = new UpdatableDetectorFacade(Test.BASE_PATH, fullStackFacade)
+		def facade = new UpdatableDetectorFacade(fullStackFacade)
 		when:
 		facade.addOrUpdate(Collections.singletonList(Test.CYCLE_DUMMY_PATH))
 		facade.addOrUpdate(Collections.singletonList(Test.COMPLEX_METHOD_DUMMY_PATH))

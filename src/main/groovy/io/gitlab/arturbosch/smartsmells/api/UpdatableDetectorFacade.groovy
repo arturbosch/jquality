@@ -21,9 +21,9 @@ class UpdatableDetectorFacade {
 
 	private final List<CompilationInfo> infos = new ArrayList<>()
 
-	UpdatableDetectorFacade(Path root, DetectorFacade detectorFacade) {
+	UpdatableDetectorFacade(Path root = null, DetectorFacade detectorFacade) {
 		facade = detectorFacade
-		storage = JPAL.updatableFromSource(root)
+		storage = root ? JPAL.initializedUpdatable(root) : JPAL.updatable()
 		resolver = new Resolver(storage)
 	}
 
