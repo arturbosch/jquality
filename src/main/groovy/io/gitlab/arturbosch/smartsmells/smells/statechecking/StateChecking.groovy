@@ -13,8 +13,12 @@ import io.gitlab.arturbosch.smartsmells.common.DetectionResult
 @ToString(includePackage = false)
 class StateChecking implements DetectionResult {
 
+	static String INSTANCE_OF = "Replace instanceof conditions with polymorphism"
+	static String SUBTYPING = "Replace state checking variables with subtyping"
+
 	String inMethod
 	List<String> cases = new ArrayList<>()
+	String type
 
 	@Delegate
 	SourcePath sourcePath
@@ -27,6 +31,6 @@ class StateChecking implements DetectionResult {
 
 	@Override
 	String asCompactString() {
-		return null
+		return "StateChecking \n\n$type"
 	}
 }

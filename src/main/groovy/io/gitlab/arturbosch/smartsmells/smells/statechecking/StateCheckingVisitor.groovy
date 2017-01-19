@@ -41,7 +41,7 @@ class StateCheckingVisitor extends Visitor<StateChecking> {
 					it.label.map { it.toString(Printer.NO_COMMENTS) }
 							.orElse("default")
 				}.collect(Collectors.toList())
-				addStateSmell(n, cases)
+				addStateSmell(n, cases, StateChecking.SUBTYPING)
 			}
 		}
 		super.visit(n, arg)
@@ -53,7 +53,7 @@ class StateCheckingVisitor extends Visitor<StateChecking> {
 		def instanceOfExprs = checkInstanceOf(n)
 		if (instanceOfExprs.size() > 1) {
 			def cases = instanceOfExprs.collect { it.toString(Printer.NO_COMMENTS) }
-			addStateSmell(n, cases)
+			addStateSmell(n, cases, StateChecking.INSTANCE_OF)
 		} else {
 			def casesAndSymbols = collectSymbolsAndCases(n)
 			def cases = casesAndSymbols.a
@@ -64,7 +64,7 @@ class StateCheckingVisitor extends Visitor<StateChecking> {
 				if (symbol) {
 					arg.resolve(symbol, info)
 							.filter { SymbolReference reference -> reference.isVariable() }
-							.ifPresent { addStateSmell(n, cases) }
+							.ifPresent { addStateSmell(n, cases, StateChecking.SUBTYPING) }
 				}
 			}
 		}
@@ -114,11 +114,11 @@ class StateCheckingVisitor extends Visitor<StateChecking> {
 		return new Pair(cases, map)
 	}
 
-	private void addStateSmell(Statement n, List<String> cases) {
+	private void addStateSmell(Statement n, List<String> cases, String type) {
 		def methodName = NodeHelper.findDeclaringMethod(n)
 				.map { it.nameAsString }
 				.orElse(UNKNOWN_METHOD)
-		def stateCheck = new StateChecking(methodName, cases, SourcePath.of(path), SourceRange.fromNode(n))
+		def stateCheck = new StateChecking(methodName, cases, type, SourcePath.of(path), SourceRange.fromNode(n))
 		smells.add(stateCheck)
 	}
 }

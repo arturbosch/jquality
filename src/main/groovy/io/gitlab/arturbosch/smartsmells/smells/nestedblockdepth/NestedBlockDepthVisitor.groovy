@@ -14,7 +14,6 @@ import io.gitlab.arturbosch.jpal.ast.source.SourceRange
 import io.gitlab.arturbosch.jpal.resolution.Resolver
 import io.gitlab.arturbosch.smartsmells.common.Visitor
 import io.gitlab.arturbosch.smartsmells.common.visitor.InternalVisitor
-import io.gitlab.arturbosch.smartsmells.smells.longmethod.LongMethod
 
 /**
  * @author Artur Bosch
@@ -33,10 +32,8 @@ class NestedBlockDepthVisitor extends Visitor<NestedBlockDepth> {
 		def visitor = new MethodDepthVisitor()
 		visitor.visit(n, arg)
 		if (visitor.isTooDeep()) {
-			smells.add(new NestedBlockDepth(
-					new LongMethod(n.declarationAsString, n.nameAsString, n.declarationAsString,
-							visitor.maxDepth, threshold, SourceRange.fromNode(n), SourcePath.of(path)),
-					visitor.maxDepth, threshold))
+			smells.add(new NestedBlockDepth(n.nameAsString, n.declarationAsString,
+					visitor.maxDepth, threshold, SourcePath.of(path), SourceRange.fromNode(n)))
 		}
 	}
 
