@@ -21,6 +21,10 @@ class StateChecking implements DetectionResult {
 	@Delegate
 	SourceRange sourceRange
 
+	String signature() {
+		return "$inMethod#${cases.join(", ")}"
+	}
+
 	@Override
 	String asCompactString() {
 		return null

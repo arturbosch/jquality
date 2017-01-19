@@ -20,6 +20,8 @@ godclass:
   wmc: '47'
   atfd: '5'
   tcc: '0.33'
+javadoc:
+  active: 'true'
 largeclass:
   active: 'true'
   threshold: '150'
@@ -35,6 +37,15 @@ middleman:
 messagechain:
   active: 'true'
   threshold: '3'
+nestedblockdepth:
+  active: 'true'
+  threshold: '3'
+shotgunsurgery:
+  active: 'true'
+  cc: '5'
+  cm: '10'
+statechecking:
+  active: 'true'
 metrics:
   active: 'false'
   skipCC_CM: 'true'

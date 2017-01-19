@@ -33,18 +33,18 @@ class ShotgunSurgeryVisitor extends Visitor<ShotgunSurgery> {
 		def classes = n.getNodesByType(ClassOrInterfaceDeclaration.class)
 
 		classes.each {
-			def classVisitor = new InternalSSVisitor(path)
+			def classVisitor = new InternalSSVisitor()
 			classVisitor.visit(it, resolver)
 		}
 
 	}
 
+	private Path thisPath() {
+		return path
+	}
+
 	@CompileStatic
 	private class InternalSSVisitor extends InternalVisitor {
-
-		InternalSSVisitor(Path thePath) {
-			super(thePath)
-		}
 
 		@Override
 		void visit(ClassOrInterfaceDeclaration n, Resolver resolver) {
@@ -55,7 +55,7 @@ class ShotgunSurgeryVisitor extends Visitor<ShotgunSurgery> {
 
 			if (cc > ccThreshold && cm > cmThreshold) {
 				smells.add(new ShotgunSurgery(n.nameAsString, ClassHelper.createFullSignature(n),
-						cc, cm, ccThreshold, cmThreshold, SourcePath.of(thePath), SourceRange.fromNode(n)))
+						cc, cm, ccThreshold, cmThreshold, SourcePath.of(thisPath()), SourceRange.fromNode(n)))
 			}
 		}
 

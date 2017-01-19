@@ -27,6 +27,7 @@ class Constants {
 	static final String MIDDLE_MAN = "middleman"
 
 	static final String COMMENT = "comment"
+	static final String JAVADOC = "javadoc"
 	static final String WEIGHT = "weight"
 
 	static final String BASE = "base"
@@ -40,4 +41,5 @@ class Constants {
 	static final String CHANGING_CLASSES = "cc"
 
 	static final String STATE_CHECKING = "statechecking"
+	static final String NESTED_BLOCK_DEPTH = "nestedblockdepth"
 }

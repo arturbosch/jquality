@@ -3,6 +3,7 @@ package io.gitlab.arturbosch.smartsmells.config
 import io.gitlab.arturbosch.smartsmells.common.Detector
 import io.gitlab.arturbosch.smartsmells.metrics.ClassInfoDetector
 import io.gitlab.arturbosch.smartsmells.smells.comment.CommentDetector
+import io.gitlab.arturbosch.smartsmells.smells.comment.JavadocDetector
 import io.gitlab.arturbosch.smartsmells.smells.complexmethod.ComplexMethodDetector
 import io.gitlab.arturbosch.smartsmells.smells.cycle.CycleDetector
 import io.gitlab.arturbosch.smartsmells.smells.dataclass.DataClassDetector
@@ -16,6 +17,7 @@ import io.gitlab.arturbosch.smartsmells.smells.longparam.LongParameterListDetect
 import io.gitlab.arturbosch.smartsmells.smells.messagechain.MessageChainDetector
 import io.gitlab.arturbosch.smartsmells.smells.middleman.MiddleManDetector
 import io.gitlab.arturbosch.smartsmells.smells.middleman.MiddleManVisitor
+import io.gitlab.arturbosch.smartsmells.smells.nestedblockdepth.NestedBlockDepthDetector
 import io.gitlab.arturbosch.smartsmells.smells.shotgunsurgery.ShotgunSurgeryDetector
 import io.gitlab.arturbosch.smartsmells.smells.statechecking.StateCheckingDetector
 import io.gitlab.arturbosch.smartsmells.util.Strings
@@ -37,8 +39,7 @@ enum Smell {
 				new ClassInfoDetector(Strings.isTrue(it.get(Constants.SKIP_CC_CM)))
 			})
 		}
-	},
-	COMMENT{
+	}, COMMENT{
 		@Override
 		Optional<Detector> initialize(DetectorConfig detectorConfig) {
 			return initDefault(detectorConfig, Constants.COMMENT, { new CommentDetector() })
@@ -89,6 +90,13 @@ enum Smell {
 								toDouble(it.get(Constants.TCC), Defaults.TIED_CLASS_COHESION))
 					})
 		}
+	}, JAVADOC{
+		@Override
+		Optional<Detector> initialize(DetectorConfig detectorConfig) {
+			return initDefault(detectorConfig, Constants.JAVADOC, {
+				new JavadocDetector()
+			})
+		}
 	}, LARGE_CLASS{
 		@Override
 		Optional<Detector> initialize(DetectorConfig detectorConfig) {
@@ -133,6 +141,14 @@ enum Smell {
 						new MiddleManDetector(
 								MiddleManVisitor.MMT.valueOf(it.get(Constants.THRESHOLD)))
 					})
+		}
+	}, NESTED_BLOCK_DEPTH{
+		@Override
+		Optional<Detector> initialize(DetectorConfig detectorConfig) {
+			return initDefault(detectorConfig, Constants.NESTED_BLOCK_DEPTH, {
+				def threshold = toInt(it.get(Constants.THRESHOLD), Defaults.MAX_DEPTH)
+				new NestedBlockDepthDetector(threshold)
+			})
 		}
 	}, SHOTGUN_SURGERY{
 
