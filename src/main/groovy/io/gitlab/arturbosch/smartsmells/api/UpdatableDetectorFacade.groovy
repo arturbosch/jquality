@@ -36,19 +36,11 @@ class UpdatableDetectorFacade {
 	}
 
 	void relocate(Map<Path, Path> pathsToRelocate) {
-		pathsToRelocate.each {
-			storage.relocateCompilationInfo(it.key, it.value).ifPresent {
-				infos.add(it)
-			}
-		}
+		infos.addAll(storage.relocateCompilationInfo(pathsToRelocate))
 	}
 
 	void relocateWithContent(Map<Path, Pair<Path, String>> pathsToRelocate) {
-		pathsToRelocate.each {
-			storage.relocateCompilationInfo(it.key, it.value).ifPresent {
-				infos.add(it)
-			}
-		}
+		infos.addAll(storage.relocateCompilationInfoFromSource(pathsToRelocate))
 	}
 
 	void remove(List<Path> pathsToRemove) {

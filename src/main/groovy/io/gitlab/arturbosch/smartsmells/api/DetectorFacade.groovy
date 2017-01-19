@@ -25,6 +25,7 @@ import io.gitlab.arturbosch.smartsmells.smells.longmethod.LongMethodDetector
 import io.gitlab.arturbosch.smartsmells.smells.longparam.LongParameterListDetector
 import io.gitlab.arturbosch.smartsmells.smells.messagechain.MessageChainDetector
 import io.gitlab.arturbosch.smartsmells.smells.middleman.MiddleManDetector
+import io.gitlab.arturbosch.smartsmells.smells.nestedblockdepth.NestedBlockDepthDetector
 import io.gitlab.arturbosch.smartsmells.smells.shotgunsurgery.ShotgunSurgeryDetector
 import io.gitlab.arturbosch.smartsmells.smells.statechecking.StateCheckingDetector
 import io.gitlab.arturbosch.smartsmells.util.Validate
@@ -130,7 +131,7 @@ class DetectorFacade {
 						 new LongParameterListDetector(), new DeadCodeDetector(), new LargeClassDetector(),
 						 new MessageChainDetector(), new MiddleManDetector(), new FeatureEnvyDetector(),
 						 new CycleDetector(), new DataClassDetector(), new GodClassDetector(),
-						 new ShotgunSurgeryDetector(), new StateCheckingDetector()]
+						 new ShotgunSurgeryDetector(), new StateCheckingDetector(), new NestedBlockDepthDetector()]
 			build()
 		}
 
