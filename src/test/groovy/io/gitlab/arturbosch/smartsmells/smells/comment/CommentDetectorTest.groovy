@@ -11,11 +11,7 @@ class CommentDetectorTest extends Specification {
 	void "three comments within private methods detected"() {
 		expect:
 		smells.size() == 3
-		!smells[0].type.isEmpty()
-		!smells[0].message.isEmpty()
-		!smells[0].path.isEmpty()
-		smells[0].sourceRange != null
-		smells[0].sourcePath != null
+		smells.each { it.type == CommentSmell.Type.ORPHAN || it.type == CommentSmell.Type.PRIVATE }
 
 		where:
 		smells = new CommentDetector().run(Test.COMMENT_DUMMY_PATH)

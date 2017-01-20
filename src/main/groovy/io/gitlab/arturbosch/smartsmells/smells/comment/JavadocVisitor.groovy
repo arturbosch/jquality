@@ -15,6 +15,7 @@ import groovy.transform.CompileStatic
 import io.gitlab.arturbosch.jpal.ast.MethodHelper
 import io.gitlab.arturbosch.jpal.ast.source.SourcePath
 import io.gitlab.arturbosch.jpal.ast.source.SourceRange
+import io.gitlab.arturbosch.jpal.internal.Printer
 import io.gitlab.arturbosch.jpal.resolution.Resolver
 import io.gitlab.arturbosch.smartsmells.common.Visitor
 
@@ -46,8 +47,8 @@ class JavadocVisitor extends Visitor<CommentSmell> {
 
 	private void checkForJavadoc(NodeWithJavadoc node, String forNode) {
 		if (!node.javadoc) {
-			smells.add(new CommentSmell(CommentSmell.MISSING_JAVADOC,
-					"Missing javadoc for $forNode", false, false,
+			smells.add(new CommentSmell(CommentSmell.Type.MISSING_JAVADOC,
+					forNode, false, false,
 					SourcePath.of(path), SourceRange.fromNode(node as Node)))
 		}
 	}
@@ -63,8 +64,7 @@ class JavadocVisitor extends Visitor<CommentSmell> {
 				checkForParameterTags(javadoc, n, javadocComment, fixme, todo)
 				checkForReturnTag(n, javadoc, javadocComment)
 			} else {
-				smells.add(new CommentSmell(CommentSmell.MISSING_JAVADOC,
-						"Missing javadoc for method: $n.declarationAsString",
+				smells.add(new CommentSmell(CommentSmell.Type.MISSING_JAVADOC, "$n.declarationAsString",
 						false, false, SourcePath.of(path), SourceRange.fromNode(n)))
 			}
 		}
@@ -86,14 +86,15 @@ class JavadocVisitor extends Visitor<CommentSmell> {
 		}
 
 		List<String> paramNames = parameters[false]
-		paramNames.each { String it ->
-			missingParameterName(javadocComment, it, fixme, todo)
+		if (paramNames) {
+			paramNames.each { String it ->
+				missingParameterName(javadocComment, it, fixme, todo)
+			}
 		}
 	}
 
 	private void missingParameterName(JavadocComment javadoc, String parameter, boolean fixme, boolean todo) {
-		smells.add(new CommentSmell(CommentSmell.MISSING_PARAMETER,
-				"Missing parameter tag and/or description for parameter with name $parameter",
+		smells.add(new CommentSmell(CommentSmell.Type.MISSING_PARAMETER, parameter,
 				todo, fixme, SourcePath.of(path), SourceRange.fromNode(javadoc)))
 	}
 
@@ -101,8 +102,8 @@ class JavadocVisitor extends Visitor<CommentSmell> {
 		if (!(n.type instanceof VoidType)) {
 			def returnTag = javadoc.blockTags.find { it.type == JavadocBlockTag.Type.RETURN }
 			if (!returnTag || returnTag.content.empty)
-				smells.add(new CommentSmell(CommentSmell.MISSING_RETURN,
-						"Missing return or description for method: $n.declarationAsString",
+				smells.add(new CommentSmell(CommentSmell.Type.MISSING_RETURN,
+						"${n.getType().toString(Printer.NO_COMMENTS)}",
 						false, false, SourcePath.of(path), SourceRange.fromNode(javadocComment)))
 		}
 	}

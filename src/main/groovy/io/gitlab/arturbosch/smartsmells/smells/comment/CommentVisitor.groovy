@@ -17,32 +17,28 @@ import io.gitlab.arturbosch.smartsmells.common.Visitor
  */
 class CommentVisitor extends Visitor<CommentSmell> {
 
-	private final
-	static String DEFAULT_MESSAGE = "are considered as a smell, try to refactor your code so others will understand it without a comment."
-	private final static String ORPHAN_MESSAGE = "Loosely comments " + DEFAULT_MESSAGE
-	private final static String JAVADOC_MESSAGE = "Javadoc over private or package private methods " + DEFAULT_MESSAGE
-
 	@Override
 	void visit(MethodDeclaration n, Resolver arg) {
 		if (n.comment != null) {
 			def modifiers = n.modifiers
 			def specifier = Modifier.getAccessSpecifier(modifiers)
 			if (specifier == AccessSpecifier.PRIVATE || specifier == AccessSpecifier.DEFAULT) {
-				addCommentSmell(CommentSmell.PRIVATE, n.comment, JAVADOC_MESSAGE)
+				addCommentSmell(CommentSmell.Type.PRIVATE, n.declarationAsString, n.comment)
 			}
 		}
 
 		for (comment in n.getAllContainedComments()) {
-			addCommentSmell(CommentSmell.ORPHAN, comment, ORPHAN_MESSAGE)
+			addCommentSmell(CommentSmell.Type.ORPHAN, "orphan comment", comment)
 		}
 
 		super.visit(n, arg)
 	}
 
-	private void addCommentSmell(String type, Comment comment, String message) {
+	private void addCommentSmell(CommentSmell.Type type, String name, Comment comment) {
 
-		smells.add(new CommentSmell(type, message,
-				hasTodoOrFixme(comment, "TODO"), hasTodoOrFixme(comment, "FIXME"),
+		smells.add(new CommentSmell(type, name,
+				hasTodoOrFixme(comment, "TODO"),
+				hasTodoOrFixme(comment, "FIXME"),
 				SourcePath.of(path), SourceRange.fromNode(comment)))
 	}
 

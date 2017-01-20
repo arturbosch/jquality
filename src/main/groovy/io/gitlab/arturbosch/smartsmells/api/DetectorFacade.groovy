@@ -14,6 +14,7 @@ import io.gitlab.arturbosch.smartsmells.config.DetectorConfig
 import io.gitlab.arturbosch.smartsmells.config.DetectorInitializer
 import io.gitlab.arturbosch.smartsmells.metrics.ClassInfoDetector
 import io.gitlab.arturbosch.smartsmells.smells.comment.CommentDetector
+import io.gitlab.arturbosch.smartsmells.smells.comment.JavadocDetector
 import io.gitlab.arturbosch.smartsmells.smells.complexmethod.ComplexMethodDetector
 import io.gitlab.arturbosch.smartsmells.smells.cycle.CycleDetector
 import io.gitlab.arturbosch.smartsmells.smells.dataclass.DataClassDetector
@@ -127,11 +128,13 @@ class DetectorFacade {
 		}
 
 		DetectorFacade fullStackFacade() {
-			detectors = [new ComplexMethodDetector(), new CommentDetector(), new LongMethodDetector(),
-						 new LongParameterListDetector(), new DeadCodeDetector(), new LargeClassDetector(),
-						 new MessageChainDetector(), new MiddleManDetector(), new FeatureEnvyDetector(),
-						 new CycleDetector(), new DataClassDetector(), new GodClassDetector(),
-						 new ShotgunSurgeryDetector(), new StateCheckingDetector(), new NestedBlockDepthDetector()]
+			detectors = [new CommentDetector(), new JavadocDetector(),
+						 new LongMethodDetector(), new LongParameterListDetector(), new ComplexMethodDetector(),
+						 new LargeClassDetector(), new DataClassDetector(), new GodClassDetector(),
+						 new CycleDetector(), new MiddleManDetector(), new ShotgunSurgeryDetector(),
+						 new MessageChainDetector(), new FeatureEnvyDetector(),
+						 new DeadCodeDetector(),
+						 new StateCheckingDetector(), new NestedBlockDepthDetector()]
 			build()
 		}
 

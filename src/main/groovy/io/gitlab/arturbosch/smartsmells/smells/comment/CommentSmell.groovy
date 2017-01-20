@@ -17,14 +17,21 @@ import io.gitlab.arturbosch.smartsmells.common.DetectionResult
 @ToString(includePackage = false)
 class CommentSmell implements DetectionResult {
 
-	static String ORPHAN = "ORPHAN"
-	static String PRIVATE = "PRIVATE"
-	static String MISSING_PARAMETER = "MISSING_PARAMETER"
-	static String MISSING_RETURN = "MISSING_RETURN"
-	static String MISSING_JAVADOC = "MISSING_JAVADOC"
+	enum Type {
+		ORPHAN(CommentConstants.ORPHAN_MESSAGE),
+		PRIVATE(CommentConstants.PRIVATE_JAVADOC_MESSAGE),
+		MISSING_PARAMETER(CommentConstants.MISSING_PARAM_TAG),
+		MISSING_RETURN(CommentConstants.MISSING_RETURN_TAG),
+		MISSING_JAVADOC(CommentConstants.MISSING_PUBLIC_JAVADOC)
 
-	String type
-	String message
+		Type(String message) {
+			this.message = message
+		}
+		String message
+	}
+
+	Type type
+	String name
 
 	boolean hasTODO
 	boolean hasFIXME
@@ -36,6 +43,6 @@ class CommentSmell implements DetectionResult {
 
 	@Override
 	String asCompactString() {
-		"CommentSmell - $type\n\n$message"
+		"CommentSmell - $type\n\n$type.message"
 	}
 }

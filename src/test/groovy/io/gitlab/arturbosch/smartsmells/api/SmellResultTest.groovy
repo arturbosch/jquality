@@ -32,7 +32,7 @@ class SmellResultTest extends Specification {
 	}
 
 	private static CommentSmell getComplexMethod() {
-		new CommentSmell("type", "message", false, false, new SourcePath("path"), SourceRange.of(1, 1, 1, 1))
+		new CommentSmell(CommentSmell.Type.PRIVATE, "message", false, false, new SourcePath("path"), SourceRange.of(1, 1, 1, 1))
 	}
 
 	private static Cycle getCycle() {
