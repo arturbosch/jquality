@@ -128,12 +128,11 @@ class DetectorFacade {
 		}
 
 		DetectorFacade fullStackFacade() {
-			detectors = [new CommentDetector(), new JavadocDetector(),
+			detectors = [new CommentDetector(), new JavadocDetector(), new DeadCodeDetector(),
 						 new LongMethodDetector(), new LongParameterListDetector(), new ComplexMethodDetector(),
-						 new LargeClassDetector(), new DataClassDetector(), new GodClassDetector(),
-						 new CycleDetector(), new MiddleManDetector(), new ShotgunSurgeryDetector(),
-						 new MessageChainDetector(), new FeatureEnvyDetector(),
-						 new DeadCodeDetector(),
+						 new LargeClassDetector(), new DataClassDetector(),
+						 new CycleDetector(), new FeatureEnvyDetector(), new MiddleManDetector(),
+						 new ShotgunSurgeryDetector(), new MessageChainDetector(), new GodClassDetector(),
 						 new StateCheckingDetector(), new NestedBlockDepthDetector()]
 			build()
 		}
