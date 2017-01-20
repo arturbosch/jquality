@@ -121,7 +121,7 @@ final class Metrics {
 		usedScopes = new HashSet<>()
 		n.getNodesByType(FieldAccessExpr.class)
 				.stream()
-				.filter { isNotMemberOfThisClass(it.field.identifier, fields) }
+				.filter { isNotMemberOfThisClass(it.name.identifier, fields) }
 				.each {
 
 			if (it.scope.isPresent() && !usedScopes.contains(it.scope.get().toString(Printer.NO_COMMENTS))) {
