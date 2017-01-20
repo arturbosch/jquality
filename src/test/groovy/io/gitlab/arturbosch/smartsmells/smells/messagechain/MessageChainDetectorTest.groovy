@@ -11,8 +11,8 @@ class MessageChainDetectorTest extends Specification {
 	def "find one message chains with size 2"() {
 		expect:
 		smells.size() == 1
-		smells[0].chainSize == 2
-		smells[0].chainSizeThreshold == 2
+		smells[0].chainSize == 3
+		smells[0].chainSizeThreshold == 3
 		smells[0].sourceEntity == "chainMiddle"
 		smells[0].targetEntity == "complexComputation"
 		smells[0].sourcePath != null

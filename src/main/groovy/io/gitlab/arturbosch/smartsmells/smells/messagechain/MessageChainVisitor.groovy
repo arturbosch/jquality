@@ -6,6 +6,7 @@ import io.gitlab.arturbosch.jpal.ast.source.SourcePath
 import io.gitlab.arturbosch.jpal.ast.source.SourceRange
 import io.gitlab.arturbosch.jpal.internal.Printer
 import io.gitlab.arturbosch.jpal.resolution.Resolver
+import io.gitlab.arturbosch.jpal.resolution.symbols.WithPreviousSymbolReference
 import io.gitlab.arturbosch.smartsmells.common.Visitor
 
 import java.util.stream.Collectors
@@ -28,10 +29,13 @@ class MessageChainVisitor extends Visitor<MessageChain> {
 		super.visit(n, resolver)
 
 		methodCallExprMap.entrySet().stream()
-				.collect {
+				.filter {
+			def reference = resolver.resolve(it.value.name, info).orElse(null) as WithPreviousSymbolReference
+			reference && !reference.isBuilderPattern()
+		}.collect {
 
 			new MessageChain(it.value.toString(Printer.NO_COMMENTS), extractSourceString(it.value),
-					it.value.nameAsString, countOccurrences(it.key, "get"), chainSizeThreshold,
+					it.value.nameAsString, countOccurrences(it.key, "."), chainSizeThreshold,
 					SourcePath.of(path), SourceRange.fromNode(it.value)
 
 			)
@@ -46,7 +50,7 @@ class MessageChainVisitor extends Visitor<MessageChain> {
 	void visit(MethodCallExpr n, Resolver resolver) {
 		def linkedExpr = extractExpressionNames(n)
 		def expr = filterCollectionGets(linkedExpr)
-		def count = countOccurrences(expr, "get")
+		def count = countOccurrences(expr, ".")
 
 		boolean found = false
 		if (count >= chainSizeThreshold) {
@@ -83,6 +87,6 @@ class MessageChainVisitor extends Visitor<MessageChain> {
 			pos += pattern.length()
 		}
 
-		return count
+		return count + 1
 	}
 }

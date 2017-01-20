@@ -15,7 +15,7 @@ class Defaults {
 	static double TIED_CLASS_COHESION = 0.33
 	static boolean ONLY_PRIVATE_DEAD_CODE = true
 	static int LARGE_CLASS = 150
-	static int CHAIN_SIZE = 2
+	static int CHAIN_SIZE = 3
 	static double FEATURE_ENVY_BASE = 0.5
 	static double FEATURE_ENVY_WEIGHT = 0.5
 	static double FEATURE_ENVY_FACTOR = 0.52
