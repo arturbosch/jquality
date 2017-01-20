@@ -29,10 +29,7 @@ class MessageChainVisitor extends Visitor<MessageChain> {
 		super.visit(n, resolver)
 
 		methodCallExprMap.entrySet().stream()
-				.filter {
-			def reference = resolver.resolve(it.value.name, info).orElse(null) as WithPreviousSymbolReference
-			reference && !reference.isBuilderPattern()
-		}.collect {
+				.filter { isValidChainAndNoBuilderPattern(it.value, resolver) }.collect {
 
 			new MessageChain(it.value.toString(Printer.NO_COMMENTS), extractSourceString(it.value),
 					it.value.nameAsString, countOccurrences(it.key, "."), chainSizeThreshold,
@@ -40,6 +37,12 @@ class MessageChainVisitor extends Visitor<MessageChain> {
 
 			)
 		}.each { smells.add(it) }
+	}
+
+	private boolean isValidChainAndNoBuilderPattern(MethodCallExpr call, Resolver resolver) {
+		def reference = resolver.resolve(call.name, info).orElse(null)
+		return reference && reference instanceof WithPreviousSymbolReference &&
+				!(reference as WithPreviousSymbolReference).isBuilderPattern()
 	}
 
 	private static String extractSourceString(MethodCallExpr it) {
