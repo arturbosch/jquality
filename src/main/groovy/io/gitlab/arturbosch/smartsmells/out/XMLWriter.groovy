@@ -17,7 +17,6 @@ class XMLWriter {
 		List<String> entries = new ArrayList<>()
 		smellResult.smellSets.each { key, value ->
 			entries.addAll(value.stream().filter { it != null }.collect {
-				println it
 				if (key == Smell.COMPLEX_METHOD || key == Smell.LONG_PARAM) {
 					"\t" + handleLongMethodDelegates(it)
 				} else if (key == Smell.CYCLE) {
