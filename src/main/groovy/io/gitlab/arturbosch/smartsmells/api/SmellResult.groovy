@@ -1,6 +1,5 @@
 package io.gitlab.arturbosch.smartsmells.api
 
-import groovy.transform.PackageScope
 import io.gitlab.arturbosch.smartsmells.common.DetectionResult
 import io.gitlab.arturbosch.smartsmells.config.Smell
 import io.gitlab.arturbosch.smartsmells.smells.cycle.Cycle
@@ -12,8 +11,7 @@ class SmellResult {
 
 	private Map<Smell, List<DetectionResult>> smellSets
 
-	@PackageScope
-	SmellResult(Map<Smell, List<DetectionResult>> smellSets) {
+	SmellResult(Map<Smell, List<DetectionResult>> smellSets = Collections.emptyMap()) {
 		this.smellSets = smellSets
 	}
 
