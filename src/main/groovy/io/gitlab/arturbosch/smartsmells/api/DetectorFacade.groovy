@@ -34,6 +34,7 @@ import io.gitlab.arturbosch.smartsmells.util.Validate
 
 import java.nio.file.Path
 import java.util.concurrent.CompletableFuture
+import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import java.util.logging.Level
 
@@ -46,9 +47,13 @@ class DetectorFacade {
 
 	private List<Detector<DetectionResult>> detectors = new LinkedList<>()
 
+	private ExecutorService threadPool = Executors.newFixedThreadPool(Runtime.runtime.availableProcessors(),
+			new PrefixedThreadFactory("SmartSmells"))
+
 	@PackageScope
 	DetectorFacade(List<Detector> detectors) {
 		this.detectors = detectors
+		Runtime.runtime.addShutdownHook { threadPool.shutdown() }
 	}
 
 	static DetectorFacadeBuilder builder() {
@@ -85,9 +90,6 @@ class DetectorFacade {
 	SmellResult justRun(List<CompilationInfo> infos, Resolver resolver) {
 		if (infos.empty) return new SmellResult(Collections.emptyMap())
 
-		def threadPool = Executors.newFixedThreadPool(Runtime.runtime.availableProcessors(),
-				new PrefixedThreadFactory("SmartSmells"))
-
 		List<CompletableFuture> futures = new ArrayList<>(infos.size())
 
 		infos.forEach { CompilationInfo info ->
@@ -99,7 +101,6 @@ class DetectorFacade {
 		}
 
 		CompletableFuture.allOf(futures.toArray(new CompletableFuture<?>[0])).join()
-		threadPool.shutdown()
 		def entries = detectors.collectEntries { [it.type, it.smells] }
 		return new SmellResult(entries)
 	}
