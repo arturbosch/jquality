@@ -7,6 +7,7 @@ import io.gitlab.arturbosch.jpal.core.CompilationInfo
 import io.gitlab.arturbosch.jpal.core.CompilationInfoProcessor
 import io.gitlab.arturbosch.jpal.core.CompilationStorage
 import io.gitlab.arturbosch.jpal.core.JPAL
+import io.gitlab.arturbosch.jpal.internal.PrefixedThreadFactory
 import io.gitlab.arturbosch.jpal.resolution.Resolver
 import io.gitlab.arturbosch.smartsmells.common.DetectionResult
 import io.gitlab.arturbosch.smartsmells.common.Detector
@@ -33,7 +34,7 @@ import io.gitlab.arturbosch.smartsmells.util.Validate
 
 import java.nio.file.Path
 import java.util.concurrent.CompletableFuture
-import java.util.concurrent.ForkJoinPool
+import java.util.concurrent.Executors
 import java.util.logging.Level
 
 /**
@@ -84,9 +85,8 @@ class DetectorFacade {
 	SmellResult justRun(List<CompilationInfo> infos, Resolver resolver) {
 		if (infos.empty) return new SmellResult(Collections.emptyMap())
 
-		def forkJoinPool = new ForkJoinPool(
-				Runtime.getRuntime().availableProcessors(),
-				ForkJoinPool.defaultForkJoinWorkerThreadFactory, null, true)
+		def threadPool = Executors.newFixedThreadPool(Runtime.runtime.availableProcessors(),
+				new PrefixedThreadFactory("SmartSmells"))
 
 		List<CompletableFuture> futures = new ArrayList<>(infos.size())
 
@@ -95,11 +95,11 @@ class DetectorFacade {
 				for (Detector detector : detectors) {
 					detector.execute(info, resolver)
 				}
-			}, forkJoinPool).exceptionally { handle(it) })
+			}, threadPool).exceptionally { handle(it) })
 		}
 
 		CompletableFuture.allOf(futures.toArray(new CompletableFuture<?>[0])).join()
-		forkJoinPool.shutdown()
+		threadPool.shutdown()
 		def entries = detectors.collectEntries { [it.type, it.smells] }
 		return new SmellResult(entries)
 	}
