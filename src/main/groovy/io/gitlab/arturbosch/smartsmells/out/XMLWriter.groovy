@@ -16,18 +16,22 @@ class XMLWriter {
 
 		List<String> entries = new ArrayList<>()
 		smellResult.smellSets.each { key, value ->
-			entries.addAll(value.stream().filter { it != null }.collect {
-				if (key == Smell.COMPLEX_METHOD || key == Smell.LONG_PARAM) {
-					"\t" + handleLongMethodDelegates(it)
-				} else if (key == Smell.CYCLE) {
-					"\t" + handleDependencyDelegates(it)
-				} else {
-					"\t" + toXmlEntry(it)
-				}
-			})
+			entries.addAll(value.stream()
+					.filter { it != null }
+					.collect { toXml(key, it) })
 		}
 
 		return "<SmartSmells>\n" + entries.join("\n") + "\n</SmartSmells>"
+	}
+
+	static String toXml(Smell key, DetectionResult it) {
+		if (key == Smell.COMPLEX_METHOD || key == Smell.LONG_PARAM) {
+			"\t" + handleLongMethodDelegates(it)
+		} else if (key == Smell.CYCLE) {
+			"\t" + handleDependencyDelegates(it)
+		} else {
+			"\t" + toXmlEntry(it)
+		}
 	}
 
 	private static String handleDependencyDelegates(DetectionResult smelly) {
