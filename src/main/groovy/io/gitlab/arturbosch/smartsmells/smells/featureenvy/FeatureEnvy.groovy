@@ -1,17 +1,19 @@
 package io.gitlab.arturbosch.smartsmells.smells.featureenvy
 
+import com.github.javaparser.ast.body.MethodDeclaration
 import groovy.transform.Immutable
 import groovy.transform.ToString
 import io.gitlab.arturbosch.jpal.ast.source.SourcePath
 import io.gitlab.arturbosch.jpal.ast.source.SourceRange
 import io.gitlab.arturbosch.smartsmells.common.DetectionResult
+import io.gitlab.arturbosch.smartsmells.smells.MethodSpecific
 
 /**
  * @author artur
  */
 @Immutable
 @ToString(includeNames = false, includePackage = false)
-class FeatureEnvy implements DetectionResult {
+class FeatureEnvy implements DetectionResult, MethodSpecific {
 
 	String name
 	String signature
@@ -25,14 +27,21 @@ class FeatureEnvy implements DetectionResult {
 	double factorThreshold
 
 	@Delegate
-	SourcePath sourcePath
-	@Delegate
 	SourceRange sourceRange
+	@Delegate
+	SourcePath sourcePath
 
 	@Override
 	String asCompactString() {
 		"FeatureEnvy \n\nMethod $name is jealousy of $objectName: $objectType" +
 				"\nFactor: $factor with threshold: $factorThreshold"
+	}
+
+	@Override
+	MethodSpecific copy(MethodDeclaration method) {
+		return new FeatureEnvy(method.getNameAsString(), method.declarationAsString, inClass,
+				objectName, objectSignature, objectType, factor, factorThreshold,
+				SourceRange.fromNode(method), sourcePath)
 	}
 
 	boolean equals(o) {

@@ -50,7 +50,7 @@ task unitTest( type: Test ) {
 }
 
 dependencies {
-	compile 'org.codehaus.groovy:groovy-all:2.4.6'
+	compile 'org.codehaus.groovy:groovy-all:2.4.8'
 	compile 'com.github.javaparser:javaparser-core:3.0.2-SNAPSHOT'
 	compile 'io.gitlab.arturbosch.jpal:jpal:1.0.RC3'
 	compile 'org.yaml:snakeyaml:1.17'

@@ -13,6 +13,7 @@ import io.gitlab.arturbosch.jpal.ast.VariableHelper
 import io.gitlab.arturbosch.jpal.ast.custom.JpalVariable
 import io.gitlab.arturbosch.jpal.ast.source.SourcePath
 import io.gitlab.arturbosch.jpal.ast.source.SourceRange
+import io.gitlab.arturbosch.jpal.internal.Printer
 import io.gitlab.arturbosch.jpal.resolution.Resolver
 import io.gitlab.arturbosch.jpal.resolution.nested.InnerClassesHandler
 import io.gitlab.arturbosch.smartsmells.common.Visitor
@@ -99,9 +100,9 @@ class FeatureEnvyVisitor extends Visitor<FeatureEnvy> {
 
 				def featureEnvy = new FeatureEnvy(
 						method.nameAsString, method.declarationAsString, currentClassName,
-						it.name, it.type.toString(), it.nature.toString(),
+						it.name, it.type.toString(Printer.NO_COMMENTS), it.nature.toString(),
 						roundedFactor, featureEnvyFactor.threshold,
-						SourcePath.of(path), SourceRange.fromNode(method))
+						SourceRange.fromNode(method), SourcePath.of(path))
 
 				smells.add(featureEnvy)
 			}
