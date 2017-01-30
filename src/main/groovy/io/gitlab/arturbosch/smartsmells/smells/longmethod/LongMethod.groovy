@@ -5,7 +5,6 @@ import groovy.transform.Immutable
 import groovy.transform.ToString
 import io.gitlab.arturbosch.jpal.ast.source.SourcePath
 import io.gitlab.arturbosch.jpal.ast.source.SourceRange
-import io.gitlab.arturbosch.smartsmells.common.DetectionResult
 import io.gitlab.arturbosch.smartsmells.smells.MethodSpecific
 
 /**
@@ -13,7 +12,7 @@ import io.gitlab.arturbosch.smartsmells.smells.MethodSpecific
  */
 @Immutable
 @ToString(includePackage = false)
-class LongMethod implements DetectionResult, MethodSpecific {
+class LongMethod implements MethodSpecific {
 
 	String name
 	String signature
@@ -34,5 +33,15 @@ class LongMethod implements DetectionResult, MethodSpecific {
 	MethodSpecific copy(MethodDeclaration method) {
 		return new LongMethod(method.getNameAsString(), method.declarationAsString,
 				size, threshold, SourceRange.fromNode(method), sourcePath)
+	}
+
+	@Override
+	String name() {
+		return name
+	}
+
+	@Override
+	String signature() {
+		return signature
 	}
 }

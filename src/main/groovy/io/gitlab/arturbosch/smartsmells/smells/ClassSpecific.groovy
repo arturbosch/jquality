@@ -1,10 +1,10 @@
-package io.gitlab.arturbosch.smartsmells.smells;
+package io.gitlab.arturbosch.smartsmells.smells
 
-import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration
 
 /**
  * @author Artur Bosch
  */
-interface ClassSpecific {
+interface ClassSpecific extends NameAndSignatureSpecific {
 	ClassSpecific copy(ClassOrInterfaceDeclaration clazz)
 }

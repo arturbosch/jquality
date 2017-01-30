@@ -35,4 +35,13 @@ class MiddleMan implements DetectionResult, ClassSpecific {
 				sourcePath, SourceRange.fromNode(clazz))
 	}
 
+	@Override
+	String name() {
+		return name
+	}
+
+	@Override
+	String signature() {
+		return signature
+	}
 }

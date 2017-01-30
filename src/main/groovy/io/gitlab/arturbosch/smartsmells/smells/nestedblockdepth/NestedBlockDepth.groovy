@@ -5,7 +5,6 @@ import groovy.transform.Immutable
 import groovy.transform.ToString
 import io.gitlab.arturbosch.jpal.ast.source.SourcePath
 import io.gitlab.arturbosch.jpal.ast.source.SourceRange
-import io.gitlab.arturbosch.smartsmells.common.DetectionResult
 import io.gitlab.arturbosch.smartsmells.smells.MethodSpecific
 
 /**
@@ -13,7 +12,7 @@ import io.gitlab.arturbosch.smartsmells.smells.MethodSpecific
  */
 @Immutable
 @ToString(includePackage = false)
-class NestedBlockDepth implements DetectionResult, MethodSpecific {
+class NestedBlockDepth implements MethodSpecific {
 
 	String methodName
 	String methodSignature
@@ -35,5 +34,15 @@ class NestedBlockDepth implements DetectionResult, MethodSpecific {
 	MethodSpecific copy(MethodDeclaration method) {
 		return new NestedBlockDepth(method.getNameAsString(), method.declarationAsString,
 				depth, depthThreshold, SourceRange.fromNode(method), sourcePath)
+	}
+
+	@Override
+	String name() {
+		return methodName
+	}
+
+	@Override
+	String signature() {
+		return methodSignature
 	}
 }

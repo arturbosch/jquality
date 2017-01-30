@@ -6,7 +6,6 @@ import groovy.transform.ToString
 import io.gitlab.arturbosch.jpal.ast.ClassHelper
 import io.gitlab.arturbosch.jpal.ast.source.SourcePath
 import io.gitlab.arturbosch.jpal.ast.source.SourceRange
-import io.gitlab.arturbosch.smartsmells.common.DetectionResult
 import io.gitlab.arturbosch.smartsmells.smells.ClassSpecific
 
 /**
@@ -14,7 +13,7 @@ import io.gitlab.arturbosch.smartsmells.smells.ClassSpecific
  */
 @Immutable
 @ToString(includePackage = false)
-class DataClass implements DetectionResult, ClassSpecific {
+class DataClass implements ClassSpecific {
 
 	String name
 	String signature
@@ -33,6 +32,16 @@ class DataClass implements DetectionResult, ClassSpecific {
 	ClassSpecific copy(ClassOrInterfaceDeclaration clazz) {
 		return new DataClass(clazz.nameAsString, ClassHelper.createFullSignature(clazz),
 				SourceRange.fromNode(clazz), sourcePath)
+	}
+
+	@Override
+	String name() {
+		return name
+	}
+
+	@Override
+	String signature() {
+		return signature
 	}
 
 }

@@ -6,7 +6,6 @@ import groovy.transform.ToString
 import io.gitlab.arturbosch.jpal.ast.ClassHelper
 import io.gitlab.arturbosch.jpal.ast.source.SourcePath
 import io.gitlab.arturbosch.jpal.ast.source.SourceRange
-import io.gitlab.arturbosch.smartsmells.common.DetectionResult
 import io.gitlab.arturbosch.smartsmells.smells.ClassSpecific
 
 /**
@@ -14,7 +13,7 @@ import io.gitlab.arturbosch.smartsmells.smells.ClassSpecific
  */
 @Immutable
 @ToString(includePackage = false, excludes = ["weightedMethodPerClassThreshold", "tiedClassCohesionThreshold", "accessToForeignDataThreshold"])
-class GodClass implements DetectionResult, ClassSpecific {
+class GodClass implements ClassSpecific {
 
 	String name
 	String signature
@@ -46,4 +45,15 @@ class GodClass implements DetectionResult, ClassSpecific {
 				weightedMethodPerClassThreshold, tiedClassCohesionThreshold, accessToForeignDataThreshold,
 				sourcePath, SourceRange.fromNode(clazz))
 	}
+
+	@Override
+	String name() {
+		return name
+	}
+
+	@Override
+	String signature() {
+		return signature
+	}
+
 }

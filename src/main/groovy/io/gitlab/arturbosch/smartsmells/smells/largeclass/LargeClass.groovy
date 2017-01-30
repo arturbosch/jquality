@@ -6,7 +6,6 @@ import groovy.transform.ToString
 import io.gitlab.arturbosch.jpal.ast.ClassHelper
 import io.gitlab.arturbosch.jpal.ast.source.SourcePath
 import io.gitlab.arturbosch.jpal.ast.source.SourceRange
-import io.gitlab.arturbosch.smartsmells.common.DetectionResult
 import io.gitlab.arturbosch.smartsmells.smells.ClassSpecific
 
 /**
@@ -14,7 +13,7 @@ import io.gitlab.arturbosch.smartsmells.smells.ClassSpecific
  */
 @Immutable
 @ToString(includePackage = false, includeNames = false)
-class LargeClass implements DetectionResult, ClassSpecific {
+class LargeClass implements ClassSpecific {
 
 	String name
 	String signature
@@ -39,4 +38,13 @@ class LargeClass implements DetectionResult, ClassSpecific {
 				size, threshold, sourcePath, SourceRange.fromNode(clazz))
 	}
 
+	@Override
+	String name() {
+		return name
+	}
+
+	@Override
+	String signature() {
+		return signature
+	}
 }

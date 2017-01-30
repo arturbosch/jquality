@@ -5,7 +5,6 @@ import groovy.transform.Immutable
 import groovy.transform.ToString
 import io.gitlab.arturbosch.jpal.ast.source.SourcePath
 import io.gitlab.arturbosch.jpal.ast.source.SourceRange
-import io.gitlab.arturbosch.smartsmells.common.DetectionResult
 import io.gitlab.arturbosch.smartsmells.smells.MethodSpecific
 
 /**
@@ -13,7 +12,7 @@ import io.gitlab.arturbosch.smartsmells.smells.MethodSpecific
  */
 @Immutable
 @ToString(includeNames = false, includePackage = false)
-class FeatureEnvy implements DetectionResult, MethodSpecific {
+class FeatureEnvy implements MethodSpecific {
 
 	String name
 	String signature
@@ -71,5 +70,15 @@ class FeatureEnvy implements DetectionResult, MethodSpecific {
 		result = 31 * result + (objectType != null ? objectType.hashCode() : 0)
 		result = 31 * result + (sourcePath != null ? sourcePath.hashCode() : 0)
 		return result
+	}
+
+	@Override
+	String name() {
+		return name
+	}
+
+	@Override
+	String signature() {
+		return signature
 	}
 }
