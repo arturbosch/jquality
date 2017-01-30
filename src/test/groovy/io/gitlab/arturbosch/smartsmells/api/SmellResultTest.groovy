@@ -8,7 +8,6 @@ import io.gitlab.arturbosch.smartsmells.smells.comment.CommentSmell
 import io.gitlab.arturbosch.smartsmells.smells.complexmethod.ComplexMethod
 import io.gitlab.arturbosch.smartsmells.smells.cycle.Cycle
 import io.gitlab.arturbosch.smartsmells.smells.cycle.Dependency
-import io.gitlab.arturbosch.smartsmells.smells.longmethod.LongMethod
 import spock.lang.Specification
 
 /**
@@ -43,8 +42,8 @@ class SmellResultTest extends Specification {
 	def "test reflection methods on smelly objects"() {
 		when:
 		def smell = getComplexMethod()
-		def complexMethod = new ComplexMethod(new LongMethod("name", "signature", 5, 5,
-				SourceRange.of(1, 1, 1, 1), new SourcePath("path")), 5)
+		def complexMethod = new ComplexMethod("name", "signature", 5, 5,
+				SourceRange.of(1, 1, 1, 1), new SourcePath("path"))
 
 		then:
 		smell.positions.toString() == "SourceRange(1, 1, 1, 1)"

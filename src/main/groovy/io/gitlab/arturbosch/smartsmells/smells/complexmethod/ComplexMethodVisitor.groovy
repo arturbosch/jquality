@@ -23,6 +23,6 @@ class ComplexMethodVisitor extends MethodMetricVisitor<ComplexMethod> {
 
 	@Override
 	protected addSmell(BodyDeclaration n) {
-		smells.add(new ComplexMethod(newLongMethod(n, mcc), mcc))
+		smells.add(ComplexMethod.of(newLongMethod(n, mcc)))
 	}
 }

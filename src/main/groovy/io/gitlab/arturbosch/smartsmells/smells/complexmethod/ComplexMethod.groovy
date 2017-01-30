@@ -2,6 +2,8 @@ package io.gitlab.arturbosch.smartsmells.smells.complexmethod
 
 import groovy.transform.Immutable
 import groovy.transform.ToString
+import io.gitlab.arturbosch.jpal.ast.source.SourcePath
+import io.gitlab.arturbosch.jpal.ast.source.SourceRange
 import io.gitlab.arturbosch.smartsmells.common.DetectionResult
 import io.gitlab.arturbosch.smartsmells.smells.longmethod.LongMethod
 
@@ -12,13 +14,22 @@ import io.gitlab.arturbosch.smartsmells.smells.longmethod.LongMethod
 @ToString(includePackage = false)
 class ComplexMethod implements DetectionResult {
 
-	@Delegate
-	LongMethod longMethod
+	String name
+	String signature
+	int size
+	int threshold
 
-	int cyclomaticComplexity
+	@Delegate
+	SourceRange sourceRange
+	@Delegate
+	SourcePath sourcePath
 
 	@Override
 	String asCompactString() {
-		"ComplexMethod \n\nCyclomaticComplexity: $cyclomaticComplexity"
+		"ComplexMethod \n\nCyclomaticComplexity: $size"
+	}
+
+	static of(LongMethod lm) {
+		new ComplexMethod(lm.name, lm.signature, lm.size, lm.threshold, lm.sourceRange, lm.sourcePath)
 	}
 }

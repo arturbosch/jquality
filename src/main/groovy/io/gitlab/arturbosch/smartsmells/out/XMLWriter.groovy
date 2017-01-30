@@ -25,9 +25,7 @@ class XMLWriter {
 	}
 
 	static String toXml(Smell key, DetectionResult it) {
-		if (key == Smell.COMPLEX_METHOD) {
-			"\t" + handleLongMethodDelegates(it)
-		} else if (key == Smell.CYCLE) {
+		if (key == Smell.CYCLE) {
 			"\t" + handleDependencyDelegates(it)
 		} else {
 			"\t" + toXmlEntry(it)
@@ -49,24 +47,6 @@ class XMLWriter {
 			setAccessible(true)
 			get(smelly)
 		}
-	}
-
-	private static String handleLongMethodDelegates(DetectionResult smelly) {
-
-		def name = smelly.class.simpleName
-		def longMethod = extractField(smelly, "longMethod")
-
-		String attributes = getAttributesFromFields(smelly)
-		def base = toXmlEntry(longMethod as DetectionResult)
-		def appendStart = "<$name " + Strings.substringAfter(base, " ")
-		def appendEnd = Strings.substringBefore(appendStart, "/>") + "$attributes/>"
-		return appendEnd
-	}
-
-	private static String getAttributesFromFields(DetectionResult smelly) {
-		List<Field> fields = extractFields(smelly)
-		def entries = joinFieldsToNameValueMap(fields, smelly)
-		joinToXmlAttribute(entries)
 	}
 
 	static String toXmlEntry(DetectionResult smelly) {
