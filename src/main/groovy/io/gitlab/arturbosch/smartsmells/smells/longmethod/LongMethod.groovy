@@ -15,7 +15,6 @@ import io.gitlab.arturbosch.smartsmells.smells.MethodSpecific
 @ToString(includePackage = false)
 class LongMethod implements DetectionResult, MethodSpecific {
 
-	String header
 	String name
 	String signature
 	int size
@@ -32,8 +31,7 @@ class LongMethod implements DetectionResult, MethodSpecific {
 
 	@Override
 	MethodSpecific copy(MethodDeclaration method) {
-		return new LongMethod(method.declarationAsString,
-				method.getNameAsString(), method.declarationAsString,
+		return new LongMethod(method.getNameAsString(), method.declarationAsString,
 				size, threshold, SourceRange.fromNode(method), sourcePath)
 	}
 }

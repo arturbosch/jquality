@@ -21,11 +21,9 @@ class LongMethodDetectorTest extends Specification {
 		smells.size() == 1
 		smells[0].name == "longMethod"
 		smells[0].signature ==
-				"void longMethod(String s1, String s2, String s3, String s4, String s5, String s6)"
+				"public void longMethod(String s1, String s2, String s3, String s4, String s5, String s6)"
 		smells[0].size == 16
 		smells[0].threshold == 14
-		smells[0].header ==
-				"public void longMethod(String s1, String s2, String s3, String s4, String s5, String s6)"
 
 		where:
 		smells = new LongMethodDetector(14).run(Test.LONG_METHOD_DUMMY_PATH)

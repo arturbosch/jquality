@@ -40,17 +40,15 @@ abstract class MethodMetricVisitor<T extends DetectionResult> extends Visitor<T>
 
 	protected LongMethod newLongMethod(BodyDeclaration n, int size) {
 		if (n instanceof MethodDeclaration)
-			longMethodIntern(n.declarationAsString, n.nameAsString,
-					n.getDeclarationAsString(false, false, true), n, size)
+			longMethodIntern(n.nameAsString, n.declarationAsString, n, size)
 		else {
 			def node = (ConstructorDeclaration) n
-			longMethodIntern(node.declarationAsString, node.nameAsString,
-					node.getDeclarationAsString(false, false, true), n, size)
+			longMethodIntern(node.nameAsString, node.declarationAsString, n, size)
 		}
 	}
 
-	private LongMethod longMethodIntern(String header, String name, String signature, BodyDeclaration n, int size) {
-		new LongMethod(header, name, signature, size, threshold, SourceRange.fromNode(n), SourcePath.of(path))
+	private LongMethod longMethodIntern(String name, String signature, BodyDeclaration n, int size) {
+		new LongMethod(name, signature, size, threshold, SourceRange.fromNode(n), SourcePath.of(path))
 	}
 
 	protected abstract byThreshold(BodyDeclaration n)

@@ -43,7 +43,7 @@ class SmellResultTest extends Specification {
 	def "test reflection methods on smelly objects"() {
 		when:
 		def smell = getComplexMethod()
-		def complexMethod = new ComplexMethod(new LongMethod("header", "name", "signature", 5, 5,
+		def complexMethod = new ComplexMethod(new LongMethod("name", "signature", 5, 5,
 				SourceRange.of(1, 1, 1, 1), new SourcePath("path")), 5)
 
 		then:
