@@ -25,7 +25,7 @@ class XMLWriter {
 	}
 
 	static String toXml(Smell key, DetectionResult it) {
-		if (key == Smell.COMPLEX_METHOD || key == Smell.LONG_PARAM) {
+		if (key == Smell.COMPLEX_METHOD) {
 			"\t" + handleLongMethodDelegates(it)
 		} else if (key == Smell.CYCLE) {
 			"\t" + handleDependencyDelegates(it)

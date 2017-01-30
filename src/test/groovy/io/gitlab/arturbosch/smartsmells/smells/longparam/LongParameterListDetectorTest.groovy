@@ -13,7 +13,7 @@ class LongParameterListDetectorTest extends Specification {
 		smells.size() == 1
 		smells[0].name == "longMethod"
 		!smells[0].parameters.isEmpty()
-		smells[0].numberOfParams == 6
+		smells[0].size == 6
 
 		where:
 		smells = new LongParameterListDetector().run(Test.PATH)
