@@ -30,6 +30,8 @@ class MiddleManVisitor extends Visitor<MiddleMan> {
 
 	@Override
 	void visit(ClassOrInterfaceDeclaration n, Resolver resolver) {
+		if (n.interface) return // interfaces are no MM
+		// although default methods are often used to delegate simple cases - #82
 		if (ClassHelper.isEmptyBody(n)) return
 		if (ClassHelper.hasNoMethods(n)) return
 
