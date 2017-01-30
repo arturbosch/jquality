@@ -20,6 +20,7 @@ class LongMethod implements DetectionResult, MethodSpecific {
 	int size
 	int threshold
 
+	@Delegate
 	SourceRange sourceRange
 	@Delegate
 	SourcePath sourcePath
