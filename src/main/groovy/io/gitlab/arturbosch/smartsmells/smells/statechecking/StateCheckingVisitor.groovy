@@ -116,7 +116,7 @@ class StateCheckingVisitor extends Visitor<StateChecking> {
 
 	private void addStateSmell(Statement n, List<String> cases, String type) {
 		def methodName = NodeHelper.findDeclaringMethod(n)
-				.map { it.nameAsString }
+				.map { it.declarationAsString }
 				.orElse(UNKNOWN_METHOD)
 		def stateCheck = new StateChecking(methodName, cases, type, SourcePath.of(path), SourceRange.fromNode(n))
 		smells.add(stateCheck)

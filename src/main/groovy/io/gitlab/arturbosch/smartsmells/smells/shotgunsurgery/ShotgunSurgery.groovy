@@ -12,6 +12,7 @@ import io.gitlab.arturbosch.smartsmells.common.DetectionResult
 @Immutable
 @ToString(includePackage = false, excludes = ["ccThreshold", "cmThreshold"])
 class ShotgunSurgery implements DetectionResult {
+
 	String name
 	String signature
 	int cc
