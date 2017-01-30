@@ -1,17 +1,19 @@
 package io.gitlab.arturbosch.smartsmells.smells.longmethod
 
+import com.github.javaparser.ast.body.MethodDeclaration
 import groovy.transform.Immutable
 import groovy.transform.ToString
 import io.gitlab.arturbosch.jpal.ast.source.SourcePath
 import io.gitlab.arturbosch.jpal.ast.source.SourceRange
 import io.gitlab.arturbosch.smartsmells.common.DetectionResult
+import io.gitlab.arturbosch.smartsmells.smells.MethodSpecific
 
 /**
  * @author artur
  */
 @Immutable
 @ToString(includePackage = false)
-class LongMethod implements DetectionResult {
+class LongMethod implements DetectionResult, MethodSpecific {
 
 	String header
 	String name
@@ -26,5 +28,12 @@ class LongMethod implements DetectionResult {
 	@Override
 	String asCompactString() {
 		"LongMethod \n\nSize: $size with threshold: $threshold"
+	}
+
+	@Override
+	MethodSpecific copy(MethodDeclaration method) {
+		return new LongMethod(method.declarationAsString,
+				method.getNameAsString(), method.declarationAsString,
+				size, threshold, SourceRange.fromNode(method), sourcePath)
 	}
 }
