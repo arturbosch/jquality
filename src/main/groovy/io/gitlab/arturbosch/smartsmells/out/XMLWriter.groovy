@@ -1,7 +1,7 @@
 package io.gitlab.arturbosch.smartsmells.out
 
 import io.gitlab.arturbosch.smartsmells.api.SmellResult
-import io.gitlab.arturbosch.smartsmells.common.DetectionResult
+import io.gitlab.arturbosch.smartsmells.smells.DetectionResult
 import io.gitlab.arturbosch.smartsmells.config.Smell
 import io.gitlab.arturbosch.smartsmells.util.Strings
 

@@ -1,7 +1,7 @@
 package io.gitlab.arturbosch.smartsmells.smells.cycle
 
 import groovy.transform.ToString
-import io.gitlab.arturbosch.smartsmells.common.DetectionResult
+import io.gitlab.arturbosch.smartsmells.smells.DetectionResult
 
 /**
  * @author artur

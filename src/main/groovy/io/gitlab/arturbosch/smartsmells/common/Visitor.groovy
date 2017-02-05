@@ -3,6 +3,7 @@ package io.gitlab.arturbosch.smartsmells.common
 import io.gitlab.arturbosch.jpal.core.CompilationInfo
 import io.gitlab.arturbosch.jpal.resolution.Resolver
 import io.gitlab.arturbosch.smartsmells.common.visitor.InternalVisitor
+import io.gitlab.arturbosch.smartsmells.smells.DetectionResult
 
 /**
  * @author artur

@@ -2,7 +2,7 @@ package io.gitlab.arturbosch.smartsmells.api
 
 import io.gitlab.arturbosch.jpal.ast.source.SourcePath
 import io.gitlab.arturbosch.jpal.ast.source.SourceRange
-import io.gitlab.arturbosch.smartsmells.common.DetectionResult
+import io.gitlab.arturbosch.smartsmells.smells.DetectionResult
 import io.gitlab.arturbosch.smartsmells.config.Smell
 import io.gitlab.arturbosch.smartsmells.smells.comment.CommentSmell
 import io.gitlab.arturbosch.smartsmells.smells.complexmethod.ComplexMethod

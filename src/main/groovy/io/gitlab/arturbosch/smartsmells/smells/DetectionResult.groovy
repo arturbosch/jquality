@@ -1,4 +1,4 @@
-package io.gitlab.arturbosch.smartsmells.common
+package io.gitlab.arturbosch.smartsmells.smells
 
 import io.gitlab.arturbosch.jpal.ast.source.SourceRange
 import io.gitlab.arturbosch.smartsmells.api.SmellExchange
