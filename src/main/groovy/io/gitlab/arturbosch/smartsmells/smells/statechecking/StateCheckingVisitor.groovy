@@ -1,5 +1,7 @@
 package io.gitlab.arturbosch.smartsmells.smells.statechecking
 
+import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration
+import com.github.javaparser.ast.body.EnumDeclaration
 import com.github.javaparser.ast.expr.InstanceOfExpr
 import com.github.javaparser.ast.expr.NameExpr
 import com.github.javaparser.ast.expr.SimpleName
@@ -8,6 +10,7 @@ import com.github.javaparser.ast.stmt.Statement
 import com.github.javaparser.ast.stmt.SwitchStmt
 import com.github.javaparser.utils.Pair
 import groovy.transform.CompileStatic
+import io.gitlab.arturbosch.jpal.ast.ClassHelper
 import io.gitlab.arturbosch.jpal.ast.NodeHelper
 import io.gitlab.arturbosch.jpal.ast.source.SourcePath
 import io.gitlab.arturbosch.jpal.ast.source.SourceRange
@@ -28,7 +31,20 @@ class StateCheckingVisitor extends Visitor<StateChecking> {
 
 	final static String UNKNOWN_METHOD = "UNKNOWN_METHOD"
 
+	private String currentClassName = ""
 	private List<Statement> statementsFromElseBlock = new IdentityArrayList<>()
+
+	@Override
+	void visit(ClassOrInterfaceDeclaration n, Resolver arg) {
+		currentClassName = ClassHelper.createFullSignature(n)
+		super.visit(n, arg)
+	}
+
+	@Override
+	void visit(EnumDeclaration n, Resolver arg) {
+		currentClassName = n.nameAsString
+		super.visit(n, arg)
+	}
 
 	@Override
 	void visit(SwitchStmt n, Resolver arg) {
@@ -118,7 +134,8 @@ class StateCheckingVisitor extends Visitor<StateChecking> {
 		def methodName = NodeHelper.findDeclaringMethod(n)
 				.map { it.declarationAsString }
 				.orElse(UNKNOWN_METHOD)
-		def stateCheck = new StateChecking(methodName, cases, type, SourcePath.of(path), SourceRange.fromNode(n))
+		def stateCheck = new StateChecking(currentClassName + "#" + methodName, cases, type,
+				SourcePath.of(path), SourceRange.fromNode(n))
 		smells.add(stateCheck)
 	}
 }

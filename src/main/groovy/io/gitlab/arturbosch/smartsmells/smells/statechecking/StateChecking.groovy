@@ -16,7 +16,7 @@ class StateChecking implements DetectionResult {
 	static String INSTANCE_OF = "Replace instanceof conditions with polymorphism"
 	static String SUBTYPING = "Replace state checking variables with subtyping"
 
-	String inMethod
+	String inScope //ClassSignature#MethodSignature
 	List<String> cases = new ArrayList<>()
 	String type
 
@@ -26,11 +26,12 @@ class StateChecking implements DetectionResult {
 	SourceRange sourceRange
 
 	String signature() {
-		return "$inMethod#${cases.join(", ")}"
+		return "$inScope#${cases.join(", ")}"
 	}
 
 	@Override
 	String asCompactString() {
 		return "StateChecking \n\n$type"
 	}
+
 }
