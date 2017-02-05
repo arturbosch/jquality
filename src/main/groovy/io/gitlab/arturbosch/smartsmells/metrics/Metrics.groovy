@@ -196,7 +196,7 @@ final class Metrics {
 	private static int locInternal(ClassOrInterfaceDeclaration n, Path path, boolean comments) {
 		if (!path.toString().endsWith(".java")) return -1
 
-		def javaDoc = Optional.ofNullable(n.comment)
+		def javaDoc = n.comment
 				.map { it.end.map { it.line }.orElse(0) - it.begin.map { it.line }.orElse(0) + 1 }
 				.orElse(0)
 

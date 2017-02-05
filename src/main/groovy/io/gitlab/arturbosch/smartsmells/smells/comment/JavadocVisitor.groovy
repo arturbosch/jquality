@@ -46,7 +46,7 @@ class JavadocVisitor extends Visitor<CommentSmell> {
 	}
 
 	private void checkForJavadoc(NodeWithJavadoc node, String forNode) {
-		if (!node.javadoc) {
+		if (!node.javadoc.isPresent()) {
 			smells.add(new CommentSmell(CommentSmell.Type.MISSING_JAVADOC,
 					forNode, false, false,
 					SourcePath.of(path), SourceRange.fromNode(node as Node)))
@@ -56,8 +56,8 @@ class JavadocVisitor extends Visitor<CommentSmell> {
 	@Override
 	void visit(MethodDeclaration n, Resolver arg) {
 		if (isPublic(n) && !MethodHelper.isGetterOrSetter(n)) {
-			def javadoc = n.javadoc
-			def javadocComment = n.javadocComment
+			def javadoc = n.javadoc.orElse(null)
+			def javadocComment = n.javadocComment.orElse(null)
 			if (javadoc && javadocComment) {
 				def fixme = javadocComment.content.contains("FIXME")
 				def todo = javadocComment.content.contains("TODO")

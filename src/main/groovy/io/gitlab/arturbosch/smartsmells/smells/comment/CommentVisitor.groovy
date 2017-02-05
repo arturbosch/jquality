@@ -19,16 +19,17 @@ class CommentVisitor extends Visitor<CommentSmell> {
 
 	@Override
 	void visit(MethodDeclaration n, Resolver arg) {
-		if (n.comment != null) {
+		def comment = n.comment.orElse(null)
+		if (comment != null) {
 			def modifiers = n.modifiers
 			def specifier = Modifier.getAccessSpecifier(modifiers)
 			if (specifier == AccessSpecifier.PRIVATE || specifier == AccessSpecifier.DEFAULT) {
-				addCommentSmell(CommentSmell.Type.PRIVATE, n.declarationAsString, n.comment)
+				addCommentSmell(CommentSmell.Type.PRIVATE, n.declarationAsString, comment)
 			}
 		}
 
-		for (comment in n.getAllContainedComments()) {
-			addCommentSmell(CommentSmell.Type.ORPHAN, "orphan comment", comment)
+		n.getAllContainedComments().each {
+			addCommentSmell(CommentSmell.Type.ORPHAN, "orphan comment", it)
 		}
 
 		super.visit(n, arg)
