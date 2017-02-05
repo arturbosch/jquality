@@ -31,7 +31,7 @@ class CommentSmell implements DetectionResult {
 	}
 
 	Type type
-	String name
+	String signature // orphan comments have no signature as they must not be located on a node
 
 	boolean hasTODO
 	boolean hasFIXME
@@ -48,7 +48,7 @@ class CommentSmell implements DetectionResult {
 
 	@Override
 	String asComparableString() {
-		return "${javaClassName()}$type"
+		return "${javaClassName()}$type$signature"
 	}
 
 }

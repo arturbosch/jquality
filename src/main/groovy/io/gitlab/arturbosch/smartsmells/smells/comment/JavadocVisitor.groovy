@@ -66,7 +66,7 @@ class JavadocVisitor extends Visitor<CommentSmell> {
 				checkForParameterTags(javadoc, n, javadocComment, fixme, todo)
 				checkForReturnTag(n, javadoc, javadocComment)
 			} else {
-				smells.add(new CommentSmell(CommentSmell.Type.MISSING_JAVADOC, "$n.declarationAsString",
+				smells.add(new CommentSmell(CommentSmell.Type.MISSING_JAVADOC, n.declarationAsString,
 						false, false, SourcePath.of(path), SourceRange.fromNode(n)))
 			}
 		}
