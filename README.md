@@ -1,5 +1,8 @@
 # SmartSmells
 
+[![build status](https://gitlab.com/arturbosch/SmartSmells/badges/master/build.svg)](https://gitlab.com/arturbosch/SmartSmells/commits/master)
+[ ![Download](https://api.bintray.com/packages/arturbosch/code-analysis/SmartSmells/images/download.svg) ](https://bintray.com/arturbosch/code-analysis/SmartSmells/_latestVersion)
+
 ### Info
 
 SmartSmells is a code smell detector for java powered by javaparser.
@@ -12,11 +15,14 @@ Current found smells are:
 - LongParameterList
 - ComplexMethod
 - LargeClass
-- CommentSmell
+- CommentSmell/Javadoc
 - Cycle
 - Deadcode
 - MessageChain
 - MiddleMan
+- StateChecking
+- ShotgunSurgery
+- NestedBlockDepth
 
 ### Installation
 
