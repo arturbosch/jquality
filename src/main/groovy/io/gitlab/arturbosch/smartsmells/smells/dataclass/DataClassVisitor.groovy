@@ -43,7 +43,7 @@ class DataClassVisitor extends Visitor<DataClass> {
 		if (!node.extendedTypes.isEmpty()) {
 			def extended = node.extendedTypes[0]
 			def name = extended.nameAsString
-			return name.contains("Exception") || name.contains("Error")
+			return name.contains("Exception") || name.contains("Error") || name.contains("Throwable")
 		}
 		return false
 	}
