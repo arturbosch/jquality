@@ -32,7 +32,7 @@ class ComplexMethod implements MethodSpecific {
 
 	@Override
 	String asComparableString() {
-		return "${javaClassName()}\$$signature"
+		return "${javaClassName()}$signature"
 	}
 
 	static of(LongMethod lm) {

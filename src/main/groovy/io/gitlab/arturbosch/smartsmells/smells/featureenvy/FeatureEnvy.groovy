@@ -38,7 +38,7 @@ class FeatureEnvy implements MethodSpecific {
 
 	@Override
 	String asComparableString() {
-		return "${javaClassName()}\$$signature#$objectSignature"
+		return "${javaClassName()}$signature#$objectSignature"
 	}
 
 	@Override

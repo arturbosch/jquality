@@ -13,6 +13,7 @@ import com.github.javaparser.javadoc.Javadoc
 import com.github.javaparser.javadoc.JavadocBlockTag
 import groovy.transform.CompileStatic
 import io.gitlab.arturbosch.jpal.ast.ClassHelper
+import io.gitlab.arturbosch.jpal.ast.EnumHelper
 import io.gitlab.arturbosch.jpal.ast.MethodHelper
 import io.gitlab.arturbosch.jpal.ast.source.SourcePath
 import io.gitlab.arturbosch.jpal.ast.source.SourceRange
@@ -37,7 +38,7 @@ class JavadocVisitor extends Visitor<CommentSmell> {
 	@Override
 	void visit(EnumDeclaration n, Resolver arg) {
 		if (isPublic(n)) {
-			checkForJavadoc(n, n.nameAsString)
+			checkForJavadoc(n, EnumHelper.createFullSignature(n))
 		}
 		super.visit(n, arg)
 	}

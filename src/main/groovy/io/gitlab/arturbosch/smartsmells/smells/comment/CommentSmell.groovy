@@ -48,7 +48,7 @@ class CommentSmell implements DetectionResult {
 
 	@Override
 	String asComparableString() {
-		return "${javaClassName()}\$$type"
+		return "${javaClassName()}$type"
 	}
 
 }

@@ -30,6 +30,6 @@ trait DetectionResult {
 	}
 
 	String javaClassName() {
-		return getClass().simpleName
+		return getClass().simpleName + "\$${getPathAsString()}\$"
 	}
 }

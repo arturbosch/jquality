@@ -28,7 +28,7 @@ class Cycle implements DetectionResult {
 
 	@Override
 	String asComparableString() {
-		return "${javaClassName()}\$$source.signature#$target.signature"
+		return "${javaClassName()}$source.signature#$target.signature"
 	}
 
 	@Override

@@ -32,6 +32,6 @@ class MessageChain implements DetectionResult {
 
 	@Override
 	String asComparableString() {
-		return "${javaClassName()}\$$signature"
+		return "${javaClassName()}$signature"
 	}
 }

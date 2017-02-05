@@ -32,7 +32,7 @@ class NestedBlockDepth implements MethodSpecific {
 
 	@Override
 	String asComparableString() {
-		return "${javaClassName()}\$$methodSignature"
+		return "${javaClassName()}$methodSignature"
 	}
 
 	@Override

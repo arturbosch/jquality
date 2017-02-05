@@ -35,7 +35,7 @@ class ShotgunSurgery implements ClassSpecific {
 
 	@Override
 	String asComparableString() {
-		return "${javaClassName()}\$$signature"
+		return "${javaClassName()}$signature"
 	}
 
 	@Override
