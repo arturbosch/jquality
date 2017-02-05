@@ -45,4 +45,10 @@ class CommentSmell implements DetectionResult {
 	String asCompactString() {
 		"CommentSmell - $type\n\n$type.message"
 	}
+
+	@Override
+	String asComparableString() {
+		return "${javaClassName()}\$$type"
+	}
+
 }

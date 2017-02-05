@@ -31,6 +31,11 @@ class NestedBlockDepth implements MethodSpecific {
 	}
 
 	@Override
+	String asComparableString() {
+		return "${javaClassName()}\$$methodSignature"
+	}
+
+	@Override
 	MethodSpecific copy(MethodDeclaration method) {
 		return new NestedBlockDepth(method.getNameAsString(), method.declarationAsString,
 				depth, depthThreshold, SourceRange.fromNode(method), sourcePath)

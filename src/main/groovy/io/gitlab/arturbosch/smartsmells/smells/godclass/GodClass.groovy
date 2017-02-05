@@ -39,6 +39,11 @@ class GodClass implements ClassSpecific {
 	}
 
 	@Override
+	String asComparableString() {
+		return "${javaClassName()}\$$signature"
+	}
+
+	@Override
 	ClassSpecific copy(ClassOrInterfaceDeclaration clazz) {
 		return new GodClass(clazz.nameAsString, ClassHelper.createFullSignature(clazz),
 				weightedMethodPerClass, tiedClassCohesion, accessToForeignData,

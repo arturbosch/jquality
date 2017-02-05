@@ -11,6 +11,8 @@ trait DetectionResult {
 
 	abstract String asCompactString()
 
+	abstract String asComparableString()
+
 	SourceRange getPositions() {
 		return getAttribute(this, "sourceRange") as SourceRange
 	}
@@ -27,4 +29,7 @@ trait DetectionResult {
 		}
 	}
 
+	String javaClassName() {
+		return getClass().simpleName
+	}
 }

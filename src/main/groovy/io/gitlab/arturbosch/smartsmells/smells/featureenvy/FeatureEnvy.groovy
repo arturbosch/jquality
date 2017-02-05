@@ -37,6 +37,11 @@ class FeatureEnvy implements MethodSpecific {
 	}
 
 	@Override
+	String asComparableString() {
+		return "${javaClassName()}\$$signature#$objectSignature"
+	}
+
+	@Override
 	MethodSpecific copy(MethodDeclaration method) {
 		return new FeatureEnvy(method.getNameAsString(), method.declarationAsString, inClass,
 				objectName, objectSignature, objectType, factor, factorThreshold,

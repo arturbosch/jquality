@@ -34,6 +34,11 @@ class ShotgunSurgery implements ClassSpecific {
 	}
 
 	@Override
+	String asComparableString() {
+		return "${javaClassName()}\$$signature"
+	}
+
+	@Override
 	ClassSpecific copy(ClassOrInterfaceDeclaration clazz) {
 		return new ShotgunSurgery(clazz.nameAsString, ClassHelper.createFullSignature(clazz),
 				cc, cm, ccThreshold, cmThreshold,

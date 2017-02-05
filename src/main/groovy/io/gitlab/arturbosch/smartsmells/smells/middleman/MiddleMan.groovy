@@ -30,6 +30,11 @@ class MiddleMan implements DetectionResult, ClassSpecific {
 	}
 
 	@Override
+	String asComparableString() {
+		return "${javaClassName()}\$$signature"
+	}
+
+	@Override
 	ClassSpecific copy(ClassOrInterfaceDeclaration clazz) {
 		return new MiddleMan(clazz.nameAsString, ClassHelper.createFullSignature(clazz),
 				sourcePath, SourceRange.fromNode(clazz))

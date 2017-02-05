@@ -37,4 +37,8 @@ class ClassInfo implements DetectionResult {
 		return toString()
 	}
 
+	@Override
+	String asComparableString() {
+		return "${javaClassName()}\$$signature"
+	}
 }

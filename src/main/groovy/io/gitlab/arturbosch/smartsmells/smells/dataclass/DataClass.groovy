@@ -29,6 +29,11 @@ class DataClass implements ClassSpecific {
 	}
 
 	@Override
+	String asComparableString() {
+		return "${javaClassName()}\$$signature"
+	}
+
+	@Override
 	ClassSpecific copy(ClassOrInterfaceDeclaration clazz) {
 		return new DataClass(clazz.nameAsString, ClassHelper.createFullSignature(clazz),
 				SourceRange.fromNode(clazz), sourcePath)

@@ -30,6 +30,11 @@ class LongMethod implements MethodSpecific {
 	}
 
 	@Override
+	String asComparableString() {
+		return "${javaClassName()}\$$signature"
+	}
+
+	@Override
 	MethodSpecific copy(MethodDeclaration method) {
 		return new LongMethod(method.getNameAsString(), method.declarationAsString,
 				size, threshold, SourceRange.fromNode(method), sourcePath)

@@ -37,4 +37,10 @@ class DeadCode implements DetectionResult {
 	String asCompactString() {
 		"Deadcode \n\nName: $name\nType: $entityType"
 	}
+
+	@Override
+	String asComparableString() {
+		return "${javaClassName()}\$$signature"
+	}
+
 }

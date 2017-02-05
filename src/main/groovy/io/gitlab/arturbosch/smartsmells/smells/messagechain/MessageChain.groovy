@@ -29,4 +29,9 @@ class MessageChain implements DetectionResult {
 		"MessageChain\n\nchain size: $chainSize with threshold " +
 				"$chainSizeThreshold\nSource: $sourceEntity\nTarget: $targetEntity"
 	}
+
+	@Override
+	String asComparableString() {
+		return "${javaClassName()}\$$signature"
+	}
 }

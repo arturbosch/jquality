@@ -27,6 +27,11 @@ class Cycle implements DetectionResult {
 	}
 
 	@Override
+	String asComparableString() {
+		return "${javaClassName()}\$$source.signature#$target.signature"
+	}
+
+	@Override
 	boolean equals(Object obj) {
 		if (obj instanceof Cycle) {
 			return (source == obj.source && target == obj.target) ||

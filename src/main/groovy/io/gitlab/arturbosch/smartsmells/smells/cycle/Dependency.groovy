@@ -33,4 +33,9 @@ class Dependency implements DetectionResult {
 		"Dependency \n\nName: $name"
 	}
 
+	@Override
+	String asComparableString() {
+		return "${javaClassName()}\$$signature"
+	}
+
 }

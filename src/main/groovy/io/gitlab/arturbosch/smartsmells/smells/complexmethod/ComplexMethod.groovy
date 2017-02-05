@@ -30,6 +30,11 @@ class ComplexMethod implements MethodSpecific {
 		"ComplexMethod \n\nCyclomaticComplexity: $size"
 	}
 
+	@Override
+	String asComparableString() {
+		return "${javaClassName()}\$$signature"
+	}
+
 	static of(LongMethod lm) {
 		new ComplexMethod(lm.name, lm.signature, lm.size, lm.threshold, lm.sourceRange, lm.sourcePath)
 	}

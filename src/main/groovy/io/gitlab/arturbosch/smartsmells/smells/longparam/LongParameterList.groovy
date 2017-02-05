@@ -32,6 +32,11 @@ class LongParameterList implements MethodSpecific {
 	}
 
 	@Override
+	String asComparableString() {
+		return "${javaClassName()}\$$signature"
+	}
+
+	@Override
 	MethodSpecific copy(MethodDeclaration method) {
 		return new LongParameterList(method.getNameAsString(), method.declarationAsString,
 				size, threshold, parameters, SourceRange.fromNode(method), sourcePath)

@@ -34,4 +34,8 @@ class StateChecking implements DetectionResult {
 		return "StateChecking \n\n$type"
 	}
 
+	@Override
+	String asComparableString() {
+		return "${javaClassName()}\$$type - $inScope - ${cases.join(",")}"
+	}
 }

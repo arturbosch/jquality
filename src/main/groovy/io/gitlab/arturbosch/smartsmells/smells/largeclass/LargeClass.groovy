@@ -33,6 +33,11 @@ class LargeClass implements ClassSpecific {
 	}
 
 	@Override
+	String asComparableString() {
+		return "${javaClassName()}\$$signature"
+	}
+
+	@Override
 	ClassSpecific copy(ClassOrInterfaceDeclaration clazz) {
 		return new LargeClass(clazz.nameAsString, ClassHelper.createFullSignature(clazz),
 				size, threshold, sourcePath, SourceRange.fromNode(clazz))

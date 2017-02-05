@@ -12,6 +12,7 @@ import com.github.javaparser.ast.type.VoidType
 import com.github.javaparser.javadoc.Javadoc
 import com.github.javaparser.javadoc.JavadocBlockTag
 import groovy.transform.CompileStatic
+import io.gitlab.arturbosch.jpal.ast.ClassHelper
 import io.gitlab.arturbosch.jpal.ast.MethodHelper
 import io.gitlab.arturbosch.jpal.ast.source.SourcePath
 import io.gitlab.arturbosch.jpal.ast.source.SourceRange
@@ -28,7 +29,7 @@ class JavadocVisitor extends Visitor<CommentSmell> {
 	@Override
 	void visit(ClassOrInterfaceDeclaration n, Resolver arg) {
 		if (isPublic(n)) {
-			checkForJavadoc(n, "class/interface: $n.nameAsString")
+			checkForJavadoc(n, ClassHelper.createFullSignature(n))
 		}
 		super.visit(n, arg)
 	}
@@ -36,7 +37,7 @@ class JavadocVisitor extends Visitor<CommentSmell> {
 	@Override
 	void visit(EnumDeclaration n, Resolver arg) {
 		if (isPublic(n)) {
-			checkForJavadoc(n, "enum: $n.nameAsString")
+			checkForJavadoc(n, n.nameAsString)
 		}
 		super.visit(n, arg)
 	}
