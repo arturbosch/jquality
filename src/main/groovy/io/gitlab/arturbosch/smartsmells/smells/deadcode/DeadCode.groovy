@@ -1,18 +1,29 @@
 package io.gitlab.arturbosch.smartsmells.smells.deadcode
 
+import com.github.javaparser.ast.NodeList
+import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration
+import com.github.javaparser.ast.body.FieldDeclaration
+import com.github.javaparser.ast.body.MethodDeclaration
+import com.github.javaparser.ast.body.VariableDeclarator
 import groovy.transform.Immutable
 import groovy.transform.ToString
+import io.gitlab.arturbosch.jpal.ast.ClassHelper
 import io.gitlab.arturbosch.jpal.ast.source.SourcePath
 import io.gitlab.arturbosch.jpal.ast.source.SourceRange
+import io.gitlab.arturbosch.jpal.internal.Printer
+import io.gitlab.arturbosch.smartsmells.smells.ClassSpecific
 import io.gitlab.arturbosch.smartsmells.smells.DetectionResult
 import io.gitlab.arturbosch.smartsmells.smells.ElementTarget
+import io.gitlab.arturbosch.smartsmells.smells.FieldSpecific
+import io.gitlab.arturbosch.smartsmells.smells.MethodSpecific
+import io.gitlab.arturbosch.smartsmells.util.Strings
 
 /**
  * @author artur
  */
 @Immutable
 @ToString(includePackage = false)
-class DeadCode implements DetectionResult {
+class DeadCode implements DetectionResult, MethodSpecific, ClassSpecific, FieldSpecific {
 
 	String name
 	String signature
@@ -49,4 +60,43 @@ class DeadCode implements DetectionResult {
 		return "${javaClassName()}$signature"
 	}
 
+	@Override
+	String name() {
+		return name
+	}
+
+	@Override
+	String signature() {
+		return signature
+	}
+
+	@Override
+	MethodSpecific copy(MethodDeclaration method) {
+		return new DeadCode(method.nameAsString, method.declarationAsString,
+				sourcePath, SourceRange.fromNode(method), elementTarget)
+	}
+
+	@Override
+	ClassSpecific copy(ClassOrInterfaceDeclaration clazz) {
+		return new DeadCode(clazz.nameAsString, ClassHelper.createFullSignature(clazz),
+				sourcePath, SourceRange.fromNode(clazz), elementTarget)
+	}
+
+	@Override
+	FieldSpecific copy(FieldDeclaration field) {
+		def variables = field.variables
+		def newName = variables.size() <= 0 ? name : variables.size() == 1 ?
+				variables[0].nameAsString : findSimilarVariable(variables).nameAsString
+
+		return new DeadCode(newName, field.toString(Printer.NO_COMMENTS),
+				sourcePath, SourceRange.fromNode(field), elementTarget)
+	}
+
+	private VariableDeclarator findSimilarVariable(NodeList<VariableDeclarator> variables) {
+		variables[variables
+				.collect { Strings.distance(name, it.nameAsString) }
+				.indexed()
+				.min { Map.Entry<Integer, Integer> a -> a.value }
+				.key]
+	}
 }
