@@ -5,6 +5,9 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration
 import com.github.javaparser.ast.body.FieldDeclaration
 import com.github.javaparser.ast.body.MethodDeclaration
 import com.github.javaparser.ast.body.VariableDeclarator
+import com.github.javaparser.ast.expr.Expression
+import com.github.javaparser.ast.expr.VariableDeclarationExpr
+import com.github.javaparser.ast.stmt.Statement
 import groovy.transform.Immutable
 import groovy.transform.ToString
 import io.gitlab.arturbosch.jpal.ast.ClassHelper
@@ -15,6 +18,7 @@ import io.gitlab.arturbosch.smartsmells.smells.ClassSpecific
 import io.gitlab.arturbosch.smartsmells.smells.DetectionResult
 import io.gitlab.arturbosch.smartsmells.smells.ElementTarget
 import io.gitlab.arturbosch.smartsmells.smells.FieldSpecific
+import io.gitlab.arturbosch.smartsmells.smells.LocalSpecific
 import io.gitlab.arturbosch.smartsmells.smells.MethodSpecific
 import io.gitlab.arturbosch.smartsmells.util.Strings
 
@@ -23,7 +27,7 @@ import io.gitlab.arturbosch.smartsmells.util.Strings
  */
 @Immutable
 @ToString(includePackage = false)
-class DeadCode implements DetectionResult, MethodSpecific, ClassSpecific, FieldSpecific {
+class DeadCode implements DetectionResult, MethodSpecific, ClassSpecific, FieldSpecific, LocalSpecific {
 
 	String name
 	String signature
@@ -98,5 +102,19 @@ class DeadCode implements DetectionResult, MethodSpecific, ClassSpecific, FieldS
 				.indexed()
 				.min { Map.Entry<Integer, Integer> a -> a.value }
 				.key]
+	}
+
+	@Override
+	LocalSpecific copy(Statement statement) {
+		return this
+	}
+
+	@Override
+	LocalSpecific copy(Expression expression) {
+		if (expression instanceof VariableDeclarationExpr) {
+			def signature = (expression as VariableDeclarationExpr).toString(Printer.NO_COMMENTS)
+			return new DeadCode(signature, signature, sourcePath, SourceRange.fromNode(expression), elementTarget)
+		}
+		return this
 	}
 }
