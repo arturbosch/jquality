@@ -1,11 +1,16 @@
 package io.gitlab.arturbosch.smartsmells.smells.comment
 
+import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration
+import com.github.javaparser.ast.body.MethodDeclaration
 import groovy.transform.Immutable
 import groovy.transform.ToString
+import io.gitlab.arturbosch.jpal.ast.ClassHelper
 import io.gitlab.arturbosch.jpal.ast.source.SourcePath
 import io.gitlab.arturbosch.jpal.ast.source.SourceRange
+import io.gitlab.arturbosch.smartsmells.smells.ClassSpecific
 import io.gitlab.arturbosch.smartsmells.smells.DetectionResult
 import io.gitlab.arturbosch.smartsmells.smells.ElementTarget
+import io.gitlab.arturbosch.smartsmells.smells.MethodSpecific
 
 /**
  * Represents a comment smell. There are two types of comment smell.
@@ -16,7 +21,7 @@ import io.gitlab.arturbosch.smartsmells.smells.ElementTarget
  */
 @Immutable
 @ToString(includePackage = false)
-class CommentSmell implements DetectionResult {
+class CommentSmell implements DetectionResult, ClassSpecific, MethodSpecific {
 
 	enum Type {
 		ORPHAN(CommentConstants.ORPHAN_MESSAGE),
@@ -57,6 +62,28 @@ class CommentSmell implements DetectionResult {
 	@Override
 	String asComparableString() {
 		return "${javaClassName()}$type$signature"
+	}
+
+	@Override
+	String name() {
+		return signature
+	}
+
+	@Override
+	String signature() {
+		return signature
+	}
+
+	@Override
+	MethodSpecific copy(MethodDeclaration method) {
+		return new CommentSmell(type, method.declarationAsString, hasTODO, hasFIXME,
+				sourcePath, SourceRange.fromNode(method), elementTarget)
+	}
+
+	@Override
+	ClassSpecific copy(ClassOrInterfaceDeclaration clazz) {
+		return new CommentSmell(type, ClassHelper.createFullSignature(clazz), hasTODO, hasFIXME,
+				sourcePath, SourceRange.fromNode(clazz), elementTarget)
 	}
 
 }
