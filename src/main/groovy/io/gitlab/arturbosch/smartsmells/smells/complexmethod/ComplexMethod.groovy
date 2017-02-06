@@ -5,6 +5,7 @@ import groovy.transform.Immutable
 import groovy.transform.ToString
 import io.gitlab.arturbosch.jpal.ast.source.SourcePath
 import io.gitlab.arturbosch.jpal.ast.source.SourceRange
+import io.gitlab.arturbosch.smartsmells.smells.ElementTarget
 import io.gitlab.arturbosch.smartsmells.smells.MethodSpecific
 import io.gitlab.arturbosch.smartsmells.smells.longmethod.LongMethod
 
@@ -25,6 +26,13 @@ class ComplexMethod implements MethodSpecific {
 	@Delegate
 	SourcePath sourcePath
 
+	ElementTarget elementTarget = ElementTarget.ANY
+
+	@Override
+	ElementTarget elementTarget() {
+		return elementTarget
+	}
+
 	@Override
 	String asCompactString() {
 		"ComplexMethod \n\nCyclomaticComplexity: $size"
@@ -36,13 +44,13 @@ class ComplexMethod implements MethodSpecific {
 	}
 
 	static of(LongMethod lm) {
-		new ComplexMethod(lm.name, lm.signature, lm.size, lm.threshold, lm.sourceRange, lm.sourcePath)
+		new ComplexMethod(lm.name, lm.signature, lm.size, lm.threshold, lm.sourceRange, lm.sourcePath, lm.elementTarget)
 	}
 
 	@Override
 	MethodSpecific copy(MethodDeclaration method) {
 		return new ComplexMethod(method.getNameAsString(), method.declarationAsString,
-				size, threshold, SourceRange.fromNode(method), sourcePath)
+				size, threshold, SourceRange.fromNode(method), sourcePath, elementTarget)
 	}
 
 	@Override

@@ -18,6 +18,7 @@ import io.gitlab.arturbosch.jpal.internal.Printer
 import io.gitlab.arturbosch.jpal.resolution.Resolver
 import io.gitlab.arturbosch.jpal.resolution.symbols.SymbolReference
 import io.gitlab.arturbosch.smartsmells.common.Visitor
+import io.gitlab.arturbosch.smartsmells.smells.ElementTarget
 import sun.awt.util.IdentityArrayList
 
 import java.util.function.BinaryOperator
@@ -135,7 +136,7 @@ class StateCheckingVisitor extends Visitor<StateChecking> {
 				.map { it.declarationAsString }
 				.orElse(UNKNOWN_METHOD)
 		def stateCheck = new StateChecking(currentClassName + "#" + methodName, cases, type,
-				SourcePath.of(path), SourceRange.fromNode(n))
+				SourcePath.of(path), SourceRange.fromNode(n), ElementTarget.LOCAL)
 		smells.add(stateCheck)
 	}
 }

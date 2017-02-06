@@ -13,6 +13,8 @@ trait DetectionResult {
 
 	abstract String asComparableString()
 
+	abstract ElementTarget elementTarget()
+
 	SourceRange getPositions() {
 		return getAttribute(this, "sourceRange") as SourceRange
 	}

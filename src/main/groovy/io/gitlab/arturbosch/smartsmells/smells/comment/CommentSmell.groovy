@@ -5,6 +5,7 @@ import groovy.transform.ToString
 import io.gitlab.arturbosch.jpal.ast.source.SourcePath
 import io.gitlab.arturbosch.jpal.ast.source.SourceRange
 import io.gitlab.arturbosch.smartsmells.smells.DetectionResult
+import io.gitlab.arturbosch.smartsmells.smells.ElementTarget
 
 /**
  * Represents a comment smell. There are two types of comment smell.
@@ -40,6 +41,13 @@ class CommentSmell implements DetectionResult {
 	SourcePath sourcePath
 	@Delegate
 	SourceRange sourceRange
+
+	ElementTarget elementTarget = ElementTarget.ANY
+
+	@Override
+	ElementTarget elementTarget() {
+		return elementTarget
+	}
 
 	@Override
 	String asCompactString() {

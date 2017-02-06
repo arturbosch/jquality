@@ -7,6 +7,7 @@ import io.gitlab.arturbosch.jpal.ast.ClassHelper
 import io.gitlab.arturbosch.jpal.ast.source.SourcePath
 import io.gitlab.arturbosch.jpal.ast.source.SourceRange
 import io.gitlab.arturbosch.smartsmells.smells.ClassSpecific
+import io.gitlab.arturbosch.smartsmells.smells.ElementTarget
 
 /**
  * @author artur
@@ -27,6 +28,13 @@ class LargeClass implements ClassSpecific {
 	@Delegate
 	SourceRange sourceRange
 
+	ElementTarget elementTarget = ElementTarget.CLASS
+
+	@Override
+	ElementTarget elementTarget() {
+		return elementTarget
+	}
+
 	@Override
 	String asCompactString() {
 		"LargeClass \n\nLOC: $size with threshold: $threshold"
@@ -40,7 +48,7 @@ class LargeClass implements ClassSpecific {
 	@Override
 	ClassSpecific copy(ClassOrInterfaceDeclaration clazz) {
 		return new LargeClass(clazz.nameAsString, ClassHelper.createFullSignature(clazz),
-				size, threshold, sourcePath, SourceRange.fromNode(clazz))
+				size, threshold, sourcePath, SourceRange.fromNode(clazz), elementTarget)
 	}
 
 	@Override

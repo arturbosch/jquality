@@ -7,6 +7,7 @@ import io.gitlab.arturbosch.jpal.ast.ClassHelper
 import io.gitlab.arturbosch.jpal.ast.source.SourcePath
 import io.gitlab.arturbosch.jpal.ast.source.SourceRange
 import io.gitlab.arturbosch.smartsmells.smells.ClassSpecific
+import io.gitlab.arturbosch.smartsmells.smells.ElementTarget
 
 /**
  * @author artur
@@ -23,6 +24,13 @@ class DataClass implements ClassSpecific {
 	@Delegate
 	SourcePath sourcePath
 
+	ElementTarget elementTarget = ElementTarget.CLASS
+
+	@Override
+	ElementTarget elementTarget() {
+		return elementTarget
+	}
+
 	@Override
 	String asCompactString() {
 		"DataClass \n\nContains only getter and setters, no logic."
@@ -36,7 +44,7 @@ class DataClass implements ClassSpecific {
 	@Override
 	ClassSpecific copy(ClassOrInterfaceDeclaration clazz) {
 		return new DataClass(clazz.nameAsString, ClassHelper.createFullSignature(clazz),
-				SourceRange.fromNode(clazz), sourcePath)
+				SourceRange.fromNode(clazz), sourcePath, elementTarget)
 	}
 
 	@Override

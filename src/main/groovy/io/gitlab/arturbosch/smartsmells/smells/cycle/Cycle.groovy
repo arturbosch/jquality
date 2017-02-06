@@ -2,6 +2,7 @@ package io.gitlab.arturbosch.smartsmells.smells.cycle
 
 import groovy.transform.ToString
 import io.gitlab.arturbosch.smartsmells.smells.DetectionResult
+import io.gitlab.arturbosch.smartsmells.smells.ElementTarget
 
 /**
  * @author artur
@@ -11,6 +12,13 @@ class Cycle implements DetectionResult {
 
 	Dependency source
 	Dependency target
+
+	ElementTarget elementTarget = ElementTarget.TWO_CLASSES
+
+	@Override
+	ElementTarget elementTarget() {
+		return elementTarget
+	}
 
 	Cycle(Dependency source, Dependency target) {
 		this.source = source

@@ -9,6 +9,7 @@ import io.gitlab.arturbosch.jpal.ast.source.SourceRange
 import io.gitlab.arturbosch.jpal.resolution.Resolver
 import io.gitlab.arturbosch.smartsmells.smells.DetectionResult
 import io.gitlab.arturbosch.smartsmells.common.Visitor
+import io.gitlab.arturbosch.smartsmells.smells.ElementTarget
 import io.gitlab.arturbosch.smartsmells.smells.longmethod.LongMethod
 
 /**
@@ -48,7 +49,8 @@ abstract class MethodMetricVisitor<T extends DetectionResult> extends Visitor<T>
 	}
 
 	private LongMethod longMethodIntern(String name, String signature, BodyDeclaration n, int size) {
-		new LongMethod(name, signature, size, threshold, SourceRange.fromNode(n), SourcePath.of(path))
+		new LongMethod(name, signature, size, threshold,
+				SourceRange.fromNode(n), SourcePath.of(path), ElementTarget.METHOD)
 	}
 
 	protected abstract byThreshold(BodyDeclaration n)

@@ -5,6 +5,7 @@ import groovy.transform.ToString
 import io.gitlab.arturbosch.jpal.ast.source.SourcePath
 import io.gitlab.arturbosch.jpal.ast.source.SourceRange
 import io.gitlab.arturbosch.smartsmells.smells.DetectionResult
+import io.gitlab.arturbosch.smartsmells.smells.ElementTarget
 
 /**
  * @author artur
@@ -24,6 +25,13 @@ class MessageChain implements DetectionResult {
 	@Delegate
 	SourceRange sourceRange
 
+	ElementTarget elementTarget = ElementTarget.LOCAL
+
+	@Override
+	ElementTarget elementTarget() {
+		return elementTarget
+	}
+
 	@Override
 	String asCompactString() {
 		"MessageChain\n\nchain size: $chainSize with threshold " +
@@ -34,4 +42,5 @@ class MessageChain implements DetectionResult {
 	String asComparableString() {
 		return "${javaClassName()}$signature"
 	}
+
 }

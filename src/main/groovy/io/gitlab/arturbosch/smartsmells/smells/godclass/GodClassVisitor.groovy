@@ -9,6 +9,7 @@ import io.gitlab.arturbosch.jpal.ast.source.SourceRange
 import io.gitlab.arturbosch.jpal.resolution.Resolver
 import io.gitlab.arturbosch.smartsmells.common.Visitor
 import io.gitlab.arturbosch.smartsmells.metrics.Metrics
+import io.gitlab.arturbosch.smartsmells.smells.ElementTarget
 
 import java.nio.file.Path
 
@@ -85,8 +86,8 @@ class GodClassVisitor extends Visitor<GodClass> {
 
 		private boolean addSmell(ClassOrInterfaceDeclaration n) {
 			smells.add(new GodClass(n.nameAsString, ClassHelper.createFullSignature(n), wmc, tcc, atfd,
-					weightedMethodCountThreshold, tiedClassCohesionThreshold,
-					accessToForeignDataThreshold, SourcePath.of(thePath), SourceRange.fromNode(n)))
+					weightedMethodCountThreshold, tiedClassCohesionThreshold, accessToForeignDataThreshold,
+					SourcePath.of(thePath), SourceRange.fromNode(n), ElementTarget.CLASS))
 		}
 
 	}

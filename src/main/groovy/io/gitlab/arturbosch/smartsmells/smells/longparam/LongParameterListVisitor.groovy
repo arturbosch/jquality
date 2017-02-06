@@ -29,6 +29,6 @@ class LongParameterListVisitor extends MethodMetricVisitor<LongParameterList> {
 		def lm = newLongMethod(n, size)
 		smells.add(new LongParameterList(lm.name, lm.signature, lm.size,
 				lm.threshold, parameters.collect { it.toString(Printer.NO_COMMENTS) },
-				lm.sourceRange, lm.sourcePath))
+				lm.sourceRange, lm.sourcePath, lm.elementTarget))
 	}
 }

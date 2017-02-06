@@ -5,6 +5,7 @@ import groovy.transform.Immutable
 import groovy.transform.ToString
 import io.gitlab.arturbosch.jpal.ast.source.SourcePath
 import io.gitlab.arturbosch.jpal.ast.source.SourceRange
+import io.gitlab.arturbosch.smartsmells.smells.ElementTarget
 import io.gitlab.arturbosch.smartsmells.smells.MethodSpecific
 
 /**
@@ -24,6 +25,13 @@ class LongMethod implements MethodSpecific {
 	@Delegate
 	SourcePath sourcePath
 
+	ElementTarget elementTarget = ElementTarget.CLASS
+
+	@Override
+	ElementTarget elementTarget() {
+		return elementTarget
+	}
+
 	@Override
 	String asCompactString() {
 		"LongMethod \n\nSize: $size with threshold: $threshold"
@@ -37,7 +45,7 @@ class LongMethod implements MethodSpecific {
 	@Override
 	MethodSpecific copy(MethodDeclaration method) {
 		return new LongMethod(method.getNameAsString(), method.declarationAsString,
-				size, threshold, SourceRange.fromNode(method), sourcePath)
+				size, threshold, SourceRange.fromNode(method), sourcePath, elementTarget)
 	}
 
 	@Override

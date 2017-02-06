@@ -5,6 +5,7 @@ import groovy.transform.ToString
 import io.gitlab.arturbosch.jpal.ast.source.SourcePath
 import io.gitlab.arturbosch.jpal.ast.source.SourceRange
 import io.gitlab.arturbosch.smartsmells.smells.DetectionResult
+import io.gitlab.arturbosch.smartsmells.smells.ElementTarget
 
 /**
  * @author Artur Bosch
@@ -25,6 +26,13 @@ class StateChecking implements DetectionResult {
 	@Delegate
 	SourceRange sourceRange
 
+	ElementTarget elementTarget = ElementTarget.CLASS
+
+	@Override
+	ElementTarget elementTarget() {
+		return elementTarget
+	}
+
 	String signature() {
 		return "$inScope#${cases.join(", ")}"
 	}
@@ -38,4 +46,5 @@ class StateChecking implements DetectionResult {
 	String asComparableString() {
 		return "${javaClassName()}$type - $inScope - ${cases.join(",")}"
 	}
+
 }

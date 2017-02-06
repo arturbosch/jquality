@@ -2,8 +2,9 @@ package io.gitlab.arturbosch.smartsmells.api
 
 import io.gitlab.arturbosch.jpal.ast.source.SourcePath
 import io.gitlab.arturbosch.jpal.ast.source.SourceRange
-import io.gitlab.arturbosch.smartsmells.smells.DetectionResult
 import io.gitlab.arturbosch.smartsmells.config.Smell
+import io.gitlab.arturbosch.smartsmells.smells.DetectionResult
+import io.gitlab.arturbosch.smartsmells.smells.ElementTarget
 import io.gitlab.arturbosch.smartsmells.smells.comment.CommentSmell
 import io.gitlab.arturbosch.smartsmells.smells.complexmethod.ComplexMethod
 import io.gitlab.arturbosch.smartsmells.smells.cycle.Cycle
@@ -31,7 +32,8 @@ class SmellResultTest extends Specification {
 	}
 
 	private static CommentSmell getComplexMethod() {
-		new CommentSmell(CommentSmell.Type.PRIVATE, "message", false, false, new SourcePath("path"), SourceRange.of(1, 1, 1, 1))
+		new CommentSmell(CommentSmell.Type.PRIVATE, "message", false, false,
+				new SourcePath("path"), SourceRange.of(1, 1, 1, 1), ElementTarget.NOT_SPECIFIED)
 	}
 
 	private static Cycle getCycle() {
@@ -43,7 +45,7 @@ class SmellResultTest extends Specification {
 		when:
 		def smell = getComplexMethod()
 		def complexMethod = new ComplexMethod("name", "signature", 5, 5,
-				SourceRange.of(1, 1, 1, 1), new SourcePath("path"))
+				SourceRange.of(1, 1, 1, 1), new SourcePath("path"), ElementTarget.NOT_SPECIFIED)
 
 		then:
 		smell.positions.toString() == "SourceRange(1, 1, 1, 1)"

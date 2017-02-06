@@ -5,6 +5,7 @@ import groovy.transform.Immutable
 import groovy.transform.ToString
 import io.gitlab.arturbosch.jpal.ast.source.SourcePath
 import io.gitlab.arturbosch.jpal.ast.source.SourceRange
+import io.gitlab.arturbosch.smartsmells.smells.ElementTarget
 import io.gitlab.arturbosch.smartsmells.smells.MethodSpecific
 
 /**
@@ -30,6 +31,13 @@ class FeatureEnvy implements MethodSpecific {
 	@Delegate
 	SourcePath sourcePath
 
+	ElementTarget elementTarget = ElementTarget.CLASS
+
+	@Override
+	ElementTarget elementTarget() {
+		return elementTarget
+	}
+
 	@Override
 	String asCompactString() {
 		"FeatureEnvy \n\nMethod $name is jealousy of $objectName: $objectType" +
@@ -45,7 +53,7 @@ class FeatureEnvy implements MethodSpecific {
 	MethodSpecific copy(MethodDeclaration method) {
 		return new FeatureEnvy(method.getNameAsString(), method.declarationAsString, inClass,
 				objectName, objectSignature, objectType, factor, factorThreshold,
-				SourceRange.fromNode(method), sourcePath)
+				SourceRange.fromNode(method), sourcePath, elementTarget)
 	}
 
 	boolean equals(o) {

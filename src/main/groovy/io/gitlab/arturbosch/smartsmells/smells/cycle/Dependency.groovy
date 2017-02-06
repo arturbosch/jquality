@@ -4,6 +4,7 @@ import groovy.transform.Immutable
 import io.gitlab.arturbosch.jpal.ast.source.SourcePath
 import io.gitlab.arturbosch.jpal.ast.source.SourceRange
 import io.gitlab.arturbosch.smartsmells.smells.DetectionResult
+import io.gitlab.arturbosch.smartsmells.smells.ElementTarget
 
 /**
  * @author artur
@@ -38,4 +39,8 @@ class Dependency implements DetectionResult {
 		return "${javaClassName()}\$$signature"
 	}
 
+	@Override
+	ElementTarget elementTarget() {
+		return ElementTarget.CLASS
+	}
 }

@@ -7,7 +7,7 @@ import io.gitlab.arturbosch.jpal.ast.ClassHelper
 import io.gitlab.arturbosch.jpal.ast.source.SourcePath
 import io.gitlab.arturbosch.jpal.ast.source.SourceRange
 import io.gitlab.arturbosch.smartsmells.smells.ClassSpecific
-import io.gitlab.arturbosch.smartsmells.smells.NameAndSignatureSpecific
+import io.gitlab.arturbosch.smartsmells.smells.ElementTarget
 
 /**
  * @author Artur Bosch
@@ -27,6 +27,13 @@ class ShotgunSurgery implements ClassSpecific {
 	@Delegate
 	SourceRange sourceRange
 
+	ElementTarget elementTarget = ElementTarget.CLASS
+
+	@Override
+	ElementTarget elementTarget() {
+		return elementTarget
+	}
+
 	@Override
 	String asCompactString() {
 		"ShotgunSurgery \n\nCC=$cc with threshold: $ccThreshold" +
@@ -41,8 +48,7 @@ class ShotgunSurgery implements ClassSpecific {
 	@Override
 	ClassSpecific copy(ClassOrInterfaceDeclaration clazz) {
 		return new ShotgunSurgery(clazz.nameAsString, ClassHelper.createFullSignature(clazz),
-				cc, cm, ccThreshold, cmThreshold,
-				sourcePath, SourceRange.fromNode(clazz))
+				cc, cm, ccThreshold, cmThreshold, sourcePath, SourceRange.fromNode(clazz), ElementTarget.CLASS)
 	}
 
 	@Override
@@ -54,4 +60,5 @@ class ShotgunSurgery implements ClassSpecific {
 	String signature() {
 		return signature
 	}
+
 }

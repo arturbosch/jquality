@@ -3,6 +3,7 @@ package io.gitlab.arturbosch.smartsmells.smells.longparam
 import io.gitlab.arturbosch.jpal.ast.source.SourcePath
 import io.gitlab.arturbosch.jpal.ast.source.SourceRange
 import io.gitlab.arturbosch.smartsmells.common.Test
+import io.gitlab.arturbosch.smartsmells.smells.ElementTarget
 import spock.lang.Specification
 
 /**
@@ -18,6 +19,6 @@ class LongParameterListTest extends Specification {
 
 		where:
 		lpl = new LongParameterList("name", "signature", 1, 1, ["1", "2"],
-				SourceRange.of(1, 1, 1, 1), SourcePath.of(Test.PATH))
+				SourceRange.of(1, 1, 1, 1), SourcePath.of(Test.PATH), ElementTarget.METHOD)
 	}
 }

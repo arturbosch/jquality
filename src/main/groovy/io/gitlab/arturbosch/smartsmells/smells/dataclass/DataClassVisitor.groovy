@@ -7,6 +7,7 @@ import io.gitlab.arturbosch.jpal.ast.source.SourcePath
 import io.gitlab.arturbosch.jpal.ast.source.SourceRange
 import io.gitlab.arturbosch.jpal.resolution.Resolver
 import io.gitlab.arturbosch.smartsmells.common.Visitor
+import io.gitlab.arturbosch.smartsmells.smells.ElementTarget
 
 import java.util.stream.Collectors
 
@@ -35,7 +36,7 @@ class DataClassVisitor extends Visitor<DataClass> {
 
 			String signature = ClassHelper.createFullSignature(n)
 			smells.add(new DataClass(n.nameAsString, signature,
-					SourceRange.fromNode(n), SourcePath.of(path)))
+					SourceRange.fromNode(n), SourcePath.of(path), ElementTarget.CLASS))
 		}
 	}
 

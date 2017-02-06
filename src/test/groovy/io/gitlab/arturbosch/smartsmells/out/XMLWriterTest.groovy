@@ -2,6 +2,7 @@ package io.gitlab.arturbosch.smartsmells.out
 
 import io.gitlab.arturbosch.jpal.ast.source.SourcePath
 import io.gitlab.arturbosch.jpal.ast.source.SourceRange
+import io.gitlab.arturbosch.smartsmells.smells.ElementTarget
 import io.gitlab.arturbosch.smartsmells.smells.featureenvy.FeatureEnvy
 import spock.lang.Specification
 
@@ -17,7 +18,7 @@ class XMLWriterTest extends Specification {
 		when:
 		def xml = XMLWriter.toXmlEntry(new FeatureEnvy("methode", "signature", "class",
 				"<\"'>&", "objectSignature", "Locale",
-				1d, 1d, SourceRange.of(1, 1, 1, 1), SourcePath.of(Paths.get("."))))
+				1d, 1d, SourceRange.of(1, 1, 1, 1), SourcePath.of(Paths.get(".")), ElementTarget.METHOD))
 
 		println xml
 		then:

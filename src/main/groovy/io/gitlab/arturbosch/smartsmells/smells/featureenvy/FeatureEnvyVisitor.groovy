@@ -17,6 +17,7 @@ import io.gitlab.arturbosch.jpal.internal.Printer
 import io.gitlab.arturbosch.jpal.resolution.Resolver
 import io.gitlab.arturbosch.jpal.resolution.nested.InnerClassesHandler
 import io.gitlab.arturbosch.smartsmells.common.Visitor
+import io.gitlab.arturbosch.smartsmells.smells.ElementTarget
 
 import java.util.stream.Collectors
 
@@ -102,7 +103,7 @@ class FeatureEnvyVisitor extends Visitor<FeatureEnvy> {
 						method.nameAsString, method.declarationAsString, currentClassName,
 						it.name, it.type.toString(Printer.NO_COMMENTS), it.nature.toString(),
 						roundedFactor, featureEnvyFactor.threshold,
-						SourceRange.fromNode(method), SourcePath.of(path))
+						SourceRange.fromNode(method), SourcePath.of(path), ElementTarget.METHOD)
 
 				smells.add(featureEnvy)
 			}

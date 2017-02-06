@@ -7,6 +7,7 @@ import io.gitlab.arturbosch.jpal.ast.ClassHelper
 import io.gitlab.arturbosch.jpal.ast.source.SourcePath
 import io.gitlab.arturbosch.jpal.ast.source.SourceRange
 import io.gitlab.arturbosch.smartsmells.smells.ClassSpecific
+import io.gitlab.arturbosch.smartsmells.smells.ElementTarget
 
 /**
  * @author artur
@@ -31,6 +32,13 @@ class GodClass implements ClassSpecific {
 	@Delegate
 	SourceRange sourceRange
 
+	ElementTarget elementTarget = ElementTarget.CLASS
+
+	@Override
+	ElementTarget elementTarget() {
+		return elementTarget
+	}
+
 	@Override
 	String asCompactString() {
 		"GodClass \n\nWMC: $weightedMethodPerClass with threshold: $weightedMethodPerClassThreshold" +
@@ -48,7 +56,7 @@ class GodClass implements ClassSpecific {
 		return new GodClass(clazz.nameAsString, ClassHelper.createFullSignature(clazz),
 				weightedMethodPerClass, tiedClassCohesion, accessToForeignData,
 				weightedMethodPerClassThreshold, tiedClassCohesionThreshold, accessToForeignDataThreshold,
-				sourcePath, SourceRange.fromNode(clazz))
+				sourcePath, SourceRange.fromNode(clazz), elementTarget)
 	}
 
 	@Override

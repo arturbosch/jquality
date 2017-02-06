@@ -8,6 +8,7 @@ import io.gitlab.arturbosch.jpal.internal.Printer
 import io.gitlab.arturbosch.jpal.resolution.Resolver
 import io.gitlab.arturbosch.jpal.resolution.symbols.WithPreviousSymbolReference
 import io.gitlab.arturbosch.smartsmells.common.Visitor
+import io.gitlab.arturbosch.smartsmells.smells.ElementTarget
 
 import java.util.stream.Collectors
 
@@ -33,8 +34,7 @@ class MessageChainVisitor extends Visitor<MessageChain> {
 
 			new MessageChain(it.value.toString(Printer.NO_COMMENTS), extractSourceString(it.value),
 					it.value.nameAsString, countOccurrences(it.key, "."), chainSizeThreshold,
-					SourcePath.of(path), SourceRange.fromNode(it.value)
-
+					SourcePath.of(path), SourceRange.fromNode(it.value), ElementTarget.LOCAL
 			)
 		}.each { smells.add(it) }
 	}

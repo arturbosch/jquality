@@ -8,6 +8,7 @@ import io.gitlab.arturbosch.jpal.ast.source.SourcePath
 import io.gitlab.arturbosch.jpal.ast.source.SourceRange
 import io.gitlab.arturbosch.smartsmells.smells.DetectionResult
 import io.gitlab.arturbosch.smartsmells.smells.ClassSpecific
+import io.gitlab.arturbosch.smartsmells.smells.ElementTarget
 
 /**
  * @author artur
@@ -24,6 +25,13 @@ class MiddleMan implements DetectionResult, ClassSpecific {
 	@Delegate
 	SourceRange sourceRange
 
+	ElementTarget elementTarget = ElementTarget.CLASS
+
+	@Override
+	ElementTarget elementTarget() {
+		return elementTarget
+	}
+
 	@Override
 	String asCompactString() {
 		"MiddleMan \n\nMethods only delegate to others. No real logic."
@@ -37,7 +45,7 @@ class MiddleMan implements DetectionResult, ClassSpecific {
 	@Override
 	ClassSpecific copy(ClassOrInterfaceDeclaration clazz) {
 		return new MiddleMan(clazz.nameAsString, ClassHelper.createFullSignature(clazz),
-				sourcePath, SourceRange.fromNode(clazz))
+				sourcePath, SourceRange.fromNode(clazz), elementTarget)
 	}
 
 	@Override
@@ -49,4 +57,5 @@ class MiddleMan implements DetectionResult, ClassSpecific {
 	String signature() {
 		return signature
 	}
+
 }

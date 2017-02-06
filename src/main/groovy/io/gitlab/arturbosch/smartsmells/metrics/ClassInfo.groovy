@@ -5,6 +5,7 @@ import groovy.transform.ToString
 import io.gitlab.arturbosch.jpal.ast.source.SourcePath
 import io.gitlab.arturbosch.jpal.ast.source.SourceRange
 import io.gitlab.arturbosch.smartsmells.smells.DetectionResult
+import io.gitlab.arturbosch.smartsmells.smells.ElementTarget
 
 /**
  * @author artur
@@ -31,6 +32,13 @@ class ClassInfo implements DetectionResult {
 	SourcePath sourcePath
 	@Delegate
 	SourceRange sourceRange
+
+	ElementTarget elementTarget = ElementTarget.CLASS
+
+	@Override
+	ElementTarget elementTarget() {
+		return elementTarget
+	}
 
 	@Override
 	String asCompactString() {

@@ -28,6 +28,7 @@ import io.gitlab.arturbosch.jpal.ast.source.SourceRange
 import io.gitlab.arturbosch.jpal.internal.Printer
 import io.gitlab.arturbosch.jpal.resolution.Resolver
 import io.gitlab.arturbosch.smartsmells.common.Visitor
+import io.gitlab.arturbosch.smartsmells.smells.ElementTarget
 
 /**
  * @author artur
@@ -93,32 +94,32 @@ class DeadCodeVisitor extends Visitor<DeadCode> {
 				.filter { it.value == 0 }
 				.map { methodToMethodDeclaration.get(it.key) }
 				.forEach {
-			smells.add(new DeadCode(it.nameAsString, it.declarationAsString, "Method", SourcePath.of(path),
-					SourceRange.fromNode(it)))
+			smells.add(new DeadCode(it.nameAsString, it.declarationAsString, SourcePath.of(path),
+					SourceRange.fromNode(it), ElementTarget.METHOD))
 		}
 
 		fieldsToReferenceCount.entrySet().stream()
 				.filter { it.value == 0 }
 				.forEach {
 			def field = fieldsToFieldDeclaration.get(it.key)
-			smells.add(new DeadCode(it.key, field.toString(Printer.NO_COMMENTS), "Field", SourcePath.of(path),
-					SourceRange.fromNode(field)))
+			smells.add(new DeadCode(it.key, field.toString(Printer.NO_COMMENTS), SourcePath.of(path),
+					SourceRange.fromNode(field), ElementTarget.FIELD))
 		}
 
 		parameterToReferenceCount.entrySet().stream()
 				.filter { it.value == 0 }
 				.map { parameterToParameterDeclaration.get(it.key) }
 				.forEach {
-			smells.add(new DeadCode(it.nameAsString, it.toString(Printer.NO_COMMENTS), "Parameter", SourcePath.of(path),
-					SourceRange.fromNode(it)))
+			smells.add(new DeadCode(it.nameAsString, it.toString(Printer.NO_COMMENTS), SourcePath.of(path),
+					SourceRange.fromNode(it), ElementTarget.PARAMETER))
 		}
 
 		localeVariableToReferenceCount.entrySet().stream()
 				.filter { it.value == 0 }
 				.forEach {
 			def var = localeVariableToVariableDeclaration.get(it.key)
-			smells.add(new DeadCode(it.key, var.toString(Printer.NO_COMMENTS), "Variable", SourcePath.of(path),
-					SourceRange.fromNode(var)))
+			smells.add(new DeadCode(it.key, var.toString(Printer.NO_COMMENTS), SourcePath.of(path),
+					SourceRange.fromNode(var), ElementTarget.LOCAL))
 		}
 	}
 
@@ -208,7 +209,7 @@ class DeadCodeVisitor extends Visitor<DeadCode> {
 
 		@Override
 		void visit(FieldAccessExpr n, Object arg) {
-			fieldsToReferenceCount.computeIfPresent(n.field.identifier, { key, value -> value + 1 })
+			fieldsToReferenceCount.computeIfPresent(n.nameAsString, { key, value -> value + 1 })
 			super.visit(n, arg)
 		}
 

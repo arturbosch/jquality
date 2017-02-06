@@ -8,6 +8,7 @@ import io.gitlab.arturbosch.jpal.ast.source.SourcePath
 import io.gitlab.arturbosch.jpal.ast.source.SourceRange
 import io.gitlab.arturbosch.jpal.resolution.Resolver
 import io.gitlab.arturbosch.smartsmells.common.Visitor
+import io.gitlab.arturbosch.smartsmells.smells.ElementTarget
 
 /**
  * Visits all method declaration of a compilation unit and examines them
@@ -24,23 +25,23 @@ class CommentVisitor extends Visitor<CommentSmell> {
 			def modifiers = n.modifiers
 			def specifier = Modifier.getAccessSpecifier(modifiers)
 			if (specifier == AccessSpecifier.PRIVATE || specifier == AccessSpecifier.DEFAULT) {
-				addCommentSmell(CommentSmell.Type.PRIVATE, n.declarationAsString, comment)
+				addCommentSmell(CommentSmell.Type.PRIVATE, n.declarationAsString, comment, ElementTarget.METHOD)
 			}
 		}
 
 		n.getAllContainedComments().each {
-			addCommentSmell(CommentSmell.Type.ORPHAN, "orphan comment", it)
+			addCommentSmell(CommentSmell.Type.ORPHAN, "orphan comment", it, ElementTarget.NOT_SPECIFIED)
 		}
 
 		super.visit(n, arg)
 	}
 
-	private void addCommentSmell(CommentSmell.Type type, String name, Comment comment) {
+	private void addCommentSmell(CommentSmell.Type type, String name, Comment comment, ElementTarget elementTarget) {
 
 		smells.add(new CommentSmell(type, name,
 				hasTodoOrFixme(comment, "TODO"),
 				hasTodoOrFixme(comment, "FIXME"),
-				SourcePath.of(path), SourceRange.fromNode(comment)))
+				SourcePath.of(path), SourceRange.fromNode(comment), elementTarget))
 	}
 
 	private static boolean hasTodoOrFixme(Comment comment, String pattern) {

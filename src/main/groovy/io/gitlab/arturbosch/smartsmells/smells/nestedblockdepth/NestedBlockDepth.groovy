@@ -5,6 +5,7 @@ import groovy.transform.Immutable
 import groovy.transform.ToString
 import io.gitlab.arturbosch.jpal.ast.source.SourcePath
 import io.gitlab.arturbosch.jpal.ast.source.SourceRange
+import io.gitlab.arturbosch.smartsmells.smells.ElementTarget
 import io.gitlab.arturbosch.smartsmells.smells.MethodSpecific
 
 /**
@@ -25,6 +26,13 @@ class NestedBlockDepth implements MethodSpecific {
 	@Delegate
 	SourcePath sourcePath
 
+	ElementTarget elementTarget = ElementTarget.METHOD
+
+	@Override
+	ElementTarget elementTarget() {
+		return elementTarget
+	}
+
 	@Override
 	String asCompactString() {
 		"NestedBlockDepth \n\ndepth: $depth with threshold: $depthThreshold"
@@ -38,7 +46,7 @@ class NestedBlockDepth implements MethodSpecific {
 	@Override
 	MethodSpecific copy(MethodDeclaration method) {
 		return new NestedBlockDepth(method.getNameAsString(), method.declarationAsString,
-				depth, depthThreshold, SourceRange.fromNode(method), sourcePath)
+				depth, depthThreshold, SourceRange.fromNode(method), sourcePath, elementTarget)
 	}
 
 	@Override
@@ -50,4 +58,5 @@ class NestedBlockDepth implements MethodSpecific {
 	String signature() {
 		return methodSignature
 	}
+
 }

@@ -12,6 +12,7 @@ import io.gitlab.arturbosch.jpal.internal.Printer
 import io.gitlab.arturbosch.jpal.resolution.Resolver
 import io.gitlab.arturbosch.smartsmells.common.Visitor
 import io.gitlab.arturbosch.smartsmells.metrics.Metrics
+import io.gitlab.arturbosch.smartsmells.smells.ElementTarget
 
 /**
  * @author artur
@@ -46,7 +47,7 @@ class MiddleManVisitor extends Visitor<MiddleMan> {
 
 		if (checkThreshold(partition)) {
 			smells.add(new MiddleMan(n.nameAsString, ClassHelper.createFullSignature(n),
-					SourcePath.of(path), SourceRange.fromNode(n)))
+					SourcePath.of(path), SourceRange.fromNode(n), ElementTarget.CLASS))
 		}
 
 		super.visit(n, resolver)
