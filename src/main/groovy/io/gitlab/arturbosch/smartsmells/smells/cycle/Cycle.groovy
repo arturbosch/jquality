@@ -1,6 +1,8 @@
 package io.gitlab.arturbosch.smartsmells.smells.cycle
 
+import com.github.javaparser.ast.body.FieldDeclaration
 import groovy.transform.ToString
+import io.gitlab.arturbosch.smartsmells.smells.CycleSpecific
 import io.gitlab.arturbosch.smartsmells.smells.DetectionResult
 import io.gitlab.arturbosch.smartsmells.smells.ElementTarget
 
@@ -8,7 +10,7 @@ import io.gitlab.arturbosch.smartsmells.smells.ElementTarget
  * @author artur
  */
 @ToString(includeNames = false, includePackage = false)
-class Cycle implements DetectionResult {
+class Cycle implements DetectionResult, CycleSpecific {
 
 	Dependency source
 	Dependency target
@@ -59,5 +61,37 @@ class Cycle implements DetectionResult {
 	@Override
 	int hashCode() {
 		return Objects.hash(source) + Objects.hash(target)
+	}
+
+	@Override
+	String name() {
+		return source.name
+	}
+
+	@Override
+	String signature() {
+		return source.signature
+	}
+
+	@Override
+	String secondName() {
+		return target.name
+	}
+
+	@Override
+	String secondSignature() {
+		return target.signature
+	}
+
+	@Override
+	CycleSpecific copyOnSecond(FieldDeclaration field) {
+		def newTarget = source.copy(field) as Dependency
+		return new Cycle(source, newTarget)
+	}
+
+	@Override
+	CycleSpecific copy(FieldDeclaration field) {
+		def newSource = source.copy(field) as Dependency
+		return new Cycle(newSource, target)
 	}
 }
