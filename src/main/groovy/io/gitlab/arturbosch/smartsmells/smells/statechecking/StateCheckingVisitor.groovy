@@ -116,7 +116,8 @@ class StateCheckingVisitor extends Visitor<StateChecking> {
 		def methodName = NodeHelper.findDeclaringMethod(n)
 				.map { it.declarationAsString }
 				.orElse(UNKNOWN_METHOD)
-		def stateCheck = new StateChecking(currentClassName + "#" + methodName, cases, type,
+		def signature = currentClassName + "#" + methodName
+		def stateCheck = new StateChecking(signature, cases, type,
 				SourcePath.of(path), SourceRange.fromNode(n), ElementTarget.LOCAL)
 		smells.add(stateCheck)
 	}
