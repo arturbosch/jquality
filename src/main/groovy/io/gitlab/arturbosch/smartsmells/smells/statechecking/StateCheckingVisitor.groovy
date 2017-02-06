@@ -8,7 +8,6 @@ import com.github.javaparser.ast.expr.SimpleName
 import com.github.javaparser.ast.stmt.IfStmt
 import com.github.javaparser.ast.stmt.Statement
 import com.github.javaparser.ast.stmt.SwitchStmt
-import com.github.javaparser.utils.Pair
 import groovy.transform.CompileStatic
 import io.gitlab.arturbosch.jpal.ast.ClassHelper
 import io.gitlab.arturbosch.jpal.ast.NodeHelper
@@ -22,7 +21,6 @@ import io.gitlab.arturbosch.smartsmells.smells.ElementTarget
 import sun.awt.util.IdentityArrayList
 
 import java.util.function.BinaryOperator
-import java.util.stream.Collectors
 
 /**
  * @author Artur Bosch
@@ -54,10 +52,7 @@ class StateCheckingVisitor extends Visitor<StateChecking> {
 			arg.resolve(symbol, info)
 					.filter { SymbolReference reference -> reference.isVariable() }
 					.ifPresent {
-				List<String> cases = n.entries.stream().map {
-					it.label.map { it.toString(Printer.NO_COMMENTS) }
-							.orElse("default")
-				}.collect(Collectors.toList())
+				List<String> cases = CasesCollector.ofSwitch(n)
 				addStateSmell(n, cases, StateChecking.SUBTYPING)
 			}
 		}
@@ -72,7 +67,7 @@ class StateCheckingVisitor extends Visitor<StateChecking> {
 			def cases = instanceOfExprs.collect { it.toString(Printer.NO_COMMENTS) }
 			addStateSmell(n, cases, StateChecking.INSTANCE_OF)
 		} else {
-			def casesAndSymbols = collectSymbolsAndCases(n)
+			def casesAndSymbols = CasesCollector.collectSymbolsAndCases(n)
 			def cases = casesAndSymbols.a
 			def symbolMap = casesAndSymbols.b
 			// cases > 2 on variables is a heuristic value to prevent simple (x < 1 and x >= 1 cases)
@@ -115,20 +110,6 @@ class StateCheckingVisitor extends Visitor<StateChecking> {
 					}
 				}
 		).map { it.value == cases.size() ? it.key : null }.orElse(null)
-	}
-
-	private static Pair<List<String>, Map<SimpleName, Integer>> collectSymbolsAndCases(
-			IfStmt node, List<String> cases = new ArrayList<>(),
-			Map<SimpleName, Integer> map = new HashMap<>()) {
-		cases.add(node.condition.toString(Printer.NO_COMMENTS))
-		node.condition.getNodesByType(SimpleName.class)
-				.each { map.merge(it, 1, { Integer v1, Integer v2 -> v1 + v2 }) }
-		node.elseStmt.ifPresent {
-			if (it instanceof IfStmt) {
-				collectSymbolsAndCases((it as IfStmt), cases, map)
-			}
-		}
-		return new Pair(cases, map)
 	}
 
 	private void addStateSmell(Statement n, List<String> cases, String type) {
