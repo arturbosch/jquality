@@ -32,7 +32,8 @@ class MessageChainVisitor extends Visitor<MessageChain> {
 		methodCallExprMap.entrySet().stream()
 				.filter { isValidChainAndNoBuilderPattern(it.value, resolver) }.collect {
 
-			new MessageChain(it.value.toString(Printer.NO_COMMENTS), extractSourceString(it.value),
+			def signature = it.value.toString(Printer.NO_COMMENTS)
+			new MessageChain(signature, extractSourceString(signature),
 					it.value.nameAsString, countOccurrences(it.key, "."), chainSizeThreshold,
 					SourcePath.of(path), SourceRange.fromNode(it.value), ElementTarget.LOCAL
 			)
@@ -45,8 +46,8 @@ class MessageChainVisitor extends Visitor<MessageChain> {
 				!(reference as WithPreviousSymbolReference).isBuilderPattern()
 	}
 
-	private static String extractSourceString(MethodCallExpr it) {
-		it.toString(Printer.NO_COMMENTS).split("\\.")[0].replace("(", "").replace(")", "")
+	static String extractSourceString(String it) {
+		it.split("\\.")[0].replace("(", "").replace(")", "")
 	}
 
 	@Override
@@ -80,7 +81,7 @@ class MessageChainVisitor extends Visitor<MessageChain> {
 		return extractExpressionNames((MethodCallExpr) n.scope.get()) + "." + n.nameAsString
 	}
 
-	private static countOccurrences(String source, String pattern) {
+	static countOccurrences(String source, String pattern) {
 		if (source.isEmpty() || pattern.isEmpty()) {
 			return 0
 		}
