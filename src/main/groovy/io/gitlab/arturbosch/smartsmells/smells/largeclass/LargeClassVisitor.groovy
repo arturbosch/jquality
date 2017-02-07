@@ -29,7 +29,7 @@ class LargeClassVisitor extends Visitor<LargeClass> {
 
 		def sum
 		try {
-			sum = JavaLoc.analyze(Files.readAllLines(path), false, false)
+			sum = JavaLoc.analyze(Files.readAllLines(info.path), false, false)
 		} catch (IOException ignored) {
 			sum = calcSizeFromNode(n)
 		}

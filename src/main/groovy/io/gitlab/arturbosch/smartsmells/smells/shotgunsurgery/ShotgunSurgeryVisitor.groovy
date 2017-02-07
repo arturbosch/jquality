@@ -40,10 +40,6 @@ class ShotgunSurgeryVisitor extends Visitor<ShotgunSurgery> {
 
 	}
 
-	private Path thisPath() {
-		return path
-	}
-
 	@CompileStatic
 	private class InternalSSVisitor extends InternalVisitor {
 
@@ -56,7 +52,7 @@ class ShotgunSurgeryVisitor extends Visitor<ShotgunSurgery> {
 
 			if (cc > ccThreshold && cm > cmThreshold) {
 				smells.add(new ShotgunSurgery(n.nameAsString, ClassHelper.createFullSignature(n),
-						cc, cm, ccThreshold, cmThreshold, SourcePath.of(thisPath()),
+						cc, cm, ccThreshold, cmThreshold, SourcePath.of(path),
 						SourceRange.fromNode(n), ElementTarget.CLASS))
 			}
 		}

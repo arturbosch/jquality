@@ -55,7 +55,7 @@ class CycleVisitor extends Visitor<Cycle> {
 			visitor.visit(it, resolver)
 
 			if (visitor.haveFound()) {
-				addCycle(visitor, thisType, field, it.path)
+				addCycle(visitor, thisType, field, it.relativePath)
 			}
 		}
 
