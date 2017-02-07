@@ -47,7 +47,7 @@ class MiddleManVisitor extends Visitor<MiddleMan> {
 
 		if (checkThreshold(partition)) {
 			smells.add(new MiddleMan(n.nameAsString, ClassHelper.createFullSignature(n),
-					SourcePath.of(path), SourceRange.fromNode(n), ElementTarget.CLASS))
+					SourcePath.of(relativePath), SourceRange.fromNode(n), ElementTarget.CLASS))
 		}
 
 		super.visit(n, resolver)

@@ -15,12 +15,12 @@ import java.nio.file.Path
 @CompileStatic
 abstract class InternalVisitor extends VoidVisitorAdapter<Resolver> {
 
-	protected Path path
+	protected Path relativePath
 	protected CompilationInfo info
 
 	void initialize(CompilationInfo info) {
 		this.info = info
-		path = info.relativePath
+		relativePath = info.relativePath
 	}
 
 	protected static boolean isEmpty(ClassOrInterfaceDeclaration n) {

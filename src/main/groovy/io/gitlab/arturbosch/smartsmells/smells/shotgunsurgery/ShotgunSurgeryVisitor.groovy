@@ -12,8 +12,6 @@ import io.gitlab.arturbosch.smartsmells.common.visitor.InternalVisitor
 import io.gitlab.arturbosch.smartsmells.metrics.Metrics
 import io.gitlab.arturbosch.smartsmells.smells.ElementTarget
 
-import java.nio.file.Path
-
 /**
  * @author Artur Bosch
  */
@@ -52,7 +50,7 @@ class ShotgunSurgeryVisitor extends Visitor<ShotgunSurgery> {
 
 			if (cc > ccThreshold && cm > cmThreshold) {
 				smells.add(new ShotgunSurgery(n.nameAsString, ClassHelper.createFullSignature(n),
-						cc, cm, ccThreshold, cmThreshold, SourcePath.of(path),
+						cc, cm, ccThreshold, cmThreshold, SourcePath.of(relativePath),
 						SourceRange.fromNode(n), ElementTarget.CLASS))
 			}
 		}

@@ -34,7 +34,7 @@ class NestedBlockDepthVisitor extends Visitor<NestedBlockDepth> {
 		visitor.visit(n, arg)
 		if (visitor.isTooDeep()) {
 			smells.add(new NestedBlockDepth(n.nameAsString, n.declarationAsString,
-					visitor.maxDepth, threshold, SourceRange.fromNode(n), SourcePath.of(path), ElementTarget.METHOD))
+					visitor.maxDepth, threshold, SourceRange.fromNode(n), SourcePath.of(relativePath), ElementTarget.METHOD))
 		}
 	}
 

@@ -55,7 +55,7 @@ class ClassInfoVisitor extends Visitor<ClassInfo> {
 			smells.add(new ClassInfo(
 					name: it.name,
 					signature: ClassHelper.createFullSignature(it),
-					sourcePath: SourcePath.of(path),
+					sourcePath: SourcePath.of(relativePath),
 					sourceRange: SourceRange.fromNode(it),
 					wmc: Metrics.wmc(it),
 					tcc: Metrics.tcc(it),

@@ -51,7 +51,7 @@ class JavadocVisitor extends Visitor<CommentSmell> {
 	private void checkForJavadoc(NodeWithJavadoc node, String forNode) {
 		if (!node.javadoc.isPresent()) {
 			smells.add(new CommentSmell(CommentSmell.Type.MISSING_JAVADOC,
-					forNode, false, false, SourcePath.of(path),
+					forNode, false, false, SourcePath.of(relativePath),
 					SourceRange.fromNode(node as Node), ElementTarget.CLASS))
 		}
 	}
@@ -68,7 +68,7 @@ class JavadocVisitor extends Visitor<CommentSmell> {
 				checkForReturnTag(n, javadoc, javadocComment)
 			} else {
 				smells.add(new CommentSmell(CommentSmell.Type.MISSING_JAVADOC, n.declarationAsString,
-						false, false, SourcePath.of(path), SourceRange.fromNode(n), ElementTarget.METHOD))
+						false, false, SourcePath.of(relativePath), SourceRange.fromNode(n), ElementTarget.METHOD))
 			}
 		}
 		super.visit(n, arg)
@@ -98,7 +98,7 @@ class JavadocVisitor extends Visitor<CommentSmell> {
 
 	private void missingParameterName(JavadocComment javadoc, String parameter, boolean fixme, boolean todo) {
 		smells.add(new CommentSmell(CommentSmell.Type.MISSING_PARAMETER, parameter,
-				todo, fixme, SourcePath.of(path), SourceRange.fromNode(javadoc), ElementTarget.METHOD))
+				todo, fixme, SourcePath.of(relativePath), SourceRange.fromNode(javadoc), ElementTarget.METHOD))
 	}
 
 	private void checkForReturnTag(MethodDeclaration n, Javadoc javadoc, JavadocComment javadocComment) {
@@ -107,7 +107,7 @@ class JavadocVisitor extends Visitor<CommentSmell> {
 			if (!returnTag || returnTag.content.empty)
 				smells.add(new CommentSmell(CommentSmell.Type.MISSING_RETURN,
 						"${n.getType().toString(Printer.NO_COMMENTS)}",
-						false, false, SourcePath.of(path), SourceRange.fromNode(javadocComment), ElementTarget.METHOD))
+						false, false, SourcePath.of(relativePath), SourceRange.fromNode(javadocComment), ElementTarget.METHOD))
 		}
 	}
 }

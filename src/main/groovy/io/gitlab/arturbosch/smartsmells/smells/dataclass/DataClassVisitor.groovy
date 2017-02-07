@@ -36,7 +36,7 @@ class DataClassVisitor extends Visitor<DataClass> {
 
 			String signature = ClassHelper.createFullSignature(n)
 			smells.add(new DataClass(n.nameAsString, signature,
-					SourceRange.fromNode(n), SourcePath.of(path), ElementTarget.CLASS))
+					SourceRange.fromNode(n), SourcePath.of(relativePath), ElementTarget.CLASS))
 		}
 	}
 

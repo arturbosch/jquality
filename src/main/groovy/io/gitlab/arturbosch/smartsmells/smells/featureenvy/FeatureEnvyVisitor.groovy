@@ -103,7 +103,7 @@ class FeatureEnvyVisitor extends Visitor<FeatureEnvy> {
 						method.nameAsString, method.declarationAsString, currentClassName,
 						it.name, it.type.toString(Printer.NO_COMMENTS), it.nature.toString(),
 						roundedFactor, featureEnvyFactor.threshold,
-						SourceRange.fromNode(method), SourcePath.of(path), ElementTarget.METHOD)
+						SourceRange.fromNode(method), SourcePath.of(relativePath), ElementTarget.METHOD)
 
 				smells.add(featureEnvy)
 			}

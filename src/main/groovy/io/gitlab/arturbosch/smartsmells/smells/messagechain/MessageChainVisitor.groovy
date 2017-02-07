@@ -35,7 +35,7 @@ class MessageChainVisitor extends Visitor<MessageChain> {
 			def signature = it.value.toString(Printer.NO_COMMENTS)
 			new MessageChain(signature, extractSourceString(signature),
 					it.value.nameAsString, countOccurrences(it.key, "."), chainSizeThreshold,
-					SourcePath.of(path), SourceRange.fromNode(it.value), ElementTarget.LOCAL
+					SourcePath.of(relativePath), SourceRange.fromNode(it.value), ElementTarget.LOCAL
 			)
 		}.each { smells.add(it) }
 	}

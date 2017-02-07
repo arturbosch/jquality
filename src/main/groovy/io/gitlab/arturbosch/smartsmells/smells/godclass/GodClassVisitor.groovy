@@ -48,7 +48,7 @@ class GodClassVisitor extends Visitor<GodClass> {
 		def classes = n.getNodesByType(ClassOrInterfaceDeclaration.class)
 
 		classes.each {
-			def classVisitor = new InternalGodClassVisitor(path)
+			def classVisitor = new InternalGodClassVisitor(relativePath)
 			classVisitor.visit(it)
 		}
 

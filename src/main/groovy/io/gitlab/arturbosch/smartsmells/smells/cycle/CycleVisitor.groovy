@@ -68,7 +68,7 @@ class CycleVisitor extends Visitor<Cycle> {
 		def otherField = tuple.second
 
 		def dep1 = new Dependency(thisClass.shortName(), thisClass.name,
-				SourcePath.of(path), SourceRange.fromNode(field))
+				SourcePath.of(relativePath), SourceRange.fromNode(field))
 		def dep2 = new Dependency(otherType.shortName(), otherType.name,
 				SourcePath.of(otherPath), SourceRange.fromNode(otherField))
 		def cycle = new Cycle(dep1, dep2)
