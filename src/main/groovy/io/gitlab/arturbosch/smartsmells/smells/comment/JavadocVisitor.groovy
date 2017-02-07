@@ -59,16 +59,19 @@ class JavadocVisitor extends Visitor<CommentSmell> {
 	@Override
 	void visit(MethodDeclaration n, Resolver arg) {
 		if (isPublic(n) && !MethodHelper.isGetterOrSetter(n)) {
-			def javadoc = n.javadoc.orElse(null)
-			def javadocComment = n.javadocComment.orElse(null)
-			if (javadoc && javadocComment) {
-				def fixme = javadocComment.content.contains("FIXME")
-				def todo = javadocComment.content.contains("TODO")
-				checkForParameterTags(javadoc, n, javadocComment, fixme, todo)
-				checkForReturnTag(n, javadoc, javadocComment)
-			} else {
-				smells.add(new CommentSmell(CommentSmell.Type.MISSING_JAVADOC, n.declarationAsString,
-						false, false, SourcePath.of(relativePath), SourceRange.fromNode(n), ElementTarget.METHOD))
+			def comment = n.getComment().orElse(null)
+			if (comment && comment instanceof JavadocComment) {
+				def javadoc = n.javadoc.orElse(null)
+				def javadocComment = n.javadocComment.orElse(null)
+				if (javadoc && javadocComment) {
+					def fixme = javadocComment.content.contains("FIXME")
+					def todo = javadocComment.content.contains("TODO")
+					checkForParameterTags(javadoc, n, javadocComment, fixme, todo)
+					checkForReturnTag(n, javadoc, javadocComment)
+				} else {
+					smells.add(new CommentSmell(CommentSmell.Type.MISSING_JAVADOC, n.declarationAsString,
+							false, false, SourcePath.of(relativePath), SourceRange.fromNode(n), ElementTarget.METHOD))
+				}
 			}
 		}
 		super.visit(n, arg)
