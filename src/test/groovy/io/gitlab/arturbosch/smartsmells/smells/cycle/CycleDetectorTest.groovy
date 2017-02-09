@@ -34,8 +34,8 @@ class CycleDetectorTest extends Specification {
 		cycle == cycle2
 
 		where:
-		dep1 = Dependency.of("me", "me", SourcePath.of(Paths.get("me")), SourceRange.of(1, 1, 1, 1))
-		dep2 = Dependency.of("you", "you", SourcePath.of(Paths.get("you")), SourceRange.of(2, 2, 2, 2))
+		dep1 = Dependency.of("me", "me", SourcePath.of(Paths.get("me"), Paths.get("me")), SourceRange.of(1, 1, 1, 1))
+		dep2 = Dependency.of("you", "you", SourcePath.of(Paths.get("you"), Paths.get("me")), SourceRange.of(2, 2, 2, 2))
 		cycle = new Cycle(dep1, dep2)
 		cycle2 = new Cycle(dep2, dep1)
 

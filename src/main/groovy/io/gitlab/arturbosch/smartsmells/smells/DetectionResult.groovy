@@ -1,5 +1,6 @@
 package io.gitlab.arturbosch.smartsmells.smells
 
+import io.gitlab.arturbosch.jpal.ast.source.SourcePath
 import io.gitlab.arturbosch.jpal.ast.source.SourceRange
 import io.gitlab.arturbosch.smartsmells.api.SmellExchange
 import io.gitlab.arturbosch.smartsmells.smells.cycle.Cycle
@@ -23,6 +24,11 @@ trait DetectionResult {
 		return getAttribute(this, "sourcePath").toString()
 	}
 
+
+	String getRelativePathAsString() {
+		return (getAttribute(this, "sourcePath") as SourcePath).relativePath.toString()
+	}
+
 	private static Object getAttribute(DetectionResult detectionResult, String name) {
 		switch (detectionResult) {
 			case Cycle: return SmellExchange.getAttribute(
@@ -32,6 +38,6 @@ trait DetectionResult {
 	}
 
 	String javaClassName() {
-		return getClass().simpleName + "\$${getPathAsString()}\$"
+		return getClass().simpleName + "\$${getRelativePathAsString()}\$"
 	}
 }

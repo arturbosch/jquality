@@ -94,7 +94,7 @@ class DeadCodeVisitor extends Visitor<DeadCode> {
 				.filter { it.value == 0 }
 				.map { methodToMethodDeclaration.get(it.key) }
 				.forEach {
-			smells.add(new DeadCode(it.nameAsString, it.declarationAsString, SourcePath.of(relativePath),
+			smells.add(new DeadCode(it.nameAsString, it.declarationAsString, SourcePath.of(info),
 					SourceRange.fromNode(it), ElementTarget.METHOD))
 		}
 
@@ -102,7 +102,7 @@ class DeadCodeVisitor extends Visitor<DeadCode> {
 				.filter { it.value == 0 }
 				.forEach {
 			def field = fieldsToFieldDeclaration.get(it.key)
-			smells.add(new DeadCode(it.key, field.toString(Printer.NO_COMMENTS), SourcePath.of(relativePath),
+			smells.add(new DeadCode(it.key, field.toString(Printer.NO_COMMENTS), SourcePath.of(info),
 					SourceRange.fromNode(field), ElementTarget.FIELD))
 		}
 
@@ -110,7 +110,7 @@ class DeadCodeVisitor extends Visitor<DeadCode> {
 				.filter { it.value == 0 }
 				.map { parameterToParameterDeclaration.get(it.key) }
 				.forEach {
-			smells.add(new DeadCode(it.nameAsString, it.toString(Printer.NO_COMMENTS), SourcePath.of(relativePath),
+			smells.add(new DeadCode(it.nameAsString, it.toString(Printer.NO_COMMENTS), SourcePath.of(info),
 					SourceRange.fromNode(it), ElementTarget.PARAMETER))
 		}
 
@@ -118,7 +118,7 @@ class DeadCodeVisitor extends Visitor<DeadCode> {
 				.filter { it.value == 0 }
 				.forEach {
 			def var = localeVariableToVariableDeclaration.get(it.key)
-			smells.add(new DeadCode(it.key, var.toString(Printer.NO_COMMENTS), SourcePath.of(relativePath),
+			smells.add(new DeadCode(it.key, var.toString(Printer.NO_COMMENTS), SourcePath.of(info),
 					SourceRange.fromNode(var), ElementTarget.LOCAL))
 		}
 	}

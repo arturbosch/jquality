@@ -6,13 +6,12 @@ import groovy.transform.CompileStatic
 import io.gitlab.arturbosch.jpal.ast.ClassHelper
 import io.gitlab.arturbosch.jpal.ast.source.SourcePath
 import io.gitlab.arturbosch.jpal.ast.source.SourceRange
+import io.gitlab.arturbosch.jpal.core.CompilationInfo
 import io.gitlab.arturbosch.jpal.resolution.Resolver
 import io.gitlab.arturbosch.smartsmells.common.Visitor
 import io.gitlab.arturbosch.smartsmells.common.visitor.InternalVisitor
 import io.gitlab.arturbosch.smartsmells.metrics.Metrics
 import io.gitlab.arturbosch.smartsmells.smells.ElementTarget
-
-import java.nio.file.Path
 
 /**
  * @author Artur Bosch
@@ -40,9 +39,8 @@ class ShotgunSurgeryVisitor extends Visitor<ShotgunSurgery> {
 
 	}
 
-	// property access leads to a null pointer ?!
-	private Path thisPath() {
-		return relativePath
+	private CompilationInfo thisInfo() {
+		return info
 	}
 
 	@CompileStatic
@@ -57,7 +55,7 @@ class ShotgunSurgeryVisitor extends Visitor<ShotgunSurgery> {
 
 			if (cc > ccThreshold && cm > cmThreshold) {
 				smells.add(new ShotgunSurgery(n.nameAsString, ClassHelper.createFullSignature(n),
-						cc, cm, ccThreshold, cmThreshold, SourcePath.of(thisPath()),
+						cc, cm, ccThreshold, cmThreshold, SourcePath.of(thisInfo()),
 						SourceRange.fromNode(n), ElementTarget.CLASS))
 			}
 		}

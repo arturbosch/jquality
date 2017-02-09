@@ -14,11 +14,11 @@ class LongParameterListTest extends Specification {
 	def "long param list can use fields of long method through delegation"() {
 		expect:
 		lpl.name == "name"
-		lpl.sourcePath == SourcePath.of(Test.PATH)
+		lpl.sourcePath == SourcePath.of(Test.PATH, Test.PATH)
 		Test.PATH.toAbsolutePath().toString().contains(lpl.path)
 
 		where:
 		lpl = new LongParameterList("name", "signature", 1, 1, ["1", "2"],
-				SourceRange.of(1, 1, 1, 1), SourcePath.of(Test.PATH), ElementTarget.METHOD)
+				SourceRange.of(1, 1, 1, 1), SourcePath.of(Test.PATH, Test.PATH), ElementTarget.METHOD)
 	}
 }

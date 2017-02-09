@@ -20,7 +20,7 @@ abstract class InternalVisitor extends VoidVisitorAdapter<Resolver> {
 
 	void initialize(CompilationInfo info) {
 		this.info = info
-		relativePath = info.relativePath
+		relativePath = info.path
 	}
 
 	protected static boolean isEmpty(ClassOrInterfaceDeclaration n) {

@@ -33,19 +33,19 @@ class SmellResultTest extends Specification {
 
 	private static CommentSmell getComplexMethod() {
 		new CommentSmell(CommentSmell.Type.PRIVATE, "message", false, false,
-				new SourcePath("path"), SourceRange.of(1, 1, 1, 1), ElementTarget.NOT_SPECIFIED)
+				new SourcePath("path", "path"), SourceRange.of(1, 1, 1, 1), ElementTarget.NOT_SPECIFIED)
 	}
 
 	private static Cycle getCycle() {
-		new Cycle(new Dependency("1", "1", new SourcePath("path"), SourceRange.of(1, 1, 1, 1)),
-				new Dependency("2", "2", new SourcePath("path"), SourceRange.of(2, 2, 2, 2)))
+		new Cycle(new Dependency("1", "1", new SourcePath("path", "path"), SourceRange.of(1, 1, 1, 1)),
+				new Dependency("2", "2", new SourcePath("path", "path"), SourceRange.of(2, 2, 2, 2)))
 	}
 
 	def "test reflection methods on smelly objects"() {
 		when:
 		def smell = getComplexMethod()
 		def complexMethod = new ComplexMethod("name", "signature", 5, 5,
-				SourceRange.of(1, 1, 1, 1), new SourcePath("path"), ElementTarget.NOT_SPECIFIED)
+				SourceRange.of(1, 1, 1, 1), new SourcePath("path", "path"), ElementTarget.NOT_SPECIFIED)
 
 		then:
 		smell.positions.toString() == "SourceRange(1, 1, 1, 1)"

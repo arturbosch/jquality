@@ -6,12 +6,11 @@ import com.github.javaparser.ast.visitor.VoidVisitorAdapter
 import io.gitlab.arturbosch.jpal.ast.ClassHelper
 import io.gitlab.arturbosch.jpal.ast.source.SourcePath
 import io.gitlab.arturbosch.jpal.ast.source.SourceRange
+import io.gitlab.arturbosch.jpal.core.CompilationInfo
 import io.gitlab.arturbosch.jpal.resolution.Resolver
 import io.gitlab.arturbosch.smartsmells.common.Visitor
 import io.gitlab.arturbosch.smartsmells.metrics.Metrics
 import io.gitlab.arturbosch.smartsmells.smells.ElementTarget
-
-import java.nio.file.Path
 
 /**
  * GodClasses := ATFD > 5 ∧ WMC > 43 ∧ TCC < 0.33
@@ -48,10 +47,14 @@ class GodClassVisitor extends Visitor<GodClass> {
 		def classes = n.getNodesByType(ClassOrInterfaceDeclaration.class)
 
 		classes.each {
-			def classVisitor = new InternalGodClassVisitor(relativePath)
+			def classVisitor = new InternalGodClassVisitor()
 			classVisitor.visit(it)
 		}
 
+	}
+
+	private CompilationInfo thisInfo() {
+		return info
 	}
 
 	private class InternalGodClassVisitor extends VoidVisitorAdapter<Object> {
@@ -59,11 +62,6 @@ class GodClassVisitor extends Visitor<GodClass> {
 		private int atfd = 0
 		private int wmc = 0
 		private double tcc = 0.0
-		private Path thePath
-
-		InternalGodClassVisitor(Path thePath) {
-			this.thePath = thePath
-		}
 
 		void visit(ClassOrInterfaceDeclaration n) {
 			if (ClassHelper.isEmptyBody(n)) return
@@ -87,7 +85,7 @@ class GodClassVisitor extends Visitor<GodClass> {
 		private boolean addSmell(ClassOrInterfaceDeclaration n) {
 			smells.add(new GodClass(n.nameAsString, ClassHelper.createFullSignature(n), wmc, tcc, atfd,
 					weightedMethodCountThreshold, tiedClassCohesionThreshold, accessToForeignDataThreshold,
-					SourcePath.of(thePath), SourceRange.fromNode(n), ElementTarget.CLASS))
+					SourcePath.of(thisInfo()), SourceRange.fromNode(n), ElementTarget.CLASS))
 		}
 
 	}

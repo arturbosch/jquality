@@ -37,7 +37,7 @@ class LargeClassVisitor extends Visitor<LargeClass> {
 		if (sum >= sizeThreshold)
 			smells.add(new LargeClass(n.nameAsString, ClassHelper.createFullSignature(n),
 					sum.toInteger(), sizeThreshold,
-					SourcePath.of(relativePath), SourceRange.fromNode(n), ElementTarget.CLASS))
+					SourcePath.of(info), SourceRange.fromNode(n), ElementTarget.CLASS))
 	}
 
 	private static int calcSizeFromNode(ClassOrInterfaceDeclaration n) {

@@ -13,8 +13,6 @@ import io.gitlab.arturbosch.jpal.resolution.Resolver
 import io.gitlab.arturbosch.jpal.resolution.nested.InnerClassesHandler
 import io.gitlab.arturbosch.smartsmells.common.Visitor
 
-import java.nio.file.Path
-
 /**
  * @author artur
  */
@@ -55,22 +53,22 @@ class CycleVisitor extends Visitor<Cycle> {
 			visitor.visit(it, resolver)
 
 			if (visitor.haveFound()) {
-				addCycle(visitor, thisType, field, it.relativePath)
+				addCycle(visitor, thisType, field, it)
 			}
 		}
 
 	}
 
 	private void addCycle(SameFieldTypeVisitor visitor, QualifiedType thisClass,
-						  FieldDeclaration field, Path otherPath) {
+						  FieldDeclaration field, CompilationInfo otherInfo) {
 		def tuple = visitor.foundFieldWithType
 		def otherType = tuple.first
 		def otherField = tuple.second
 
 		def dep1 = new Dependency(thisClass.shortName(), thisClass.name,
-				SourcePath.of(relativePath), SourceRange.fromNode(field))
+				SourcePath.of(info), SourceRange.fromNode(field))
 		def dep2 = new Dependency(otherType.shortName(), otherType.name,
-				SourcePath.of(otherPath), SourceRange.fromNode(otherField))
+				SourcePath.of(otherInfo), SourceRange.fromNode(otherField))
 		def cycle = new Cycle(dep1, dep2)
 
 		if (!smells.contains(cycle)) {

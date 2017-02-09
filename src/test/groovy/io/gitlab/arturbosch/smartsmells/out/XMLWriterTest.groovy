@@ -18,7 +18,7 @@ class XMLWriterTest extends Specification {
 		when:
 		def xml = XMLWriter.toXmlEntry(new FeatureEnvy("methode", "signature", "class",
 				"<\"'>&", "objectSignature", "Locale",
-				1d, 1d, SourceRange.of(1, 1, 1, 1), SourcePath.of(Paths.get(".")), ElementTarget.METHOD))
+				1d, 1d, SourceRange.of(1, 1, 1, 1), SourcePath.of(Paths.get("path"), Paths.get("path")), ElementTarget.METHOD))
 
 		println xml
 		then:

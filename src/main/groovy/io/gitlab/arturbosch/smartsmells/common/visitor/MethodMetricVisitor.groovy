@@ -50,7 +50,7 @@ abstract class MethodMetricVisitor<T extends DetectionResult> extends Visitor<T>
 
 	private LongMethod longMethodIntern(String name, String signature, BodyDeclaration n, int size) {
 		new LongMethod(name, signature, size, threshold,
-				SourceRange.fromNode(n), SourcePath.of(relativePath), ElementTarget.METHOD)
+				SourceRange.fromNode(n), SourcePath.of(info), ElementTarget.METHOD)
 	}
 
 	protected abstract byThreshold(BodyDeclaration n)

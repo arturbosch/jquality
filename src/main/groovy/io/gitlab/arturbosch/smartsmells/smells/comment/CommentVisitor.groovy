@@ -41,7 +41,7 @@ class CommentVisitor extends Visitor<CommentSmell> {
 		smells.add(new CommentSmell(type, name,
 				hasTodoOrFixme(comment, "TODO"),
 				hasTodoOrFixme(comment, "FIXME"),
-				SourcePath.of(relativePath), SourceRange.fromNode(comment), elementTarget))
+				SourcePath.of(info), SourceRange.fromNode(comment), elementTarget))
 	}
 
 	private static boolean hasTodoOrFixme(Comment comment, String pattern) {

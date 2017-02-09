@@ -8,6 +8,7 @@ import io.gitlab.arturbosch.smartsmells.config.Defaults
 import io.gitlab.arturbosch.smartsmells.config.Smell
 import io.gitlab.arturbosch.smartsmells.metrics.ClassInfo
 import io.gitlab.arturbosch.smartsmells.metrics.CompilationUnitMetrics
+import io.gitlab.arturbosch.smartsmells.smells.ElementTarget
 import io.gitlab.arturbosch.smartsmells.smells.godclass.GodClass
 
 /**
@@ -49,7 +50,7 @@ class GodClassMetricVisitor extends Detector<GodClass> {
 			private boolean addSmell(ClassInfo n) {
 				smells.add(new GodClass(n.name, n.signature, n.wmc, n.tcc, n.atfd,
 						wmcThreshold, tccThreshold,
-						atfdThreshold, n.sourcePath, n.sourceRange))
+						atfdThreshold, n.sourcePath, n.sourceRange, ElementTarget.CLASS))
 			}
 		}
 	}

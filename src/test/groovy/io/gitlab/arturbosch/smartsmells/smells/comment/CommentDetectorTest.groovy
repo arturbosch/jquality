@@ -8,7 +8,7 @@ import spock.lang.Specification
  */
 class CommentDetectorTest extends Specification {
 
-	void "three comments within private methods detected"() {
+	def "three comments within private methods detected"() {
 		expect:
 		smells.size() == 3
 		smells.each { it.type == CommentSmell.Type.ORPHAN || it.type == CommentSmell.Type.PRIVATE }

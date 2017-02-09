@@ -118,7 +118,7 @@ class StateCheckingVisitor extends Visitor<StateChecking> {
 				.orElse(UNKNOWN_METHOD)
 		def signature = currentClassName + "#" + methodName
 		def stateCheck = new StateChecking(signature, cases, type,
-				SourcePath.of(relativePath), SourceRange.fromNode(n), ElementTarget.LOCAL)
+				SourcePath.of(info), SourceRange.fromNode(n), ElementTarget.LOCAL)
 		smells.add(stateCheck)
 	}
 }
