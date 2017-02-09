@@ -15,7 +15,7 @@ class LongParameterListTest extends Specification {
 		expect:
 		lpl.name == "name"
 		lpl.sourcePath == SourcePath.of(Test.PATH)
-		lpl.path == Test.PATH.toAbsolutePath().normalize().toString()
+		Test.PATH.toAbsolutePath().toString().contains(lpl.path)
 
 		where:
 		lpl = new LongParameterList("name", "signature", 1, 1, ["1", "2"],
