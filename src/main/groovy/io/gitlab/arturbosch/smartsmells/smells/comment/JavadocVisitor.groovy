@@ -69,11 +69,11 @@ class JavadocVisitor extends Visitor<CommentSmell> {
 					def todo = javadocComment.content.contains("TODO")
 					checkForParameterTags(javadoc, n, javadocComment, fixme, todo)
 					checkForReturnTag(n, javadoc, javadocComment)
-				} else {
-					smells.add(new CommentSmell(CommentSmell.Type.MISSING_JAVADOC, n.declarationAsString,
-							false, false, SourcePath.of(relativePath), SourceRange.fromNode(n), ElementTarget.METHOD))
+					return
 				}
 			}
+			smells.add(new CommentSmell(CommentSmell.Type.MISSING_JAVADOC, n.declarationAsString,
+					false, false, SourcePath.of(relativePath), SourceRange.fromNode(n), ElementTarget.METHOD))
 		}
 		super.visit(n, arg)
 	}
