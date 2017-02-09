@@ -50,7 +50,7 @@ class JavadocVisitor extends Visitor<CommentSmell> {
 
 	private void checkForJavadoc(NodeWithJavadoc node, String forNode) {
 		def comment = node.getComment().orElse(null)
-		if (!comment instanceof JavadocComment || !node.javadoc.isPresent()) {
+		if (!comment || !(comment instanceof JavadocComment) || !node.javadoc.isPresent()) {
 			smells.add(new CommentSmell(CommentSmell.Type.MISSING_JAVADOC,
 					forNode, false, false, SourcePath.of(relativePath),
 					SourceRange.fromNode(node as Node), ElementTarget.CLASS))
