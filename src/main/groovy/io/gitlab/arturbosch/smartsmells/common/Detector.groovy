@@ -7,6 +7,7 @@ import io.gitlab.arturbosch.smartsmells.config.Smell
 import io.gitlab.arturbosch.smartsmells.smells.DetectionResult
 
 import java.nio.file.Path
+import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.function.BinaryOperator
 import java.util.stream.Collectors
 
@@ -16,7 +17,7 @@ import java.util.stream.Collectors
 abstract class Detector<T extends DetectionResult> {
 
 	protected Smell type = getType()
-	private List<T> smells = new ArrayList<>(100)
+	private Queue<T> smells = new ConcurrentLinkedQueue<>()
 
 	/**
 	 * Binary operator combines two sets into one.

@@ -9,11 +9,11 @@ import io.gitlab.arturbosch.jpal.core.CompilationStorage
 import io.gitlab.arturbosch.jpal.core.JPAL
 import io.gitlab.arturbosch.jpal.internal.PrefixedThreadFactory
 import io.gitlab.arturbosch.jpal.resolution.Resolver
-import io.gitlab.arturbosch.smartsmells.smells.DetectionResult
 import io.gitlab.arturbosch.smartsmells.common.Detector
 import io.gitlab.arturbosch.smartsmells.config.DetectorConfig
 import io.gitlab.arturbosch.smartsmells.config.DetectorInitializer
 import io.gitlab.arturbosch.smartsmells.metrics.ClassInfoDetector
+import io.gitlab.arturbosch.smartsmells.smells.DetectionResult
 import io.gitlab.arturbosch.smartsmells.smells.comment.CommentDetector
 import io.gitlab.arturbosch.smartsmells.smells.comment.JavadocDetector
 import io.gitlab.arturbosch.smartsmells.smells.complexmethod.ComplexMethodDetector
@@ -37,6 +37,7 @@ import java.util.concurrent.CompletableFuture
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import java.util.logging.Level
+import java.util.regex.Pattern
 
 /**
  * @author artur
@@ -45,13 +46,15 @@ import java.util.logging.Level
 @Log
 class DetectorFacade {
 
-	private List<Detector<DetectionResult>> detectors = new LinkedList<>()
+	private List<Detector<DetectionResult>> detectors
+	private List<Pattern> filters
 
 	private ExecutorService threadPool = Executors.newFixedThreadPool(Runtime.runtime.availableProcessors(),
 			new PrefixedThreadFactory("SmartSmells"))
 
 	@PackageScope
-	DetectorFacade(List<Detector> detectors) {
+	DetectorFacade(List<Detector> detectors, List<String> filters = Collections.emptyList()) {
+		this.filters = filters.collect { Pattern.compile(it) }
 		this.detectors = detectors
 		Runtime.runtime.addShutdownHook { threadPool.shutdown() }
 	}
@@ -92,7 +95,9 @@ class DetectorFacade {
 
 		List<CompletableFuture> futures = new ArrayList<>(infos.size())
 
-		infos.forEach { CompilationInfo info ->
+		infos.stream()
+				.filter { CompilationInfo info -> !filters.any { it.asPredicate().test(info.path.toString()) } }
+				.forEach { CompilationInfo info ->
 			futures.add(CompletableFuture.runAsync({
 				for (Detector detector : detectors) {
 					detector.execute(info, resolver)
@@ -121,6 +126,7 @@ class DetectorFacade {
 	private static class DetectorFacadeBuilder {
 
 		private List<Detector> detectors = new LinkedList<>()
+		private List<String> filters = new ArrayList<String>()
 
 		DetectorFacadeBuilder with(Detector detector) {
 			Validate.notNull(detector)
@@ -138,12 +144,24 @@ class DetectorFacade {
 			build()
 		}
 
+		DetectorFacadeBuilder withFilters(String filterString) {
+			Validate.notNull(filterString)
+			filters = filterString.split(",").toList()
+			return this
+		}
+
 		static DetectorFacade metricFacade() {
 			return new DetectorFacadeBuilder().with(new ClassInfoDetector()).build()
 		}
 
+		DetectorFacadeBuilder fromConfig(final DetectorConfig config) {
+			Validate.notNull(config, "Configuration must not be null!")
+			detectors = DetectorInitializer.init(config)
+			return this
+		}
+
 		DetectorFacade build() {
-			return new DetectorFacade(detectors)
+			return new DetectorFacade(detectors, filters)
 		}
 	}
 

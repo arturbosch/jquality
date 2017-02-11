@@ -23,7 +23,9 @@ class Main {
 	String outputPath
 	@Parameter(names = ["--config", "-c"], description = "Point to your SmartSmells configuration file. Prefer this over -f if only specified detectors are needed. Take a look at the default-config.yml file within SmartSmells git repository for an example.")
 	String configPath
-	@Parameter(names = ["--fullStack", "-f"], description = "Use all available detectors with default thresholds.")
+	@Parameter(names = ["--filters", "-f"], description = "Regex expressions, separated by a comma to specify path filters eg. '.*/test/.*'")
+	String filters = ""
+	@Parameter(names = ["--fullStack", "-fs"], description = "Use all available detectors with default thresholds.")
 	Boolean fullStackFacade
 	@Parameter(names = ["--help", "-h"], description = "Shows this help message.")
 	Boolean help
@@ -79,17 +81,17 @@ class Main {
 	}
 
 	private void run() {
-		def project = Paths.get(projectPath)
 		if (fullStackFacade) {
-			run(DetectorFacade.fullStackFacade(), project)
+			run(DetectorFacade.builder().withFilters(filters).fullStackFacade())
 		} else {
 			def path = Paths.get(configPath)
 			def config = DetectorConfig.load(path)
-			run(DetectorFacade.fromConfig(config), project)
+			run(DetectorFacade.builder().withFilters(filters).fromConfig(config).build())
 		}
 	}
 
-	private void run(DetectorFacade facade, Path project) {
+	private void run(DetectorFacade facade) {
+		def project = Paths.get(projectPath)
 		def result = facade.run(project)
 		writeToFile(result)
 		result.prettyPrint()
