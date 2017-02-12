@@ -73,11 +73,11 @@ class DetectorFacade {
 	}
 
 	SmellResult run(Path startPath) {
-		return internalRun(startPath) { JPAL.new(startPath) }
+		return internalRun(startPath) { JPAL.new(startPath, null, filters) }
 	}
 
 	def <T> SmellResult runWithProcessor(Path startPath, CompilationInfoProcessor<T> processor) {
-		return internalRun(startPath) { JPAL.new(startPath, processor) }
+		return internalRun(startPath) { JPAL.new(startPath, processor, filters) }
 	}
 
 	private SmellResult internalRun(Path startPath, Closure<CompilationStorage> create) {
@@ -95,9 +95,7 @@ class DetectorFacade {
 
 		List<CompletableFuture> futures = new ArrayList<>(infos.size())
 
-		infos.stream()
-				.filter { CompilationInfo info -> !filters.any { it.asPredicate().test(info.path.toString()) } }
-				.forEach { CompilationInfo info ->
+		infos.forEach { CompilationInfo info ->
 			futures.add(CompletableFuture.runAsync({
 				for (Detector detector : detectors) {
 					detector.execute(info, resolver)
