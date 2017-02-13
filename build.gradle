@@ -8,7 +8,7 @@ apply plugin: 'groovy'
 apply plugin: 'maven'
 
 group 'io.gitlab.arturbosch.smartsmells'
-version '1.0.0.RC2'
+version '1.0.0.RC1'
 
 repositories {
 	mavenCentral()
@@ -40,6 +40,11 @@ test {
 	testLogging {
 		exceptionFormat = 'full'
 	}
+}
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+	classifier = 'sources'
+	from sourceSets.main.allSource
 }
 
 task systemTest( type: Test ) {
