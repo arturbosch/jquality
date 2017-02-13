@@ -32,11 +32,39 @@ Current found smells are:
 
 ### Usage
 
-- After installing SmartSmells and copying the default-config.yaml to a location you are aware of, you can start SmartSmells with:
+- After installing SmartSmells and copying the default-config.yaml to a location you are aware of,
+you can start SmartSmells with following options:
+```
+Usage: SmartSmells [options]  
+  Options:  
+    --config, -c  
+      Point to your SmartSmells configuration file. Prefer this over -f if 
+      only specified detectors are needed. Take a look at the 
+      default-config.yml file within SmartSmells git repository for an 
+      example. 
+    --filters, -f
+      Regex expressions, separated by a comma to specify path filters eg. 
+      '.*/test/.*' 
+      Default: <empty string>
+    --fullStack, -fs
+      Use all available detectors with default thresholds.
+    --help, -h
+      Shows this help message.
+    --input, -i
+      Specify a path where your project is located for the analysis.
+    --output, -o
+      Point to a path where the xml output file with the detection result 
+      should be saved.
+```
 
-- java -jar SmartSmells.jar --input "/path/to/project" --config "path/to/default-config.yaml" --output "path/to/output.xml"
+Loading detectors from configuration file cannot be used together with --fullStack mode. Config comes first.
 
-- Shortkeys are: '-i', '-c', '-o'
+Filters can help you sort out paths which are not relevant for your project eg. test data. 
+
+It is recommended to filter test cases in your analysis. Test code differs too much from production code.
+For example feature envy is present in every test method as test cases should be isolated and 
+understandable by itself with minimum cohesion. 
+Tests have other kinds of code smells which are not supported by SmartSmells (yet).
 
 ### As Gradle task
 
@@ -57,14 +85,14 @@ task smartsmells(type: JavaExec) {
     classpath = configurations.smartsmells
     def input = "$project.projectDir.absolutePath/src/main"
     def baseDir = "$project.projectDir/reports/"
-    Files.createDirectories(Paths.get(baseDir))
+    Files.createDirectories(Paths.get(baseDir)) 
     def output = "$baseDir/smartsmells.xml"
-    def params = [ '-i', input, '-o', output, '-f']
+    def params = [ '-i', input, '-o', output, '-fs', '-f', ".*/test/.*"]
     args(params)
 }
 
 dependencies {
-	smartsmells 'io.gitlab.arturbosch.smartsmells:SmartSmells:M7'
+	smartsmells 'io.gitlab.arturbosch.smartsmells:SmartSmells:1.0.0.RC1'
 }
 ```
 
