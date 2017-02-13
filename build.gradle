@@ -1,11 +1,13 @@
 
 plugins {
+	id "com.jfrog.bintray" version "1.7.3"
 	id 'com.github.ben-manes.versions' version '0.13.0'
 //	id "com.github.hierynomus.license" version "0.13.1"
 }
 
 apply plugin: 'groovy'
 apply plugin: 'maven'
+apply plugin: 'maven-publish'
 
 group 'io.gitlab.arturbosch.smartsmells'
 version '1.0.0.RC1'
@@ -20,6 +22,36 @@ uploadArchives {
 	repositories {
 		mavenDeployer {
 			repository(url: uri('../repo'))
+		}
+	}
+}
+
+bintray {
+	user = System.getenv("BINTRAY_USER") ?: ""
+	key = System.getenv("BINTRAY_API_KEY") ?: ""
+	publications = ["SmartSmellsPublication"]
+
+	pkg {
+		repo = 'code-analysis'
+		name = 'SmartSmells'
+		userOrg = 'arturbosch'
+		licenses = ['Apache-2.0']
+		vcsUrl = "https://github.com/arturbosch/SmartSmells"
+
+		version {
+			name = project.version
+			released = new Date()
+		}
+	}
+}
+
+publishing {
+	publications {
+		SmartSmellsPublication(MavenPublication) {
+			from components.java
+			groupId project.group
+			artifactId project.name
+			version project.version
 		}
 	}
 }
