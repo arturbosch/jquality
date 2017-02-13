@@ -23,7 +23,7 @@ class UpdatableDetectorFacade {
 
 	UpdatableDetectorFacade(Path root = null, DetectorFacade detectorFacade) {
 		facade = detectorFacade
-		storage = root ? JPAL.initializedUpdatable(root) : JPAL.updatable()
+		storage = root ? JPAL.initializedUpdatable(root, null, facade.filters) : JPAL.updatable(null, facade.filters)
 		resolver = new Resolver(storage)
 	}
 

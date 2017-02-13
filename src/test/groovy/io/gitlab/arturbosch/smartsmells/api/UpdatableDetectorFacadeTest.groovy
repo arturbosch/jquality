@@ -4,6 +4,9 @@ import io.gitlab.arturbosch.smartsmells.common.Test
 import io.gitlab.arturbosch.smartsmells.config.Smell
 import spock.lang.Specification
 
+import java.nio.file.Files
+import java.util.stream.Collectors
+
 /**
  * @author Artur Bosch
  */
@@ -20,5 +23,19 @@ class UpdatableDetectorFacadeTest extends Specification {
 		then:
 		smellResult.of(Smell.CYCLE).size() == 1
 		smellResult.of(Smell.COMPLEX_METHOD).size() == 1
+	}
+
+	def "updatable with filters has no smell result"() {
+		def detectorFacade = DetectorFacade.builder().withFilters(".*/java/.*").fullStackFacade()
+		given:
+		def facade = new UpdatableDetectorFacade(detectorFacade)
+		def paths = Files.walk(Test.BASE_PATH)
+				.filter { Files.isRegularFile(it) }
+				.collect(Collectors.toList())
+		when:
+		facade.addOrUpdate(paths)
+		def smellResult = facade.run()
+		then:
+		smellResult.smellSets.entrySet().stream().flatMap { it.value.stream() }.collect(Collectors.toList()).size() == 0
 	}
 }

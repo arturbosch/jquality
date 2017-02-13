@@ -46,8 +46,9 @@ import java.util.regex.Pattern
 @Log
 class DetectorFacade {
 
-	private List<Detector<DetectionResult>> detectors
-	private List<Pattern> filters
+	final List<Pattern> filters
+
+	private final List<Detector<DetectionResult>> detectors
 
 	private ExecutorService threadPool = Executors.newFixedThreadPool(Runtime.runtime.availableProcessors(),
 			new PrefixedThreadFactory("SmartSmells"))
@@ -121,7 +122,7 @@ class DetectorFacade {
 		detectors.each { it.clear() }
 	}
 
-	private static class DetectorFacadeBuilder {
+	static class DetectorFacadeBuilder {
 
 		private List<Detector> detectors = new LinkedList<>()
 		private List<String> filters = new ArrayList<String>()
