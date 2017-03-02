@@ -144,8 +144,7 @@ class DetectorFacade {
 		}
 
 		DetectorFacadeBuilder withFilters(String filterString) {
-			Validate.notNull(filterString)
-			filters = filterString.split(",").toList()
+			filters = (filterString?.split(",")?.toList() ?: Collections.emptyList()) as List<String>
 			return this
 		}
 

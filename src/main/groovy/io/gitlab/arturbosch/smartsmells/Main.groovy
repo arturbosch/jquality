@@ -24,7 +24,7 @@ class Main {
 	@Parameter(names = ["--config", "-c"], description = "Point to your SmartSmells configuration file. Prefer this over -f if only specified detectors are needed. Take a look at the default-config.yml file within SmartSmells git repository for an example.")
 	String configPath
 	@Parameter(names = ["--filters", "-f"], description = "Regex expressions, separated by a comma to specify path filters eg. '.*/test/.*'")
-	String filters = ""
+	String filters
 	@Parameter(names = ["--fullStack", "-fs"], description = "Use all available detectors with default thresholds.")
 	Boolean fullStackFacade
 	@Parameter(names = ["--help", "-h"], description = "Shows this help message.")
