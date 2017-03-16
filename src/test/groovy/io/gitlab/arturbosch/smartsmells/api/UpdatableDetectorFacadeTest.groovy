@@ -26,7 +26,7 @@ class UpdatableDetectorFacadeTest extends Specification {
 	}
 
 	def "updatable with filters has no smell result"() {
-		def detectorFacade = DetectorFacade.builder().withFilters(".*/java/.*").fullStackFacade()
+		def detectorFacade = DetectorFacade.builder().withFilters([".*/java/.*"]).fullStackFacade()
 		given:
 		def facade = new UpdatableDetectorFacade(detectorFacade)
 		def paths = Files.walk(Test.BASE_PATH)

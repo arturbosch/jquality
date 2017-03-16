@@ -81,6 +81,7 @@ class Main {
 	}
 
 	private void run() {
+		def filters = (filters?.split()?.collect { it.trim() } ?: Collections.emptyList()) as List<String>
 		if (fullStackFacade) {
 			run(DetectorFacade.builder().withFilters(filters).fullStackFacade())
 		} else {

@@ -143,8 +143,8 @@ class DetectorFacade {
 			build()
 		}
 
-		DetectorFacadeBuilder withFilters(String filterString) {
-			filters = (filterString?.split(",")?.toList() ?: Collections.emptyList()) as List<String>
+		DetectorFacadeBuilder withFilters(List<String> filters) {
+			this.filters = Validate.notNull(filters)
 			return this
 		}
 
