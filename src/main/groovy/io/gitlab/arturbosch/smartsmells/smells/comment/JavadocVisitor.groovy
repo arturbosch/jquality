@@ -74,7 +74,8 @@ class JavadocVisitor extends Visitor<CommentSmell> {
 
 	@Override
 	void visit(MethodDeclaration n, Resolver arg) {
-		if (isPublic(n) && checkParentIsInterface(n) && !MethodHelper.isGetterOrSetter(n)) {
+		boolean isPublicOrWithinInterface = isPublic(n) || checkParentIsInterface(n)
+		if (isPublicOrWithinInterface && !MethodHelper.isGetterOrSetter(n)) {
 			def comment = n.getComment().orElse(null)
 			if (comment && comment instanceof JavadocComment) {
 				def javadoc = n.javadoc.orElse(null)

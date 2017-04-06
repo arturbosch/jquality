@@ -12,7 +12,7 @@ class JavadocDetectorTest extends Specification {
 		when:
 		def smells = new JavadocDetector().run(Test.COMMENT_DUMMY_PATH)
 		then:
-		smells.size() == 3
+		smells.size() == 4
 	}
 
 	def "only interfaces should be checked"() {
