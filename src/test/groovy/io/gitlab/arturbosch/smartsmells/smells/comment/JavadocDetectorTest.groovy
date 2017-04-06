@@ -14,4 +14,11 @@ class JavadocDetectorTest extends Specification {
 		then:
 		smells.size() == 3
 	}
+
+	def "only interfaces should be checked"() {
+		when:
+		def smells = new JavadocDetector(onlyInterfaces: true).run(Test.JAVADOC_DUMMY_PATH)
+		then:
+		smells.size() == 2
+	}
 }

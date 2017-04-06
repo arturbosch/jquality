@@ -42,4 +42,5 @@ class Constants {
 
 	static final String STATE_CHECKING = "statechecking"
 	static final String NESTED_BLOCK_DEPTH = "nestedblockdepth"
+	static final String ONLY_INTERFACES = "onlyInterfaces"
 }

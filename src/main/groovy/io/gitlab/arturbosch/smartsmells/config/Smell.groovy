@@ -1,5 +1,6 @@
 package io.gitlab.arturbosch.smartsmells.config
 
+import groovy.transform.CompileStatic
 import io.gitlab.arturbosch.smartsmells.common.Detector
 import io.gitlab.arturbosch.smartsmells.metrics.ClassInfoDetector
 import io.gitlab.arturbosch.smartsmells.smells.comment.CommentDetector
@@ -30,6 +31,7 @@ import static io.gitlab.arturbosch.smartsmells.util.Numbers.toInt
 /**
  * @author artur
  */
+@CompileStatic
 enum Smell {
 
 	CLASS_INFO{
@@ -94,7 +96,8 @@ enum Smell {
 		@Override
 		Optional<Detector> initialize(DetectorConfig detectorConfig) {
 			return initDefault(detectorConfig, Constants.JAVADOC, {
-				new JavadocDetector()
+				boolean bool = it.get(Constants.ONLY_INTERFACES)?.toBoolean() ?: Defaults.ONLY_INTERFACES
+				new JavadocDetector(bool)
 			})
 		}
 	}, LARGE_CLASS{

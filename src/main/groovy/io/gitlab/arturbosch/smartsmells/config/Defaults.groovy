@@ -23,5 +23,7 @@ class Defaults {
 	static int CHANGING_METHODS = 10
 	static int MAX_DEPTH = 3
 
+	static boolean ONLY_INTERFACES = false
+
 	static MiddleManVisitor.MMT MIDDLE_MAN_THRESHOLD = MiddleManVisitor.MMT.half
 }

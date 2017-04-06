@@ -21,7 +21,8 @@ godclass:
   atfd: '5'
   tcc: '0.33'
 javadoc:
-  active: 'true'
+  active: 'false'
+  onlyInterfaces: 'true'
 largeclass:
   active: 'true'
   threshold: '150'

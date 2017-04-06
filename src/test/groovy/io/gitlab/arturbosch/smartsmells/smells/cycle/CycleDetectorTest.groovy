@@ -17,7 +17,7 @@ class CycleDetectorTest extends Specification {
 
 	def "find one cycle in CycleDummy and OtherCycle, one as inner classes of CycleDummy"() {
 		when:
-		def smells = new CycleDetector().run(Test.CYLES_PATH)
+		def smells = new CycleDetector().run(Test.CYCLES_PATH)
 		then:
 		smells.size() == 2
 	}

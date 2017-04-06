@@ -28,17 +28,32 @@ import io.gitlab.arturbosch.smartsmells.smells.ElementTarget
 @CompileStatic
 class JavadocVisitor extends Visitor<CommentSmell> {
 
+	private boolean onlyInterfaces
+
+	JavadocVisitor(boolean onlyInterfaces) {
+		this.onlyInterfaces = onlyInterfaces
+	}
+
 	@Override
 	void visit(ClassOrInterfaceDeclaration n, Resolver arg) {
-		if (isPublic(n)) {
+		if (isPublic(n) && checkInterfacesOnly(n)) {
 			checkForJavadoc(n, ClassHelper.createFullSignature(n))
 		}
 		super.visit(n, arg)
 	}
 
+	private boolean checkInterfacesOnly(ClassOrInterfaceDeclaration n) {
+		// 0 0 1
+		// 0 1 1
+		// 1 0 0
+		// 1 1 1
+		def isInterface = n.interface
+		return !onlyInterfaces && !isInterface || !onlyInterfaces && isInterface || onlyInterfaces && isInterface
+	}
+
 	@Override
 	void visit(EnumDeclaration n, Resolver arg) {
-		if (isPublic(n)) {
+		if (isPublic(n) && !onlyInterfaces) {
 			checkForJavadoc(n, EnumHelper.createFullSignature(n))
 		}
 		super.visit(n, arg)
@@ -59,7 +74,7 @@ class JavadocVisitor extends Visitor<CommentSmell> {
 
 	@Override
 	void visit(MethodDeclaration n, Resolver arg) {
-		if (isPublic(n) && !MethodHelper.isGetterOrSetter(n)) {
+		if (isPublic(n) && checkParentIsInterface(n) && !MethodHelper.isGetterOrSetter(n)) {
 			def comment = n.getComment().orElse(null)
 			if (comment && comment instanceof JavadocComment) {
 				def javadoc = n.javadoc.orElse(null)
@@ -76,6 +91,14 @@ class JavadocVisitor extends Visitor<CommentSmell> {
 					false, false, SourcePath.of(info), SourceRange.fromNode(n), ElementTarget.METHOD))
 		}
 		super.visit(n, arg)
+	}
+
+	private boolean checkParentIsInterface(MethodDeclaration n) {
+		def parentNode = n.parentNode.filter { it instanceof ClassOrInterfaceDeclaration }
+		if (parentNode.isPresent()) {
+			return checkInterfacesOnly(parentNode.get() as ClassOrInterfaceDeclaration)
+		}
+		return true
 	}
 
 	private void checkForParameterTags(Javadoc javadoc, MethodDeclaration n,
