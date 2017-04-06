@@ -18,7 +18,7 @@ class JavadocDetectorTest extends Specification {
 	def "only interfaces should be checked"() {
 		when:
 		def smells = new JavadocDetector(onlyInterfaces: true).run(Test.JAVADOC_DUMMY_PATH)
-		then:
-		smells.size() == 2
+		then: "no doc for interface, one interface method and a throws tag is found"
+		smells.size() == 3
 	}
 }

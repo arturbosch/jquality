@@ -15,5 +15,6 @@ final class CommentConstants {
 	final
 	static String MISSING_RETURN_TAG = "The return value should be specified and described which contracts they meet."
 	final static String MISSING_PARAM_TAG = "All parameters must be specified and their contracts described."
+	final static String MISSING_THROWS_TAG = "All thrown exceptions must be specified and their contracts described."
 
 }

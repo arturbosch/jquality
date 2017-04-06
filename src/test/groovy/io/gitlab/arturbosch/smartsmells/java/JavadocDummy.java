@@ -1,5 +1,7 @@
 package io.gitlab.arturbosch.smartsmells.java;
 
+import java.io.IOException;
+
 @SuppressWarnings("ALL")
 public class JavadocDummy {
 
@@ -19,6 +21,14 @@ public class JavadocDummy {
 
 		// no doc 2
 		void verySpecialUndocumentedMethod();
+
+		// no doc 3
+		/**
+		 * Not blank but no throws!
+		 *
+		 * @throws IOException
+		 */
+		void throwsNotDocumented() throws IOException;
 	}
 
 	public enum NoDocForEnum {

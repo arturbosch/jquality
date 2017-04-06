@@ -8,6 +8,7 @@ import com.github.javaparser.ast.body.MethodDeclaration
 import com.github.javaparser.ast.comments.JavadocComment
 import com.github.javaparser.ast.nodeTypes.NodeWithJavadoc
 import com.github.javaparser.ast.nodeTypes.NodeWithModifiers
+import com.github.javaparser.ast.type.ClassOrInterfaceType
 import com.github.javaparser.ast.type.VoidType
 import com.github.javaparser.javadoc.Javadoc
 import com.github.javaparser.javadoc.JavadocBlockTag
@@ -84,6 +85,7 @@ class JavadocVisitor extends Visitor<CommentSmell> {
 					def fixme = javadocComment.content.contains("FIXME")
 					def todo = javadocComment.content.contains("TODO")
 					checkForParameterTags(javadoc, n, javadocComment, fixme, todo)
+					checkForThrowsTags(n, javadoc, javadocComment, fixme, todo)
 					checkForReturnTag(n, javadoc, javadocComment)
 					return
 				}
@@ -119,14 +121,39 @@ class JavadocVisitor extends Visitor<CommentSmell> {
 		List<String> paramNames = parameters[false]
 		if (paramNames) {
 			paramNames.each { String it ->
-				missingParameterName(javadocComment, it, fixme, todo)
+				missingParameterOrThrowsName(javadocComment, it, fixme, todo, CommentSmell.Type.MISSING_PARAMETER)
 			}
 		}
 	}
 
-	private void missingParameterName(JavadocComment javadoc, String parameter, boolean fixme, boolean todo) {
-		smells.add(new CommentSmell(CommentSmell.Type.MISSING_PARAMETER, parameter,
-				todo, fixme, SourcePath.of(info), SourceRange.fromNode(javadoc), ElementTarget.METHOD))
+	private void missingParameterOrThrowsName(JavadocComment javadoc, String parameter,
+											  boolean fixme, boolean todo, CommentSmell.Type type) {
+		smells.add(new CommentSmell(type, parameter, todo, fixme,
+				SourcePath.of(info), SourceRange.fromNode(javadoc), ElementTarget.METHOD))
+	}
+
+	private void checkForThrowsTags(MethodDeclaration method, Javadoc javadoc, JavadocComment comment,
+									boolean fixme, boolean todo) {
+		Collection<JavadocBlockTag> tags = javadoc.blockTags.stream()
+				.filter { it.type == JavadocBlockTag.Type.THROWS }
+				.filter { it.name.isPresent() }
+				.collect()
+		Map<Boolean, List<String>> parameters = method.thrownExceptions.stream()
+				.filter { it instanceof ClassOrInterfaceType }
+				.map { it as ClassOrInterfaceType }
+				.map { it.nameAsString }
+				.collect()
+				.groupBy { param ->
+			def tag = tags.find { (it.name.get() == param) }
+			tag && !tag.content.empty
+		}
+
+		List<String> paramNames = parameters[false]
+		if (paramNames) {
+			paramNames.each { String it ->
+				missingParameterOrThrowsName(comment, it, fixme, todo, CommentSmell.Type.MISSING_THROWS)
+			}
+		}
 	}
 
 	private void checkForReturnTag(MethodDeclaration n, Javadoc javadoc, JavadocComment javadocComment) {
