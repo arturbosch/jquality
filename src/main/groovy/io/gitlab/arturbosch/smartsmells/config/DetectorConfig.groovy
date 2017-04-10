@@ -12,7 +12,7 @@ class DetectorConfig {
 
 	private final Map<String, Map<String, String>> values
 
-	private DetectorConfig(Map<String, Map<String, String>> values) {
+	DetectorConfig(Map<String, Map<String, String>> values) {
 		this.values = values
 	}
 

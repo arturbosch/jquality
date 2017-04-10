@@ -99,7 +99,9 @@ class Main {
 	}
 
 	private Path writeToFile(SmellResult result) {
-		Files.write(Paths.get(outputPath), XMLWriter.toXml(result).getBytes())
+		def path = Paths.get(outputPath)
+		Files.createDirectories(path)
+		Files.write(path, XMLWriter.toXml(result).getBytes())
 	}
 
 }
