@@ -16,6 +16,7 @@ import io.gitlab.arturbosch.smartsmells.metrics.ClassInfoDetector
 import io.gitlab.arturbosch.smartsmells.smells.DetectionResult
 import io.gitlab.arturbosch.smartsmells.smells.comment.CommentDetector
 import io.gitlab.arturbosch.smartsmells.smells.comment.JavadocDetector
+import io.gitlab.arturbosch.smartsmells.smells.complexcondition.ComplexConditionDetector
 import io.gitlab.arturbosch.smartsmells.smells.complexmethod.ComplexMethodDetector
 import io.gitlab.arturbosch.smartsmells.smells.cycle.CycleDetector
 import io.gitlab.arturbosch.smartsmells.smells.dataclass.DataClassDetector
@@ -139,7 +140,7 @@ class DetectorFacade {
 						 new LargeClassDetector(), new DataClassDetector(),
 						 new CycleDetector(), new FeatureEnvyDetector(), new MiddleManDetector(),
 						 new ShotgunSurgeryDetector(), new MessageChainDetector(), new GodClassDetector(),
-						 new StateCheckingDetector(), new NestedBlockDepthDetector()]
+						 new StateCheckingDetector(), new ComplexConditionDetector(), new NestedBlockDepthDetector()]
 			build()
 		}
 

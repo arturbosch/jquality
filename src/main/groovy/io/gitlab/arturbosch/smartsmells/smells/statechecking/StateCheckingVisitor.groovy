@@ -10,6 +10,7 @@ import com.github.javaparser.ast.stmt.Statement
 import com.github.javaparser.ast.stmt.SwitchStmt
 import groovy.transform.CompileStatic
 import io.gitlab.arturbosch.jpal.ast.ClassHelper
+import io.gitlab.arturbosch.jpal.ast.EnumHelper
 import io.gitlab.arturbosch.jpal.ast.NodeHelper
 import io.gitlab.arturbosch.jpal.ast.source.SourcePath
 import io.gitlab.arturbosch.jpal.ast.source.SourceRange
@@ -41,7 +42,7 @@ class StateCheckingVisitor extends Visitor<StateChecking> {
 
 	@Override
 	void visit(EnumDeclaration n, Resolver arg) {
-		currentClassName = n.nameAsString
+		currentClassName = EnumHelper.createFullSignature(n)
 		super.visit(n, arg)
 	}
 

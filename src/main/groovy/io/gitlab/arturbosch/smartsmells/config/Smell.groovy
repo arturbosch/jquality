@@ -5,6 +5,7 @@ import io.gitlab.arturbosch.smartsmells.common.Detector
 import io.gitlab.arturbosch.smartsmells.metrics.ClassInfoDetector
 import io.gitlab.arturbosch.smartsmells.smells.comment.CommentDetector
 import io.gitlab.arturbosch.smartsmells.smells.comment.JavadocDetector
+import io.gitlab.arturbosch.smartsmells.smells.complexcondition.ComplexConditionDetector
 import io.gitlab.arturbosch.smartsmells.smells.complexmethod.ComplexMethodDetector
 import io.gitlab.arturbosch.smartsmells.smells.cycle.CycleDetector
 import io.gitlab.arturbosch.smartsmells.smells.dataclass.DataClassDetector
@@ -45,6 +46,13 @@ enum Smell {
 		@Override
 		Optional<Detector> initialize(DetectorConfig detectorConfig) {
 			return initDefault(detectorConfig, Constants.COMMENT, { new CommentDetector() })
+		}
+	}, COMPLEX_CONDITION{
+		@Override
+		Optional<Detector> initialize(DetectorConfig detectorConfig) {
+			return initDefault(detectorConfig, Constants.COMPLEX_CONDITION, {
+				new ComplexConditionDetector(toInt(it.get(Constants.THRESHOLD), Defaults.COMPLEX_CONDITION))
+			})
 		}
 	}, COMPLEX_METHOD{
 		@Override

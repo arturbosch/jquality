@@ -10,7 +10,7 @@ class Defaults {
 	static int LONG_METHOD = 20
 	static int LONG_PARAMETER_LIST = 5
 	static int COMPLEX_METHOD = 10
-	static int  WEIGHTED_METHOD_COUNT = 20
+	static int WEIGHTED_METHOD_COUNT = 20
 	static int ACCESS_TO_FOREIGN_DATA = 4
 	static double TIED_CLASS_COHESION = 0.33
 	static boolean ONLY_PRIVATE_DEAD_CODE = true
@@ -26,4 +26,5 @@ class Defaults {
 	static boolean ONLY_INTERFACES = false
 
 	static MiddleManVisitor.MMT MIDDLE_MAN_THRESHOLD = MiddleManVisitor.MMT.half
+	static int COMPLEX_CONDITION = 3
 }

@@ -1,7 +1,7 @@
 //noinspection GroovyAssignabilityCheck
 config {
 
-	input '/home/artur/Repos/quide'
+	input '/home/artur/Repos/quide-master/Implementierung/QuideService/src/main/java'
 	output '/home/artur/test/stuff.xml'
 
 	filters {
@@ -11,6 +11,10 @@ config {
 	detectors {
 		detector('comment') { // loose comments or comments over private members -> naming should be meaningful -> no doc needed
 			let('active', 'false')
+		}
+		detector('complexcondition') { // complexity based on number of '&&' and '||' expressions
+			let('active', 'true')
+			let('threshold', '3')
 		}
 		detector('complexmethod') { // complexity based on McCabe
 			let('active', 'true')
@@ -25,7 +29,7 @@ config {
 		detector('deadcode') { // private unused members
 			let('active', 'true')
 		}
-		detector('featureenvy') { // uses the feature envy factor method by Kwankamol Nongpong (Link: 10.1109/KST.2015.7051460)
+		detector('featureenvy') { // uses the feature envy factor method by Kwankamol Nongpong -> http://ieeexplore.ieee.org/document/7051460/
 			let('active', 'true')
 			let('ignoreStatic', 'true') // static methods are often just plain utility methods which make extended use in parameters
 			let('threshold', '0.52') // the feature envy factor threshold, 0.52 is based on experience

@@ -23,6 +23,7 @@ Current found smells are:
 - StateChecking
 - ShotgunSurgery
 - NestedBlockDepth
+- ComplexCondition
 
 ### Installation
 

@@ -33,7 +33,7 @@ class StateChecking implements DetectionResult, LocalSpecific {
 	@Delegate
 	SourceRange sourceRange
 
-	ElementTarget elementTarget = ElementTarget.CLASS
+	ElementTarget elementTarget = ElementTarget.LOCAL
 
 	@Override
 	ElementTarget elementTarget() {

@@ -1,5 +1,8 @@
 comment:
   active: 'false'
+complexcondition:
+  active: 'true'
+  threshold: '3'
 complexmethod:
   active: 'true'
   threshold: '10'

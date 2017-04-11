@@ -24,6 +24,7 @@ class Test {
 	static Path DATA_CLASS_DUMMY_PATH = BASE_PATH.resolve("DataClassDummy.java")
 	static Path EMPTY_DATA_CLASS_DUMMY_PATH = BASE_PATH.resolve("EmptyDataClassDummy.java")
 	static Path COMPLEX_METHOD_DUMMY_PATH = BASE_PATH.resolve("ComplexMethodDummy.java")
+	static Path COMPLEX_CONDITION_DUMMY_PATH = BASE_PATH.resolve("ComplexConditionDummy.java")
 	static Path LONG_METHOD_DUMMY_PATH = BASE_PATH.resolve("LongMethodDummy.java")
 	static Path GOD_CLASS_DUMMY_PATH = BASE_PATH.resolve("GodClassDummy.java")
 	static Path DEAD_CODE_PATH = BASE_PATH.resolve("DeadCodeDummy.java")
