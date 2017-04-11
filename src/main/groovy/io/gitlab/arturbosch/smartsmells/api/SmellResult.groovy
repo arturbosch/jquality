@@ -1,7 +1,7 @@
 package io.gitlab.arturbosch.smartsmells.api
 
-import io.gitlab.arturbosch.smartsmells.smells.DetectionResult
 import io.gitlab.arturbosch.smartsmells.config.Smell
+import io.gitlab.arturbosch.smartsmells.smells.DetectionResult
 import io.gitlab.arturbosch.smartsmells.smells.cycle.Cycle
 
 /**
@@ -35,14 +35,16 @@ class SmellResult {
 	}
 
 	void prettyPrint(Smell... smells) {
-
+		def summary = ""
 		def printList = Arrays.asList(smells)
+		println()
 		smellSets.entrySet().each {
 			if (printList.contains(it.key)) {
 				it.value.each { println it.toString() }
 			}
-			println "$it.key: ${it.value.size()}"
+			summary += "\n$it.key: ${it.value.size()}"
 		}
+		println(summary)
 	}
 
 	Map<Smell, List<DetectionResult>> getSmellSets() {

@@ -2,6 +2,7 @@ package io.gitlab.arturbosch.smartsmells
 
 import com.beust.jcommander.JCommander
 import com.beust.jcommander.Parameter
+import io.gitlab.arturbosch.smartsmells.config.Smell
 import io.gitlab.arturbosch.smartsmells.config.dsl.DetectorConfigDslRunner
 import io.gitlab.arturbosch.smartsmells.util.Validate
 
@@ -53,13 +54,13 @@ class Main {
 	}
 
 	private static start(Runner runner) {
-		println "\n Duration: " + benchmark {
+		println("\n Duration: " + benchmark {
 			if (runner) {
-				runner.run().prettyPrint()
+				runner.run().prettyPrint(*Smell.values())
 			} else {
 				throw new IllegalStateException("Oops, this should never happen. Somehow a specialized Runner could not be created!")
 			}
-		} / 1000
+		} / 1000)
 	}
 
 	private Runner validateParsedArguments() {
