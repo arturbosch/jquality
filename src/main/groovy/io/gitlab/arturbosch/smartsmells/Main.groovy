@@ -24,7 +24,7 @@ class Main {
 	String groovyConfigPath
 	@Parameter(names = ["--filters", "-f"], description = "Regex expressions, separated by a comma to specify path filters eg. '.*/test/.*'")
 	String filters
-	@Parameter(names = ["--fullStack", "-fs"], description = "Use all available detectors with default thresholds.")
+	@Parameter(names = ["--fullStack", "--fullstack", "-fs"], description = "Use all available detectors with default thresholds.")
 	Boolean fullStackFacade
 	@Parameter(names = ["--help", "-h"], description = "Shows this help message.")
 	Boolean help
