@@ -1,6 +1,5 @@
 package io.gitlab.arturbosch.smartsmells.metrics
 
-import io.gitlab.arturbosch.jpal.core.CompilationStorage
 import io.gitlab.arturbosch.jpal.core.JPAL
 import io.gitlab.arturbosch.jpal.resolution.Resolver
 import io.gitlab.arturbosch.smartsmells.common.Test
