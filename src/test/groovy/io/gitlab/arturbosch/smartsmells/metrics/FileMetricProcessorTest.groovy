@@ -8,17 +8,17 @@ import spock.lang.Specification
 /**
  * @author Artur Bosch
  */
-class MetricsForCompilationUnitProcessorTest extends Specification {
+class FileMetricProcessorTest extends Specification {
 
 	@Ignore
 	def "metrics are collected for dummies"() {
 		given: "compilation storage created with a metric processor"
 		def dummy = Test.DATA_CLASS_DUMMY_PATH
-		def storage = JPAL.new(dummy, new MetricsForCompilationUnitProcessor())
+		def storage = JPAL.new(dummy, new FileMetricProcessor())
 		when: "looking at the compilation units"
 		def cis = storage.getCompilationInfo(dummy).get()
 		then: "all must have a metrics object"
-		cis.getProcessedObject(FileInfo.class).infos[0].name == "DataClassDummy"
+		cis.getProcessedObject(FileInfo.class).classes[0].name == "DataClassDummy"
 	}
 
 }

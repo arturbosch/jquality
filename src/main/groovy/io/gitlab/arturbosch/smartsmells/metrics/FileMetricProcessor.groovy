@@ -1,5 +1,6 @@
 package io.gitlab.arturbosch.smartsmells.metrics
 
+import groovy.transform.CompileStatic
 import io.gitlab.arturbosch.jpal.core.CompilationInfo
 import io.gitlab.arturbosch.jpal.core.CompilationInfoProcessor
 import io.gitlab.arturbosch.jpal.resolution.Resolver
@@ -7,20 +8,21 @@ import io.gitlab.arturbosch.jpal.resolution.Resolver
 /**
  * @author Artur Bosch
  */
-class MetricsForCompilationUnitProcessor implements CompilationInfoProcessor<FileInfo> {
+@CompileStatic
+class FileMetricProcessor implements CompilationInfoProcessor<FileInfo> {
 
 	private Resolver resolver
 
-	MetricsForCompilationUnitProcessor(Resolver resolver) {
+	FileMetricProcessor(Resolver resolver) {
 		this.resolver = resolver
 	}
 
 	@Override
-	FileInfo process(CompilationInfo compilationInfo) {
+	FileInfo process(CompilationInfo info) {
 		def visitor = new ClassInfoVisitor(false)
-		visitor.initialize(compilationInfo)
-		visitor.visit(compilationInfo.unit, resolver)
-		return new FileInfo(visitor.getSmells())
+		visitor.initialize(info)
+		visitor.visit(info.unit, resolver)
+		return new FileInfo(info.path, info.relativePath, visitor.getSmells())
 	}
 
 }

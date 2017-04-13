@@ -7,7 +7,7 @@ import io.gitlab.arturbosch.smartsmells.Main
 import io.gitlab.arturbosch.smartsmells.api.DetectorFacade
 import io.gitlab.arturbosch.smartsmells.config.Smell
 import io.gitlab.arturbosch.smartsmells.metrics.FileInfo
-import io.gitlab.arturbosch.smartsmells.metrics.MetricsForCompilationUnitProcessor
+import io.gitlab.arturbosch.smartsmells.metrics.FileMetricProcessor
 import spock.lang.Specification
 
 import java.nio.file.Paths
@@ -23,11 +23,11 @@ class DifferentApproachDetectorTest extends Specification {
 		def path = "/home/artur/Repos/elasticsearch/core/src/main/"
 		CompilationStorage storage
 		def time = Main.benchmark {
-			storage = JPAL.new(Paths.get(path), new MetricsForCompilationUnitProcessor())
+			storage = JPAL.new(Paths.get(path), new FileMetricProcessor())
 		}
 		def infos = storage.allCompilationInfo
 		def count = infos.stream().map { it.getProcessedObject(FileInfo.class) }.map {
-			it.infos
+			it.classes
 		}.flatMap { it.stream() }
 				.count()
 		println "Infos: $count"

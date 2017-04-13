@@ -33,7 +33,7 @@ class GodClassMetricVisitor extends Detector<GodClass> {
 			void visit(CompilationInfo n, Resolver resolver) {
 				resolver.storage.getCompilationInfo(info.path).ifPresent { info ->
 					def object = info.getProcessedObject(FileInfo.class)
-					object.infos.each {
+					object.classes.each {
 						if (checkThresholds(it)) {
 							addSmell(it)
 						}

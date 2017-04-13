@@ -1,27 +1,34 @@
 package io.gitlab.arturbosch.smartsmells.metrics
 
+import groovy.transform.CompileStatic
 import io.gitlab.arturbosch.smartsmells.smells.DetectionResult
 import io.gitlab.arturbosch.smartsmells.smells.ElementTarget
+
+import java.nio.file.Path
 
 /**
  * @author Artur Bosch
  */
+@CompileStatic
 class FileInfo implements DetectionResult {
 
-	final String absolutePath
-	final String relativePath
-	final Set<ClassInfo> infos
+	final Path absolutePath
+	final Path relativePath
+	final Set<ClassInfo> classes
 
 	final ElementTarget elementTarget = ElementTarget.CLASS
 
-	FileInfo(Set<ClassInfo> infos) {
-		this.infos = infos
+	FileInfo(Path absolutePath, Path relativePath, Set<ClassInfo> classes) {
+		this.absolutePath = absolutePath
+		this.relativePath = relativePath
+		this.classes = classes
 	}
 
 	@Override
 	String toString() {
-		return "CompilationUnitMetrics{" +
-				"infos=" + infos +
+		return "FileInfo{" +
+				"relativePath=" + relativePath +
+				", classes=" + classes +
 				'}'
 	}
 

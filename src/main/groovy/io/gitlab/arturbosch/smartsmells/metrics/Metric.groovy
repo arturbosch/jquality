@@ -9,8 +9,9 @@ import io.gitlab.arturbosch.smartsmells.util.Validate
 @CompileStatic
 class Metric {
 
+	final String abbreviation
 	final String type
-	final Integer value
+	final int value
 	final boolean isDouble
 	int threshold
 
@@ -19,6 +20,7 @@ class Metric {
 		this.value = value
 		this.isDouble = isDouble
 		this.threshold = threshold
+		this.abbreviation = type.replaceAll("[a-z]", "")
 	}
 
 	static Metric of(final String type, final double value, double threshold) {

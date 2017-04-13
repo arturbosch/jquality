@@ -3,7 +3,7 @@ package io.gitlab.arturbosch.smartsmells.api
 import io.gitlab.arturbosch.jpal.core.JPAL
 import io.gitlab.arturbosch.jpal.resolution.Resolver
 import io.gitlab.arturbosch.smartsmells.metrics.ClassInfo
-import io.gitlab.arturbosch.smartsmells.metrics.MetricsForCompilationUnitProcessor
+import io.gitlab.arturbosch.smartsmells.metrics.FileMetricProcessor
 
 import java.nio.file.Path
 
@@ -24,10 +24,10 @@ class MetricFacade {
 		def facade = builder.build()
 		def storage = root ? JPAL.initializedUpdatable(root, null, facade.filters) : JPAL.updatable(null, facade.filters)
 		def resolver = new Resolver(storage)
-		def processor = new MetricsForCompilationUnitProcessor(resolver)
+		def processor = new FileMetricProcessor(resolver)
 		def classInfos = storage.allCompilationInfo
 				.collect { processor.process(it) }
-				.collect { it.infos }
+				.collect { it.classes }
 				.flatten()
 		return classInfos as List<ClassInfo>
 	}
