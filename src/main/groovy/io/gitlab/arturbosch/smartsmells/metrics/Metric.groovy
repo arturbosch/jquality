@@ -13,25 +13,28 @@ class Metric {
 	final String type
 	final int value
 	final boolean isDouble
-	int threshold
 
-	private Metric(final String type, final int value, final boolean isDouble, final int threshold) {
+	private Metric(final String type, final int value, final boolean isDouble) {
 		this.type = type
 		this.value = value
 		this.isDouble = isDouble
-		this.threshold = threshold
 		this.abbreviation = type.replaceAll("[a-z]", "")
 	}
 
-	static Metric of(final String type, final double value, double threshold) {
-		Validate.notNull(value)
-		return new Metric(type, normalize(value), true, normalize(threshold))
+	double asDouble() {
+		if (isDouble) return value / 100
+		else throw new IllegalStateException("This metric is not a double value, retrieving it as double is invalid!")
 	}
 
-	static Metric of(final String type, final int value, int threshold) {
+	static Metric of(final String type, final double value) {
+		Validate.notNull(value)
+		return new Metric(type, normalize(value), true)
+	}
+
+	static Metric of(final String type, final int value) {
 		Validate.notNull(type)
 		Validate.notNull(value)
-		return new Metric(type, value, false, threshold)
+		return new Metric(type, value, false)
 	}
 
 	static int normalize(double factor) {
@@ -42,7 +45,7 @@ class Metric {
 	String toString() {
 		return "Metric{" +
 				"type=" + type +
-				", value=" + value +
+				", value=" + isDouble ? asDouble() : value +
 				'}'
 	}
 }
