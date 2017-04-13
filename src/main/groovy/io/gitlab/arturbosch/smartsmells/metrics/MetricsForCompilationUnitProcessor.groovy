@@ -7,7 +7,7 @@ import io.gitlab.arturbosch.jpal.resolution.Resolver
 /**
  * @author Artur Bosch
  */
-class MetricsForCompilationUnitProcessor implements CompilationInfoProcessor<CompilationUnitMetrics> {
+class MetricsForCompilationUnitProcessor implements CompilationInfoProcessor<FileInfo> {
 
 	private Resolver resolver
 
@@ -16,11 +16,11 @@ class MetricsForCompilationUnitProcessor implements CompilationInfoProcessor<Com
 	}
 
 	@Override
-	CompilationUnitMetrics process(CompilationInfo compilationInfo) {
+	FileInfo process(CompilationInfo compilationInfo) {
 		def visitor = new ClassInfoVisitor(false)
 		visitor.initialize(compilationInfo)
 		visitor.visit(compilationInfo.unit, resolver)
-		return new CompilationUnitMetrics(visitor.getSmells())
+		return new FileInfo(visitor.getSmells())
 	}
 
 }

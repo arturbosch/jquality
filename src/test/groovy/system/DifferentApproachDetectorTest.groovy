@@ -6,7 +6,7 @@ import io.gitlab.arturbosch.jpal.resolution.Resolver
 import io.gitlab.arturbosch.smartsmells.Main
 import io.gitlab.arturbosch.smartsmells.api.DetectorFacade
 import io.gitlab.arturbosch.smartsmells.config.Smell
-import io.gitlab.arturbosch.smartsmells.metrics.CompilationUnitMetrics
+import io.gitlab.arturbosch.smartsmells.metrics.FileInfo
 import io.gitlab.arturbosch.smartsmells.metrics.MetricsForCompilationUnitProcessor
 import spock.lang.Specification
 
@@ -26,7 +26,7 @@ class DifferentApproachDetectorTest extends Specification {
 			storage = JPAL.new(Paths.get(path), new MetricsForCompilationUnitProcessor())
 		}
 		def infos = storage.allCompilationInfo
-		def count = infos.stream().map { it.getProcessedObject(CompilationUnitMetrics.class) }.map {
+		def count = infos.stream().map { it.getProcessedObject(FileInfo.class) }.map {
 			it.infos
 		}.flatMap { it.stream() }
 				.count()

@@ -18,7 +18,7 @@ class MetricsForCompilationUnitProcessorTest extends Specification {
 		when: "looking at the compilation units"
 		def cis = storage.getCompilationInfo(dummy).get()
 		then: "all must have a metrics object"
-		cis.getProcessedObject(CompilationUnitMetrics.class).infos[0].name == "DataClassDummy"
+		cis.getProcessedObject(FileInfo.class).infos[0].name == "DataClassDummy"
 	}
 
 }

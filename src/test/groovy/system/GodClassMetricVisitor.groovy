@@ -7,7 +7,7 @@ import io.gitlab.arturbosch.smartsmells.common.Visitor
 import io.gitlab.arturbosch.smartsmells.config.Defaults
 import io.gitlab.arturbosch.smartsmells.config.Smell
 import io.gitlab.arturbosch.smartsmells.metrics.ClassInfo
-import io.gitlab.arturbosch.smartsmells.metrics.CompilationUnitMetrics
+import io.gitlab.arturbosch.smartsmells.metrics.FileInfo
 import io.gitlab.arturbosch.smartsmells.smells.ElementTarget
 import io.gitlab.arturbosch.smartsmells.smells.godclass.GodClass
 
@@ -32,7 +32,7 @@ class GodClassMetricVisitor extends Detector<GodClass> {
 			@Override
 			void visit(CompilationInfo n, Resolver resolver) {
 				resolver.storage.getCompilationInfo(info.path).ifPresent { info ->
-					def object = info.getProcessedObject(CompilationUnitMetrics.class)
+					def object = info.getProcessedObject(FileInfo.class)
 					object.infos.each {
 						if (checkThresholds(it)) {
 							addSmell(it)
