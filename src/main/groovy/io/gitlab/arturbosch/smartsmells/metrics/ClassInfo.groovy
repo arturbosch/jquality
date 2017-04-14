@@ -13,21 +13,11 @@ import io.gitlab.arturbosch.smartsmells.smells.ElementTarget
 @Immutable
 @ToString(includePackage = false, includeNames = true)
 class ClassInfo implements DetectionResult {
+
 	String name
-	int wmc
-	double tcc
-	int atfd
-	int noa
-	int nom
-	int loc
-	int sloc
-	double mlm
-	double plm
-	double mld
-	double pld
-	int cc
-	int cm
 	String signature
+	final List<Metric> metrics
+
 	@Delegate
 	SourcePath sourcePath
 	@Delegate

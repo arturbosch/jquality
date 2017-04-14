@@ -52,26 +52,55 @@ class ClassInfoVisitor extends Visitor<ClassInfo> {
 				cm = Metrics.cm(it, resolver)
 			}
 
+			//	int wmc
+//	double tcc
+//	int atfd
+//	int noa
+//	int nom
+//	int loc
+//	int sloc
+//	double mlm
+//	double plm
+//	double mld
+//	double pld
+//	int cc
+//	int cm
 			smells.add(new ClassInfo(
-					name: it.name,
+					name:it.name,
 					signature: ClassHelper.createFullSignature(it),
+					metrics: [
+					        Metric.of('WeightedMethodCount', Metrics.wmc(it)),
+					        Metric.of('TiedClassCohesion', Metrics.tcc(it)),
+					        Metric.of('WeightedMethodCount', Metrics.wmc(it)),
+					        Metric.of('WeightedMethodCount', Metrics.wmc(it)),
+					        Metric.of('WeightedMethodCount', Metrics.wmc(it)),
+					        Metric.of('WeightedMethodCount', Metrics.wmc(it)),
+					        Metric.of('WeightedMethodCount', Metrics.wmc(it)),
+					],
 					sourcePath: SourcePath.of(info),
 					sourceRange: SourceRange.fromNode(it),
-					wmc: Metrics.wmc(it),
-					tcc: Metrics.tcc(it),
-					atfd: Metrics.atfd(it),
-					noa: Metrics.noa(it),
-					nom: Metrics.nom(it),
-					loc: Metrics.loc(it, info.path),
-					sloc: Metrics.sloc(it, info.path),
-					mlm: aml,
-					plm: apl,
-					mld: sml,
-					pld: spl,
-					cc: cc,
-					cm: cm,
 					elementTarget: ElementTarget.CLASS
 			))
+//			smells.add(new ClassInfo(
+//					name: it.name,
+//					signature: ClassHelper.createFullSignature(it),
+//					sourcePath: SourcePath.of(info),
+//					sourceRange: SourceRange.fromNode(it),
+//					wmc: Metrics.wmc(it),
+//					tcc: Metrics.tcc(it),
+//					atfd: Metrics.atfd(it),
+//					noa: Metrics.noa(it),
+//					nom: Metrics.nom(it),
+//					loc: Metrics.loc(it, info.path),
+//					sloc: Metrics.sloc(it, info.path),
+//					mlm: aml,
+//					plm: apl,
+//					mld: sml,
+//					pld: spl,
+//					cc: cc,
+//					cm: cm,
+//					elementTarget: ElementTarget.CLASS
+//			))
 		}
 
 	}

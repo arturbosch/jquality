@@ -45,7 +45,11 @@ class Metric {
 	String toString() {
 		return "Metric{" +
 				"type=" + type +
-				", value=" + isDouble ? asDouble() : value +
+				", value=" + valueAsString() +
 				'}'
+	}
+
+	private String valueAsString() {
+		return isDouble ? asDouble() : value
 	}
 }
