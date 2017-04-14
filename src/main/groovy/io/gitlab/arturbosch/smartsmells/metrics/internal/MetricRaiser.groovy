@@ -22,19 +22,6 @@ trait MetricRaiser {
 }
 
 @CompileStatic
-class SimpleCompositeMetricRaiser implements CompositeMetricRaiser {
-	final List<MetricRaiser> raisers
-
-	SimpleCompositeMetricRaiser(List<MetricRaiser> raisers) {
-		this.raisers = raisers
-	}
-
-	List<Metric> raise(ClassOrInterfaceDeclaration aClass) {
-		return raisers.collect { it.raise(aClass) }
-	}
-}
-
-@CompileStatic
 class WMC implements MetricRaiser {
 	@Override
 	Metric raise(ClassOrInterfaceDeclaration aClass) {
