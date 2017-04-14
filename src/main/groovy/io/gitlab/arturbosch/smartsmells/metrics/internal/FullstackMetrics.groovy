@@ -1,5 +1,4 @@
 package io.gitlab.arturbosch.smartsmells.metrics.internal
-
 /**
  * @author Artur Bosch
  */
@@ -18,8 +17,8 @@ class FullstackMetrics {
 		def nom = new NOM()
 		def list = [wmc, atfd, tcc, mcc, loc, sloc, nom, noa]
 		if (!skipCCCM) list.addAll(new CC(), new CM())
-		def composite = new SimpleCompositeMetricRaiser(list)
-		return new CombinedCompositeMetricRaiser([lm, lpl, composite])
+		def composite = new SimpleCompositeMetricRaiser(list as List<MetricRaiser>)
+		return new CombinedCompositeMetricRaiser([lm, lpl, composite] as List<CompositeMetricRaiser>)
 	}
 
 	private FullstackMetrics() {

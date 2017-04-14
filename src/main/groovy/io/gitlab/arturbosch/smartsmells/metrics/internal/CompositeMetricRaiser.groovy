@@ -15,7 +15,7 @@ import java.util.stream.Collectors
 @CompileStatic
 trait CompositeMetricRaiser {
 
-	List<MetricRaiser> raisers = new ArrayList<>()
+	List<MetricRaiser> raisers = Collections.emptyList()
 
 	abstract List<Metric> raise(ClassOrInterfaceDeclaration aClass)
 
