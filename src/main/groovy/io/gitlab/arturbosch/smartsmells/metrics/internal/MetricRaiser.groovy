@@ -74,7 +74,7 @@ class MCCabe implements MetricRaiser {
 class LOC implements MetricRaiser {
 	@Override
 	Metric raise(ClassOrInterfaceDeclaration aClass) {
-		return Metric.of("LinesOfCode", Metrics.loc(aClass, null))//FIXME
+		return Metric.of("LinesOfCode", Metrics.loc(aClass))
 	}
 }
 
@@ -82,7 +82,7 @@ class LOC implements MetricRaiser {
 class SLOC implements MetricRaiser {
 	@Override
 	Metric raise(ClassOrInterfaceDeclaration aClass) {
-		return Metric.of("SourceLinesOfCode", Metrics.sloc(aClass, null))//FIXME
+		return Metric.of("SourceLinesOfCode", Metrics.sloc(aClass))
 	}
 }
 

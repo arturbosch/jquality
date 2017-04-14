@@ -68,7 +68,7 @@ class MetricsTest extends Specification {
 	def "sloc"() {
 		when:
 		def clazz = Test.firstClass(Test.compile(Test.COMMENT_DUMMY_PATH))
-		int count = Metrics.sloc(clazz, Test.COMMENT_DUMMY_PATH)
+		int count = Metrics.sloc(clazz)
 		then:
 		count == 6
 	}
@@ -77,7 +77,7 @@ class MetricsTest extends Specification {
 	def "loc"() {
 		when:
 		def clazz = Test.firstClass(Test.compile(Test.COMMENT_DUMMY_PATH))
-		int count = Metrics.loc(clazz, Test.COMMENT_DUMMY_PATH)
+		int count = Metrics.loc(clazz)
 		then:
 		count == 18
 	}
