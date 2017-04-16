@@ -15,12 +15,18 @@ class MetricFacadeTest extends Specification {
 		def result = facade.run(Test.BASE_PATH)
 		then:
 		!result.isEmpty()
-		result.find { it.name == "CommentDummy"}
-		result.find { it.name == "StateCheckingDummy"}
-		result.find { it.name == "StateCheck1"}
-		result.find { it.name == "FeatureEnvyDummy"}
-		result.find { it.name == "Staticly"}
-		result.find { it.name == "HasFeatures"}
+		result.find { it.name == "CommentDummy" }
+		result.find { it.name == "StateCheckingDummy" }
+		result.find { it.name == "StateCheck1" }
+		result.find { it.name == "FeatureEnvyDummy" }
+		result.find { it.name == "Staticly" }
+		result.find { it.name == "HasFeatures" }
+
+		when: "averaging over all class infos"
+		def averages = MetricFacade.average(result)
+		averages.each { println(it) }
+		then: "all must be double values"
+		averages.stream().allMatch { it.isDouble }
 	}
 
 }
