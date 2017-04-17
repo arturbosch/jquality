@@ -8,6 +8,7 @@ import io.gitlab.arturbosch.smartsmells.metrics.ClassInfo
 import io.gitlab.arturbosch.smartsmells.metrics.Metric
 import io.gitlab.arturbosch.smartsmells.smells.ElementTarget
 import io.gitlab.arturbosch.smartsmells.smells.featureenvy.FeatureEnvy
+import io.gitlab.arturbosch.smartsmells.util.Strings
 import spock.lang.Specification
 
 import java.nio.file.Paths
@@ -24,7 +25,6 @@ class XMLWriterTest extends Specification {
 				"<\"'>&", "objectSignature", "Locale",
 				1d, 1d, SourceRange.of(1, 1, 1, 1), SourcePath.of(Paths.get("path"), Paths.get("path")), ElementTarget.METHOD))
 
-		println xml
 		then:
 		xml.startsWith("<FeatureEnvy")
 		xml.endsWith("/>")
@@ -41,9 +41,8 @@ class XMLWriterTest extends Specification {
 				SourcePath.of(Test.BASE_PATH, Test.BASE_PATH), SourceRange.of(0, 0, 0, 0), ElementTarget.CLASS)
 		when: "persisting info"
 		def xml = XMLWriter.toXml(Smell.CLASS_INFO, info)
-		println xml
 		then: "its correct xml"
-		true
+		Strings.amountOf(xml, "Metric") == 2
 	}
 
 }
