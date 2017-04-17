@@ -92,7 +92,7 @@ class LongParameterListAverageAndDeviation implements CompositeMetricRaiser {
 		def spl = Math.sqrt(methods.stream().mapToInt { it.parameters.size() }
 				.mapToDouble { Math.pow(it - aplSum, 2) }.sum() / methodCount)
 
-		return [Metric.of('LongMethodAverage', apl.toDouble()),
-				Metric.of('LongMethodDeviation', spl)]
+		return [Metric.of('LongParameterListAverage', apl.toDouble()),
+				Metric.of('LongParameterListDeviation', spl)]
 	}
 }
