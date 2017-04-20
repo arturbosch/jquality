@@ -4,8 +4,8 @@ package io.gitlab.arturbosch.smartsmells.config.dsl
  */
 class DetectorConfigDslRunner {
 
-	static DetectorConfigDsl execute(File dsl) {
-		Script dslScript = new GroovyShell().parse(dsl.text)
+	static DetectorConfigDsl execute(String dsl) {
+		Script dslScript = new GroovyShell().parse(dsl)
 		def configDsl = new DetectorConfigDsl()
 
 		dslScript.metaClass = createEMC(dslScript.class, { ExpandoMetaClass emc ->
@@ -18,6 +18,10 @@ class DetectorConfigDslRunner {
 
 		dslScript.run()
 		return configDsl
+	}
+
+	static DetectorConfigDsl execute(File dsl) {
+		return execute(dsl.text)
 	}
 
 	static ExpandoMetaClass createEMC(Class clazz, Closure cl) {

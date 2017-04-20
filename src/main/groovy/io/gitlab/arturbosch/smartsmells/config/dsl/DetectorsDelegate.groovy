@@ -8,9 +8,13 @@ import groovy.transform.ToString
  */
 @CompileStatic
 @ToString
-class DetectorsDelegate {
+class DetectorsDelegate implements PrintableDelegate {
 
-	final Map<String, Map<String, String>> values = new HashMap<>()
+	final Map<String, Map<String, String>> values
+
+	DetectorsDelegate(final Map<String, Map<String, String>> values = new HashMap<>()) {
+		this.values = values
+	}
 
 	void detector(String name, Closure closure) {
 		def mapDelegate = new MapDelegate()
@@ -18,5 +22,15 @@ class DetectorsDelegate {
 		closure.resolveStrategy = Closure.DELEGATE_ONLY
 		closure()
 		values.put(name, mapDelegate.values)
+	}
+
+	@Override
+	String print(int indent) {
+		def tabs = tabsForIndent(indent)
+		return values.collect {
+			"${tabs}detector('$it.key') {\n" +
+					new MapDelegate(it.value).print(indent + 1) +
+					"\n$tabs}"
+		}.join("\n")
 	}
 }

@@ -1,6 +1,7 @@
 package io.gitlab.arturbosch.smartsmells.config.dsl
 
 import groovy.transform.CompileStatic
+import groovy.transform.EqualsAndHashCode
 import groovy.transform.ToString
 import io.gitlab.arturbosch.smartsmells.config.DetectorConfig
 
@@ -13,12 +14,23 @@ import java.nio.file.Paths
  */
 @CompileStatic
 @ToString
-class DetectorConfigDsl {
+@EqualsAndHashCode
+class DetectorConfigDsl implements PrintableDelegate {
 
 	Map<String, Map<String, String>> values
 	Path input
 	Optional<Path> output = Optional.empty()
 	List<String> filters
+
+	DetectorConfigDsl(final Map<String, Map<String, String>> values = new HashMap<>(),
+					  final Path input = null,
+					  final Optional<Path> output = Optional.empty(),
+					  final List<String> filters = new ArrayList<>()) {
+		this.values = values
+		this.input = input
+		this.output = output
+		this.filters = filters
+	}
 
 	/**
 	 * Should be called before using this object!
@@ -57,5 +69,26 @@ class DetectorConfigDsl {
 		closure.resolveStrategy = Closure.DELEGATE_FIRST
 		closure()
 		values = detectorsDelegate.values
+	}
+
+	@Override
+	String print(int indent) {
+		def tabs = tabsForIndent(indent)
+		def newIndent = indent + 1
+
+		def inputString = "${tabs}\tinput '$input'"
+		def outputString = output.map { "${tabs}\toutput '$it'\n" }.orElse(null) ?: ""
+
+		def filterString = new FiltersDelegate(filters).print(newIndent)
+		def detectorsString = "${tabs}\tdetectors {\n" +
+				new DetectorsDelegate(values).print(newIndent + 1) +
+				"\n${tabs}\t}"
+
+		return "${tabs}config {\n\n" +
+				inputString + "\n" +
+				outputString + "\n" +
+				filterString + "\n\n" +
+				detectorsString + "\n" +
+				"\n${tabs}}"
 	}
 }

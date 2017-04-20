@@ -4,6 +4,8 @@ import io.gitlab.arturbosch.smartsmells.config.DetectorInitializer
 import io.gitlab.arturbosch.smartsmells.smells.longmethod.LongMethodDetector
 import spock.lang.Specification
 
+import java.nio.file.Paths
+
 /**
  * @author Artur Bosch
  */
@@ -21,5 +23,22 @@ class DetectorConfigDslRunnerTest extends Specification {
 		then:
 		detectors.size() == 1
 		detectors[0] instanceof LongMethodDetector
+	}
+
+	def "convert to script"() {
+		given: "a dsl object"
+		def map = ["Hello": "World", "World": "Hello"]
+		def filters = new FiltersDelegate([".*/test/.*", ".*/testData/.*"])
+		def detectors = new DetectorsDelegate(["longmethod": map, "largeclass": map])
+		def dslObject = new DetectorConfigDsl(detectors.values,
+				Paths.get("/hello/world"),
+				Optional.of(Paths.get("/world/hello")),
+				filters.filters)
+		when: "convereting dsl object to dsl string and back"
+		def dsl = dslObject.print(0)
+		def dslObjectTransformed = DetectorConfigDslRunner.execute(dsl)
+		then: "both objects should be equals"
+		dslObject == dslObjectTransformed
+
 	}
 }
