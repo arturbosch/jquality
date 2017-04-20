@@ -10,7 +10,7 @@ import java.nio.file.Path
  */
 class DetectorConfig {
 
-	private final Map<String, Map<String, String>> values
+	final Map<String, Map<String, String>> values
 
 	DetectorConfig(Map<String, Map<String, String>> values) {
 		this.values = values
@@ -22,6 +22,15 @@ class DetectorConfig {
 		Yaml yaml = new Yaml()
 		Map data = yaml.loadAs(input, Map.class)
 		return new DetectorConfig(data)
+	}
+
+	static DetectorConfig loadFromString(String config) {
+		return new DetectorConfig(new Yaml().loadAs(config, Map.class))
+	}
+
+	static String save(Map<String, Map<String, String>> values) {
+		def yaml = new Yaml()
+		return yaml.dump(values)
 	}
 
 	Map<String, String> getKey(String key) {

@@ -19,4 +19,13 @@ class DetectorConfigTest extends Specification {
 		config = DetectorConfig.load(path)
 	}
 
+	def "save/load from/to string"() {
+		when:
+		def expected = ["longmethod": ["size": "20"], "godclass": ["wmc": '33']]
+		def dumped = DetectorConfig.save(expected)
+		def actual = DetectorConfig.loadFromString(dumped).values
+		then:
+		expected == actual
+	}
+
 }
