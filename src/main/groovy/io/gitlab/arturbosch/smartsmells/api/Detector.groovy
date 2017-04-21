@@ -1,11 +1,15 @@
 package io.gitlab.arturbosch.smartsmells.api
 
+import groovy.transform.stc.ClosureParams
+import groovy.transform.stc.FirstParam
 import io.gitlab.arturbosch.jpal.core.CompilationInfo
 import io.gitlab.arturbosch.jpal.core.JPAL
 import io.gitlab.arturbosch.jpal.resolution.Resolver
 import io.gitlab.arturbosch.smartsmells.common.Visitor
+import io.gitlab.arturbosch.smartsmells.config.DetectorConfig
 import io.gitlab.arturbosch.smartsmells.config.Smell
 import io.gitlab.arturbosch.smartsmells.smells.DetectionResult
+import io.gitlab.arturbosch.smartsmells.util.Validate
 
 import java.nio.file.Path
 import java.util.concurrent.ConcurrentLinkedQueue
@@ -17,6 +21,7 @@ import java.util.stream.Collectors
  */
 abstract class Detector<T extends DetectionResult> {
 
+	private DetectorConfig config = null
 	protected Smell type = getType()
 	private Queue<T> smells = new ConcurrentLinkedQueue<>()
 
@@ -69,9 +74,25 @@ abstract class Detector<T extends DetectionResult> {
 		smells.clear()
 	}
 
-	abstract Smell getType()
+	@SuppressWarnings("GrMethodMayBeStatic")
+	String getId() {
+		return "NOT_SET"
+	}
+
+	Smell getType() {
+		return Smell.UNKNOWN
+	}
 
 	List<T> getSmells() {
 		return new ArrayList<T>(smells)
+	}
+
+	void setConfig(DetectorConfig config) {
+		Validate.notNull(config)
+		this.config = config
+	}
+
+	void withConfig(@ClosureParams(FirstParam.FirstGenericType.class) Closure<HashMap<String, String>> configuration) {
+		configuration.call(config.getKey(getId()))
 	}
 }
