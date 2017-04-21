@@ -1,9 +1,6 @@
-package io.gitlab.arturbosch.smartsmells
+package io.gitlab.arturbosch.smartsmells.api
 
 import groovy.transform.CompileStatic
-import io.gitlab.arturbosch.smartsmells.api.Detector
-import io.gitlab.arturbosch.smartsmells.api.DetectorFacade
-import io.gitlab.arturbosch.smartsmells.api.DetectorFacadeBuilder
 
 import java.nio.file.Path
 

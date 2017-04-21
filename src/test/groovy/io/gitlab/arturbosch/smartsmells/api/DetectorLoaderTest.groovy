@@ -1,6 +1,5 @@
-package io.gitlab.arturbosch.smartsmells
+package io.gitlab.arturbosch.smartsmells.api
 
-import io.gitlab.arturbosch.smartsmells.api.DetectorFacade
 import spock.lang.Specification
 
 import java.nio.file.Paths
