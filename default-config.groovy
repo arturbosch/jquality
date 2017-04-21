@@ -8,8 +8,8 @@ config {
 		filter '.*/test/.*'
 	}
 
-	metrics(['wmc', 'atfd', 'tcc'])
-	jars(['/home/artur/Repos/SmartSmells/src/test/resources/detector.jar'])
+	metrics(['wmc', 'atfd', 'tcc']) // not yet supported, need to be configured through MetricFacadeBuilder
+	jars(['/home/artur/Repos/SmartSmells/src/test/resources/detector.jar']) // additional detectors, see detector-template project
 
 	detectors {
 		detector('comment') { // loose comments or comments over private members -> naming should be meaningful -> no doc needed
