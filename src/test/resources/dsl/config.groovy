@@ -8,6 +8,9 @@ config {
 		filter ".*/test/.*"
 	}
 
+	metrics(['wmc', 'atfd', 'tcc'])
+	jars(['/home/artur/Repos/SmartSmells/src/test/resources/detector.jar'])
+
 	detectors {
 		detector("longmethod") {
 			let('active', 'true')

@@ -36,6 +36,7 @@ class DetectorConfigDslRunnerTest extends Specification {
 				filters.filters)
 		when: "convereting dsl object to dsl string and back"
 		def dsl = dslObject.print(0)
+		println dsl
 		def dslObjectTransformed = DetectorConfigDslRunner.execute(dsl)
 		then: "both objects should be equals"
 		dslObject == dslObjectTransformed

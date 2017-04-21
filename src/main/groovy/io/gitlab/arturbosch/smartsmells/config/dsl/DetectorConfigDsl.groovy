@@ -21,15 +21,21 @@ class DetectorConfigDsl implements PrintableDelegate {
 	Path input
 	Optional<Path> output = Optional.empty()
 	List<String> filters
+	List<String> metrics
+	List<String> jars
 
 	DetectorConfigDsl(final Map<String, Map<String, String>> values = new HashMap<>(),
 					  final Path input = null,
 					  final Optional<Path> output = Optional.empty(),
-					  final List<String> filters = new ArrayList<>()) {
+					  final List<String> filters = new ArrayList<>(),
+					  final List<String> jars = new ArrayList<>(),
+					  final List<String> metrics = new ArrayList<>()) {
 		this.values = values
 		this.input = input
 		this.output = output
 		this.filters = filters
+		this.metrics = metrics
+		this.jars = jars
 	}
 
 	/**
@@ -41,6 +47,14 @@ class DetectorConfigDsl implements PrintableDelegate {
 
 	DetectorConfig build() {
 		return new DetectorConfig(values)
+	}
+
+	void jars(List<String> paths) {
+		jars = paths
+	}
+
+	void metrics(List<String> values) {
+		metrics = values
 	}
 
 	void input(String project) {
@@ -75,11 +89,16 @@ class DetectorConfigDsl implements PrintableDelegate {
 	String print(int indent) {
 		def tabs = tabsForIndent(indent)
 		def newIndent = indent + 1
+		def newTabs = "${tabs}\t"
 
-		def inputString = "${tabs}\tinput '$input'"
+		def inputString = newTabs + "input '$input'"
 		def outputString = output.map { "${tabs}\toutput '$it'\n" }.orElse(null) ?: ""
 
 		def filterString = new FiltersDelegate(filters).print(newIndent)
+
+		def metricsString = newTabs + "metrics(" + metrics.toString() + ")"
+		def jarsString = newTabs + "jars(" + jars.toString() + ")"
+
 		def detectorsString = "${tabs}\tdetectors {\n" +
 				new DetectorsDelegate(values).print(newIndent + 1) +
 				"\n${tabs}\t}"
@@ -88,6 +107,8 @@ class DetectorConfigDsl implements PrintableDelegate {
 				inputString + "\n" +
 				outputString + "\n" +
 				filterString + "\n\n" +
+				metricsString + "\n\n" +
+				jarsString + "\n\n" +
 				detectorsString + "\n" +
 				"\n${tabs}}"
 	}

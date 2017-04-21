@@ -8,6 +8,9 @@ config {
 		filter '.*/test/.*'
 	}
 
+	metrics(['wmc', 'atfd', 'tcc'])
+	jars(['/home/artur/Repos/SmartSmells/src/test/resources/detector.jar'])
+
 	detectors {
 		detector('comment') { // loose comments or comments over private members -> naming should be meaningful -> no doc needed
 			let('active', 'false')
@@ -29,7 +32,8 @@ config {
 		detector('deadcode') { // private unused members
 			let('active', 'true')
 		}
-		detector('featureenvy') { // uses the feature envy factor method by Kwankamol Nongpong -> http://ieeexplore.ieee.org/document/7051460/
+		detector('featureenvy') {
+			// uses the feature envy factor method by Kwankamol Nongpong -> http://ieeexplore.ieee.org/document/7051460/
 			let('active', 'true')
 			let('ignoreStatic', 'true') // static methods are often just plain utility methods which make extended use in parameters
 			let('threshold', '0.52') // the feature envy factor threshold, 0.52 is based on experience
