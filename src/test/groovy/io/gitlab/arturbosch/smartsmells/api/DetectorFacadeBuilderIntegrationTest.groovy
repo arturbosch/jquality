@@ -17,7 +17,7 @@ class DetectorFacadeBuilderIntegrationTest extends Specification {
 		def configDsl = DetectorConfigDslRunner.execute(groovyFile)
 		def facade = DetectorFacade.builder()
 				.fromConfig(configDsl.build())
-				.withLoader(new DetectorLoader(paths))
+				.withLoader(new DetectorLoader(new JarLoader(paths)))
 				.build()
 		then: "two detector is found"
 		facade.numberOfDetectors() == 2
