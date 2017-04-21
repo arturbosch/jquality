@@ -1,0 +1,15 @@
+group 'io.gitlab.arturbosch.smartsmells'
+version '1.0.0'
+
+apply plugin: 'java'
+
+sourceCompatibility = 1.8
+
+repositories {
+	mavenCentral()
+	mavenLocal()
+}
+
+dependencies {
+	compileOnly "io.gitlab.arturbosch.smartsmells:SmartSmells:1.0.0.RC5"
+}

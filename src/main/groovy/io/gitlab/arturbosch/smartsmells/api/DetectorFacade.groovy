@@ -11,25 +11,7 @@ import io.gitlab.arturbosch.jpal.internal.PrefixedThreadFactory
 import io.gitlab.arturbosch.jpal.resolution.Resolver
 import io.gitlab.arturbosch.smartsmells.config.DetectorConfig
 import io.gitlab.arturbosch.smartsmells.config.DetectorInitializer
-import io.gitlab.arturbosch.smartsmells.metrics.ClassInfoDetector
 import io.gitlab.arturbosch.smartsmells.smells.DetectionResult
-import io.gitlab.arturbosch.smartsmells.smells.comment.CommentDetector
-import io.gitlab.arturbosch.smartsmells.smells.comment.JavadocDetector
-import io.gitlab.arturbosch.smartsmells.smells.complexcondition.ComplexConditionDetector
-import io.gitlab.arturbosch.smartsmells.smells.complexmethod.ComplexMethodDetector
-import io.gitlab.arturbosch.smartsmells.smells.cycle.CycleDetector
-import io.gitlab.arturbosch.smartsmells.smells.dataclass.DataClassDetector
-import io.gitlab.arturbosch.smartsmells.smells.deadcode.DeadCodeDetector
-import io.gitlab.arturbosch.smartsmells.smells.featureenvy.FeatureEnvyDetector
-import io.gitlab.arturbosch.smartsmells.smells.godclass.GodClassDetector
-import io.gitlab.arturbosch.smartsmells.smells.largeclass.LargeClassDetector
-import io.gitlab.arturbosch.smartsmells.smells.longmethod.LongMethodDetector
-import io.gitlab.arturbosch.smartsmells.smells.longparam.LongParameterListDetector
-import io.gitlab.arturbosch.smartsmells.smells.messagechain.MessageChainDetector
-import io.gitlab.arturbosch.smartsmells.smells.middleman.MiddleManDetector
-import io.gitlab.arturbosch.smartsmells.smells.nestedblockdepth.NestedBlockDepthDetector
-import io.gitlab.arturbosch.smartsmells.smells.shotgunsurgery.ShotgunSurgeryDetector
-import io.gitlab.arturbosch.smartsmells.smells.statechecking.StateCheckingDetector
 import io.gitlab.arturbosch.smartsmells.util.Validate
 
 import java.nio.file.Path
@@ -120,47 +102,6 @@ class DetectorFacade {
 
 	void reset() {
 		detectors.each { it.clear() }
-	}
-
-	static class DetectorFacadeBuilder {
-
-		private List<Detector> detectors = new LinkedList<>()
-		private List<String> filters = new ArrayList<String>()
-
-		DetectorFacadeBuilder with(Detector detector) {
-			Validate.notNull(detector)
-			detectors.add(detector)
-			return this
-		}
-
-		DetectorFacade fullStackFacade() {
-			detectors = [new CommentDetector(), new JavadocDetector(), new DeadCodeDetector(),
-						 new LongMethodDetector(), new LongParameterListDetector(), new ComplexMethodDetector(),
-						 new LargeClassDetector(), new DataClassDetector(),
-						 new CycleDetector(), new FeatureEnvyDetector(), new MiddleManDetector(),
-						 new ShotgunSurgeryDetector(), new MessageChainDetector(), new GodClassDetector(),
-						 new StateCheckingDetector(), new ComplexConditionDetector(), new NestedBlockDepthDetector()]
-			build()
-		}
-
-		DetectorFacadeBuilder withFilters(List<String> filters) {
-			this.filters = Validate.notNull(filters)
-			return this
-		}
-
-		static DetectorFacade metricFacade() {
-			return new DetectorFacadeBuilder().with(new ClassInfoDetector()).build()
-		}
-
-		DetectorFacadeBuilder fromConfig(final DetectorConfig config) {
-			Validate.notNull(config, "Configuration must not be null!")
-			detectors = DetectorInitializer.init(config)
-			return this
-		}
-
-		DetectorFacade build() {
-			return new DetectorFacade(detectors, filters)
-		}
 	}
 
 }
