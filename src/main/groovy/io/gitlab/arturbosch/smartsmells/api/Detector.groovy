@@ -1,7 +1,5 @@
 package io.gitlab.arturbosch.smartsmells.api
 
-import groovy.transform.stc.ClosureParams
-import groovy.transform.stc.FirstParam
 import io.gitlab.arturbosch.jpal.core.CompilationInfo
 import io.gitlab.arturbosch.jpal.core.JPAL
 import io.gitlab.arturbosch.jpal.resolution.Resolver
@@ -92,7 +90,7 @@ abstract class Detector<T extends DetectionResult> {
 		this.config = config
 	}
 
-	void withConfig(@ClosureParams(FirstParam.FirstGenericType.class) Closure<HashMap<String, String>> configuration) {
-		configuration.call(config.getKey(getId()))
+	String valueOfConfigKey(String key) {
+		return config.getKey(getId())[key]
 	}
 }

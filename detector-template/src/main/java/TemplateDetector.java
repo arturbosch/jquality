@@ -1,6 +1,5 @@
 import io.gitlab.arturbosch.smartsmells.api.Detector;
 import io.gitlab.arturbosch.smartsmells.common.Visitor;
-import io.gitlab.arturbosch.smartsmells.config.Smell;
 
 /**
  * @author Artur Bosch
@@ -8,13 +7,13 @@ import io.gitlab.arturbosch.smartsmells.config.Smell;
 public class TemplateDetector extends Detector<TemplateSmell> {
 
 	@Override
-	protected Visitor getVisitor() {
-		return new TemplateVisitor();
+	public String getId() {
+		return "template";
 	}
 
 	@Override
-	public Smell getType() {
-		return Smell.UNKNOWN;
+	protected Visitor getVisitor() {
+		return new TemplateVisitor(valueOfConfigKey("my_property"));
 	}
 
 }
