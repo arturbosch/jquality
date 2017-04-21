@@ -1,11 +1,9 @@
 package io.gitlab.arturbosch.smartsmells.smells.complexmethod
 
-import io.gitlab.arturbosch.smartsmells.common.Detector
+import io.gitlab.arturbosch.smartsmells.api.Detector
 import io.gitlab.arturbosch.smartsmells.common.Visitor
 import io.gitlab.arturbosch.smartsmells.config.Defaults
 import io.gitlab.arturbosch.smartsmells.config.Smell
-
-import java.nio.file.Path
 
 /**
  * @author artur

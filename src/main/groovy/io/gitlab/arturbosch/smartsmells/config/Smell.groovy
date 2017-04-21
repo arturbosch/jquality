@@ -1,7 +1,7 @@
 package io.gitlab.arturbosch.smartsmells.config
 
 import groovy.transform.CompileStatic
-import io.gitlab.arturbosch.smartsmells.common.Detector
+import io.gitlab.arturbosch.smartsmells.api.Detector
 import io.gitlab.arturbosch.smartsmells.metrics.ClassInfoDetector
 import io.gitlab.arturbosch.smartsmells.smells.comment.CommentDetector
 import io.gitlab.arturbosch.smartsmells.smells.comment.JavadocDetector

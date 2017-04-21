@@ -1,6 +1,6 @@
 package io.gitlab.arturbosch.smartsmells.smells.cycle
 
-import io.gitlab.arturbosch.smartsmells.common.Detector
+import io.gitlab.arturbosch.smartsmells.api.Detector
 import io.gitlab.arturbosch.smartsmells.common.Visitor
 import io.gitlab.arturbosch.smartsmells.config.Smell
 

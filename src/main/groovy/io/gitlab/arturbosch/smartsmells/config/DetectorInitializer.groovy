@@ -1,6 +1,6 @@
 package io.gitlab.arturbosch.smartsmells.config
 
-import io.gitlab.arturbosch.smartsmells.common.Detector
+import io.gitlab.arturbosch.smartsmells.api.Detector
 
 /**
  * @author artur

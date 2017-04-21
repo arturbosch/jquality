@@ -9,7 +9,6 @@ import io.gitlab.arturbosch.jpal.core.CompilationStorage
 import io.gitlab.arturbosch.jpal.core.JPAL
 import io.gitlab.arturbosch.jpal.internal.PrefixedThreadFactory
 import io.gitlab.arturbosch.jpal.resolution.Resolver
-import io.gitlab.arturbosch.smartsmells.common.Detector
 import io.gitlab.arturbosch.smartsmells.config.DetectorConfig
 import io.gitlab.arturbosch.smartsmells.config.DetectorInitializer
 import io.gitlab.arturbosch.smartsmells.metrics.ClassInfoDetector

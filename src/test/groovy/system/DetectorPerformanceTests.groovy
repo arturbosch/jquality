@@ -5,7 +5,7 @@ import io.gitlab.arturbosch.jpal.core.JPAL
 import io.gitlab.arturbosch.jpal.resolution.Resolver
 import io.gitlab.arturbosch.smartsmells.Main
 import io.gitlab.arturbosch.smartsmells.api.DetectorFacade
-import io.gitlab.arturbosch.smartsmells.common.Detector
+import io.gitlab.arturbosch.smartsmells.api.Detector
 import io.gitlab.arturbosch.smartsmells.smells.comment.CommentDetector
 import io.gitlab.arturbosch.smartsmells.smells.complexmethod.ComplexMethodDetector
 import io.gitlab.arturbosch.smartsmells.smells.cycle.CycleDetector
