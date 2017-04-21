@@ -8,7 +8,7 @@ import io.gitlab.arturbosch.smartsmells.smells.DetectionResult
 import io.gitlab.arturbosch.smartsmells.smells.ElementTarget
 
 /**
- * @author artur
+ * @author Artur Bosch
  */
 @Immutable
 @ToString(includePackage = false, includeNames = true)

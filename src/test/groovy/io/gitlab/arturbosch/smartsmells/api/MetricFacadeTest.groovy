@@ -10,7 +10,7 @@ class MetricFacadeTest extends Specification {
 
 	def "run metric facade on dummies"() {
 		given: "metric facade"
-		def facade = new MetricFacade()
+		def facade = MetricFacade.builder().fullStackFacade()
 		when: "running facade with metric processor"
 		def result = facade.run(Test.BASE_PATH)
 		then:
@@ -24,7 +24,6 @@ class MetricFacadeTest extends Specification {
 
 		when: "averaging over all class infos"
 		def averages = MetricFacade.average(result)
-		averages.each { println(it) }
 		then: "all must be double values"
 		averages.stream().allMatch { it.isDouble }
 	}

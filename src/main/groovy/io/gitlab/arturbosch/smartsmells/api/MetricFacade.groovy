@@ -4,8 +4,10 @@ import io.gitlab.arturbosch.jpal.core.JPAL
 import io.gitlab.arturbosch.jpal.resolution.Resolver
 import io.gitlab.arturbosch.smartsmells.config.DetectorConfig
 import io.gitlab.arturbosch.smartsmells.metrics.ClassInfo
+import io.gitlab.arturbosch.smartsmells.metrics.ClassInfoDetector
 import io.gitlab.arturbosch.smartsmells.metrics.FileMetricProcessor
 import io.gitlab.arturbosch.smartsmells.metrics.Metric
+import io.gitlab.arturbosch.smartsmells.util.Validate
 
 import java.nio.file.Path
 import java.util.regex.Pattern
@@ -16,18 +18,26 @@ import java.util.stream.Collectors
  */
 class MetricFacade {
 
-	private List<Pattern> filters
-	private DetectorConfig config
+	private final List<Pattern> filters
+	private final ClassInfoDetector classInfoDetector
 
-	MetricFacade(DetectorConfig config = null, List<String> filters = Collections.emptyList()) {
-		this.config = config // TODO configre ClassInfoVisitor and pass it to FileMetricProcessor
-		this.filters = filters?.collect { Pattern.compile(it) }
+	MetricFacade(final CombinedCompositeMetricRaiser compositeMetricRaiser,
+				 final DetectorConfig config = null,
+				 final List<String> filters = Collections.emptyList()) {
+		Validate.notNull(compositeMetricRaiser)
+		this.filters = Validate.notNull(filters)?.collect { Pattern.compile(it) }
+		classInfoDetector = new ClassInfoDetector(compositeMetricRaiser)
+		classInfoDetector.setConfig(config)
+	}
+
+	static MetricFacadeBuilder builder() {
+		return new MetricFacadeBuilder()
 	}
 
 	List<ClassInfo> run(Path root) {
 		def storage = root ? JPAL.initializedUpdatable(root, null, filters) : JPAL.updatable(null, filters)
 		def resolver = new Resolver(storage)
-		def processor = new FileMetricProcessor(resolver)
+		def processor = new FileMetricProcessor(classInfoDetector, resolver)
 		def classInfos = storage.allCompilationInfo
 				.parallelStream()
 				.map { processor.process(it) }

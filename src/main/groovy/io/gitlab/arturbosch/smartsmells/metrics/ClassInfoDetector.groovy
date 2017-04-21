@@ -1,23 +1,29 @@
 package io.gitlab.arturbosch.smartsmells.metrics
 
+import io.gitlab.arturbosch.smartsmells.api.CompositeMetricRaiser
 import io.gitlab.arturbosch.smartsmells.api.Detector
 import io.gitlab.arturbosch.smartsmells.common.Visitor
 import io.gitlab.arturbosch.smartsmells.config.Smell
+import io.gitlab.arturbosch.smartsmells.metrics.internal.FullstackMetrics
 
 /**
  * @author artur
  */
 class ClassInfoDetector extends Detector<ClassInfo> {
 
-	private boolean skipCC_CM
+	private final CompositeMetricRaiser metrics
 
-	ClassInfoDetector(boolean skipCC_CM = false) {
-		this.skipCC_CM = skipCC_CM
+	ClassInfoDetector(final boolean skipCC_CM = false) {
+		metrics = FullstackMetrics.create(skipCC_CM)
+	}
+
+	ClassInfoDetector(final CompositeMetricRaiser compositeMetricRaiser) {
+		metrics = compositeMetricRaiser
 	}
 
 	@Override
 	protected Visitor getVisitor() {
-		return new ClassInfoVisitor(skipCC_CM)
+		return new ClassInfoVisitor(metrics)
 	}
 
 	@Override

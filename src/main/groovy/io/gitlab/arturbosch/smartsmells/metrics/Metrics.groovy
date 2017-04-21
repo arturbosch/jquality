@@ -23,7 +23,7 @@ import io.gitlab.arturbosch.smartsmells.util.JavaLoc
 import java.util.stream.Collectors
 
 /**
- * @author artur
+ * @author Artur Bosch
  */
 final class Metrics {
 

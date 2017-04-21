@@ -8,20 +8,17 @@ import io.gitlab.arturbosch.jpal.ast.source.SourceRange
 import io.gitlab.arturbosch.jpal.resolution.Resolver
 import io.gitlab.arturbosch.smartsmells.api.CompositeMetricRaiser
 import io.gitlab.arturbosch.smartsmells.common.Visitor
-import io.gitlab.arturbosch.smartsmells.metrics.internal.FullstackMetrics
 import io.gitlab.arturbosch.smartsmells.smells.ElementTarget
 
 /**
- * @author artur
+ * @author Artur Bosch
  */
 class ClassInfoVisitor extends Visitor<ClassInfo> {
 
-	private boolean skipCC_CM
 	private CompositeMetricRaiser metrics
 
-	ClassInfoVisitor(boolean skipCC_CM) {
-		this.skipCC_CM = skipCC_CM
-		this.metrics = FullstackMetrics.create(skipCC_CM)
+	ClassInfoVisitor(CompositeMetricRaiser compositeMetricRaiser) {
+		metrics = compositeMetricRaiser
 	}
 
 	@Override
