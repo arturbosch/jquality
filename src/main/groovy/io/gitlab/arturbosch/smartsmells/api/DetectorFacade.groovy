@@ -30,15 +30,18 @@ class DetectorFacade {
 
 	final List<Pattern> filters
 
-	private final List<Detector<DetectionResult>> detectors
+	private final DetectorConfig config
 
+	private final List<Detector<DetectionResult>> detectors
 	private ExecutorService threadPool = Executors.newFixedThreadPool(Runtime.runtime.availableProcessors(),
 			new PrefixedThreadFactory("SmartSmells"))
 
 	@PackageScope
-	DetectorFacade(List<Detector> detectors, List<String> filters = Collections.emptyList()) {
+	DetectorFacade(List<Detector> detectors, DetectorConfig config = null, List<String> filters = Collections.emptyList()) {
+		this.config = config
 		this.filters = filters.collect { Pattern.compile(it) }
 		this.detectors = detectors
+		detectors*.setConfig(config)
 		Runtime.runtime.addShutdownHook { threadPool.shutdown() }
 	}
 
@@ -52,7 +55,7 @@ class DetectorFacade {
 
 	static DetectorFacade fromConfig(final DetectorConfig config) {
 		Validate.notNull(config, "Configuration must not be null!")
-		return new DetectorFacade(DetectorInitializer.init(config))
+		return new DetectorFacade(DetectorInitializer.init(config), config)
 	}
 
 	SmellResult run(Path startPath) {

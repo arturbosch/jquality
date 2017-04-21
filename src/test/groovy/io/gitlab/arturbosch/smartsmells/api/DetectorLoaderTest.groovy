@@ -10,10 +10,9 @@ import java.nio.file.Paths
 class DetectorLoaderTest extends Specification {
 
 	def "loader extra detector from service entry"() {
-		given: "empty facade and loader"
-		def loader = new DetectorLoader(DetectorFacade.builder())
 		when: "loading extra jar"
-		def facade = loader.load([Paths.get(getClass().getResource("/detector.jar").path)])
+		def paths = [Paths.get(getClass().getResource("/detector.jar").path)]
+		def facade = DetectorFacade.builder().withLoader(new DetectorLoader(paths)).build()
 		then: "one detector is found"
 		facade.numberOfDetectors() == 1
 	}

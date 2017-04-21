@@ -31,10 +31,17 @@ class DetectorFacadeBuilder {
 
 	private List<Detector> detectors = new LinkedList<>()
 	private List<String> filters = new ArrayList<String>()
+	private DetectorConfig config = null
 
 	DetectorFacadeBuilder with(Detector detector) {
 		Validate.notNull(detector)
 		detectors.add(detector)
+		return this
+	}
+
+	DetectorFacadeBuilder withLoader(DetectorLoader loader) {
+		Validate.notNull(loader)
+		detectors.addAll(loader.load())
 		return this
 	}
 
@@ -45,7 +52,7 @@ class DetectorFacadeBuilder {
 					 new CycleDetector(), new FeatureEnvyDetector(), new MiddleManDetector(),
 					 new ShotgunSurgeryDetector(), new MessageChainDetector(), new GodClassDetector(),
 					 new StateCheckingDetector(), new ComplexConditionDetector(), new NestedBlockDepthDetector()]
-		build()
+		return build()
 	}
 
 	DetectorFacadeBuilder withFilters(List<String> filters) {
@@ -60,10 +67,11 @@ class DetectorFacadeBuilder {
 	DetectorFacadeBuilder fromConfig(final DetectorConfig config) {
 		Validate.notNull(config, "Configuration must not be null!")
 		detectors = DetectorInitializer.init(config)
+		this.config = config
 		return this
 	}
 
 	DetectorFacade build() {
-		return new DetectorFacade(detectors, filters)
+		return new DetectorFacade(detectors, config, filters)
 	}
 }

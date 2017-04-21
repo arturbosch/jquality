@@ -86,11 +86,11 @@ abstract class Detector<T extends DetectionResult> {
 	}
 
 	void setConfig(DetectorConfig config) {
-		Validate.notNull(config)
 		this.config = config
 	}
 
 	String valueOfConfigKey(String key) {
+		Validate.isTrue(config != null, "No DetectorConfig set for this detector!")
 		return config.getKey(getId())[key]
 	}
 }

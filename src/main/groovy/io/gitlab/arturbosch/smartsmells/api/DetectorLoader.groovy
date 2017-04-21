@@ -10,23 +10,19 @@ import java.nio.file.Path
 @CompileStatic
 final class DetectorLoader {
 
-	private DetectorFacadeBuilder facadeBuilder
+	private List<Path> paths
 
-	DetectorLoader(DetectorFacadeBuilder facadeBuilder) {
-		this.facadeBuilder = facadeBuilder
+	DetectorLoader(List<Path> paths) {
+		this.paths = paths
 	}
 
-	DetectorFacade load(List<Path> paths) {
+	List<Detector> load() {
 		def jars = paths.stream()
 				.filter { it.toString().endsWith(".jar") }
 				.map { it.toUri().toURL() }
 				.toArray { new URL[it] }
 
 		def loader = new URLClassLoader(jars, getClass().getClassLoader())
-		ServiceLoader.load(Detector.class, loader).each {
-			facadeBuilder.with(it)
-		}
-
-		return facadeBuilder.build()
+		return ServiceLoader.load(Detector.class, loader).toList()
 	}
 }
