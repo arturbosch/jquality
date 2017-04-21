@@ -11,6 +11,8 @@ config {
 	metrics(['wmc', 'atfd', 'tcc'])
 	jars(['/home/artur/Repos/SmartSmells/src/test/resources/detector.jar'])
 
+	// do not change amount of detectors! see DetectorFacadeBuilderIntegrationTest
+	// may be extended for DetectorConfigDslRunnerTest
 	detectors {
 		detector("longmethod") {
 			let('active', 'true')
