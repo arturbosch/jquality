@@ -9,7 +9,7 @@ apply plugin: 'maven'
 apply plugin: 'maven-publish'
 
 group 'io.gitlab.arturbosch.smartsmells'
-version '1.0.0.RC4'
+version '1.0.0.RC5'
 
 repositories {
 	mavenCentral()

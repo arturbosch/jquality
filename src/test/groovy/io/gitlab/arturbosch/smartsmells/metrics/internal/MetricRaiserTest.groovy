@@ -1,6 +1,8 @@
 package io.gitlab.arturbosch.smartsmells.metrics.internal
 
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration
+import io.gitlab.arturbosch.smartsmells.api.CombinedCompositeMetricRaiser
+import io.gitlab.arturbosch.smartsmells.api.SimpleCompositeMetricRaiser
 import io.gitlab.arturbosch.smartsmells.common.Test
 import spock.lang.Specification
 

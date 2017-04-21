@@ -3,23 +3,9 @@ package io.gitlab.arturbosch.smartsmells.metrics.internal
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration
 import com.github.javaparser.ast.body.MethodDeclaration
 import groovy.transform.CompileStatic
-import io.gitlab.arturbosch.jpal.resolution.Resolver
+import io.gitlab.arturbosch.smartsmells.api.MetricRaiser
 import io.gitlab.arturbosch.smartsmells.metrics.Metric
 import io.gitlab.arturbosch.smartsmells.metrics.Metrics
-
-/**
- * @author Artur Bosch
- */
-@CompileStatic
-trait MetricRaiser {
-	Resolver resolver
-
-	abstract Metric raise(ClassOrInterfaceDeclaration aClass)
-
-	void setResolver(Resolver resolver) {
-		this.resolver = resolver
-	}
-}
 
 @CompileStatic
 class WMC implements MetricRaiser {
