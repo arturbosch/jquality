@@ -26,8 +26,10 @@ class Main {
 	String filters
 	@Parameter(names = ["--fullStack", "--fullstack", "-fs"], description = "Use all available detectors with default thresholds.")
 	Boolean fullStackFacade
+	@Parameter(names = ["--metrics", "-m"], description = "Additionally runs the metric facade, printing the means for configured metrics.")
+	boolean runMetrics
 	@Parameter(names = ["--help", "-h"], description = "Shows this help message.")
-	Boolean help
+	boolean help
 
 	static benchmark = { closure ->
 		def start = System.currentTimeMillis()
@@ -79,12 +81,14 @@ class Main {
 		return null
 	}
 
-	private GroovyDslRunner buildGroovyConfigurationRunner() {
+	private Runner buildGroovyConfigurationRunner() {
 		def path = Paths.get(groovyConfigPath)
 		Validate.isTrue(Files.exists(path), configPath)
 		def configDsl = DetectorConfigDslRunner.execute(path.toFile())
 		configDsl.validate()
-		return new GroovyDslRunner(configDsl)
+		def groovyDslRunner = new GroovyDslRunner(configDsl)
+		return runMetrics ? new CompositeRunner(configDsl, [groovyDslRunner, new MetricRunner(configDsl)])
+				: groovyDslRunner
 	}
 
 	private Runner buildConfigOrFullStackRunner(String pathError, String configError) {
