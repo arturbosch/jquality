@@ -23,7 +23,8 @@ class MetricFacadeTest extends Specification {
 		result.find { it.name == "HasFeatures" }
 
 		when: "averaging over all class infos"
-		def averages = MetricFacade.average(result)
+		def averages = MetricFacade.averageAndDeviation(result)
+		averages.each {println(it)}
 		then: "all must be double values"
 		averages.stream().allMatch { it.isDouble }
 	}

@@ -32,7 +32,7 @@ class MetricRunner extends Runner {
 	@Override
 	SmellResult run() {
 		def classInfos = facade.run(project)
-		def metrics = [new MetricResult(MetricFacade.average(classInfos))] as List<DetectionResult>
+		def metrics = [new MetricResult(MetricFacade.averageAndDeviation(classInfos))] as List<DetectionResult>
 		HashMap<Smell, List<DetectionResult>> map = new HashMap<>()
 		map.put(Smell.UNKNOWN, metrics)
 		return new SmellResult(map)

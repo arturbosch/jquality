@@ -11,8 +11,8 @@ import io.gitlab.arturbosch.smartsmells.api.SimpleCompositeMetricRaiser
 class FullstackMetrics {
 
 	static CompositeMetricRaiser create(boolean skipCCCM = false) {
-		def lm = new LongMethodAverageAndDeviation()
-		def lpl = new LongParameterListAverageAndDeviation()
+		def lm = new LM()
+		def lpl = new LPL()
 		def wmc = new WMC()
 		def atfd = new ATFD()
 		def tcc = new TCC()
@@ -21,10 +21,10 @@ class FullstackMetrics {
 		def sloc = new SLOC()
 		def noa = new NOA()
 		def nom = new NOM()
-		def list = [wmc, atfd, tcc, mcc, loc, sloc, nom, noa]
+		def list = [wmc, atfd, tcc, mcc, loc, sloc, nom, noa, lm, lpl]
 		if (!skipCCCM) list.addAll(new CC(), new CM())
 		def composite = new SimpleCompositeMetricRaiser(list as List<MetricRaiser>)
-		return new CombinedCompositeMetricRaiser([lm, lpl, composite] as List<CompositeMetricRaiser>)
+		return new CombinedCompositeMetricRaiser([composite] as List<CompositeMetricRaiser>)
 	}
 
 	private FullstackMetrics() {

@@ -15,9 +15,13 @@ class LongMethodVisitor extends MethodMetricVisitor<LongMethod> {
 		super(threshold)
 	}
 
+	static int bodyLength(BodyDeclaration n) {
+		JavaLoc.analyze(n.toString().split("\\n").toList(), false, false)
+	}
+
 	@Override
 	protected byThreshold(BodyDeclaration n) {
-		size = JavaLoc.analyze(n.toString().split("\\n").toList(), false, false)
+		size = bodyLength(n)
 		return size > threshold
 	}
 

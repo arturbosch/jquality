@@ -46,16 +46,20 @@ class MetricFacade {
 		return classInfos as List<ClassInfo>
 	}
 
-	static List<Metric> average(List<ClassInfo> infos) {
+	static List<Metric> averageAndDeviation(List<ClassInfo> infos) {
 		return infos.stream()
 				.flatMap { it.metrics.stream() }
 				.collect()
 				.groupBy { (it as Metric).type }
-				.collect { averageMetric(it) }
+				.collect {
+			def meanMetric = averageMetric(it)
+			def devMetric = deviationMetric(toBigDecimal(meanMetric), it)
+			[meanMetric, devMetric]
+		}.flatten() as List<Metric>
 	}
 
 	private static Metric averageMetric(Map.Entry<String, List<Metric>> it) {
-		Metric.of(it.key, it.value.inject(0.0) { r, m ->
+		Metric.of(it.key + "Mean", it.value.inject(0.0) { r, m ->
 			Metric metric = m as Metric
 			BigDecimal result = r as BigDecimal
 			if (metric.isDouble) {
@@ -64,5 +68,20 @@ class MetricFacade {
 				result.add(BigDecimal.valueOf(metric.value))
 			}
 		} / it.value.size())
+	}
+
+	private static Metric deviationMetric(BigDecimal mean, Map.Entry<String, List<Metric>> it) {
+		def size = it.value.size()
+		Metric.of(it.key + "Deviation",
+				Math.sqrt(it.value.stream().mapToDouble {
+					BigDecimal result = toBigDecimal(it)
+					Math.pow(result - mean, 2)
+				}.sum() / size)
+
+		)
+	}
+
+	private static BigDecimal toBigDecimal(Metric it) {
+		it.isDouble ? BigDecimal.valueOf(it.asDouble()) : BigDecimal.valueOf(it.value)
 	}
 }

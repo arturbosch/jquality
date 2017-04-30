@@ -6,6 +6,7 @@ import groovy.transform.CompileStatic
 import io.gitlab.arturbosch.smartsmells.api.MetricRaiser
 import io.gitlab.arturbosch.smartsmells.metrics.Metric
 import io.gitlab.arturbosch.smartsmells.metrics.Metrics
+import io.gitlab.arturbosch.smartsmells.smells.longmethod.LongMethodVisitor
 
 @CompileStatic
 class WMC implements MetricRaiser {
@@ -71,7 +72,7 @@ class NOA implements MetricRaiser {
 class NOM implements MetricRaiser {
 	@Override
 	Metric raise(ClassOrInterfaceDeclaration aClass) {
-		return Metric.of("SourceLinesOfCode", Metrics.nom(aClass))
+		return Metric.of("NumberOfMethods", Metrics.nom(aClass))
 	}
 }
 
@@ -88,5 +89,33 @@ class CM implements MetricRaiser {
 	@Override
 	Metric raise(ClassOrInterfaceDeclaration aClass) {
 		return Metric.of("CountMethods", Metrics.cm(aClass, resolver))
+	}
+}
+
+@CompileStatic
+class LM implements MetricRaiser {
+
+	@Override
+	Metric raise(ClassOrInterfaceDeclaration aClass) {
+		def methods = aClass.getNodesByType(MethodDeclaration.class)
+		def average = methods.stream()
+				.mapToInt { LongMethodVisitor.bodyLength(it) }
+				.average()
+
+		return Metric.of('LongMethod', average.orElse(0.0))
+	}
+}
+
+@CompileStatic
+class LPL implements MetricRaiser {
+
+	@Override
+	Metric raise(ClassOrInterfaceDeclaration aClass) {
+		def methods = aClass.getNodesByType(MethodDeclaration.class)
+		def average = methods.stream()
+				.mapToInt { it.parameters.size() }
+				.average()
+
+		return Metric.of('LongParameterList', average.orElse(0.0))
 	}
 }

@@ -43,7 +43,7 @@ public class JavaLoc {
 				continue;
 			}
 
-			if (trimmed.contains(";")) {
+			if (trimmed.contains(";") || trimmed.startsWith("@")) { // statement or annotation
 				counter++;
 			}
 

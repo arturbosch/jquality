@@ -70,7 +70,7 @@ class MetricsTest extends Specification {
 		def clazz = Test.firstClass(Test.compile(Test.COMMENT_DUMMY_PATH))
 		int count = Metrics.sloc(clazz)
 		then:
-		count == 6
+		count == 7
 	}
 
 
@@ -79,7 +79,7 @@ class MetricsTest extends Specification {
 		def clazz = Test.firstClass(Test.compile(Test.COMMENT_DUMMY_PATH))
 		int count = Metrics.loc(clazz)
 		then:
-		count == 18
+		count == 19
 	}
 
 	def "cc"() {
