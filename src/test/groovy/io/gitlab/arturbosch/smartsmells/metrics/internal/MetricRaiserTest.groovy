@@ -11,10 +11,10 @@ import spock.lang.Specification
  */
 class MetricRaiserTest extends Specification {
 
-	def "raise metrics for godclass dummy"() {
-		given: "composite metric raiser for all supported godClass"
-		def lm = new LongMethodAverageAndDeviation()
-		def lpl = new LongParameterListAverageAndDeviation()
+	def "all metric raisers can be combined through composite metric raiser"() {
+		given: "all metric raisers"
+		def lm = new LM()
+		def lpl = new LPL()
 		def wmc = new WMC()
 		def atfd = new ATFD()
 		def tcc = new TCC()
@@ -23,14 +23,14 @@ class MetricRaiserTest extends Specification {
 		def sloc = new SLOC()
 		def noa = new NOA()
 		def nom = new NOM()
-		def composite = new SimpleCompositeMetricRaiser([wmc, atfd, tcc, mcc, loc, sloc, nom, noa])
-		def metricRaiser = new CombinedCompositeMetricRaiser([lm, lpl, composite])
-		when: "querying all godClass"
+		def composite = new SimpleCompositeMetricRaiser([lm, lpl, wmc, atfd, tcc, mcc, loc, sloc, nom, noa])
+		def metricRaiser = new CombinedCompositeMetricRaiser([composite])
+		when: "querying all classes of godclass dummy"
 		def godClass = Test.compile(Test.GOD_CLASS_DUMMY_PATH)
 				.getNodesByType(ClassOrInterfaceDeclaration.class)[0]
 		def metrics = metricRaiser.raise(godClass)
-		then: "8 godClass + 2 composite godClass (4) = 12"
-		metrics.size() == 12
+		then: "10 single metrics"
+		metrics.size() == 10
 	}
 
 }

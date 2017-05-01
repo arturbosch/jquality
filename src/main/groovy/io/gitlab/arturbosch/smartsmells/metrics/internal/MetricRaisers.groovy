@@ -37,10 +37,11 @@ class MCCabe implements MetricRaiser {
 	@Override
 	Metric raise(ClassOrInterfaceDeclaration aClass) {
 		def methods = aClass.getNodesByType(MethodDeclaration.class)
-		int methodCount = methods.isEmpty() ? 1 : methods.size()
-		def mccSum = methods.stream().mapToInt { Metrics.mcCabe(aClass) }.sum()
-		def averageMCC = mccSum / methodCount
-		return Metric.of("MCCabe", averageMCC.toDouble())
+		def average = methods.stream()
+				.mapToInt { Metrics.mcCabe(aClass) }
+				.average()
+				.orElse(0.0)
+		return Metric.of("MCCabe", average)
 	}
 }
 
