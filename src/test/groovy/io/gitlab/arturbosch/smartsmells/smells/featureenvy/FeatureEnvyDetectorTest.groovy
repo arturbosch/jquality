@@ -1,5 +1,7 @@
 package io.gitlab.arturbosch.smartsmells.smells.featureenvy
 
+import io.gitlab.arturbosch.jpal.core.JPAL
+import io.gitlab.arturbosch.jpal.resolution.Resolver
 import io.gitlab.arturbosch.smartsmells.common.Test
 import spock.lang.Specification
 
@@ -40,11 +42,15 @@ class FeatureEnvyDetectorTest extends Specification {
 	}
 
 	def "no envy on implemented and extended types"() {
-		expect:
+		given:
+		def storage = JPAL.new(Test.BASE_PATH.resolve("bla"))
+		def resolver = new Resolver(storage)
+		when:
+		def path = Test.BASE_PATH.resolve("bla/SelfEnvy.java")
+		def smells = new FeatureEnvyDetector().execute(storage.getCompilationInfo(path).get(), resolver)
+		then:
 		smells.isEmpty()
 
-		where:
-		smells = new FeatureEnvyDetector().run(Test.BASE_PATH.resolve("bla/SelfEnvy.java"))
 	}
 
 }

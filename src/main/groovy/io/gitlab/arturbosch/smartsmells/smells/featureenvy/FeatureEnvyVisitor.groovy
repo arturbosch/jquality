@@ -16,6 +16,7 @@ import io.gitlab.arturbosch.jpal.ast.custom.JpalVariable
 import io.gitlab.arturbosch.jpal.ast.source.SourcePath
 import io.gitlab.arturbosch.jpal.ast.source.SourceRange
 import io.gitlab.arturbosch.jpal.internal.Printer
+import io.gitlab.arturbosch.jpal.resolution.QualifiedType
 import io.gitlab.arturbosch.jpal.resolution.Resolver
 import io.gitlab.arturbosch.jpal.resolution.nested.InnerClassesHandler
 import io.gitlab.arturbosch.smartsmells.common.Visitor
@@ -104,14 +105,15 @@ class FeatureEnvyVisitor extends Visitor<FeatureEnvy> {
 	}
 
 	private boolean notThisClass(Parameter it) {
-		if (it.type instanceof ClassOrInterfaceType) return false
+		if (!(it.type instanceof ClassOrInterfaceType)) return false
 		def type = it.type as ClassOrInterfaceType
 		return type.nameAsString != currentClassName && notInherited(currentClass, type)
 	}
 
 	private boolean notInherited(ClassOrInterfaceDeclaration aClass, ClassOrInterfaceType checkedType) {
 		def qualifiedType = resolver.resolveType(checkedType, info)
-		return TypeHelper.findAllAncestors(aClass, resolver, info).find { it == qualifiedType } == null
+		def ancestors = TypeHelper.findAllAncestors(aClass, resolver, info)
+		return ancestors.find { it == qualifiedType } == null
 	}
 
 	private analyzeVariables(MethodDeclaration method, int allCalls, Set<JpalVariable> variables) {

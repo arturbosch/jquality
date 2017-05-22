@@ -17,7 +17,6 @@ import io.gitlab.arturbosch.jpal.resolution.Resolver
 import io.gitlab.arturbosch.smartsmells.common.Visitor
 import io.gitlab.arturbosch.smartsmells.smells.ElementTarget
 import io.gitlab.arturbosch.smartsmells.smells.statechecking.StateCheckingVisitor
-import io.gitlab.arturbosch.smartsmells.util.Strings
 
 /**
  * @author Artur Bosch
@@ -52,13 +51,15 @@ class ComplexConditionVisitor extends Visitor<ComplexCondition> {
 
 	private void checkCondition(Expression expression) {
 		String condition = expression.toString(Printer.NO_COMMENTS)
-		int cases = Strings.amountOf(condition, "&&") + Strings.amountOf(condition, "||") + 1
-		if (cases > threshold) {
+		def cases = new HashSet<String>()
+		Conditions.whileBinaryExpression(cases, expression)
+		if (cases.size() > threshold) {
 			def methodName = NodeHelper.findDeclaringMethod(expression)
 					.map { it.declarationAsString }
 					.orElse(StateCheckingVisitor.UNKNOWN_METHOD)
 			def scope = currentClassName + "#" + methodName
-			smells.add(new ComplexCondition(scope, condition, SourcePath.of(info), SourceRange.fromNode(expression), ElementTarget.LOCAL))
+			smells.add(new ComplexCondition(scope, condition, cases, threshold,
+					SourcePath.of(info), SourceRange.fromNode(expression), ElementTarget.LOCAL))
 		}
 	}
 
