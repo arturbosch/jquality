@@ -9,7 +9,6 @@ import spock.lang.Specification
 class FeatureEnvyDetectorTest extends Specification {
 
 	def "find one feature envy method not ignoring static methods"() {
-
 		expect:
 		smells.size() == 3
 		methods.collect { it.name }.contains("envyMethod")
@@ -25,12 +24,27 @@ class FeatureEnvyDetectorTest extends Specification {
 	}
 
 	def "find one feature envy method ignoring static methods"() {
-
 		expect:
 		smells.size() == 2
 
 		where:
 		smells = new FeatureEnvyDetector(ignoreStatic: true).run(Test.FEATURE_ENVY_PATH)
+	}
+
+	def "no envy on this class"() {
+		expect:
+		smells.isEmpty()
+
+		where:
+		smells = new FeatureEnvyDetector().run(Test.BASE_PATH.resolve("bla/BaseEnvy.java"))
+	}
+
+	def "no envy on implemented and extended types"() {
+		expect:
+		smells.isEmpty()
+
+		where:
+		smells = new FeatureEnvyDetector().run(Test.BASE_PATH.resolve("bla/SelfEnvy.java"))
 	}
 
 }

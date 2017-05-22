@@ -4,11 +4,13 @@ import com.github.javaparser.ast.CompilationUnit
 import com.github.javaparser.ast.Modifier
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration
 import com.github.javaparser.ast.body.MethodDeclaration
+import com.github.javaparser.ast.body.Parameter
 import com.github.javaparser.ast.type.ClassOrInterfaceType
 import io.gitlab.arturbosch.jpal.ast.ClassHelper
 import io.gitlab.arturbosch.jpal.ast.LocaleVariableHelper
 import io.gitlab.arturbosch.jpal.ast.MethodHelper
 import io.gitlab.arturbosch.jpal.ast.NodeHelper
+import io.gitlab.arturbosch.jpal.ast.TypeHelper
 import io.gitlab.arturbosch.jpal.ast.VariableHelper
 import io.gitlab.arturbosch.jpal.ast.custom.JpalVariable
 import io.gitlab.arturbosch.jpal.ast.source.SourcePath
@@ -31,10 +33,12 @@ class FeatureEnvyVisitor extends Visitor<FeatureEnvy> {
 	private Set<JpalVariable> fields
 
 	private String currentClassName
+	private ClassOrInterfaceDeclaration currentClass
 	private JavaClassFilter javaClassFilter
 	private InnerClassesHandler innerClassesHandler
 
 	private boolean ignoreStatic
+	private Resolver resolver
 
 	FeatureEnvyVisitor(FeatureEnvyFactor factor, boolean ignoreStatic = false) {
 		this.featureEnvyFactor = factor
@@ -43,6 +47,7 @@ class FeatureEnvyVisitor extends Visitor<FeatureEnvy> {
 
 	@Override
 	void visit(CompilationUnit n, Resolver resolver) {
+		this.resolver = resolver
 		javaClassFilter = new JavaClassFilter(info, resolver)
 		innerClassesHandler = info.data.innerClassesHandler
 		super.visit(n, resolver)
@@ -57,7 +62,9 @@ class FeatureEnvyVisitor extends Visitor<FeatureEnvy> {
 		if (ClassHelper.isEmptyBody(n)) return
 		if (ClassHelper.hasNoMethods(n)) return
 
+		currentClass = n
 		currentClassName = n.name
+
 		def filteredFields = NodeHelper.findFields(n).stream()
 				.filter { ClassHelper.inClassScope(it, currentClassName) }
 				.collect(Collectors.toList())
@@ -74,21 +81,37 @@ class FeatureEnvyVisitor extends Visitor<FeatureEnvy> {
 				.filter { MethodHelper.sizeBiggerThan(2, it) }.each { method ->
 
 			NodeHelper.findDeclaringClass(method).ifPresent {
-				def type = new ClassOrInterfaceType(((ClassOrInterfaceDeclaration) it).nameAsString)
+				currentClass = (ClassOrInterfaceDeclaration) it
+				def type = new ClassOrInterfaceType(currentClass.nameAsString)
 				currentClassName = innerClassesHandler.getUnqualifiedNameForInnerClass(type)
 			}
 
 			def allCalls = MethodHelper.getAllMethodInvocations(method)
 
 			def parameters = MethodHelper.extractParameters(method).stream()
-					.map { VariableHelper.toJpalFromParameter(it) }.collect(Collectors.toSet())
-			def variables = VariableHelper.toJpalFromLocales(LocaleVariableHelper.find(method).toList())
+					.filter { notThisClass(it) }
+					.map { VariableHelper.toJpalFromParameter(it) }
+					.collect(Collectors.toSet())
+			def variables = VariableHelper.toJpalFromLocales(
+					LocaleVariableHelper.find(method).toList()
+			)
 
 			analyzeVariables(method, allCalls, javaClassFilter.filter(variables))
 			analyzeVariables(method, allCalls, javaClassFilter.filter(parameters))
 			analyzeVariables(method, allCalls, javaClassFilter.filter(fields))
 
 		}
+	}
+
+	private boolean notThisClass(Parameter it) {
+		if (it.type instanceof ClassOrInterfaceType) return false
+		def type = it.type as ClassOrInterfaceType
+		return type.nameAsString != currentClassName && notInherited(currentClass, type)
+	}
+
+	private boolean notInherited(ClassOrInterfaceDeclaration aClass, ClassOrInterfaceType checkedType) {
+		def qualifiedType = resolver.resolveType(checkedType, info)
+		return TypeHelper.findAllAncestors(aClass, resolver, info).find { it == qualifiedType } == null
 	}
 
 	private analyzeVariables(MethodDeclaration method, int allCalls, Set<JpalVariable> variables) {

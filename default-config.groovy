@@ -5,7 +5,7 @@ config {
 	output '/home/artur/test/stuff.xml'
 
 	filters {
-		filter '.*/test/.*'
+		filter '.*/test/.*,.*/resources/.*'
 	}
 
 	metrics(['wmc', 'atfd', 'tcc']) // not yet supported, need to be configured through MetricFacadeBuilder

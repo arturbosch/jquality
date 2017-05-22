@@ -9,7 +9,7 @@ apply plugin: 'maven'
 apply plugin: 'maven-publish'
 
 group 'io.gitlab.arturbosch.smartsmells'
-version '1.0.0.RC5'
+version '1.0.0.RC5.b2'
 
 repositories {
 	mavenCentral()
@@ -89,7 +89,7 @@ task unitTest(type: Test) {
 dependencies {
 	compile 'org.codehaus.groovy:groovy-all:2.4.9'
 	compile 'com.github.javaparser:javaparser-core:3.1.2'
-	compile 'io.gitlab.arturbosch.jpal:jpal:1.0.0.RC4.b4'
+	compile 'io.gitlab.arturbosch.jpal:jpal:1.0.0.RC4.b5'
 	compile 'org.yaml:snakeyaml:1.18'
 	compile 'com.beust:jcommander:1.64'
 	testCompile 'org.spockframework:spock-core:1.1-groovy-2.4-rc-3'
