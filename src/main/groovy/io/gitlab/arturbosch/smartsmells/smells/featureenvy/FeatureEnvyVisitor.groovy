@@ -55,7 +55,7 @@ class FeatureEnvyVisitor extends Visitor<FeatureEnvy> {
 	@Override
 	void visit(ClassOrInterfaceDeclaration n, Resolver resolver) {
 
-		n.getNodesByType(ClassOrInterfaceDeclaration.class)
+		n.getChildNodesByType(ClassOrInterfaceDeclaration.class)
 				.each { visit(it, null) }
 
 		if (ClassHelper.isEmptyBody(n)) return

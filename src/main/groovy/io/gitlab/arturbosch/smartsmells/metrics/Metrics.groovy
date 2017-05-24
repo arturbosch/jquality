@@ -41,7 +41,7 @@ final class Metrics {
 			cm = resolver.storage.getAllCompilationInfo()
 					.stream()
 					.filter { it.isWithinScope(type) }
-					.map { it.unit.getNodesByType(MethodCallExpr.class) }
+					.map { it.unit.getChildNodesByType(MethodCallExpr.class) }
 					.flatMap { it.stream() }
 					.filter { methods.contains(it.name) }
 					.mapToInt { 1 }
@@ -102,7 +102,7 @@ final class Metrics {
 
 
 		Set<String> usedScopes = new HashSet<>()
-		n.getNodesByType(MethodCallExpr.class)
+		n.getChildNodesByType(MethodCallExpr.class)
 				.stream()
 				.filter { isNotMemberOfThisClass(it.nameAsString, methods) }
 				.filter { isNotAGetterOrSetter(it.nameAsString) }
@@ -115,7 +115,7 @@ final class Metrics {
 		}
 
 		usedScopes = new HashSet<>()
-		n.getNodesByType(FieldAccessExpr.class)
+		n.getChildNodesByType(FieldAccessExpr.class)
 				.stream()
 				.filter { isNotMemberOfThisClass(it.name.identifier, fields) }
 				.each {

@@ -31,7 +31,7 @@ final class CasesCollector {
 																			   List<String> cases = new ArrayList<>(),
 																			   Map<SimpleName, Integer> map = new HashMap<>()) {
 		cases.add(node.condition.toString(Printer.NO_COMMENTS))
-		node.condition.getNodesByType(SimpleName.class)
+		node.condition.getChildNodesByType(SimpleName.class)
 				.each { map.merge(it, 1, { Integer v1, Integer v2 -> v1 + v2 }) }
 		node.elseStmt.ifPresent {
 			if (it instanceof IfStmt) {

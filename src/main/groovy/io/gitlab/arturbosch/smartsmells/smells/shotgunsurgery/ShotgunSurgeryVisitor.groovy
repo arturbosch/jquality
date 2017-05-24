@@ -30,7 +30,7 @@ class ShotgunSurgeryVisitor extends Visitor<ShotgunSurgery> {
 	@Override
 	void visit(CompilationUnit n, Resolver resolver) {
 
-		def classes = n.getNodesByType(ClassOrInterfaceDeclaration.class)
+		def classes = n.getChildNodesByType(ClassOrInterfaceDeclaration.class)
 
 		classes.each {
 			def classVisitor = new InternalSSVisitor()

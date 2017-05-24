@@ -24,7 +24,7 @@ class ClassInfoVisitor extends Visitor<ClassInfo> {
 	@Override
 	void visit(CompilationUnit n, Resolver resolver) {
 		metrics.init { it.each { it.setResolver(resolver) } }
-		def classes = n.getNodesByType(ClassOrInterfaceDeclaration.class)
+		def classes = n.getChildNodesByType(ClassOrInterfaceDeclaration.class)
 
 		classes.each {
 

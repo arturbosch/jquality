@@ -12,7 +12,7 @@ class StateCheckingTest extends Specification {
 	def "copy"() {
 		given:
 		def smell = new StateCheckingDetector().run(Test.BASE_PATH.resolve("statecheck/StateCheck1.java"))[0]
-		def ifStmt = Test.nth(Test.compile(Test.BASE_PATH.resolve("statecheck/StateCheck2.java")), 0).getNodesByType(IfStmt.class)[0]
+		def ifStmt = Test.nth(Test.compile(Test.BASE_PATH.resolve("statecheck/StateCheck2.java")), 0).getChildNodesByType(IfStmt.class)[0]
 		when:
 		def copy = smell.copy(ifStmt)
 		then:

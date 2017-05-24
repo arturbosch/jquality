@@ -41,10 +41,10 @@ class Test {
 	}
 
 	static MethodDeclaration nth(CompilationUnit unit, int n) {
-		unit.getNodesByType(MethodDeclaration.class).get(n)
+		unit.getChildNodesByType(MethodDeclaration.class).get(n)
 	}
 
 	static ClassOrInterfaceDeclaration firstClass(CompilationUnit unit) {
-		unit.getNodesByType(ClassOrInterfaceDeclaration.class).first()
+		unit.getChildNodesByType(ClassOrInterfaceDeclaration.class).first()
 	}
 }

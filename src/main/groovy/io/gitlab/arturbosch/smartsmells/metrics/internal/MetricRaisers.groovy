@@ -36,7 +36,7 @@ class ATFD implements MetricRaiser {
 class MCCabe implements MetricRaiser {
 	@Override
 	Metric raise(ClassOrInterfaceDeclaration aClass) {
-		def methods = aClass.getNodesByType(MethodDeclaration.class)
+		def methods = aClass.getChildNodesByType(MethodDeclaration.class)
 		def average = methods.stream()
 				.mapToInt { Metrics.mcCabe(aClass) }
 				.average()
@@ -98,7 +98,7 @@ class LM implements MetricRaiser {
 
 	@Override
 	Metric raise(ClassOrInterfaceDeclaration aClass) {
-		def methods = aClass.getNodesByType(MethodDeclaration.class)
+		def methods = aClass.getChildNodesByType(MethodDeclaration.class)
 		def average = methods.stream()
 				.mapToInt { LongMethodVisitor.bodyLength(it) }
 				.average()
@@ -112,7 +112,7 @@ class LPL implements MetricRaiser {
 
 	@Override
 	Metric raise(ClassOrInterfaceDeclaration aClass) {
-		def methods = aClass.getNodesByType(MethodDeclaration.class)
+		def methods = aClass.getChildNodesByType(MethodDeclaration.class)
 		def average = methods.stream()
 				.mapToInt { it.parameters.size() }
 				.average()

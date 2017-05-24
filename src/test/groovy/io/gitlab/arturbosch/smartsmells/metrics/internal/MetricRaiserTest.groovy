@@ -27,7 +27,7 @@ class MetricRaiserTest extends Specification {
 		def metricRaiser = new CombinedCompositeMetricRaiser([composite])
 		when: "querying all classes of godclass dummy"
 		def godClass = Test.compile(Test.GOD_CLASS_DUMMY_PATH)
-				.getNodesByType(ClassOrInterfaceDeclaration.class)[0]
+				.getChildNodesByType(ClassOrInterfaceDeclaration.class)[0]
 		def metrics = metricRaiser.raise(godClass)
 		then: "10 single metrics"
 		metrics.size() == 10
