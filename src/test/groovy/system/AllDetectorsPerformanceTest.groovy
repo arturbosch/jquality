@@ -21,6 +21,7 @@ class AllDetectorsPerformanceTest extends Specification {
 		def time = Main.benchmark {
 			storage = JPAL.new(Paths.get(path))
 		} // ~7500 to ~8500 ms
+		// JPAL RC5: ~9600 ms
 		println "CompilationStorage: $time ms"
 		def facade = DetectorFacade.builder().fullStackFacade()
 
@@ -31,6 +32,7 @@ class AllDetectorsPerformanceTest extends Specification {
 					.smellSets.size()
 		} //  27574 (w/o SS) ms, 35351 (w/ SS) ms
 		// JPAL RC2: 23k-24456 ms, 33k ms
+		// JPAL RC5: 34k ms
 		println "Detectors: $time ms"
 		println result
 
