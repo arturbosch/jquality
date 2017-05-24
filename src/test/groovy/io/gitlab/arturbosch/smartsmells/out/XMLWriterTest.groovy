@@ -20,10 +20,12 @@ class XMLWriterTest extends Specification {
 
 	def "smell to xml entry with escapes"() {
 
-		when:
-		def xml = XMLWriter.toXmlEntry(new FeatureEnvy("methode", "signature", "class",
+		def envy = new FeatureEnvy("methode", "signature", "class",
 				"<\"'>&", "objectSignature", "Locale",
-				1d, 1d, SourceRange.of(1, 1, 1, 1), SourcePath.of(Paths.get("path"), Paths.get("path")), ElementTarget.METHOD))
+				1d, 1d, SourceRange.of(1, 1, 1, 1),
+				SourcePath.of(Paths.get("path"), Paths.get("path")), ElementTarget.METHOD)
+		when:
+		def xml = XMLWriter.toXmlEntry(envy)
 
 		then:
 		xml.startsWith("<FeatureEnvy")

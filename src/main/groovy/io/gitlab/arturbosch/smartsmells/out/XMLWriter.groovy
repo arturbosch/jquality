@@ -8,6 +8,7 @@ import io.gitlab.arturbosch.smartsmells.smells.DetectionResult
 import io.gitlab.arturbosch.smartsmells.util.Strings
 
 import java.lang.reflect.Field
+import java.lang.reflect.Modifier
 
 /**
  * @author artur
@@ -85,6 +86,7 @@ class XMLWriter {
 	private static List<Field> extractFields(Object smelly) {
 		Arrays.stream(smelly.class.declaredFields)
 				.filter { !it.synthetic }
+				.filter { !Modifier.isStatic(it.modifiers) }
 				.filter { it.name != "sourceRange" }
 				.filter { it.name != "sourcePath" }
 				.filter { it.name != "metrics" }
