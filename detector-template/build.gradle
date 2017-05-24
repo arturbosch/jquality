@@ -12,5 +12,5 @@ repositories {
 }
 
 dependencies {
-	compileOnly "io.gitlab.arturbosch.smartsmells:SmartSmells:1.0.0.RC5"
+	compileOnly "io.gitlab.arturbosch.smartsmells:SmartSmells:$smartsmellsVersion"
 }

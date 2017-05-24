@@ -9,7 +9,7 @@ apply plugin: 'maven'
 apply plugin: 'maven-publish'
 
 group 'io.gitlab.arturbosch.smartsmells'
-version '1.0.0.RC5.b3'
+version "$smartsmellsVersion"
 
 repositories {
 	mavenCentral()
@@ -87,8 +87,8 @@ task unitTest(type: Test) {
 }
 
 dependencies {
-	compile 'io.gitlab.arturbosch.jpal:jpal:1.0.0.RC5'
-	compile 'org.yaml:snakeyaml:1.18'
-	compile 'com.beust:jcommander:1.64'
-	testCompile 'org.spockframework:spock-core:1.1-groovy-2.4'
+	compile "io.gitlab.arturbosch.jpal:jpal:$jpalVersion"
+	compile "org.yaml:snakeyaml:$yamlVersion"
+	compile "com.beust:jcommander:$jcommanderVersion"
+	testCompile "org.spockframework:spock-core:$spockVersion"
 }
