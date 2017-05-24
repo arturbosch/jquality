@@ -4,7 +4,6 @@ import com.github.javaparser.ast.CompilationUnit
 import com.github.javaparser.ast.Modifier
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration
 import com.github.javaparser.ast.body.MethodDeclaration
-import com.github.javaparser.ast.body.Parameter
 import com.github.javaparser.ast.type.ClassOrInterfaceType
 import io.gitlab.arturbosch.jpal.ast.ClassHelper
 import io.gitlab.arturbosch.jpal.ast.LocaleVariableHelper
@@ -16,7 +15,6 @@ import io.gitlab.arturbosch.jpal.ast.custom.JpalVariable
 import io.gitlab.arturbosch.jpal.ast.source.SourcePath
 import io.gitlab.arturbosch.jpal.ast.source.SourceRange
 import io.gitlab.arturbosch.jpal.internal.Printer
-import io.gitlab.arturbosch.jpal.resolution.QualifiedType
 import io.gitlab.arturbosch.jpal.resolution.Resolver
 import io.gitlab.arturbosch.jpal.resolution.nested.InnerClassesHandler
 import io.gitlab.arturbosch.smartsmells.common.Visitor
@@ -90,7 +88,6 @@ class FeatureEnvyVisitor extends Visitor<FeatureEnvy> {
 			def allCalls = MethodHelper.getAllMethodInvocations(method)
 
 			def parameters = MethodHelper.extractParameters(method).stream()
-					.filter { notThisClass(it) }
 					.map { VariableHelper.toJpalFromParameter(it) }
 					.collect(Collectors.toSet())
 			def variables = VariableHelper.toJpalFromLocales(
@@ -104,7 +101,7 @@ class FeatureEnvyVisitor extends Visitor<FeatureEnvy> {
 		}
 	}
 
-	private boolean notThisClass(Parameter it) {
+	private boolean notThisClass(JpalVariable it) {
 		if (!(it.type instanceof ClassOrInterfaceType)) return false
 		def type = it.type as ClassOrInterfaceType
 		return type.nameAsString != currentClassName && notInherited(currentClass, type)
@@ -117,7 +114,9 @@ class FeatureEnvyVisitor extends Visitor<FeatureEnvy> {
 	}
 
 	private analyzeVariables(MethodDeclaration method, int allCalls, Set<JpalVariable> variables) {
-		variables.forEach {
+		variables.stream()
+				.filter { notThisClass(it) }
+				.forEach {
 			int count = MethodHelper.getAllMethodInvocationsForEntityWithName(it.name, method)
 			double factor = calc(count, allCalls)
 
