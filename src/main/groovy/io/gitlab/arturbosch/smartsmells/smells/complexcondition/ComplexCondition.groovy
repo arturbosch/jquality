@@ -1,10 +1,8 @@
 package io.gitlab.arturbosch.smartsmells.smells.complexcondition
 
 import com.github.javaparser.ast.expr.Expression
-import com.github.javaparser.ast.stmt.DoStmt
-import com.github.javaparser.ast.stmt.IfStmt
+import com.github.javaparser.ast.nodeTypes.NodeWithCondition
 import com.github.javaparser.ast.stmt.Statement
-import com.github.javaparser.ast.stmt.WhileStmt
 import groovy.transform.Immutable
 import groovy.transform.ToString
 import io.gitlab.arturbosch.jpal.ast.ClassHelper
@@ -47,14 +45,13 @@ class ComplexCondition implements DetectionResult, LocalSpecific {
 
 	@Override
 	LocalSpecific copy(Statement statement) {
-		if (statement instanceof IfStmt || statement instanceof WhileStmt || statement instanceof DoStmt) {
+		if (statement instanceof NodeWithCondition) {
 			def method = NodeHelper.findDeclaringMethod(statement).orElse(null)
 			if (!method) return this
 			def clazz = NodeHelper.findDeclaringClass(method).orElse(null)
 			if (!clazz) return this
 			def scope = ClassHelper.createFullSignature(clazz) + "#" + method.declarationAsString
-			def field = statement.getClass().getField("condition")
-			def expression = field.get(statement) as Expression
+			def expression = statement.condition
 			def cases = new HashSet<String>()
 			Conditions.whileBinaryExpression(cases, expression)
 			def newSignature = expression.toString(Printer.NO_COMMENTS)
