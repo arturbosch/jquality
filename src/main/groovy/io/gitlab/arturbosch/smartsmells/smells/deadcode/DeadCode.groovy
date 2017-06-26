@@ -7,6 +7,7 @@ import com.github.javaparser.ast.body.MethodDeclaration
 import com.github.javaparser.ast.body.VariableDeclarator
 import com.github.javaparser.ast.expr.Expression
 import com.github.javaparser.ast.expr.VariableDeclarationExpr
+import com.github.javaparser.ast.stmt.ExpressionStmt
 import com.github.javaparser.ast.stmt.Statement
 import groovy.transform.Immutable
 import groovy.transform.ToString
@@ -106,6 +107,9 @@ class DeadCode implements DetectionResult, MethodSpecific, ClassSpecific, FieldS
 
 	@Override
 	LocalSpecific copy(Statement statement) {
+		if (statement instanceof ExpressionStmt) {
+			return copy(statement.expression)
+		}
 		return this
 	}
 
