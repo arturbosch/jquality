@@ -1,5 +1,6 @@
 plugins {
 	id "com.jfrog.bintray" version "1.7.3"
+	id "com.github.johnrengelman.shadow" version "1.2.3"
 	id 'com.github.ben-manes.versions' version '0.14.0'
 //	id "com.github.hierynomus.license" version "0.13.1"
 }
@@ -7,9 +8,11 @@ plugins {
 apply plugin: 'groovy'
 apply plugin: 'maven'
 apply plugin: 'maven-publish'
+apply plugin: 'application'
 
 group 'io.gitlab.arturbosch.smartsmells'
 version "$smartsmellsVersion"
+mainClassName = 'io.gitlab.arturbosch.smartsmells.Main'
 
 repositories {
 	mavenCentral()
@@ -53,17 +56,6 @@ publishing {
 			version project.version
 		}
 	}
-}
-
-task fatJar(type: Jar) {
-	manifest {
-		attributes 'Implementation-Title': 'SmartSmells',
-				'Implementation-Version': version,
-				'Main-Class': 'io.gitlab.arturbosch.smartsmells.Main'
-	}
-	baseName = project.name
-	from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
-	with jar
 }
 
 test {
