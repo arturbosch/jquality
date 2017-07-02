@@ -14,11 +14,15 @@ import java.nio.file.Paths
  */
 class Main {
 
+	private static final String[] SUPPORTED_CONFIG_FORMATS = [".yml", ".groovy"]
+	public static final IllegalArgumentException ILLEGAL_CONFIG_FORMAT_ERROR = new IllegalArgumentException(
+			"Configuration parameter is invalid. It must have one of these endings: $SUPPORTED_CONFIG_FORMATS")
+
 	@Parameter(names = ["--input", "-i"], description = "Specify a path where your project is located for the analysis.")
 	String projectPath
 	@Parameter(names = ["--output", "-o"], description = "Point to a path where the xml output file with the detection result should be saved.")
 	String outputPath
-	@Parameter(names = ["--config", "-c"], description = "Point to your SmartSmells configuration file. Supported formats are YAML and GROOVY. Take a look at default-config.[yaml|groovy]")
+	@Parameter(names = ["--config", "-c"], description = "Point to your SmartSmells configuration file. Supported formats are YAML and GROOVY. Take a look at default-config.[yml|groovy]")
 	String configPath
 	@Parameter(names = ["--filters", "-f"], description = "Regex expressions, separated by a comma to specify path filters eg. '.*/test/.*'")
 	String filters
@@ -57,19 +61,28 @@ class Main {
 	}
 
 	private Runner buildRunnerBasedOnParameters() {
-		def configFile = new File(configPath).name
-		def ending = configFile.substring(configFile.lastIndexOf('.'))
+		String ending = configEnding()
 		if (ending == ".groovy") {
 			return buildGroovyConfigurationRunner()
-		} else {
+		} else if (ending == ".yml") {
 			return buildConfigOrFullStackRunner()
+		} else {
+			throw ILLEGAL_CONFIG_FORMAT_ERROR
 		}
 	}
 
+	private String configEnding() {
+		def configFile = new File(configPath).path
+		if (!configFile.contains('.')) {
+			throw ILLEGAL_CONFIG_FORMAT_ERROR
+		}
+		return configFile.substring(configFile.lastIndexOf('.'))
+	}
+
 	private Runner buildGroovyConfigurationRunner() {
-		def path = Paths.get(configPath)
-		Validate.isTrue(Files.exists(path), configPath)
-		def configDsl = DetectorConfigDslRunner.execute(path.toFile())
+		def path = new File(configPath)
+		Validate.isTrue(path.exists(), configPath)
+		def configDsl = DetectorConfigDslRunner.execute(path)
 		configDsl.validate()
 		def groovyDslRunner = new GroovyDslRunner(configDsl)
 		return runMetrics ? new CompositeRunner(configDsl, [groovyDslRunner, new MetricRunner(configDsl)])
@@ -85,7 +98,7 @@ class Main {
 		Validate.isTrue(Files.exists(project), PATH_ERROR)
 		def output = Optional.ofNullable(outputPath).map { Paths.get(it) }
 
-		List<String> filters = (filters?.split()?.collect { it.trim() } ?: Collections.emptyList()) as List<String>
+		List<String> filters = buildFilters()
 		if (!fullStackFacade) {
 			Validate.isTrue(configPath != null, CONFIG_ERROR)
 			def config = Paths.get(configPath)
@@ -94,6 +107,12 @@ class Main {
 		} else {
 			return new FullStackRunner(project, output, filters)
 		}
+	}
+
+	private List<String> buildFilters() {
+		return (filters?.split()
+				?.collect { it.trim() }
+				?: Collections.emptyList()) as List<String>
 	}
 
 }
