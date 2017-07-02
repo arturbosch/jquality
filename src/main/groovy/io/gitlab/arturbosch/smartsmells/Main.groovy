@@ -2,6 +2,7 @@ package io.gitlab.arturbosch.smartsmells
 
 import com.beust.jcommander.JCommander
 import com.beust.jcommander.Parameter
+import com.beust.jcommander.ParameterException
 import io.gitlab.arturbosch.smartsmells.config.Smell
 import io.gitlab.arturbosch.smartsmells.config.dsl.DetectorConfigDslRunner
 import io.gitlab.arturbosch.smartsmells.util.Validate
@@ -54,7 +55,7 @@ class Main {
 			println("\n Duration: " + benchmark {
 				runner.run().prettyPrint(*Smell.values())
 			} / 1000)
-		} catch (any) {
+		} catch (IllegalArgumentException | ParameterException any) {
 			System.err.println(any.message + "\n")
 			jcommander.usage()
 		}

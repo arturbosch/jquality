@@ -1,7 +1,7 @@
 package io.gitlab.arturbosch.smartsmells.api
 
-import io.gitlab.arturbosch.smartsmells.smells.DetectionResult
 import io.gitlab.arturbosch.smartsmells.config.Smell
+import io.gitlab.arturbosch.smartsmells.smells.DetectionResult
 import io.gitlab.arturbosch.smartsmells.smells.comment.CommentSmell
 import io.gitlab.arturbosch.smartsmells.smells.complexmethod.ComplexMethod
 import io.gitlab.arturbosch.smartsmells.smells.cycle.Cycle
@@ -21,9 +21,13 @@ import io.gitlab.arturbosch.smartsmells.smells.middleman.MiddleMan
 final class SmellExchange {
 
 	static Object getAttribute(DetectionResult smelly, String name) {
-		return smelly.class.getDeclaredField(name).with {
-			setAccessible(true)
-			get(smelly)
+		if (smelly.class.getDeclaredFields().find { it.name == name }) {
+			return smelly.class.getDeclaredField(name).with {
+				setAccessible(true)
+				get(smelly)
+			}
+		} else {
+			return null
 		}
 	}
 
@@ -75,4 +79,14 @@ final class SmellExchange {
 		return result.of(Smell.MIDDLE_MAN).toList() as List<MiddleMan>
 	}
 
+	static String extractIdentifier(DetectionResult smelly) {
+
+		def identifier = getAttribute(smelly, "name")
+		if (!identifier) identifier = getAttribute(smelly, "signature")
+		if (!identifier && smelly instanceof CommentSmell) {
+			identifier = (getAttribute(smelly, "type") as CommentSmell.Type).name()
+		}
+		if (!identifier) identifier = getAttribute(smelly, "type")
+		return identifier
+	}
 }

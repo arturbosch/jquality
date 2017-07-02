@@ -15,8 +15,8 @@ import io.gitlab.arturbosch.smartsmells.smells.MethodSpecific
 @ToString(includePackage = false)
 class NestedBlockDepth implements MethodSpecific {
 
-	String methodName
-	String methodSignature
+	String name
+	String signature
 
 	int depth
 	int depthThreshold
@@ -40,7 +40,7 @@ class NestedBlockDepth implements MethodSpecific {
 
 	@Override
 	String asComparableString() {
-		return "${javaClassName()}$methodSignature"
+		return "${javaClassName()}$signature"
 	}
 
 	@Override
@@ -51,12 +51,12 @@ class NestedBlockDepth implements MethodSpecific {
 
 	@Override
 	String name() {
-		return methodName
+		return name
 	}
 
 	@Override
 	String signature() {
-		return methodSignature
+		return signature
 	}
 
 }

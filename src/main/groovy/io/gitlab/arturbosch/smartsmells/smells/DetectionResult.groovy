@@ -16,6 +16,14 @@ trait DetectionResult {
 
 	abstract ElementTarget elementTarget()
 
+	String asCliRdyString() {
+		def positions = getPositions()
+		def line = positions.startLine
+		def column = positions.startColumn
+		return getClass().simpleName + " - [${SmellExchange.extractIdentifier(this)}] -" +
+				" at " + getRelativePathAsString() + ":$line:$column"
+	}
+
 	SourceRange getPositions() {
 		return getAttribute(this, "sourceRange") as SourceRange
 	}

@@ -42,7 +42,7 @@ class SmellResult {
 		println()
 		smellSets.entrySet().each {
 			if (printList.contains(it.key)) {
-				it.value.each { println it }
+				it.value.each { println it.asCliRdyString() }
 			}
 			summary += "\n$it.key: ${it.value.size()}"
 		}
