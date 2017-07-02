@@ -40,45 +40,29 @@ class Main {
 
 	static void main(String... args) {
 		Main main = new Main()
+		def jcommander = new JCommander(main, args)
 		try {
-			def jCommander = new JCommander(main, args)
-			jCommander.setProgramName("SmartSmells")
+			jcommander.setProgramName("SmartSmells")
 			if (main.help) {
-				jCommander.usage()
+				jcommander.usage()
 				return
 			}
-		} catch (any) {
-			exitExceptionally(any.message)
-		}
-
-		def runner = main.validateParsedArguments()
-		start(runner)
-	}
-
-	private static start(Runner runner) {
-		println("\n Duration: " + benchmark {
-			if (runner) {
+			def runner = main.buildRunnerBasedOnParameters()
+			println("\n Duration: " + benchmark {
 				runner.run().prettyPrint(*Smell.values())
-			} else {
-				throw new IllegalStateException("Oops, this should never happen. Somehow a specialized Runner could not be created!")
-			}
-		} / 1000)
+			} / 1000)
+		} catch (any) {
+			System.err.println(any.message + "\n")
+			jcommander.usage()
+		}
 	}
 
-	private Runner validateParsedArguments() {
-		def pathError = "The path to the project file is not specified."
-		def configError = "The path to the config file is not specified."
-
-		try {
-			if (groovyConfigPath) {
-				return buildGroovyConfigurationRunner()
-			} else {
-				return buildConfigOrFullStackRunner(pathError, configError)
-			}
-		} catch (any) {
-			exitExceptionally(any.message)
+	private Runner buildRunnerBasedOnParameters() {
+		if (groovyConfigPath) {
+			return buildGroovyConfigurationRunner()
+		} else {
+			return buildConfigOrFullStackRunner()
 		}
-		return null
 	}
 
 	private Runner buildGroovyConfigurationRunner() {
@@ -91,26 +75,24 @@ class Main {
 				: groovyDslRunner
 	}
 
-	private Runner buildConfigOrFullStackRunner(String pathError, String configError) {
-		Validate.isTrue(projectPath != null, pathError)
+	private static final String PATH_ERROR = "The path to the project file is not specified (--input)."
+	private static final String CONFIG_ERROR = "The path to the config file is not specified (--config)."
+
+	private Runner buildConfigOrFullStackRunner() {
+		Validate.isTrue(projectPath != null, PATH_ERROR)
 		def project = Paths.get(projectPath)
-		Validate.isTrue(Files.exists(project), pathError)
+		Validate.isTrue(Files.exists(project), PATH_ERROR)
 		def output = Optional.ofNullable(outputPath).map { Paths.get(it) }
 
 		List<String> filters = (filters?.split()?.collect { it.trim() } ?: Collections.emptyList()) as List<String>
 		if (!fullStackFacade) {
-			Validate.isTrue(configPath != null, configError)
+			Validate.isTrue(configPath != null, CONFIG_ERROR)
 			def config = Paths.get(configPath)
-			Validate.isTrue(Files.exists(config), configError)
+			Validate.isTrue(Files.exists(config), CONFIG_ERROR)
 			return new YamlConfigRunner(config, project, output, filters)
 		} else {
 			return new FullStackRunner(project, output, filters)
 		}
-	}
-
-	private static void exitExceptionally(String message) {
-		System.err.println(message)
-		System.exit(-1)
 	}
 
 }
