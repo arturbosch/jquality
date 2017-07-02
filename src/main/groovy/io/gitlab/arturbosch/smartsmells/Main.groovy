@@ -18,10 +18,8 @@ class Main {
 	String projectPath
 	@Parameter(names = ["--output", "-o"], description = "Point to a path where the xml output file with the detection result should be saved.")
 	String outputPath
-	@Parameter(names = ["--config", "-c"], description = "Point to your SmartSmells configuration file. Prefer this over -f if only specified detectors are needed. Take a look at the default-config.yml file within SmartSmells git repository for an example.")
+	@Parameter(names = ["--config", "-c"], description = "Point to your SmartSmells configuration file. Supported formats are YAML and GROOVY. Take a look at default-config.[yaml|groovy]")
 	String configPath
-	@Parameter(names = ["--groovy-config", "-gc"], description = "Point to your SmartSmells groovy-based configuration file. If using groovy config, no other parameters are necessary as everything can be configured through the groovy dsl. Take a look at the default-config.groovy file for an example.")
-	String groovyConfigPath
 	@Parameter(names = ["--filters", "-f"], description = "Regex expressions, separated by a comma to specify path filters eg. '.*/test/.*'")
 	String filters
 	@Parameter(names = ["--fullStack", "--fullstack", "-fs"], description = "Use all available detectors with default thresholds.")
@@ -40,8 +38,9 @@ class Main {
 
 	static void main(String... args) {
 		Main main = new Main()
-		def jcommander = new JCommander(main, args)
+		def jcommander = new JCommander(main)
 		try {
+			jcommander.parse(args)
 			jcommander.setProgramName("SmartSmells")
 			if (main.help) {
 				jcommander.usage()
@@ -58,7 +57,9 @@ class Main {
 	}
 
 	private Runner buildRunnerBasedOnParameters() {
-		if (groovyConfigPath) {
+		def configFile = new File(configPath).name
+		def ending = configFile.substring(configFile.lastIndexOf('.'))
+		if (ending == ".groovy") {
 			return buildGroovyConfigurationRunner()
 		} else {
 			return buildConfigOrFullStackRunner()
@@ -66,7 +67,7 @@ class Main {
 	}
 
 	private Runner buildGroovyConfigurationRunner() {
-		def path = Paths.get(groovyConfigPath)
+		def path = Paths.get(configPath)
 		Validate.isTrue(Files.exists(path), configPath)
 		def configDsl = DetectorConfigDslRunner.execute(path.toFile())
 		configDsl.validate()
