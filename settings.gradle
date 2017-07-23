@@ -1,3 +1,4 @@
 rootProject.name = 'SmartSmells'
 include 'detector-template'
 
+includeBuild '../JPAL'

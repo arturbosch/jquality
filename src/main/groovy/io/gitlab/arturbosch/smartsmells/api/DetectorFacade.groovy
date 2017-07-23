@@ -76,7 +76,7 @@ class DetectorFacade {
 		return justRun(infos, resolver)
 	}
 
-	SmellResult justRun(List<CompilationInfo> infos, Resolver resolver) {
+	SmellResult justRun(Set<CompilationInfo> infos, Resolver resolver) {
 		if (infos.empty) return new SmellResult(Collections.emptyMap())
 
 		List<CompletableFuture> futures = new ArrayList<>(infos.size())

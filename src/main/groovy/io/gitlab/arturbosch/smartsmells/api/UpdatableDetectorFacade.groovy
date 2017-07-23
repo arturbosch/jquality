@@ -19,7 +19,7 @@ class UpdatableDetectorFacade {
 	private final Resolver resolver
 	private final DetectorFacade facade
 
-	private final List<CompilationInfo> infos = new ArrayList<>()
+	private final Set<CompilationInfo> infos = new HashSet<>()
 
 	UpdatableDetectorFacade(Path root = null, DetectorFacade detectorFacade) {
 		facade = detectorFacade
