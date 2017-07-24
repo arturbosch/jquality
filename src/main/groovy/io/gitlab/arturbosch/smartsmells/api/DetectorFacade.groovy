@@ -59,11 +59,11 @@ class DetectorFacade {
 	}
 
 	SmellResult run(Path startPath) {
-		return internalRun(startPath) { JPAL.new(startPath, null, filters) }
+		return internalRun(startPath) { JPAL.newInstance(startPath, null, filters) }
 	}
 
 	def <T> SmellResult runWithProcessor(Path startPath, CompilationInfoProcessor<T> processor) {
-		return internalRun(startPath) { JPAL.new(startPath, processor, filters) }
+		return internalRun(startPath) { JPAL.newInstance(startPath, processor, filters) }
 	}
 
 	private SmellResult internalRun(Path startPath, Closure<CompilationStorage> create) {
@@ -76,7 +76,7 @@ class DetectorFacade {
 		return justRun(infos, resolver)
 	}
 
-	SmellResult justRun(Set<CompilationInfo> infos, Resolver resolver) {
+	SmellResult justRun(Collection<CompilationInfo> infos, Resolver resolver) {
 		if (infos.empty) return new SmellResult(Collections.emptyMap())
 
 		List<CompletableFuture> futures = new ArrayList<>(infos.size())

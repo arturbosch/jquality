@@ -133,7 +133,7 @@ class DetectorPerformanceTests extends Specification {
 	private static CompilationStorage init(Path path) {
 		if (storage == null) {
 			def time = Main.benchmark {
-				storage = JPAL.new(path)
+				storage = JPAL.newInstance(path)
 			} // 7758 ms
 			println "Compilation: $time ms"
 		}
@@ -153,7 +153,7 @@ class DetectorPerformanceTests extends Specification {
 					.of(detector.type).size()
 		} // 16840 ms
 		println "Detector: $time ms"
-		println result
+		println "#smells: $result"
 	}
 
 }

@@ -14,7 +14,7 @@ class FileMetricProcessorTest extends Specification {
 	def "metrics are collected for dummies"() {
 		given: "compilation storage created with a metric processor"
 		def dummy = Test.DATA_CLASS_DUMMY_PATH
-		def storage = JPAL.new(dummy, new FileMetricProcessor())
+		def storage = JPAL.newInstance(dummy, new FileMetricProcessor())
 		when: "looking at the compilation units"
 		def cis = storage.getCompilationInfo(dummy).get()
 		then: "all must have a metrics object"

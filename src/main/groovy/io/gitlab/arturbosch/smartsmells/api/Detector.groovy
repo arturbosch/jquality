@@ -59,7 +59,7 @@ abstract class Detector<T extends DetectionResult> {
 	 * @return set of smells
 	 */
 	Set<T> run(Path startPath) {
-		def storage = JPAL.new(startPath)
+		def storage = JPAL.newInstance(startPath)
 		def resolver = new Resolver(storage)
 		return storage.allCompilationInfo.stream().map {
 			execute(it, resolver)

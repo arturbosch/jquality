@@ -84,7 +84,7 @@ class MetricsTest extends Specification {
 
 	def "cc"() {
 		given:
-		def resolver = new Resolver(JPAL.new(Test.PATH))
+		def resolver = new Resolver(JPAL.newInstance(Test.PATH))
 		when:
 		def clazz = Test.firstClass(Test.compile(Test.GOD_CLASS_DUMMY_PATH))
 		int cc = Metrics.cc(clazz, resolver)
@@ -94,7 +94,7 @@ class MetricsTest extends Specification {
 
 	def "cm"() {
 		given:
-		def resolver = new Resolver(JPAL.new(Test.PATH))
+		def resolver = new Resolver(JPAL.newInstance(Test.PATH))
 		when:
 		def clazz = Test.firstClass(Test.compile(Test.COMPLEX_METHOD_DUMMY_PATH))
 		int cm = Metrics.cm(clazz, resolver)

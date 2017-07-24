@@ -26,7 +26,7 @@ class SystemTestOnQuideIT extends Specification {
 //		def path = "/home/artur/Arbeit/agst/pooka-co/trunk/pooka/src"
 
 		when:
-		def storage = JPAL.new(Paths.get(path))
+		def storage = JPAL.newInstance(Paths.get(path))
 		def types = storage.getAllQualifiedTypes()
 
 		then:

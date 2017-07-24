@@ -43,7 +43,7 @@ class FeatureEnvyDetectorTest extends Specification {
 
 	def "no envy on implemented and extended types"() {
 		given:
-		def storage = JPAL.new(Test.BASE_PATH.resolve("bla"))
+		def storage = JPAL.newInstance(Test.BASE_PATH.resolve("bla"))
 		def resolver = new Resolver(storage)
 		when:
 		def path = Test.BASE_PATH.resolve("bla/SelfEnvy.java")

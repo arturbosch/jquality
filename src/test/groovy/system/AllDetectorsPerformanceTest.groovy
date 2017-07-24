@@ -19,25 +19,28 @@ class AllDetectorsPerformanceTest extends Specification {
 		def path = "/home/artur/Repos/elasticsearch/core/src/main/"
 		CompilationStorage storage
 		def time = Main.benchmark {
-			storage = JPAL.new(Paths.get(path))
+			storage = JPAL.newInstance(Paths.get(path))
 		} // ~7500 to ~8500 ms
 		// JPAL RC5: ~9600 ms
 		println "CompilationStorage: $time ms"
 		def facade = DetectorFacade.builder().fullStackFacade()
 
 		when:
-		def result = -1
+		def detectors = -1
+		def smells = -1
 		time = Main.benchmark {
-			result = facade.justRun(storage.allCompilationInfo, new Resolver(storage))
-					.smellSets.size()
+			def smellSets = facade.justRun(storage.allCompilationInfo, new Resolver(storage)).smellSets
+			detectors = smellSets.size()
+			smells = smellSets.values().flatten().size()
 		} //  27574 (w/o SS) ms, 35351 (w/ SS) ms
 		// JPAL RC2: 23k-24456 ms, 33k ms
 		// JPAL RC5: 34k ms
 		println "Detectors: $time ms"
-		println result
+		println "#detectors: $detectors"
+		println "#smells: $smells"
 
 		then:
-		result != -1
+		detectors != -1
 	}
 
 }
