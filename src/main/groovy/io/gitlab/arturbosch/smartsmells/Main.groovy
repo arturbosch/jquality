@@ -19,7 +19,8 @@ class Main {
 	public static final IllegalArgumentException ILLEGAL_CONFIG_FORMAT_ERROR = new IllegalArgumentException(
 			"Configuration parameter is invalid. It must have one of these endings: $SUPPORTED_CONFIG_FORMATS")
 
-	@Parameter(names = ["--input", "-i"], description = "Specify a path where your project is located for the analysis.")
+	@Parameter(names = ["--input", "-i"], required = true,
+			description = "Specify a path where your project is located for the analysis.")
 	String projectPath
 	@Parameter(names = ["--output", "-o"], description = "Point to a path where the xml output file with the detection result should be saved.")
 	String outputPath
@@ -62,13 +63,17 @@ class Main {
 	}
 
 	private Runner buildRunnerBasedOnParameters() {
-		String ending = configEnding()
-		if (ending == ".groovy") {
-			return buildGroovyConfigurationRunner()
-		} else if (ending == ".yml") {
+		if (configPath == null) {
 			return buildConfigOrFullStackRunner()
 		} else {
-			throw ILLEGAL_CONFIG_FORMAT_ERROR
+			String ending = configEnding()
+			if (ending == ".groovy") {
+				return buildGroovyConfigurationRunner()
+			} else if (ending == ".yml") {
+				return buildConfigOrFullStackRunner()
+			} else {
+				throw ILLEGAL_CONFIG_FORMAT_ERROR
+			}
 		}
 	}
 
@@ -100,13 +105,13 @@ class Main {
 		def output = Optional.ofNullable(outputPath).map { Paths.get(it) }
 
 		List<String> filters = buildFilters()
-		if (!fullStackFacade) {
+		if (fullStackFacade || configPath == null) {
+			return new FullStackRunner(project, output, filters)
+		} else {
 			Validate.isTrue(configPath != null, CONFIG_ERROR)
 			def config = Paths.get(configPath)
 			Validate.isTrue(Files.exists(config), CONFIG_ERROR)
 			return new YamlConfigRunner(config, project, output, filters)
-		} else {
-			return new FullStackRunner(project, output, filters)
 		}
 	}
 
