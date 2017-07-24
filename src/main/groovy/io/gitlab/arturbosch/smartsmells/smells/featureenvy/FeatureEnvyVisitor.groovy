@@ -66,6 +66,7 @@ class FeatureEnvyVisitor extends Visitor<FeatureEnvy> {
 
 		def filteredFields = NodeHelper.findFields(n).stream()
 				.filter { ClassHelper.inClassScope(it, currentClassName) }
+				.filter { !it.static }
 				.collect(Collectors.toList())
 
 		fields = VariableHelper.toJpalFromFields(filteredFields)
