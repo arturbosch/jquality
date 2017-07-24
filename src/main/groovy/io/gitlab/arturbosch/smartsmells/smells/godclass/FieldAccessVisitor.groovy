@@ -8,10 +8,10 @@ import com.github.javaparser.ast.visitor.VoidVisitorAdapter
  */
 class FieldAccessVisitor extends VoidVisitorAdapter<Set<String>> {
 
-	private Set<String> fieldNames = new ArrayList<>()
-	private List<String> classFieldNames
+	private Set<String> fieldNames = new HashSet<>()
+	private Set<String> classFieldNames
 
-	FieldAccessVisitor(List<String> classFieldNames) {
+	FieldAccessVisitor(Set<String> classFieldNames) {
 		this.classFieldNames = classFieldNames
 	}
 
