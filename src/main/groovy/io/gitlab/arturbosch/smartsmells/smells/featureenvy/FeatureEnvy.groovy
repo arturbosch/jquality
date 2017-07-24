@@ -94,4 +94,13 @@ class FeatureEnvy implements MethodSpecific {
 	String signature() {
 		return signature
 	}
+
+	@Override
+	String asCliRdyString() {
+		def positions = getPositions()
+		def line = positions.startLine
+		def column = positions.startColumn
+		return getClass().simpleName + " - [$objectName] in [$signature] -" +
+				" at " + getRelativePathAsString() + ":$line:$column"
+	}
 }
