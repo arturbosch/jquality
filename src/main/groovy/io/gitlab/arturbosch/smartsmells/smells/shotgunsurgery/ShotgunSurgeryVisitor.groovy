@@ -10,7 +10,6 @@ import io.gitlab.arturbosch.jpal.core.CompilationInfo
 import io.gitlab.arturbosch.jpal.resolution.Resolver
 import io.gitlab.arturbosch.smartsmells.common.Visitor
 import io.gitlab.arturbosch.smartsmells.common.visitor.InternalVisitor
-import io.gitlab.arturbosch.smartsmells.metrics.Metrics
 import io.gitlab.arturbosch.smartsmells.smells.ElementTarget
 
 /**
@@ -50,8 +49,9 @@ class ShotgunSurgeryVisitor extends Visitor<ShotgunSurgery> {
 		void visit(ClassOrInterfaceDeclaration n, Resolver resolver) {
 			if (isEmpty(n)) return
 
-			def cc = Metrics.cc(n, resolver)
-			def cm = Metrics.cm(n, resolver)
+			def cmCc = CMCCMetrics.raise(n, resolver)
+			def cm = cmCc.a
+			def cc = cmCc.b
 
 			if (cc > ccThreshold && cm > cmThreshold) {
 				smells.add(new ShotgunSurgery(n.nameAsString, ClassHelper.createFullSignature(n),

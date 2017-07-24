@@ -35,7 +35,7 @@ class DetectorPerformanceTests extends Specification {
 	def "shotgun surgery detector"() {
 		when: "testing performance"
 		run(new ShotgunSurgeryDetector())
-		then: "it takes: 16484 ms"
+		then: "it takes: 7059 ms(, 7523 ms(, 16484 ms))"
 		true
 	}
 
