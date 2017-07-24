@@ -36,7 +36,7 @@ final class Metrics {
 					.stream()
 					.filter { ClassHelper.inClassScope(it, n.nameAsString) }
 					.map { it.name }
-					.collect()
+					.collect(Collectors.toSet())
 
 			cm = resolver.storage.getAllCompilationInfo()
 					.stream()
