@@ -79,14 +79,12 @@ class DetectorFacade {
 	SmellResult justRun(Collection<CompilationInfo> infos, Resolver resolver) {
 		if (infos.empty) return new SmellResult(Collections.emptyMap())
 
-		List<CompletableFuture> futures = new ArrayList<>(infos.size())
-
-		infos.forEach { CompilationInfo info ->
-			futures.add(CompletableFuture.runAsync({
+		List<CompletableFuture> futures = infos.collect { CompilationInfo info ->
+			CompletableFuture.runAsync({
 				for (Detector detector : detectors) {
 					detector.execute(info, resolver)
 				}
-			}, threadPool).exceptionally { handle(it) })
+			}, threadPool).exceptionally { handle(it) }
 		}
 
 		CompletableFuture.allOf(futures.toArray(new CompletableFuture<?>[0])).join()
