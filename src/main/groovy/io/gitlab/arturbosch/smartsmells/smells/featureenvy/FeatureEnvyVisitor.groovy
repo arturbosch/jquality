@@ -74,31 +74,41 @@ class FeatureEnvyVisitor extends Visitor<FeatureEnvy> {
 	}
 
 	private analyzeMethods(List<MethodDeclaration> methods) {
-		MethodHelper.filterAnonymousMethods(methods)
-				.stream()
-				.filter { !(it.modifiers.contains(Modifier.STATIC) && ignoreStatic) }
-				.filter { MethodHelper.sizeBiggerThan(2, it) }.each { method ->
-
-			NodeHelper.findDeclaringClass(method).ifPresent {
-				currentClass = (ClassOrInterfaceDeclaration) it
-				def type = new ClassOrInterfaceType(currentClass.nameAsString)
-				currentClassName = innerClassesHandler.getUnqualifiedNameForInnerClass(type)
+		for (MethodDeclaration method : methods) {
+			if (!MethodHelper.isAnonymousMethod(method)
+					&& notStaticIfIgnored(method)
+					&& MethodHelper.sizeBiggerThan(2, method)) {
+				analyzeMethod(method)
 			}
-
-			def allCalls = MethodHelper.getAllMethodInvocations(method)
-
-			def parameters = MethodHelper.extractParameters(method).stream()
-					.map { VariableHelper.toJpalFromParameter(it) }
-					.collect(Collectors.toSet())
-			def variables = VariableHelper.toJpalFromLocales(
-					LocaleVariableHelper.find(method).toList()
-			)
-
-			analyzeVariables(method, allCalls, javaClassFilter.filter(variables))
-			analyzeVariables(method, allCalls, javaClassFilter.filter(parameters))
-			analyzeVariables(method, allCalls, javaClassFilter.filter(fields))
-
 		}
+	}
+
+	private void analyzeMethod(MethodDeclaration method) {
+		NodeHelper.findDeclaringClass(method).ifPresent {
+			currentClass = (ClassOrInterfaceDeclaration) it
+			def type = new ClassOrInterfaceType(currentClass.nameAsString)
+			currentClassName = innerClassesHandler.getUnqualifiedNameForInnerClass(type)
+		}
+
+		def allCalls = MethodHelper.getAllMethodInvocations(method)
+
+		def parameters = MethodHelper.extractParameters(method)
+				.stream()
+				.map { VariableHelper.toJpalFromParameter(it) }
+				.collect(Collectors.toSet())
+		def variables = LocaleVariableHelper.find(method)
+				.stream()
+				.map { VariableHelper.toJpalFromLocale(it) }
+				.flatMap { it.stream() }
+				.collect(Collectors.toSet())
+
+		analyzeVariables(method, allCalls, javaClassFilter.filter(variables))
+		analyzeVariables(method, allCalls, javaClassFilter.filter(parameters))
+		analyzeVariables(method, allCalls, javaClassFilter.filter(fields))
+	}
+
+	private boolean notStaticIfIgnored(MethodDeclaration method) {
+		!(method.modifiers.contains(Modifier.STATIC) && ignoreStatic)
 	}
 
 	private boolean notThisClass(JpalVariable it) {
