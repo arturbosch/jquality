@@ -3,7 +3,6 @@ package io.gitlab.arturbosch.smartsmells.metrics
 import com.github.javaparser.ast.Modifier
 import com.github.javaparser.ast.body.BodyDeclaration
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration
-import com.github.javaparser.ast.body.FieldDeclaration
 import com.github.javaparser.ast.body.MethodDeclaration
 import com.github.javaparser.ast.expr.FieldAccessExpr
 import com.github.javaparser.ast.expr.MethodCallExpr
@@ -11,10 +10,8 @@ import io.gitlab.arturbosch.jpal.ast.ClassHelper
 import io.gitlab.arturbosch.jpal.ast.MethodHelper
 import io.gitlab.arturbosch.jpal.ast.NodeHelper
 import io.gitlab.arturbosch.jpal.ast.TypeHelper
-import io.gitlab.arturbosch.jpal.ast.VariableHelper
 import io.gitlab.arturbosch.jpal.internal.Printer
 import io.gitlab.arturbosch.jpal.resolution.Resolver
-import io.gitlab.arturbosch.smartsmells.common.helper.NameHelper
 import io.gitlab.arturbosch.smartsmells.common.visitor.CyclomaticComplexityVisitor
 import io.gitlab.arturbosch.smartsmells.smells.godclass.FieldAccessVisitor
 import io.gitlab.arturbosch.smartsmells.smells.godclass.TiedClassCohesion
@@ -87,11 +84,14 @@ final class Metrics {
 	}
 
 	static int wmc(ClassOrInterfaceDeclaration n) {
-		MethodHelper.filterAnonymousMethods(NodeHelper.findMethods(n))
-				.stream()
-				.filter { ClassHelper.inClassScope(it, n.nameAsString) }
-				.mapToInt { mcCabe(it) }
-				.sum()
+		int wmc = 0
+		for (MethodDeclaration method : NodeHelper.findMethods(n)) {
+			if (!MethodHelper.isAnonymousMethod(method)
+					&& ClassHelper.inClassScope(method, n.nameAsString)) {
+				wmc += mcCabe(method)
+			}
+		}
+		return wmc
 	}
 
 	static int atfd(ClassOrInterfaceDeclaration n) {
@@ -104,46 +104,48 @@ final class Metrics {
 		Set<String> usedScopes = new HashSet<>()
 		n.getChildNodesByType(MethodCallExpr.class)
 				.stream()
-				.filter { isNotMemberOfThisClass(it.nameAsString, methods) }
+				.filter { !methods.contains(it.nameAsString) }
 				.filter { isNotAGetterOrSetter(it.nameAsString) }
 				.each {
 
-			if (it.scope.isPresent() && !usedScopes.contains(it.scope.get().toString(Printer.NO_COMMENTS))) {
-				usedScopes.add(it.scope.get().toString(Printer.NO_COMMENTS))
-				atfd++
+			if (it.scope.isPresent()) {
+				def scopeAsString = Printer.toString(it.scope.get())
+				if (!usedScopes.contains(scopeAsString)) {
+					usedScopes.add(scopeAsString)
+					atfd++
+				}
 			}
 		}
 
 		usedScopes = new HashSet<>()
 		n.getChildNodesByType(FieldAccessExpr.class)
 				.stream()
-				.filter { isNotMemberOfThisClass(it.name.identifier, fields) }
+				.filter { !fields.contains(it.nameAsString) }
 				.each {
 
-			if (!usedScopes.contains(it.scope.toString(Printer.NO_COMMENTS))) {
-				usedScopes.add(it.scope.toString(Printer.NO_COMMENTS))
+			def scopeAsString = Printer.toString(it.scope)
+			if (!usedScopes.contains(scopeAsString)) {
+				usedScopes.add(scopeAsString)
 				atfd++
 			}
 		}
 		return atfd
 	}
 
-	private static List getClassMethodNames(ClassOrInterfaceDeclaration n) {
+	private static Set<String> getClassMethodNames(ClassOrInterfaceDeclaration n) {
 		NodeHelper.findMethods(n).stream()
 				.filter { ClassHelper.inClassScope(it, n.nameAsString) }
 				.map { it.name }
-				.collect(Collectors.toList())
+				.collect(Collectors.toSet())
 	}
 
-	private static List<String> getClassFieldNames(ClassOrInterfaceDeclaration n) {
-		NameHelper.toFieldNames(
-				NodeHelper.findFields(n).stream()
-						.filter { ClassHelper.inClassScope(it, n.nameAsString) }
-						.collect(Collectors.toList()))
-	}
-
-	private static boolean isNotMemberOfThisClass(String name, List<String> members) {
-		!members.contains(name)
+	private static Set<String> getClassFieldNames(ClassOrInterfaceDeclaration n) {
+		NodeHelper.findFields(n).stream()
+				.filter { ClassHelper.inClassScope(it, n.nameAsString) }
+				.map { it.variables }
+				.flatMap { it.stream() }
+				.map { it.nameAsString }
+				.collect(Collectors.toSet())
 	}
 
 	private static boolean isNotAGetterOrSetter(String name) {
@@ -153,12 +155,12 @@ final class Metrics {
 	static double tcc(ClassOrInterfaceDeclaration n) {
 		Map<String, Set<String>> methodFieldAccesses = new HashMap<>()
 
-		List<FieldDeclaration> declarations = NodeHelper.findFields(n)
+		Set<String> fields = NodeHelper.findFields(n)
 				.stream()
 				.filter { ClassHelper.inClassScope(it, n.nameAsString) }
-				.collect()
-		List<String> fields = VariableHelper.toJpalFromFields(declarations)
-				.collect { it.name }
+				.flatMap { it.variables.stream() }
+				.map { it.nameAsString }
+				.collect(Collectors.toSet())
 
 		NodeHelper.findMethods(n)
 				.stream()
@@ -171,7 +173,7 @@ final class Metrics {
 
 	private static void collectFieldAccesses(MethodDeclaration n,
 											 Map<String, Set<String>> methodFieldAccesses,
-											 List<String> fields) {
+											 Set<String> fields) {
 		def visitor = new FieldAccessVisitor(fields)
 		n.accept(visitor, null)
 
