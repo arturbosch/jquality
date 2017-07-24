@@ -111,7 +111,7 @@ class FeatureEnvyVisitor extends Visitor<FeatureEnvy> {
 		!(method.modifiers.contains(Modifier.STATIC) && ignoreStatic)
 	}
 
-	private boolean notThisClass(JpalVariable it) {
+	private boolean notDeclaredInThisClass(JpalVariable it) {
 		if (!(it.type instanceof ClassOrInterfaceType)) return false
 		def type = it.type as ClassOrInterfaceType
 		return type.nameAsString != currentClassName && notInherited(currentClass, type)
@@ -124,22 +124,22 @@ class FeatureEnvyVisitor extends Visitor<FeatureEnvy> {
 	}
 
 	private analyzeVariables(MethodDeclaration method, int allCalls, Set<JpalVariable> variables) {
-		variables.stream()
-				.filter { notThisClass(it) }
-				.forEach {
-			int count = MethodHelper.getAllMethodInvocationsForEntityWithName(it.name, method)
-			double factor = calc(count, allCalls)
+		for (JpalVariable variable : variables) {
+			if (notDeclaredInThisClass(variable)) {
+				int count = MethodHelper.getAllMethodInvocationsForEntityWithName(variable.name, method)
+				double factor = calc(count, allCalls)
 
-			if (factor > featureEnvyFactor.threshold) {
-				def roundedFactor = (factor * 100).toInteger().toDouble() / 100
+				if (factor > featureEnvyFactor.threshold) {
+					def roundedFactor = (factor * 100).toInteger().toDouble() / 100
 
-				def featureEnvy = new FeatureEnvy(
-						method.nameAsString, method.declarationAsString, currentClassName,
-						it.name, it.type.toString(Printer.NO_COMMENTS), it.nature.toString(),
-						roundedFactor, featureEnvyFactor.threshold,
-						SourceRange.fromNode(method), SourcePath.of(info), ElementTarget.METHOD)
+					def featureEnvy = new FeatureEnvy(
+							method.nameAsString, method.declarationAsString, currentClassName,
+							variable.name, Printer.toString(variable.type), variable.nature.toString(),
+							roundedFactor, featureEnvyFactor.threshold,
+							SourceRange.fromNode(method), SourcePath.of(info), ElementTarget.METHOD)
 
-				smells.add(featureEnvy)
+					smells.add(featureEnvy)
+				}
 			}
 		}
 	}
