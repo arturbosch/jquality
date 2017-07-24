@@ -1,6 +1,7 @@
 package io.gitlab.arturbosch.smartsmells.smells.deadcode
 
 import com.github.javaparser.ast.CompilationUnit
+import com.github.javaparser.ast.Modifier
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration
 import com.github.javaparser.ast.body.FieldDeclaration
 import com.github.javaparser.ast.body.MethodDeclaration
@@ -16,6 +17,8 @@ import io.gitlab.arturbosch.jpal.internal.Printer
 import io.gitlab.arturbosch.jpal.resolution.Resolver
 import io.gitlab.arturbosch.smartsmells.common.Visitor
 import io.gitlab.arturbosch.smartsmells.smells.ElementTarget
+
+import java.util.stream.Collectors
 
 /**
  * @author artur
@@ -45,10 +48,13 @@ class DeadCodeVisitor extends Visitor<DeadCode> {
 
 	@Override
 	void visit(CompilationUnit n, Resolver resolver) {
-		if (isInterface(n))
-			return
+		if (isInterface(n)) return
 
-		def methodDeclarations = DeadCodeHelper.filterMethodsForAnnotations(NodeHelper.findPrivateMethods(n))
+		def allMethods = DeadCodeHelper.filterMethodsForExcludedAnnotations(NodeHelper.findMethods(n))
+		Set<MethodDeclaration> methodDeclarations = allMethods.stream()
+				.filter { it.modifiers.contains(Modifier.PRIVATE) }
+				.collect(Collectors.toSet())
+
 		methodDeclarations.each {
 			methodsToReferenceCount.put(it.nameAsString, new MutableInt())
 			methodToMethodDeclaration.put(it.nameAsString, it)
@@ -64,8 +70,7 @@ class DeadCodeVisitor extends Visitor<DeadCode> {
 			}
 		}
 
-		def allMethods = NodeHelper.findMethods(n)
-		def parameters = DeadCodeHelper.parametersFromAllMethodDeclarationsAsStringSet(allMethods)
+		def parameters = DeadCodeHelper.parametersFromMethods(allMethods)
 		parameters.each {
 			parameterToReferenceCount.put(it.nameAsString, new MutableInt())
 			parameterToParameterDeclaration.put(it.nameAsString, it)

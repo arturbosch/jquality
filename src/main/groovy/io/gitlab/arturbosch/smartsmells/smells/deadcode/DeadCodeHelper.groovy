@@ -9,20 +9,27 @@ import java.util.stream.Collectors
 /**
  * @author artur
  */
-class DeadCodeHelper {
+final class DeadCodeHelper {
 
-	static Set<Parameter> parametersFromAllMethodDeclarationsAsStringSet(List<MethodDeclaration> methodDeclarations) {
+	private DeadCodeHelper() {}
+
+	private static final Set<String> excludedAnnotations = new HashSet<>()
+
+	static {
+		excludedAnnotations.add("PostConstruct")
+		excludedAnnotations.add("Override")
+	}
+
+	static Set<Parameter> parametersFromMethods(List<MethodDeclaration> methodDeclarations) {
 		methodDeclarations.stream()
-				.filter({ !it.modifiers.contains(Modifier.ABSTRACT) })
-				.flatMap({ it.parameters.stream() })
+				.filter { !it.modifiers.contains(Modifier.ABSTRACT) }
+				.flatMap { it.parameters.stream() }
 				.collect(Collectors.toSet())
 	}
 
-	static List<MethodDeclaration> filterMethodsForAnnotations(List<MethodDeclaration> methodDeclarations) {
+	static List<MethodDeclaration> filterMethodsForExcludedAnnotations(List<MethodDeclaration> methodDeclarations) {
 		methodDeclarations.stream().filter {
-
-			!(it.getAnnotations().find { it.nameAsString == "PostConstruct" })
-
+			it.getAnnotations().find { excludedAnnotations.contains(it.nameAsString) } == null
 		}.collect()
 	}
 }

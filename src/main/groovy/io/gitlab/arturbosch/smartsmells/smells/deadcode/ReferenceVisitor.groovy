@@ -7,8 +7,8 @@ import com.github.javaparser.ast.expr.Expression
 import com.github.javaparser.ast.expr.FieldAccessExpr
 import com.github.javaparser.ast.expr.MethodCallExpr
 import com.github.javaparser.ast.expr.MethodReferenceExpr
-import com.github.javaparser.ast.expr.NameExpr
 import com.github.javaparser.ast.expr.ObjectCreationExpr
+import com.github.javaparser.ast.expr.SimpleName
 import com.github.javaparser.ast.stmt.ForStmt
 import com.github.javaparser.ast.stmt.ForeachStmt
 import com.github.javaparser.ast.stmt.IfStmt
@@ -100,6 +100,7 @@ class ReferenceVisitor extends VoidVisitorAdapter {
 	@Override
 	void visit(ForeachStmt n, Object arg) {
 		checkArguments(n.iterable)
+		checkArguments(n.variable)
 		super.visit(n, arg)
 	}
 
@@ -128,14 +129,11 @@ class ReferenceVisitor extends VoidVisitorAdapter {
 	}
 
 	private void checkArguments(Expression it) {
-		Optional.ofNullable(it)
-				.filter { it instanceof NameExpr }
-				.map { it as NameExpr }
-				.map { it.nameAsString }
-				.ifPresent {
-			checkOccurrence(fieldsToReferenceCount, it)
-			checkOccurrence(parameterToReferenceCount, it)
-			checkOccurrence(localeVariableToReferenceCount, it)
+		it.getChildNodesByType(SimpleName.class).each {
+			def name = it.identifier
+			checkOccurrence(fieldsToReferenceCount, name)
+			checkOccurrence(parameterToReferenceCount, name)
+			checkOccurrence(localeVariableToReferenceCount, name)
 		}
 	}
 
