@@ -3,6 +3,7 @@ plugins {
 	id "com.github.johnrengelman.shadow" version "1.2.3"
 	id 'com.github.ben-manes.versions' version '0.14.0'
 //	id "com.github.hierynomus.license" version "0.13.1"
+	id "me.champeau.gradle.jmh" version "0.4.3"
 }
 
 apply plugin: 'groovy'
@@ -83,4 +84,11 @@ dependencies {
 	compile "org.yaml:snakeyaml:$yamlVersion"
 	compile "com.beust:jcommander:$jcommanderVersion"
 	testCompile "org.spockframework:spock-core:$spockVersion"
+}
+
+jmh {
+	include = 'ShotgunSurgeryPerformanceTest.*'
+	humanOutputFile = null
+	warmupIterations = 1
+	iterations = 3
 }
