@@ -19,9 +19,7 @@ class Conditions {
 			whileBinaryExpression(cases, binaryExpr.left)
 			whileBinaryExpression(cases, binaryExpr.right)
 		} else if (expression instanceof EnclosedExpr) {
-			(expression as EnclosedExpr).inner.ifPresent {
-				whileBinaryExpression(cases, it)
-			}
+			whileBinaryExpression(cases, (expression as EnclosedExpr).inner)
 		} else {
 			cases.add(expression.toString(Printer.NO_COMMENTS))
 		}

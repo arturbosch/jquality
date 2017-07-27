@@ -4,8 +4,8 @@ import io.gitlab.arturbosch.jpal.core.CompilationStorage
 import io.gitlab.arturbosch.jpal.core.JPAL
 import io.gitlab.arturbosch.jpal.resolution.Resolver
 import io.gitlab.arturbosch.smartsmells.Main
-import io.gitlab.arturbosch.smartsmells.api.DetectorFacade
 import io.gitlab.arturbosch.smartsmells.api.Detector
+import io.gitlab.arturbosch.smartsmells.api.DetectorFacade
 import io.gitlab.arturbosch.smartsmells.smells.comment.CommentDetector
 import io.gitlab.arturbosch.smartsmells.smells.complexmethod.ComplexMethodDetector
 import io.gitlab.arturbosch.smartsmells.smells.cycle.CycleDetector
@@ -49,7 +49,7 @@ class DetectorPerformanceTests extends Specification {
 	def "god class detector"() {
 		when: "testing performance"
 		run(new GodClassDetector())
-		then: "it takes: 10445 ms"
+		then: "it takes: 6205 ms(, 10445 ms)"
 		true
 	}
 
@@ -77,7 +77,7 @@ class DetectorPerformanceTests extends Specification {
 	def "dead code detector"() {
 		when: "testing performance"
 		run(new DeadCodeDetector())
-		then: "it takes: 12868 ms"
+		then: "it takes: 11603 ms(, 12868 ms)"
 		true
 	}
 

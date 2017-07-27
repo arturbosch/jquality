@@ -31,6 +31,7 @@ class FeatureEnvyVisitor extends Visitor<FeatureEnvy> {
 
 	private Set<JpalVariable> fields
 
+	private Set<String> packageNames
 	private String currentClassName
 	private ClassOrInterfaceDeclaration currentClass
 	private JavaClassFilter javaClassFilter
@@ -49,6 +50,7 @@ class FeatureEnvyVisitor extends Visitor<FeatureEnvy> {
 		this.resolver = resolver
 		javaClassFilter = new JavaClassFilter(info, resolver)
 		innerClassesHandler = info.data.innerClassesHandler
+		packageNames = resolver.storage.getStoredPackageNames()
 		super.visit(n, resolver)
 	}
 
@@ -112,21 +114,29 @@ class FeatureEnvyVisitor extends Visitor<FeatureEnvy> {
 		!(method.modifiers.contains(Modifier.STATIC) && ignoreStatic)
 	}
 
-	private boolean notDeclaredInThisClass(JpalVariable it) {
+	private boolean isSameProjectDifferentClass(JpalVariable it) {
 		if (!(it.type instanceof ClassOrInterfaceType)) return false
 		def type = it.type as ClassOrInterfaceType
-		return type.nameAsString != currentClassName && notInherited(currentClass, type)
+		return type.nameAsString != currentClassName && notInheritedOrOtherProject(currentClass, type)
 	}
 
-	private boolean notInherited(ClassOrInterfaceDeclaration aClass, ClassOrInterfaceType checkedType) {
+	private boolean notInheritedOrOtherProject(ClassOrInterfaceDeclaration aClass, ClassOrInterfaceType checkedType) {
 		def qualifiedType = resolver.resolveType(checkedType, info)
+
+		// same project
+		def maybeSameProject = resolver.storage.getCompilationInfo(qualifiedType)
+				.map { it.qualifiedType.onlyPackageName }
+				.filter { packageNames.contains(it) }
+		if (!maybeSameProject.isPresent()) return false
+
+		// inheritance check
 		def ancestors = TypeHelper.findAllAncestors(aClass, resolver, info)
 		return ancestors.find { it == qualifiedType } == null
 	}
 
 	private analyzeVariables(MethodDeclaration method, int allCalls, Set<JpalVariable> variables) {
 		for (JpalVariable variable : variables) {
-			if (notDeclaredInThisClass(variable)) {
+			if (isSameProjectDifferentClass(variable)) {
 				int count = MethodHelper.getAllMethodInvocationsForEntityWithName(variable.name, method)
 				double factor = calc(count, allCalls)
 
