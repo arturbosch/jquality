@@ -1,5 +1,6 @@
 package io.gitlab.arturbosch.smartsmells.api
 
+import io.gitlab.arturbosch.jpal.core.JPAL
 import io.gitlab.arturbosch.smartsmells.common.Test
 import io.gitlab.arturbosch.smartsmells.config.Smell
 import spock.lang.Specification
@@ -15,7 +16,7 @@ class UpdatableDetectorFacadeTest extends Specification {
 	def "test running two times over same project"() {
 		given:
 		def fullStackFacade = DetectorFacade.builder().fullStackFacade()
-		def facade = new UpdatableDetectorFacade(fullStackFacade)
+		def facade = new UpdatableDetectorFacade(fullStackFacade, JPAL.updatable())
 		when:
 		facade.addOrUpdate(Collections.singletonList(Test.CYCLE_DUMMY_PATH))
 		facade.addOrUpdate(Collections.singletonList(Test.COMPLEX_METHOD_DUMMY_PATH))
@@ -26,9 +27,10 @@ class UpdatableDetectorFacadeTest extends Specification {
 	}
 
 	def "updatable with filters has no smell result"() {
-		def detectorFacade = DetectorFacade.builder().withFilters([".*/java/.*"]).fullStackFacade()
 		given:
-		def facade = new UpdatableDetectorFacade(detectorFacade)
+		def detectorFacade = DetectorFacade.builder().withFilters([".*/java/.*"]).fullStackFacade()
+		def storage = JPAL.updatable(null, detectorFacade.filters)
+		def facade = new UpdatableDetectorFacade(detectorFacade, storage)
 		def paths = Files.walk(Test.BASE_PATH)
 				.filter { Files.isRegularFile(it) }
 				.collect(Collectors.toList())
