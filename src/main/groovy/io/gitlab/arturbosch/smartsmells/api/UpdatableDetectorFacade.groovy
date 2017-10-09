@@ -3,7 +3,6 @@ package io.gitlab.arturbosch.smartsmells.api
 import com.github.javaparser.utils.Pair
 import groovy.transform.CompileStatic
 import io.gitlab.arturbosch.jpal.core.CompilationInfo
-import io.gitlab.arturbosch.jpal.core.JPAL
 import io.gitlab.arturbosch.jpal.core.UpdatableCompilationStorage
 import io.gitlab.arturbosch.jpal.resolution.Resolver
 
@@ -21,9 +20,11 @@ class UpdatableDetectorFacade {
 
 	private final Set<CompilationInfo> infos = new HashSet<>()
 
-	UpdatableDetectorFacade(Path root = null, DetectorFacade detectorFacade) {
+	UpdatableDetectorFacade(Path root = null,
+							DetectorFacade detectorFacade,
+							UpdatableCompilationStorage storage) {
 		facade = detectorFacade
-		storage = root ? JPAL.initializedUpdatable(root, null, facade.filters) : JPAL.updatable(null, facade.filters)
+		this.storage = storage
 		resolver = new Resolver(storage)
 	}
 

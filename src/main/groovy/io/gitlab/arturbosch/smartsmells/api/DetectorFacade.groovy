@@ -37,7 +37,9 @@ class DetectorFacade {
 			new PrefixedThreadFactory("SmartSmells"))
 
 	@PackageScope
-	DetectorFacade(List<Detector> detectors, DetectorConfig config = null, List<String> filters = Collections.emptyList()) {
+	DetectorFacade(List<Detector<DetectionResult>> detectors,
+				   DetectorConfig config = null,
+				   List<String> filters = Collections.emptyList()) {
 		this.config = config
 		this.filters = filters.collect { Pattern.compile(it) }
 		this.detectors = detectors
@@ -79,7 +81,7 @@ class DetectorFacade {
 	SmellResult justRun(Collection<CompilationInfo> infos, Resolver resolver) {
 		if (infos.empty) return new SmellResult(Collections.emptyMap())
 
-		List<CompletableFuture> futures = infos.collect { CompilationInfo info ->
+		List<CompletableFuture<Void>> futures = infos.collect { CompilationInfo info ->
 			CompletableFuture.runAsync({
 				for (Detector detector : detectors) {
 					detector.execute(info, resolver)
@@ -92,9 +94,9 @@ class DetectorFacade {
 		return new SmellResult(entries)
 	}
 
-	private static ArrayList handle(Throwable throwable) {
+	private static List handle(Throwable throwable) {
 		log.log(Level.WARNING, throwable) { throwable.message }
-		return new ArrayList<>()
+		return Collections.emptyList()
 	}
 
 	int numberOfDetectors() {
