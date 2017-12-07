@@ -46,4 +46,6 @@ class Constants {
 	static final String ONLY_INTERFACES = "onlyInterfaces"
 
 	static final String CLASS_DATA_SHOULD_BE_PRIVATE = "classdatashouldbeprivate"
+	static final String REFUSED_PARENT_BEQUEST = "refusedparentbequest"
+
 }

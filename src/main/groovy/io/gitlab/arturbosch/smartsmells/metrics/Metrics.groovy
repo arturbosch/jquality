@@ -195,5 +195,4 @@ final class Metrics {
 		def lines = n.toString().split(System.getProperty("line.separator")).toList()
 		return JavaLoc.analyze(lines, comments, false)
 	}
-
 }

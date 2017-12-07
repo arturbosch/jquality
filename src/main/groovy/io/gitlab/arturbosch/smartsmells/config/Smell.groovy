@@ -3,6 +3,8 @@ package io.gitlab.arturbosch.smartsmells.config
 import groovy.transform.CompileStatic
 import io.gitlab.arturbosch.smartsmells.api.Detector
 import io.gitlab.arturbosch.smartsmells.metrics.ClassInfoDetector
+import io.gitlab.arturbosch.smartsmells.smells.RefusedParentBequest.RPBConfig
+import io.gitlab.arturbosch.smartsmells.smells.RefusedParentBequest.RefusedParentBequestDetector
 import io.gitlab.arturbosch.smartsmells.smells.classdatashouldbeprivate.ClassDataShouldBePrivateDetector
 import io.gitlab.arturbosch.smartsmells.smells.comment.CommentDetector
 import io.gitlab.arturbosch.smartsmells.smells.comment.JavadocDetector
@@ -168,6 +170,13 @@ enum Smell {
 				def threshold = toInt(it.get(Constants.THRESHOLD), Defaults.MAX_DEPTH)
 				new NestedBlockDepthDetector(threshold)
 			})
+		}
+	}, REFUSED_PARENT_BEQUEST{
+		@Override
+		Optional<Detector> initialize(DetectorConfig detectorConfig) {
+			initDefault(detectorConfig, Constants.REFUSED_PARENT_BEQUEST) {
+				new RefusedParentBequestDetector(new RPBConfig())
+			}
 		}
 	}, SHOTGUN_SURGERY{
 
