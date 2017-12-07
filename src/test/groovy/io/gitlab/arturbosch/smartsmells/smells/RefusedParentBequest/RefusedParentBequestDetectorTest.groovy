@@ -18,7 +18,7 @@ class RefusedParentBequestDetectorTest extends Specification {
 
 	def "test2"() {
 		expect:
-		smells.isEmpty()
+		smells.size() == 1
 
 		where:
 		smells = new RefusedParentBequestDetector().run(Test.BASE_PATH.resolve("refusesame"))

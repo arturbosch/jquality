@@ -2,20 +2,18 @@ package io.gitlab.arturbosch.smartsmells.smells.RefusedParentBequest
 
 import io.gitlab.arturbosch.smartsmells.DetectorSpecification
 import io.gitlab.arturbosch.smartsmells.api.Detector
-import org.junit.Ignore
 
 /**
  * @author Artur Bosch
  */
-class RefusedParentBequestVisitorTest extends DetectorSpecification<RefusedParentBequest> {
+class RefusedParentBequestSameFileTest extends DetectorSpecification<RefusedParentBequest> {
 
 	@Override
 	Detector<RefusedParentBequest> detector() {
 		return new RefusedParentBequestDetector()
 	}
 
-	@spock.lang.Ignore
-	def "find one"() {
+	def "find none inside same file"() {
 		given:
 		def code = """
 			public class A extends B {
@@ -32,21 +30,20 @@ class RefusedParentBequestVisitorTest extends DetectorSpecification<RefusedParen
 					while(true) {
 						if(true){
 							if(true) {
+								super.m();
 							}
 						}
 					}
 				}
 			}
-		"""
-		def code2 = """
 			class B {
 				protected void m() {
 				}
 			}
 		"""
 		when:
-		def smells = run(code, code2)
+		def smells = run(code)
 		then:
-		smells.size() == 1
+		smells.isEmpty()
 	}
 }

@@ -24,19 +24,19 @@ class ClassInfoVisitor extends Visitor<ClassInfo> {
 	@Override
 	void visit(CompilationUnit n, Resolver resolver) {
 		metrics.init { it.each { it.setResolver(resolver) } }
-		def classes = n.getChildNodesByType(ClassOrInterfaceDeclaration.class)
+		super.visit(n, resolver)
+	}
 
-		classes.each {
-
-			smells.add(new ClassInfo(
-					name: it.name,
-					signature: ClassHelper.createFullSignature(it),
-					metrics: metrics.raise(it),
-					sourcePath: SourcePath.of(info),
-					sourceRange: SourceRange.fromNode(it),
-					elementTarget: ElementTarget.CLASS
-			))
-		}
-
+	@Override
+	void visit(ClassOrInterfaceDeclaration it, Resolver arg) {
+		report(new ClassInfo(
+				name: it.name,
+				signature: ClassHelper.createFullSignature(it),
+				metrics: metrics.raise(it),
+				sourcePath: SourcePath.of(info),
+				sourceRange: SourceRange.fromNode(it),
+				elementTarget: ElementTarget.CLASS
+		))
+		super.visit(it, arg)
 	}
 }

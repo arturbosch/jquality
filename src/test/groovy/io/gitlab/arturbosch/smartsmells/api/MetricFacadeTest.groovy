@@ -24,7 +24,7 @@ class MetricFacadeTest extends Specification {
 
 		when: "averaging over all class infos"
 		def averages = MetricFacade.averageAndDeviation(result)
-		averages.each {println(it)}
+
 		then: "all must be double values"
 		averages.stream().allMatch { it.isDouble }
 	}

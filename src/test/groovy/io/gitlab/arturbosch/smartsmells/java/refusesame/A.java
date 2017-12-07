@@ -14,8 +14,81 @@ public class A extends B {
 	int i7 = 5;
 	int i8 = 5;
 
-	@Override
-	public void m() {
+	// not overriding but using m
+	protected void m0() {
+		while (true) {
+			if (true) {
+				if (true) {
+					super.m();
+				}
+			}
+		}
+	}
+
+	public void m1() {
+		while (true) {
+			if (true) {
+				if (true) {
+				}
+			}
+		}
+	}
+
+	public void m2() {
+		while (true) {
+			if (true) {
+				if (true) {
+				}
+			}
+		}
+	}
+
+	public void m3() {
+		while (true) {
+			if (true) {
+				if (true) {
+				}
+			}
+		}
+	}
+
+	public void m4() {
+		while (true) {
+			if (true) {
+				if (true) {
+				}
+			}
+		}
+	}
+
+	public void m5() {
+		while (true) {
+			if (true) {
+				if (true) {
+				}
+			}
+		}
+	}
+
+	public void m6() {
+		while (true) {
+			if (true) {
+				if (true) {
+				}
+			}
+		}
+	}
+
+	public void m7() {
+		while (true) {
+			if (true) {
+				if (true) {
+				}
+			}
+		}
+	}
+
+	public void m8() {
 		while (true) {
 			if (true) {
 				if (true) {
@@ -25,9 +98,8 @@ public class A extends B {
 	}
 }
 
-@SuppressWarnings("ALL")
 class B {
 
-	public void m() {
+	protected void m() {
 	}
 }
