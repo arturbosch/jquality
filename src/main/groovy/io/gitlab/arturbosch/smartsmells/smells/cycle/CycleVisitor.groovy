@@ -21,7 +21,7 @@ class CycleVisitor extends Visitor<Cycle> {
 	private InnerClassesHandler innerClassesHandler
 
 	@Override
-	protected void visit(CompilationInfo info, Resolver arg) {
+	void visit(CompilationInfo info, Resolver arg) {
 		innerClassesHandler = info.data.innerClassesHandler
 		super.visit(info.unit, arg)
 	}
