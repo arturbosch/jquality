@@ -1,6 +1,7 @@
 package io.gitlab.arturbosch.smartsmells.api
 
 import io.gitlab.arturbosch.smartsmells.config.DetectorConfig
+import io.gitlab.arturbosch.smartsmells.config.Dsl
 import io.gitlab.arturbosch.smartsmells.smells.complexmethod.ComplexMethodDetector
 import io.gitlab.arturbosch.smartsmells.smells.longmethod.LongMethodDetector
 import io.gitlab.arturbosch.smartsmells.smells.longparam.LongParameterListDetector
@@ -33,6 +34,16 @@ class DetectorFacadeTest extends Specification {
 		where:
 		path = Paths.get(getClass().getResource("/integration.yml").getFile())
 		facade = DetectorFacade.fromConfig(DetectorConfig.load(path))
+	}
+
+	def "should create fullstack facade"() {
+		expect:
+		println(facade.numberOfDetectors())
+		def expected = Dsl.INSTANCE().values.keySet().size() - 3 // minus metrics, classinfo and comments detectors
+		facade.numberOfDetectors() == expected
+
+		where:
+		facade = DetectorFacade.fullStackFacade()
 	}
 
 }
