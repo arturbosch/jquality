@@ -4,6 +4,7 @@ import com.github.javaparser.JavaParser
 import com.github.javaparser.ast.CompilationUnit
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration
 import com.github.javaparser.ast.body.MethodDeclaration
+import groovy.transform.CompileStatic
 import org.codehaus.groovy.runtime.IOGroovyMethods
 
 import java.nio.file.Files
@@ -13,6 +14,7 @@ import java.nio.file.Paths
 /**
  * @author artur
  */
+@CompileStatic
 class Test {
 	static Path PATH = Paths.get("./src/test/groovy/io/gitlab/arturbosch/smartsmells/java/")
 	static Path BASE_PATH = Paths.get("./src/test/groovy/io/gitlab/arturbosch/smartsmells/java/")
@@ -33,6 +35,10 @@ class Test {
 	static Path MIDDLE_MAN_PATH = BASE_PATH.resolve("MiddleManDummy.java")
 	static Path FEATURE_ENVY_PATH = BASE_PATH.resolve("FeatureEnvyDummy.java")
 	static Path STATE_CHECKING_PATH = BASE_PATH.resolve("StateCheckingDummy.java")
+
+	static CompilationUnit compileContent(String content) {
+		return JavaParser.parse(content)
+	}
 
 	static CompilationUnit compile(Path path) {
 		return IOGroovyMethods.withCloseable(Files.newInputStream(path)) {
