@@ -59,7 +59,7 @@ class MetricFacade {
 	}
 
 	private static Metric averageMetric(Map.Entry<String, List<Metric>> it) {
-		Metric.of(it.key + "Mean", it.value.inject(0.0) { result, metric ->
+		Metric.of(it.key + "Mean", it.value.inject(0.0d) { result, metric ->
 			double value = asDouble(metric)
 			result + value
 		} / it.value.size())

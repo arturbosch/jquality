@@ -40,7 +40,7 @@ class MCCabe implements MetricRaiser {
 		def average = methods.stream()
 				.mapToInt { Metrics.mcCabe(aClass) }
 				.average()
-				.orElse(0.0)
+				.orElse(0.0d)
 		return Metric.of("MCCabe", average)
 	}
 }
@@ -103,7 +103,7 @@ class LM implements MetricRaiser {
 				.mapToInt { LongMethodVisitor.bodyLength(it) }
 				.average()
 
-		return Metric.of('LongMethod', average.orElse(0.0))
+		return Metric.of('LongMethod', average.orElse(0.0d))
 	}
 }
 
@@ -117,6 +117,6 @@ class LPL implements MetricRaiser {
 				.mapToInt { it.parameters.size() }
 				.average()
 
-		return Metric.of('LongParameterList', average.orElse(0.0))
+		return Metric.of('LongParameterList', average.orElse(0.0d))
 	}
 }
