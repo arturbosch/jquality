@@ -144,8 +144,6 @@ class RefusedParentBequestVisitor extends Visitor<RefusedParentBequest> {
 		def wmc = Metrics.wmc(clazz)
 		def amw = (double) wmc / nom
 
-		println(new RPBConfig(noProtMembers, bur, bovr, amw, wmc, nom))
-
 		if (shouldUseSuperClass(bovr, noProtMembers, bur) && notThatComplex(amw, wmc, nom)) {
 			report(new RefusedParentBequest(clazz.nameAsString, ClassHelper.createFullSignature(clazz), SourceRange
 					.fromNode(clazz), SourcePath.of(info), ElementTarget.CLASS))
