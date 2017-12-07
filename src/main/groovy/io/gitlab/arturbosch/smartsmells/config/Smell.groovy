@@ -3,6 +3,7 @@ package io.gitlab.arturbosch.smartsmells.config
 import groovy.transform.CompileStatic
 import io.gitlab.arturbosch.smartsmells.api.Detector
 import io.gitlab.arturbosch.smartsmells.metrics.ClassInfoDetector
+import io.gitlab.arturbosch.smartsmells.smells.classdatashouldbeprivate.ClassDataShouldBePrivateDetector
 import io.gitlab.arturbosch.smartsmells.smells.comment.CommentDetector
 import io.gitlab.arturbosch.smartsmells.smells.comment.JavadocDetector
 import io.gitlab.arturbosch.smartsmells.smells.complexcondition.ComplexConditionDetector
@@ -35,7 +36,14 @@ import static io.gitlab.arturbosch.smartsmells.util.Numbers.toInt
 @CompileStatic
 enum Smell {
 
-	CLASS_INFO{
+	ClASS_DATA_SHOULD_BE_PRIVATE{
+		@Override
+		Optional<Detector> initialize(DetectorConfig detectorConfig) {
+			return initDefault(detectorConfig, Constants.CLASS_DATA_SHOULD_BE_PRIVATE) {
+				new ClassDataShouldBePrivateDetector()
+			}
+		}
+	}, CLASS_INFO{
 		@Override
 		Optional<Detector> initialize(DetectorConfig detectorConfig) {
 			return initDefault(detectorConfig, Constants.CLASS_INFO, {

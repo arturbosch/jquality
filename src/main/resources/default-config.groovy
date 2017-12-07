@@ -12,6 +12,9 @@ config {
 	jars([]) // additional detectors, see detector-template project
 
 	detectors {
+		detector('classdatashouldbeprivate') {
+			let('active', 'true')
+		}
 		detector('comment') { // loose comments or comments over private members -> naming should be meaningful -> no doc needed
 			let('active', 'false')
 		}

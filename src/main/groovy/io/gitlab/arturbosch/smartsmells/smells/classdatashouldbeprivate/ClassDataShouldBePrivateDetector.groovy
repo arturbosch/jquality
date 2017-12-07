@@ -25,7 +25,7 @@ class ClassDataShouldBePrivateDetector extends Detector<ClassDataShouldBePrivate
 
 	@Override
 	Smell getType() {
-		return Smell.DATA_CLASS
+		return Smell.ClASS_DATA_SHOULD_BE_PRIVATE
 	}
 }
 
