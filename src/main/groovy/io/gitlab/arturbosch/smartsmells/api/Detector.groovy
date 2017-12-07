@@ -66,7 +66,7 @@ abstract class Detector<T extends DetectionResult> {
 		}.collect(Collectors.reducing(new HashSet(), combine))
 	}
 
-	protected abstract Visitor getVisitor()
+	protected abstract Visitor<T> getVisitor()
 
 	void clear() {
 		smells.clear()

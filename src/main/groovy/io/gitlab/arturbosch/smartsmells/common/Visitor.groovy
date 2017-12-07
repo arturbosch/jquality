@@ -18,8 +18,11 @@ abstract class Visitor<T extends DetectionResult> extends InternalVisitor {
 		return smells
 	}
 
-	protected void visit(CompilationInfo info, Resolver resolver) {
-		visit(info.unit, resolver)
+	protected void report(T smell) {
+		smells.add(smell)
 	}
 
+	void visit(CompilationInfo info, Resolver resolver) {
+		visit(info.unit, resolver)
+	}
 }
