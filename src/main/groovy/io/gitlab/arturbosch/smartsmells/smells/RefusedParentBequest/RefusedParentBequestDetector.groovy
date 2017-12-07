@@ -1,5 +1,6 @@
 package io.gitlab.arturbosch.smartsmells.smells.RefusedParentBequest
 
+import com.github.javaparser.ast.Modifier
 import com.github.javaparser.ast.body.BodyDeclaration
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration
 import com.github.javaparser.ast.body.ConstructorDeclaration
@@ -8,8 +9,9 @@ import com.github.javaparser.ast.body.MethodDeclaration
 import com.github.javaparser.ast.body.TypeDeclaration
 import com.github.javaparser.ast.expr.FieldAccessExpr
 import com.github.javaparser.ast.expr.MethodCallExpr
+import com.github.javaparser.ast.expr.SuperExpr
 import com.github.javaparser.ast.expr.ThisExpr
-import com.github.javaparser.ast.nodeTypes.modifiers.NodeWithProtectedModifier
+import com.github.javaparser.ast.nodeTypes.NodeWithModifiers
 import groovy.transform.Canonical
 import groovy.transform.CompileStatic
 import io.gitlab.arturbosch.jpal.ast.ClassHelper
@@ -24,6 +26,7 @@ import io.gitlab.arturbosch.smartsmells.metrics.Metrics
 import io.gitlab.arturbosch.smartsmells.smells.ElementTarget
 
 /**
+ * Formula taken from Object-Oriented Metrics in Practice, by Michele Lanza and Radu Marinescu:
  *
  * (((NProtM > Few) AND (BUR < A Third)) OR (BOvR < A Third)) AND
  * (((AMW > AVerage) OR (WMC > Average)) AND (NOM > Average))
@@ -33,15 +36,15 @@ import io.gitlab.arturbosch.smartsmells.smells.ElementTarget
 @CompileStatic
 class RefusedParentBequestDetector extends Detector<RefusedParentBequest> {
 
-	private final RPBConfig config
+	private final RPBConfig rpbConfig
 
-	RefusedParentBequestDetector(RPBConfig config) {
-		this.config = config
+	RefusedParentBequestDetector(RPBConfig config = new RPBConfig()) {
+		this.rpbConfig = config
 	}
 
 	@Override
 	protected Visitor<RefusedParentBequest> getVisitor() {
-		return new RefusedParentBequestVisitor(config)
+		return new RefusedParentBequestVisitor(rpbConfig)
 	}
 
 	@Override
@@ -65,7 +68,7 @@ class RefusedParentBequestVisitor extends Visitor<RefusedParentBequest> {
 
 	private final RPBConfig config
 
-	RefusedParentBequestVisitor(RPBConfig config) {
+	RefusedParentBequestVisitor(RPBConfig config = new RPBConfig()) {
 		this.config = config
 	}
 
@@ -91,8 +94,8 @@ class RefusedParentBequestVisitor extends Visitor<RefusedParentBequest> {
 		super.visit(n, resolver)
 	}
 
-	private void raiseMetrics(ClassOrInterfaceDeclaration n, TypeDeclaration superDecl) {
-		Collection<BodyDeclaration> protSuperMems = protectedMembers(superDecl)
+	private void raiseMetrics(ClassOrInterfaceDeclaration clazz, TypeDeclaration superClazz) {
+		Collection<BodyDeclaration> protSuperMems = protectedMembers(superClazz)
 		Collection<MethodDeclaration> protSuperMethods = protSuperMems.stream()
 				.filter { it instanceof MethodDeclaration }
 				.collect()
@@ -108,7 +111,7 @@ class RefusedParentBequestVisitor extends Visitor<RefusedParentBequest> {
 		).toSet()
 
 		Collection<String> superMethodDeclString = protSuperMethods.collect { it.declarationAsString }
-		Collection<BodyDeclaration> protMembers = protectedMembers(n)
+		Collection<BodyDeclaration> protMembers = protectedMembers(clazz)
 
 		Collection<String> overriddenMethods = protMembers.stream()
 				.filter { it instanceof MethodDeclaration }
@@ -119,16 +122,17 @@ class RefusedParentBequestVisitor extends Visitor<RefusedParentBequest> {
 
 		def overriddenFromSuper = superMethodDeclString.intersect(overriddenMethods).size()
 
-		Collection<String> usedFields = n.getChildNodesByType(FieldAccessExpr.class).stream()
-				.filter { ClassHelper.inClassScope(it, n.nameAsString) }
-				.filter { it.scope == null || it.scope instanceof ThisExpr }
+		Collection<String> usedFields = clazz.getChildNodesByType(FieldAccessExpr.class).stream()
+				.filter { ClassHelper.inClassScope(it, clazz.nameAsString) }
+				.filter { it.scope == null || it.scope instanceof ThisExpr || it.scope instanceof SuperExpr }
 				.map { it.nameAsString }
 				.collect()
 
-		Collection<String> usedMethods = n.getChildNodesByType(MethodCallExpr.class).stream()
-				.filter { ClassHelper.inClassScope(it, n.nameAsString) }
-				.filter { !it.scope.isPresent() || it.scope.get() instanceof ThisExpr }
-				.map { it.nameAsString }
+		Collection<String> usedMethods = clazz.getChildNodesByType(MethodCallExpr.class).stream()
+				.filter { ClassHelper.inClassScope(it, clazz.nameAsString) }
+				.filter {
+			!it.scope.isPresent() || it.scope.get() instanceof ThisExpr || it.scope.get() instanceof SuperExpr
+		}.map { it.nameAsString }
 				.collect()
 
 		def usedFromSuper = protSuperMemberNames.intersect(usedFields + usedMethods).size()
@@ -136,23 +140,33 @@ class RefusedParentBequestVisitor extends Visitor<RefusedParentBequest> {
 		def bur = (double) usedFromSuper / protSuperMemberNames.size()
 		def bovr = (double) overriddenFromSuper / superMethodDeclString.size()
 		def noProtMembers = protMembers.size()
-		def nom = n.methods.size()
-		def wmc = Metrics.wmc(n)
+		def nom = clazz.methods.size()
+		def wmc = Metrics.wmc(clazz)
 		def amw = (double) wmc / nom
 
 		println(new RPBConfig(noProtMembers, bur, bovr, amw, wmc, nom))
 
-		if ((bovr < config.BOvR || (noProtMembers > config.NProtM && bur < config.BUR)) &&
-				((amw > config.AMW || wmc > config.WMC) && nom > config.NOM)) {
-			report(new RefusedParentBequest(n.nameAsString, ClassHelper.createFullSignature(n), SourceRange
-					.fromNode(n), SourcePath.of(info), ElementTarget.CLASS))
+		if (shouldUseSuperClass(bovr, noProtMembers, bur) && notThatComplex(amw, wmc, nom)) {
+			report(new RefusedParentBequest(clazz.nameAsString, ClassHelper.createFullSignature(clazz), SourceRange
+					.fromNode(clazz), SourcePath.of(info), ElementTarget.CLASS))
 		}
+	}
+
+	private boolean notThatComplex(double amw, int wmc, int nom) {
+		(amw > config.AMW || wmc > config.WMC) && nom > config.NOM
+	}
+
+	private boolean shouldUseSuperClass(double bovr, int noProtMembers, double bur) {
+		bovr < config.BOvR || (noProtMembers > config.NProtM && bur < config.BUR)
 	}
 
 	private static Collection<BodyDeclaration> protectedMembers(TypeDeclaration decl) {
 		return decl.members.stream()
-				.filter { it instanceof NodeWithProtectedModifier }
+				.filter { it instanceof NodeWithModifiers }
 				.filter { !(it instanceof ConstructorDeclaration) }
+				.map { it as NodeWithModifiers }
+				.filter { it.modifiers.contains(Modifier.PROTECTED) }
+				.map { it as BodyDeclaration }
 				.collect()
 	}
 }
