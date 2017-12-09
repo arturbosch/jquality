@@ -19,7 +19,6 @@ class FileMetricProcessor implements CompilationInfoProcessor<FileInfo> {
 
 	@Override
 	FileInfo process(CompilationInfo info, Resolver resolver) {
-		detector.initialize(info)
 		detector.visit(info, resolver)
 		return new FileInfo(info.path, info.relativePath, detector.classes)
 	}

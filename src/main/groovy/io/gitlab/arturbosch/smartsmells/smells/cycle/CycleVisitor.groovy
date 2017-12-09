@@ -10,21 +10,12 @@ import io.gitlab.arturbosch.jpal.ast.source.SourceRange
 import io.gitlab.arturbosch.jpal.core.CompilationInfo
 import io.gitlab.arturbosch.jpal.resolution.QualifiedType
 import io.gitlab.arturbosch.jpal.resolution.Resolver
-import io.gitlab.arturbosch.jpal.resolution.nested.InnerClassesHandler
 import io.gitlab.arturbosch.smartsmells.common.Visitor
 
 /**
  * @author artur
  */
 class CycleVisitor extends Visitor<Cycle> {
-
-	private InnerClassesHandler innerClassesHandler
-
-	@Override
-	void visit(CompilationInfo info, Resolver arg) {
-		innerClassesHandler = info.data.innerClassesHandler
-		super.visit(info.unit, arg)
-	}
 
 	@Override
 	void visit(ClassOrInterfaceDeclaration n, Resolver resolver) {
@@ -34,7 +25,7 @@ class CycleVisitor extends Visitor<Cycle> {
 		def fields = NodeHelper.findFields(n)
 		fields.each { field ->
 
-			def unqualifiedFieldName = innerClassesHandler.getUnqualifiedNameForInnerClass(field.commonType)
+			def unqualifiedFieldName = info.data.innerClassesHandler.getUnqualifiedNameForInnerClass(field.commonType)
 			def qualifiedType = resolver.resolveType(new ClassOrInterfaceType(unqualifiedFieldName), info)
 
 			if (qualifiedType.isReference()) {
@@ -48,7 +39,7 @@ class CycleVisitor extends Visitor<Cycle> {
 	def searchForCycles(QualifiedType otherType, QualifiedType thisType,
 						FieldDeclaration field, Resolver resolver) {
 
-		resolver.storage.getCompilationInfo(otherType).ifPresent {
+		resolver.find(otherType).ifPresent {
 			def visitor = new SameFieldTypeVisitor(thisType)
 			visitor.visit(it, resolver)
 

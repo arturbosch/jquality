@@ -43,7 +43,6 @@ abstract class Detector<T extends DetectionResult> {
 	 */
 	Set<T> execute(CompilationInfo info, Resolver resolver) {
 		def visitor = getVisitor()
-		visitor.initialize(info)
 		visitor.visit(info, resolver)
 		def newSmells = visitor.smells
 		smells.addAll(newSmells)

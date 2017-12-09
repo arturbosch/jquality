@@ -18,15 +18,12 @@ abstract class InternalVisitor extends VoidVisitorAdapter<Resolver> {
 	protected Path relativePath
 	protected CompilationInfo info
 
-	void initialize(CompilationInfo info) {
+	void visit(CompilationInfo info, Resolver resolver) {
 		this.info = info
 		relativePath = info.path
-	}
-
-	void visit(CompilationInfo info, Resolver resolver) {
 		visit(info.unit, resolver)
 	}
-	
+
 	protected static boolean isEmpty(ClassOrInterfaceDeclaration n) {
 		ClassHelper.isEmptyBody(n) && ClassHelper.hasNoMethods(n)
 	}

@@ -32,7 +32,6 @@ abstract class DetectorSpecification<T extends DetectionResult> extends Specific
 		storage.updateCompilationInfo(map)
 		def info = storage.getCompilationInfo(path).get()
 
-		visitor.initialize(info)
 		visitor.visit(info, new Resolver(storage))
 		return visitor.smells
 	}
