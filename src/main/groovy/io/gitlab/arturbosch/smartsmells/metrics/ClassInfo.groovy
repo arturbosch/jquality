@@ -39,4 +39,11 @@ class ClassInfo implements DetectionResult {
 	String asComparableString() {
 		return "${javaClassName()}$signature"
 	}
+
+	@Override
+	String toString() {
+		return "ClassInfo{name=$name, signature=$signature\n\t\t" +
+				metrics.collect { it.toString() }.join("\n\t\t") +
+				"}"
+	}
 }

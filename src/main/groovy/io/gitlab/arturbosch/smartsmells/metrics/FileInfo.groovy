@@ -26,9 +26,8 @@ class FileInfo implements DetectionResult {
 
 	@Override
 	String toString() {
-		return "FileInfo{" +
-				"relativePath=" + relativePath +
-				", classes=" + classes +
+		return "FileInfo{relativePath=$relativePath\n\t" +
+				classes.collect { it.toString() }.join("\n\t") +
 				'}'
 	}
 
@@ -46,4 +45,6 @@ class FileInfo implements DetectionResult {
 	ElementTarget elementTarget() {
 		return elementTarget
 	}
+
+
 }

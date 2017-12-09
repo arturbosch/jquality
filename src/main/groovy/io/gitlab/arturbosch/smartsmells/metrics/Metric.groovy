@@ -43,10 +43,7 @@ class Metric {
 
 	@Override
 	String toString() {
-		return "Metric{" +
-				"type=" + type +
-				", value=" + valueAsString() +
-				'}'
+		return "$type=${valueAsString()}"
 	}
 
 	private String valueAsString() {
