@@ -31,7 +31,7 @@ class UpdatableDetectorFacade {
 		infos.addAll(storage.updateCompilationInfo(pathsToUpdate))
 	}
 
-	void addOrUpdate(Map<Path, String> pathsToUpdate) {
+	void addOrUpdateWithContent(Map<Path, String> pathsToUpdate) {
 		infos.addAll(storage.updateCompilationInfo(pathsToUpdate))
 	}
 
