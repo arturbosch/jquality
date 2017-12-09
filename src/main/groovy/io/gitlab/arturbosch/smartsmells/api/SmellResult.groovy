@@ -11,12 +11,12 @@ class SmellResult {
 
 	private Map<Smell, List<DetectionResult>> smellSets
 
-	SmellResult(Map<Smell, List<DetectionResult>> smellSets = new HashMap<>()) {
+	SmellResult(Map<Smell, List<DetectionResult>> smellSets = Collections.emptyMap()) {
 		this.smellSets = smellSets
 	}
 
 	List<DetectionResult> of(Smell smell) {
-		smellSets.getOrDefault(smell, new ArrayList<>())
+		smellSets.getOrDefault(smell, Collections.emptyList())
 	}
 
 	List<DetectionResult> filter(String path) {
