@@ -135,7 +135,7 @@ class RefusedParentBequestVisitor extends Visitor<RefusedParentBequest> {
 		}.map { it.nameAsString }
 				.collect()
 
-		def usedFromSuper = protSuperMemberNames.intersect(usedFields + usedMethods).size()
+		def usedFromSuper = protSuperMemberNames.intersect((usedFields + usedMethods).toSet()).size()
 
 		def bur = (double) usedFromSuper / protSuperMemberNames.size()
 		def bovr = (double) overriddenFromSuper / superMethodDeclString.size()
