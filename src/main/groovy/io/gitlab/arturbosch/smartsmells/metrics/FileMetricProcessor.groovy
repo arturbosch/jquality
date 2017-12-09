@@ -11,16 +11,17 @@ import io.gitlab.arturbosch.jpal.resolution.Resolver
 @CompileStatic
 class FileMetricProcessor implements CompilationInfoProcessor<FileInfo> {
 
-	private ClassInfoDetector detector
+	private ClassInfoVisitor detector
 
-	FileMetricProcessor(ClassInfoDetector detector) {
+	FileMetricProcessor(ClassInfoVisitor detector) {
 		this.detector = detector
 	}
 
 	@Override
 	FileInfo process(CompilationInfo info, Resolver resolver) {
-		def classInfos = detector.execute(info, resolver)
-		return new FileInfo(info.path, info.relativePath, classInfos)
+		detector.initialize(info)
+		detector.visit(info, resolver)
+		return new FileInfo(info.path, info.relativePath, detector.classes)
 	}
 
 }

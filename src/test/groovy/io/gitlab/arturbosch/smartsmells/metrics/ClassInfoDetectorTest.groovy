@@ -1,5 +1,6 @@
 package io.gitlab.arturbosch.smartsmells.metrics
 
+import io.gitlab.arturbosch.smartsmells.api.MetricFacade
 import io.gitlab.arturbosch.smartsmells.common.Test
 import spock.lang.Specification
 
@@ -14,6 +15,6 @@ class ClassInfoDetectorTest extends Specification {
 		smells.size() == 4
 
 		where:
-		smells = new ClassInfoDetector().run(Test.FEATURE_ENVY_PATH)
+		smells = new MetricFacade().run(Test.FEATURE_ENVY_PATH)
 	}
 }

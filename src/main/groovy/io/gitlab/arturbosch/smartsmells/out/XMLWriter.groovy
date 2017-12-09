@@ -3,6 +3,7 @@ package io.gitlab.arturbosch.smartsmells.out
 import io.gitlab.arturbosch.jpal.ast.source.SourcePath
 import io.gitlab.arturbosch.smartsmells.api.SmellResult
 import io.gitlab.arturbosch.smartsmells.config.Smell
+import io.gitlab.arturbosch.smartsmells.metrics.ClassInfo
 import io.gitlab.arturbosch.smartsmells.metrics.Metric
 import io.gitlab.arturbosch.smartsmells.smells.DetectionResult
 import io.gitlab.arturbosch.smartsmells.util.Strings
@@ -29,18 +30,20 @@ class XMLWriter {
 	static String toXml(Smell key, DetectionResult it) {
 		if (key == Smell.CYCLE) {
 			"\t" + handleDependencyDelegates(it)
-		} else if (key == Smell.CLASS_INFO) {
-			"\t" + handleMetricDelegates(it)
 		} else {
 			"\t" + toXmlEntry(it)
 		}
 	}
 
-	static String handleMetricDelegates(DetectionResult smelly) {
-		def name = smelly.class.simpleName
-		def metrics = (List<Metric>) extractField(smelly, "metrics")
+	static String toMetricXml(List<ClassInfo> clazzes) {
+		return "<SmartSmells>\n" + clazzes.collect { handleClassInfo(it) }.join("\n") + "\n</SmartSmells>"
+	}
+
+	static String handleClassInfo(ClassInfo clazz) {
+		def name = clazz.class.simpleName
+		def metrics = (List<Metric>) extractField(clazz, "metrics")
 		def xmlMetrics = metrics.collect { toXmlEntry(it) }.join("\n\t\t")
-		def xml = toXmlEntry(smelly)
+		def xml = toXmlEntry(clazz)
 		return Strings.substringBefore(xml, "/>") + ">\n\t\t$xmlMetrics\n\t</$name>"
 	}
 
@@ -54,7 +57,7 @@ class XMLWriter {
 		return "<$name>$sourceEntry$targetEntry</$name>"
 	}
 
-	private static Object extractField(DetectionResult smelly, String fieldName) {
+	private static Object extractField(Object smelly, String fieldName) {
 		smelly.class.getDeclaredField(fieldName).with {
 			setAccessible(true)
 			get(smelly)

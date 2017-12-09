@@ -1,19 +1,18 @@
 package io.gitlab.arturbosch.smartsmells.api
 
 import io.gitlab.arturbosch.jpal.core.JPAL
-import io.gitlab.arturbosch.jpal.resolution.Resolver
-import io.gitlab.arturbosch.smartsmells.config.DetectorConfig
 import io.gitlab.arturbosch.smartsmells.metrics.ClassInfo
-import io.gitlab.arturbosch.smartsmells.metrics.ClassInfoDetector
+import io.gitlab.arturbosch.smartsmells.metrics.ClassInfoVisitor
+import io.gitlab.arturbosch.smartsmells.metrics.FileInfo
 import io.gitlab.arturbosch.smartsmells.metrics.FileMetricProcessor
 import io.gitlab.arturbosch.smartsmells.metrics.Metric
+import io.gitlab.arturbosch.smartsmells.metrics.internal.FullstackMetrics
 import io.gitlab.arturbosch.smartsmells.util.Validate
 
 import java.nio.file.Path
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.ForkJoinPool
 import java.util.regex.Pattern
-import java.util.stream.Collectors
 
 /**
  * @author Artur Bosch
@@ -21,15 +20,13 @@ import java.util.stream.Collectors
 class MetricFacade {
 
 	private final ExecutorService executorService
-	private final ClassInfoDetector classInfoDetector
+	private final ClassInfoVisitor classInfoDetector
 
-	MetricFacade(final CombinedCompositeMetricRaiser compositeMetricRaiser,
-				 final DetectorConfig config = null,
+	MetricFacade(final CompositeMetricRaiser compositeMetricRaiser = FullstackMetrics.create(),
 				 final ExecutorService executorService = ForkJoinPool.commonPool()) {
 		Validate.notNull(compositeMetricRaiser)
 		this.executorService = executorService
-		classInfoDetector = new ClassInfoDetector(compositeMetricRaiser)
-		classInfoDetector.setConfig(config)
+		classInfoDetector = new ClassInfoVisitor(compositeMetricRaiser)
 	}
 
 	static MetricFacadeBuilder builder() {
@@ -38,16 +35,12 @@ class MetricFacade {
 
 	List<ClassInfo> run(Path root, final List<String> filters = Collections.emptyList()) {
 		def pathFilters = Validate.notNull(filters)?.collect { Pattern.compile(it) }
-		def storage = root ? JPAL.initializedUpdatable(root, null, pathFilters, null, executorService)
-				: JPAL.updatable(null, pathFilters, null, executorService)
-		def resolver = new Resolver(storage)
 		def processor = new FileMetricProcessor(classInfoDetector)
-		def classInfos = storage.allCompilationInfo
-				.parallelStream()
-				.map { processor.process(it, resolver) }
-				.flatMap { it.classes.stream() }
-				.collect(Collectors.toList())
-		return classInfos as List<ClassInfo>
+		def storage = root ? JPAL.initializedUpdatable(root, processor, pathFilters, null, executorService)
+				: JPAL.updatable(processor, pathFilters, null, executorService)
+		return storage.allCompilationInfo.stream()
+				.flatMap { it.getProcessedObject(FileInfo.class).classes.stream() }
+				.collect()
 	}
 
 	static List<Metric> averageAndDeviation(List<ClassInfo> infos) {

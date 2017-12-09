@@ -36,9 +36,7 @@ class SmellResult {
 
 	void prettyPrint(Smell... smells) {
 		def summary = ""
-		def printList = Arrays.stream(smells)
-				.filter { it != Smell.CLASS_INFO }
-				.collect()
+		def printList = smells.toList()
 		println()
 		smellSets.entrySet().each {
 			if (printList.contains(it.key)) {

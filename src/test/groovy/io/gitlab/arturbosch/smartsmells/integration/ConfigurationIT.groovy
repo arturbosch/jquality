@@ -1,6 +1,7 @@
 package io.gitlab.arturbosch.smartsmells.integration
 
 import io.gitlab.arturbosch.smartsmells.api.DetectorFacade
+import io.gitlab.arturbosch.smartsmells.api.MetricFacade
 import io.gitlab.arturbosch.smartsmells.common.Test
 import io.gitlab.arturbosch.smartsmells.config.DetectorConfig
 import io.gitlab.arturbosch.smartsmells.out.XMLWriter
@@ -50,17 +51,14 @@ class ConfigurationIT extends Specification {
 
 
 	def "create metrics facade"() {
-		when:
-		def result = DetectorFacade.builder().metricFacade().run(Test.PATH)
-
-		then:
-		result.smellSets.size() == 1
+		given:
+		def result = MetricFacade.builder().fullStackFacade().run(Test.PATH)
 
 		when:
-		def xml = XMLWriter.toXml(result)
-		println xml
+		def xml = XMLWriter.toMetricXml(result)
+		def entries = xml.findAll("</ClassInfo>")
 
 		then:
-		xml.contains("ClassInfo")
+		entries.size() == result.size()
 	}
 }

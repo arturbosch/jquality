@@ -3,7 +3,6 @@ package io.gitlab.arturbosch.smartsmells.out
 import io.gitlab.arturbosch.jpal.ast.source.SourcePath
 import io.gitlab.arturbosch.jpal.ast.source.SourceRange
 import io.gitlab.arturbosch.smartsmells.common.Test
-import io.gitlab.arturbosch.smartsmells.config.Smell
 import io.gitlab.arturbosch.smartsmells.metrics.ClassInfo
 import io.gitlab.arturbosch.smartsmells.metrics.Metric
 import io.gitlab.arturbosch.smartsmells.smells.ElementTarget
@@ -39,10 +38,11 @@ class XMLWriterTest extends Specification {
 	def "class info with metrics transforms to xml"() {
 		given: "class info with three metrics"
 		def info = new ClassInfo("Test", "Test",
-				[Metric.of("SIZE", 5), Metric.of("STUFF", 2.2)],
-				SourcePath.of(Test.BASE_PATH, Test.BASE_PATH), SourceRange.of(0, 0, 0, 0), ElementTarget.CLASS)
+				[Metric.of("SIZE", 5), Metric.of("STUFF", 2.2d)],
+				SourcePath.of(Test.BASE_PATH, Test.BASE_PATH),
+				SourceRange.of(0, 0, 0, 0))
 		when: "persisting info"
-		def xml = XMLWriter.toXml(Smell.CLASS_INFO, info)
+		def xml = XMLWriter.handleClassInfo(info)
 		then: "its correct xml"
 		Strings.amountOf(xml, "Metric") == 2
 	}

@@ -3,11 +3,15 @@ package io.gitlab.arturbosch.smartsmells.metrics
 import groovy.transform.CompileStatic
 import io.gitlab.arturbosch.smartsmells.util.Validate
 
+import java.util.regex.Pattern
+
 /**
  * @author Artur Bosch
  */
 @CompileStatic
 class Metric {
+
+	static final Pattern ABBR_PATTERN = Pattern.compile("[a-z]")
 
 	final String abbreviation
 	final String type
@@ -18,7 +22,7 @@ class Metric {
 		this.type = type
 		this.value = value
 		this.isDouble = isDouble
-		this.abbreviation = type.replaceAll("[a-z]", "")
+		this.abbreviation = ABBR_PATTERN.matcher(type).replaceAll("")
 	}
 
 	double asDouble() {

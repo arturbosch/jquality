@@ -2,9 +2,9 @@ package system
 
 import io.gitlab.arturbosch.jpal.core.JPAL
 import io.gitlab.arturbosch.smartsmells.api.DetectorFacade
+import io.gitlab.arturbosch.smartsmells.api.MetricFacade
 import io.gitlab.arturbosch.smartsmells.config.Smell
 import io.gitlab.arturbosch.smartsmells.metrics.ClassInfo
-import io.gitlab.arturbosch.smartsmells.metrics.ClassInfoDetector
 import io.gitlab.arturbosch.smartsmells.out.XMLWriter
 import spock.lang.Specification
 
@@ -45,8 +45,7 @@ class SystemTestOnQuideIT extends Specification {
 //		def path = "/home/artur/Repos/netty"
 
 		when:
-		def result = DetectorFacade.builder().with(new ClassInfoDetector(false)).build()
-				.run(Paths.get(path)).of(Smell.CLASS_INFO)
+		def result = new MetricFacade().run(Paths.get(path))
 		result.each { println(it.toString()) }
 		println "size: ${result.size()}"
 

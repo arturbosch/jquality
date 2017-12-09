@@ -7,17 +7,17 @@ import io.gitlab.arturbosch.jpal.ast.source.SourcePath
 import io.gitlab.arturbosch.jpal.ast.source.SourceRange
 import io.gitlab.arturbosch.jpal.resolution.Resolver
 import io.gitlab.arturbosch.smartsmells.api.CompositeMetricRaiser
-import io.gitlab.arturbosch.smartsmells.common.Visitor
-import io.gitlab.arturbosch.smartsmells.smells.ElementTarget
+import io.gitlab.arturbosch.smartsmells.common.visitor.InternalVisitor
 
 /**
  * @author Artur Bosch
  */
-class ClassInfoVisitor extends Visitor<ClassInfo> {
+class ClassInfoVisitor extends InternalVisitor {
 
-	private CompositeMetricRaiser metrics
+	private final CompositeMetricRaiser metrics
+	final Set<ClassInfo> classes = new HashSet<>()
 
-	ClassInfoVisitor(CompositeMetricRaiser compositeMetricRaiser) {
+	ClassInfoVisitor(final CompositeMetricRaiser compositeMetricRaiser) {
 		metrics = compositeMetricRaiser
 	}
 
@@ -29,13 +29,12 @@ class ClassInfoVisitor extends Visitor<ClassInfo> {
 
 	@Override
 	void visit(ClassOrInterfaceDeclaration it, Resolver arg) {
-		report(new ClassInfo(
+		classes.add(new ClassInfo(
 				name: it.name,
 				signature: ClassHelper.createFullSignature(it),
 				metrics: metrics.raise(it),
 				sourcePath: SourcePath.of(info),
 				sourceRange: SourceRange.fromNode(it),
-				elementTarget: ElementTarget.CLASS
 		))
 		super.visit(it, arg)
 	}

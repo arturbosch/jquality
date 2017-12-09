@@ -4,7 +4,6 @@ import groovy.transform.CompileStatic
 import io.gitlab.arturbosch.smartsmells.config.DetectorConfig
 import io.gitlab.arturbosch.smartsmells.config.DetectorInitializer
 import io.gitlab.arturbosch.smartsmells.config.Dsl
-import io.gitlab.arturbosch.smartsmells.metrics.ClassInfoDetector
 import io.gitlab.arturbosch.smartsmells.util.Validate
 
 /**
@@ -37,10 +36,6 @@ class DetectorFacadeBuilder {
 	DetectorFacadeBuilder withFilters(List<String> filters) {
 		this.filters = Validate.notNull(filters)
 		return this
-	}
-
-	static DetectorFacade metricFacade() {
-		return new DetectorFacadeBuilder().with(new ClassInfoDetector()).build()
 	}
 
 	DetectorFacadeBuilder fromConfig(final DetectorConfig config) {
