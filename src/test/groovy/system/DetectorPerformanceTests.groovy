@@ -6,6 +6,8 @@ import io.gitlab.arturbosch.jpal.resolution.Resolver
 import io.gitlab.arturbosch.smartsmells.Main
 import io.gitlab.arturbosch.smartsmells.api.Detector
 import io.gitlab.arturbosch.smartsmells.api.DetectorFacade
+import io.gitlab.arturbosch.smartsmells.smells.RefusedParentBequest.RefusedParentBequestDetector
+import io.gitlab.arturbosch.smartsmells.smells.classdatashouldbeprivate.ClassDataShouldBePrivateDetector
 import io.gitlab.arturbosch.smartsmells.smells.comment.CommentDetector
 import io.gitlab.arturbosch.smartsmells.smells.complexmethod.ComplexMethodDetector
 import io.gitlab.arturbosch.smartsmells.smells.cycle.CycleDetector
@@ -130,6 +132,20 @@ class DetectorPerformanceTests extends Specification {
 		true
 	}
 
+	def "class data should be private"() {
+		when: "testing performance"
+		run(new ClassDataShouldBePrivateDetector())
+		then: "it takes: 281 ms"
+		true
+	}
+
+	def "refused parent bequest detector"() {
+		when: "testing performance"
+		run(new RefusedParentBequestDetector())
+		then: "it takes: 1345 ms"
+		true
+	}
+
 	private static CompilationStorage init(Path path) {
 		if (storage == null) {
 			def time = Main.benchmark {
@@ -142,7 +158,7 @@ class DetectorPerformanceTests extends Specification {
 
 	private static run(Detector detector) {
 		println "Testing ${detector.class.simpleName}"
-		def path = Paths.get("/home/artur/Repos/elasticsearch/core/src/main/")
+		def path = Paths.get("/home/artur/master/projects/elasticsearch/core/src/main/java")
 
 		def storage = init(path)
 		def facade = DetectorFacade.builder().with(detector).build()
