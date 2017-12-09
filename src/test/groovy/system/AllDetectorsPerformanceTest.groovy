@@ -29,7 +29,7 @@ class AllDetectorsPerformanceTest extends Specification {
 		def detectors = -1
 		def smells = -1
 		time = Main.benchmark {
-			def smellSets = facade.justRun(storage.allCompilationInfo, new Resolver(storage)).smellSets
+			def smellSets = facade.run(storage.allCompilationInfo, new Resolver(storage)).smellSets
 			detectors = smellSets.size()
 			smells = smellSets.values().flatten().size()
 		} //  27574 (w/o SS) ms, 35351 (w/ SS) ms

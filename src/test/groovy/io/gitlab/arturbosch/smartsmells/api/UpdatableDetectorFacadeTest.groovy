@@ -20,7 +20,7 @@ class UpdatableDetectorFacadeTest extends Specification {
 		when:
 		facade.addOrUpdate(Collections.singletonList(Test.CYCLE_DUMMY_PATH))
 		facade.addOrUpdate(Collections.singletonList(Test.COMPLEX_METHOD_DUMMY_PATH))
-		def smellResult = facade.run()
+		def smellResult = facade.executeOnUpdated()
 		then:
 		smellResult.of(Smell.CYCLE).size() == 1
 		smellResult.of(Smell.COMPLEX_METHOD).size() == 1
@@ -36,7 +36,7 @@ class UpdatableDetectorFacadeTest extends Specification {
 				.collect(Collectors.toList())
 		when:
 		facade.addOrUpdate(paths)
-		def smellResult = facade.run()
+		def smellResult = facade.executeOnUpdated()
 		then:
 		smellResult.smellSets.entrySet().stream().flatMap { it.value.stream() }.collect(Collectors.toList()).size() == 0
 	}

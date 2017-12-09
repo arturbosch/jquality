@@ -149,7 +149,7 @@ class DetectorPerformanceTests extends Specification {
 
 		def result = -1
 		def time = Main.benchmark {
-			result = facade.justRun(storage.allCompilationInfo, new Resolver(storage))
+			result = facade.run(storage.allCompilationInfo, new Resolver(storage))
 					.of(detector.type).size()
 		} // 16840 ms
 		println "Detector: $time ms"

@@ -20,8 +20,7 @@ class UpdatableDetectorFacade {
 
 	private final Set<CompilationInfo> infos = new HashSet<>()
 
-	UpdatableDetectorFacade(Path root = null,
-							DetectorFacade detectorFacade,
+	UpdatableDetectorFacade(DetectorFacade detectorFacade,
 							UpdatableCompilationStorage storage) {
 		facade = detectorFacade
 		this.storage = storage
@@ -48,8 +47,8 @@ class UpdatableDetectorFacade {
 		storage.removeCompilationInfo(pathsToRemove)
 	}
 
-	SmellResult run() {
-		def result = facade.justRun(infos, resolver)
+	SmellResult executeOnUpdated() {
+		def result = facade.run(infos, resolver)
 		facade.reset()
 		infos.clear()
 		return result
