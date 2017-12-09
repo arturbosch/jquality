@@ -56,6 +56,6 @@ class MetricFacadeBuilder {
 	MetricFacade build() {
 		def simple = new SimpleCompositeMetricRaiser(raisers)
 		def combined = new CombinedCompositeMetricRaiser(compositeRaisers + simple)
-		return new MetricFacade(combined, config, filters)
+		return new MetricFacade(combined, config)
 	}
 }

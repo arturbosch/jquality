@@ -10,6 +10,8 @@ import io.gitlab.arturbosch.smartsmells.metrics.Metric
 import io.gitlab.arturbosch.smartsmells.util.Validate
 
 import java.nio.file.Path
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.ForkJoinPool
 import java.util.regex.Pattern
 import java.util.stream.Collectors
 
@@ -18,14 +20,14 @@ import java.util.stream.Collectors
  */
 class MetricFacade {
 
-	private final List<Pattern> filters
+	private final ExecutorService executorService
 	private final ClassInfoDetector classInfoDetector
 
 	MetricFacade(final CombinedCompositeMetricRaiser compositeMetricRaiser,
 				 final DetectorConfig config = null,
-				 final List<String> filters = Collections.emptyList()) {
+				 final ExecutorService executorService = ForkJoinPool.commonPool()) {
 		Validate.notNull(compositeMetricRaiser)
-		this.filters = Validate.notNull(filters)?.collect { Pattern.compile(it) }
+		this.executorService = executorService
 		classInfoDetector = new ClassInfoDetector(compositeMetricRaiser)
 		classInfoDetector.setConfig(config)
 	}
@@ -34,13 +36,15 @@ class MetricFacade {
 		return new MetricFacadeBuilder()
 	}
 
-	List<ClassInfo> run(Path root) {
-		def storage = root ? JPAL.initializedUpdatable(root, null, filters) : JPAL.updatable(null, filters)
+	List<ClassInfo> run(Path root, final List<String> filters = Collections.emptyList()) {
+		def pathFilters = Validate.notNull(filters)?.collect { Pattern.compile(it) }
+		def storage = root ? JPAL.initializedUpdatable(root, null, pathFilters, null, executorService)
+				: JPAL.updatable(null, pathFilters, null, executorService)
 		def resolver = new Resolver(storage)
-		def processor = new FileMetricProcessor(classInfoDetector, resolver)
+		def processor = new FileMetricProcessor(classInfoDetector)
 		def classInfos = storage.allCompilationInfo
 				.parallelStream()
-				.map { processor.process(it) }
+				.map { processor.process(it, resolver) }
 				.flatMap { it.classes.stream() }
 				.collect(Collectors.toList())
 		return classInfos as List<ClassInfo>
