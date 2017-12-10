@@ -4,7 +4,6 @@ import io.gitlab.arturbosch.jpal.ast.source.SourcePath
 import io.gitlab.arturbosch.smartsmells.api.SmellResult
 import io.gitlab.arturbosch.smartsmells.config.Smell
 import io.gitlab.arturbosch.smartsmells.metrics.ClassInfo
-import io.gitlab.arturbosch.smartsmells.metrics.Metric
 import io.gitlab.arturbosch.smartsmells.smells.DetectionResult
 import io.gitlab.arturbosch.smartsmells.util.Strings
 
@@ -41,8 +40,7 @@ class XMLWriter {
 
 	static String handleClassInfo(ClassInfo clazz) {
 		def name = clazz.class.simpleName
-		def metrics = (List<Metric>) extractField(clazz, "metrics")
-		def xmlMetrics = metrics.collect { toXmlEntry(it) }.join("\n\t\t")
+		def xmlMetrics = clazz.getMetrics().collect { toXmlEntry(it) }.join("\n\t\t")
 		def xml = toXmlEntry(clazz)
 		return Strings.substringBefore(xml, "/>") + ">\n\t\t$xmlMetrics\n\t</$name>"
 	}

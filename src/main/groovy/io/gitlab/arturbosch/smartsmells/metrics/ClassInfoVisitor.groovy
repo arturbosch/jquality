@@ -2,6 +2,7 @@ package io.gitlab.arturbosch.smartsmells.metrics
 
 import com.github.javaparser.ast.CompilationUnit
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration
+import com.github.javaparser.ast.type.ClassOrInterfaceType
 import io.gitlab.arturbosch.jpal.ast.ClassHelper
 import io.gitlab.arturbosch.jpal.ast.source.SourcePath
 import io.gitlab.arturbosch.jpal.ast.source.SourceRange
@@ -29,13 +30,16 @@ class ClassInfoVisitor extends InternalVisitor {
 
 	@Override
 	void visit(ClassOrInterfaceDeclaration it, Resolver arg) {
+		def metrics = metrics.raise(it).collectEntries { [it.type, it] }
+		def qualifiedType = info.getQualifiedTypeBySimpleName(it.nameAsString)
+				.orElse(arg.resolveType(new ClassOrInterfaceType(it.nameAsString), info))
+		def signature = ClassHelper.createFullSignature(it)
 		classes.add(new ClassInfo(
-				name: it.name,
-				signature: ClassHelper.createFullSignature(it),
-				metrics: metrics.raise(it),
-				sourcePath: SourcePath.of(info),
-				sourceRange: SourceRange.fromNode(it),
-		))
+				qualifiedType,
+				signature,
+				metrics,
+				SourcePath.of(info),
+				SourceRange.fromNode(it)))
 		super.visit(it, arg)
 	}
 }

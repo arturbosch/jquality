@@ -6,6 +6,7 @@ import groovy.transform.CompileStatic
 import io.gitlab.arturbosch.jpal.ast.ClassHelper
 import io.gitlab.arturbosch.jpal.core.CompilationInfo
 import io.gitlab.arturbosch.jpal.resolution.Resolver
+import io.gitlab.arturbosch.smartsmells.metrics.FileInfo
 
 import java.nio.file.Path
 
@@ -26,5 +27,9 @@ abstract class InternalVisitor extends VoidVisitorAdapter<Resolver> {
 
 	protected static boolean isEmpty(ClassOrInterfaceDeclaration n) {
 		ClassHelper.isEmptyBody(n) && ClassHelper.hasNoMethods(n)
+	}
+
+	protected final FileInfo statistics() {
+		return info.getProcessedObject(FileInfo.class)
 	}
 }

@@ -18,6 +18,6 @@ class MetricLoaderTest extends Specification {
 				.build()
 		then: "one 'Template' metric for CommentDummy is found"
 		facade.run(Test.COMMENT_DUMMY_PATH)*.metrics.size() == 1
-		facade.run(Test.COMMENT_DUMMY_PATH)[0].metrics[0].type == "Template"
+		facade.run(Test.COMMENT_DUMMY_PATH)[0].getMetric('Template').type == "Template"
 	}
 }
