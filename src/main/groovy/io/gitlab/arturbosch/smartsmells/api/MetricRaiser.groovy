@@ -12,6 +12,8 @@ import io.gitlab.arturbosch.smartsmells.metrics.Metric
 trait MetricRaiser {
 	Resolver resolver
 
+	abstract String name()
+
 	abstract Metric raise(ClassOrInterfaceDeclaration aClass)
 
 	void setResolver(Resolver resolver) {
