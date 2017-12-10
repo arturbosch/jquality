@@ -14,7 +14,7 @@ class WMC implements MetricRaiser {
 	public static final String WEIGHTED_METHOD_COUNT = "WeightedMethodCount"
 
 	@Override
-	String name() {
+	String metricName() {
 		return WEIGHTED_METHOD_COUNT
 	}
 
@@ -30,7 +30,7 @@ class TCC implements MetricRaiser {
 	public static final String TIED_CLASS_COHESION = "TiedClassCohesion"
 
 	@Override
-	String name() {
+	String metricName() {
 		return TIED_CLASS_COHESION
 	}
 
@@ -46,7 +46,7 @@ class ATFD implements MetricRaiser {
 	public static final String ACCESS_TO_FOREIGN_DATA = "AccessToForeignData"
 
 	@Override
-	String name() {
+	String metricName() {
 		return ACCESS_TO_FOREIGN_DATA
 	}
 
@@ -62,7 +62,7 @@ class AMW implements MetricRaiser {
 	public static final String AVERAGE_METHOD_WEIGHT = "AverageMethodWeight"
 
 	@Override
-	String name() {
+	String metricName() {
 		return AVERAGE_METHOD_WEIGHT
 	}
 
@@ -83,7 +83,7 @@ class NOA implements MetricRaiser {
 	public static final String NUMBER_OF_ATTRIBUTES = "NumberOfAttributes"
 
 	@Override
-	String name() {
+	String metricName() {
 		return NUMBER_OF_ATTRIBUTES
 	}
 
@@ -99,7 +99,7 @@ class NOM implements MetricRaiser {
 	public static final String NUMBER_OF_METHODS = "NumberOfMethods"
 
 	@Override
-	String name() {
+	String metricName() {
 		return NUMBER_OF_METHODS
 	}
 
@@ -115,7 +115,7 @@ class CC implements MetricRaiser {
 	public static final String COUNT_CLASSES = "CountClasses"
 
 	@Override
-	String name() {
+	String metricName() {
 		return COUNT_CLASSES
 	}
 
@@ -131,7 +131,7 @@ class CM implements MetricRaiser {
 	public static final String COUNT_METHODS = "CountMethods"
 
 	@Override
-	String name() {
+	String metricName() {
 		return COUNT_METHODS
 	}
 
@@ -147,7 +147,7 @@ class LM implements MetricRaiser {
 	public static final String LONG_METHOD = 'LongMethod'
 
 	@Override
-	String name() {
+	String metricName() {
 		return LONG_METHOD
 	}
 
@@ -168,7 +168,7 @@ class LPL implements MetricRaiser {
 	public static final String LONG_PARAMETER_LIST = 'LongParameterList'
 
 	@Override
-	String name() {
+	String metricName() {
 		return LONG_PARAMETER_LIST
 	}
 
