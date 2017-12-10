@@ -52,7 +52,7 @@ class ConfigurationIT extends Specification {
 
 	def "create metrics facade"() {
 		given:
-		def result = MetricFacade.builder().fullStackFacade().run(Test.PATH)
+		def result = new MetricFacade().run(Test.PATH)
 
 		when:
 		def xml = XMLWriter.toMetricXml(result)

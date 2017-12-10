@@ -35,6 +35,6 @@ abstract class InternalVisitor extends VoidVisitorAdapter<Resolver> {
 	}
 
 	protected final FileInfo statistics() {
-		return info.getProcessedObject(FileInfo.class)
+		return info.getData(FileInfo.KEY)
 	}
 }

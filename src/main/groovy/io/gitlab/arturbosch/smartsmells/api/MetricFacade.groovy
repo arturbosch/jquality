@@ -2,11 +2,9 @@ package io.gitlab.arturbosch.smartsmells.api
 
 import io.gitlab.arturbosch.jpal.core.JPAL
 import io.gitlab.arturbosch.smartsmells.metrics.ClassInfo
-import io.gitlab.arturbosch.smartsmells.metrics.ClassInfoVisitor
 import io.gitlab.arturbosch.smartsmells.metrics.FileInfo
 import io.gitlab.arturbosch.smartsmells.metrics.FileMetricProcessor
 import io.gitlab.arturbosch.smartsmells.metrics.Metric
-import io.gitlab.arturbosch.smartsmells.metrics.internal.FullstackMetrics
 import io.gitlab.arturbosch.smartsmells.util.Validate
 
 import java.nio.file.Path
@@ -20,26 +18,18 @@ import java.util.regex.Pattern
 class MetricFacade {
 
 	private final ExecutorService executorService
-	private final ClassInfoVisitor classInfoDetector
 
-	MetricFacade(final CompositeMetricRaiser compositeMetricRaiser = FullstackMetrics.create(),
-				 final ExecutorService executorService = ForkJoinPool.commonPool()) {
-		Validate.notNull(compositeMetricRaiser)
-		this.executorService = executorService
-		classInfoDetector = new ClassInfoVisitor(compositeMetricRaiser)
-	}
-
-	static MetricFacadeBuilder builder() {
-		return new MetricFacadeBuilder()
+	MetricFacade(final ExecutorService executorService = ForkJoinPool.commonPool()) {
+		this.executorService = Validate.notNull(executorService)
 	}
 
 	List<ClassInfo> run(Path root, final List<String> filters = Collections.emptyList()) {
 		def pathFilters = Validate.notNull(filters)?.collect { Pattern.compile(it) }
-		def processor = new FileMetricProcessor(classInfoDetector)
+		def processor = new FileMetricProcessor()
 		def storage = root ? JPAL.initializedUpdatable(root, processor, pathFilters, null, executorService)
 				: JPAL.updatable(processor, pathFilters, null, executorService)
 		return storage.allCompilationInfo.stream()
-				.flatMap { it.getProcessedObject(FileInfo.class).classes.stream() }
+				.flatMap { it.getData(FileInfo.KEY).classes.stream() }
 				.collect()
 	}
 

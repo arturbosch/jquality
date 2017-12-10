@@ -10,7 +10,7 @@ class MetricFacadeTest extends Specification {
 
 	def "run metric facade on dummies"() {
 		given: "metric facade"
-		def facade = MetricFacade.builder().fullStackFacade()
+		def facade = new MetricFacade()
 		when: "running facade with metric processor"
 		def result = facade.run(Test.BASE_PATH)
 		then:

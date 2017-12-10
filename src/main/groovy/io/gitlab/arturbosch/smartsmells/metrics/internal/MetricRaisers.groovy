@@ -9,22 +9,6 @@ import io.gitlab.arturbosch.smartsmells.metrics.Metrics
 import io.gitlab.arturbosch.smartsmells.smells.longmethod.LongMethodVisitor
 
 @CompileStatic
-class WMC implements MetricRaiser {
-
-	public static final String WEIGHTED_METHOD_COUNT = "WeightedMethodCount"
-
-	@Override
-	String metricName() {
-		return WEIGHTED_METHOD_COUNT
-	}
-
-	@Override
-	Metric raise(ClassOrInterfaceDeclaration aClass) {
-		return Metric.of(WEIGHTED_METHOD_COUNT, Metrics.wmc(aClass))
-	}
-}
-
-@CompileStatic
 class TCC implements MetricRaiser {
 
 	public static final String TIED_CLASS_COHESION = "TiedClassCohesion"
@@ -57,27 +41,6 @@ class ATFD implements MetricRaiser {
 }
 
 @CompileStatic
-class AMW implements MetricRaiser {
-
-	public static final String AVERAGE_METHOD_WEIGHT = "AverageMethodWeight"
-
-	@Override
-	String metricName() {
-		return AVERAGE_METHOD_WEIGHT
-	}
-
-	@Override
-	Metric raise(ClassOrInterfaceDeclaration aClass) {
-		def methods = aClass.getChildNodesByType(MethodDeclaration.class)
-		def average = methods.stream()
-				.mapToInt { Metrics.mcCabe(it) }
-				.average()
-				.orElse(0.0d)
-		return Metric.of(AVERAGE_METHOD_WEIGHT, average)
-	}
-}
-
-@CompileStatic
 class NOA implements MetricRaiser {
 
 	public static final String NUMBER_OF_ATTRIBUTES = "NumberOfAttributes"
@@ -96,7 +59,7 @@ class NOA implements MetricRaiser {
 @CompileStatic
 class NOM implements MetricRaiser {
 
-	public static final String NUMBER_OF_METHODS = "NumberOfMethods"
+	static final String NUMBER_OF_METHODS = "NumberOfMethods"
 
 	@Override
 	String metricName() {

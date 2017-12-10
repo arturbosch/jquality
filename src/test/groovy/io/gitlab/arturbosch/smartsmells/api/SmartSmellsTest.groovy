@@ -3,10 +3,8 @@ package io.gitlab.arturbosch.smartsmells.api
 import io.gitlab.arturbosch.jpal.core.JPAL
 import io.gitlab.arturbosch.jpal.resolution.Resolver
 import io.gitlab.arturbosch.smartsmells.common.Test
-import io.gitlab.arturbosch.smartsmells.metrics.ClassInfoVisitor
 import io.gitlab.arturbosch.smartsmells.metrics.FileInfo
 import io.gitlab.arturbosch.smartsmells.metrics.FileMetricProcessor
-import io.gitlab.arturbosch.smartsmells.metrics.internal.FullstackMetrics
 import spock.lang.Specification
 
 /**
@@ -16,8 +14,7 @@ class SmartSmellsTest extends Specification {
 
 	def "test"() {
 		given: "SmartSmells instance"
-		def classInfoDetector = new ClassInfoVisitor(FullstackMetrics.create())
-		def metricProcessor = new FileMetricProcessor(classInfoDetector)
+		def metricProcessor = new FileMetricProcessor()
 		def storage = JPAL.updatable(metricProcessor)
 		def resolver = new Resolver(storage)
 		def smartSmells = new SmartSmells(storage, resolver, DetectorFacade.fullStackFacade())
@@ -26,7 +23,7 @@ class SmartSmellsTest extends Specification {
 		when:
 		smartSmells.addOrUpdate(testPaths)
 		smartSmells.executeOnUpdated()
-		def fileInfos = storage.allCompilationInfo.collect { it.getProcessedObject(FileInfo.class) }
+		def fileInfos = storage.allCompilationInfo.collect { it.getData(FileInfo.KEY) }
 
 		fileInfos.each { println(it) }
 

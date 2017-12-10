@@ -15,7 +15,6 @@ import io.gitlab.arturbosch.jpal.resolution.Resolver
 import io.gitlab.arturbosch.smartsmells.common.visitor.CyclomaticComplexityVisitor
 import io.gitlab.arturbosch.smartsmells.smells.godclass.FieldAccessVisitor
 import io.gitlab.arturbosch.smartsmells.smells.godclass.TiedClassCohesion
-import io.gitlab.arturbosch.smartsmells.util.JavaLoc
 
 import java.util.stream.Collectors
 
@@ -181,18 +180,5 @@ final class Metrics {
 		def methodName = n.nameAsString
 
 		methodFieldAccesses.put(methodName, accessedFieldNames)
-	}
-
-	static int sloc(ClassOrInterfaceDeclaration n) {
-		return locInternal(n, false)
-	}
-
-	static int loc(ClassOrInterfaceDeclaration n) {
-		return locInternal(n, true)
-	}
-
-	private static int locInternal(ClassOrInterfaceDeclaration n, boolean comments) {
-		def lines = n.toString().split(System.getProperty("line.separator")).toList()
-		return JavaLoc.analyze(lines, comments, false)
 	}
 }

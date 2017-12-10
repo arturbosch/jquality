@@ -5,9 +5,6 @@ import com.github.javaparser.ast.CompilationUnit
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration
 import com.github.javaparser.ast.body.MethodDeclaration
 import groovy.transform.CompileStatic
-import io.gitlab.arturbosch.smartsmells.metrics.ClassInfoVisitor
-import io.gitlab.arturbosch.smartsmells.metrics.FileMetricProcessor
-import io.gitlab.arturbosch.smartsmells.metrics.internal.FullstackMetrics
 import org.codehaus.groovy.runtime.IOGroovyMethods
 
 import java.nio.file.Files
@@ -19,9 +16,6 @@ import java.nio.file.Paths
  */
 @CompileStatic
 class Test {
-
-	static FileMetricProcessor METRIC_PROCESSOR = new FileMetricProcessor(
-			new ClassInfoVisitor(FullstackMetrics.create()))
 
 	static Path PATH = Paths.get("./src/test/groovy/io/gitlab/arturbosch/smartsmells/java/")
 	static Path BASE_PATH = Paths.get("./src/test/groovy/io/gitlab/arturbosch/smartsmells/java/")

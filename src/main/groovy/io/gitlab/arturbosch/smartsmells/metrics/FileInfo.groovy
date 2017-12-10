@@ -1,5 +1,6 @@
 package io.gitlab.arturbosch.smartsmells.metrics
 
+import com.github.javaparser.ast.DataKey
 import groovy.transform.Canonical
 import groovy.transform.CompileStatic
 import io.gitlab.arturbosch.jpal.ast.source.SourcePath
@@ -12,17 +13,19 @@ import io.gitlab.arturbosch.jpal.ast.source.SourceRange
 @Canonical
 class FileInfo implements HasMetrics {
 
-	final Set<ClassInfo> classes
+	static final DataKey<FileInfo> KEY = new DataKey<FileInfo>() {}
+
+	Set<ClassInfo> classes
 
 	@Delegate
 	final SourcePath sourcePath
 	@Delegate
 	final SourceRange sourceRange
 
-	FileInfo(Set<ClassInfo> classes,
-			 SourcePath sourcePath,
+	FileInfo(SourcePath sourcePath,
 			 SourceRange sourceRange,
-			 Map<String, Metric> metrics = Collections.emptyMap()) {
+			 Set<ClassInfo> classes = new HashSet<>(),
+			 Map<String, Metric> metrics = new HashMap<>(0)) {
 		this.sourcePath = sourcePath
 		this.sourceRange = sourceRange
 		this.classes = classes
@@ -38,5 +41,9 @@ class FileInfo implements HasMetrics {
 
 	ClassInfo findClassByName(String name) {
 		return classes.find { it.name == name }
+	}
+
+	void addClass(ClassInfo clazz) {
+		classes.add(clazz)
 	}
 }
