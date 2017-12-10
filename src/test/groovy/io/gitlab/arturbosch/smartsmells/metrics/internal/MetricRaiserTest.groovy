@@ -18,7 +18,7 @@ class MetricRaiserTest extends Specification {
 		def wmc = new WMC()
 		def atfd = new ATFD()
 		def tcc = new TCC()
-		def mcc = new MCCabe()
+		def mcc = new AMW()
 		def noa = new NOA()
 		def nom = new NOM()
 		def composite = new SimpleCompositeMetricRaiser([lm, lpl, wmc, atfd, tcc, mcc, nom, noa])

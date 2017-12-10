@@ -33,7 +33,7 @@ class ATFD implements MetricRaiser {
 }
 
 @CompileStatic
-class MCCabe implements MetricRaiser {
+class AMW implements MetricRaiser {
 	@Override
 	Metric raise(ClassOrInterfaceDeclaration aClass) {
 		def methods = aClass.getChildNodesByType(MethodDeclaration.class)
@@ -41,7 +41,7 @@ class MCCabe implements MetricRaiser {
 				.mapToInt { Metrics.mcCabe(aClass) }
 				.average()
 				.orElse(0.0d)
-		return Metric.of("MCCabe", average)
+		return Metric.of("AverageMethodWeight", average)
 	}
 }
 
