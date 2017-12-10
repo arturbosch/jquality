@@ -91,6 +91,8 @@ class XMLWriter {
 				.filter { it.name != "sourceRange" }
 				.filter { it.name != "sourcePath" }
 				.filter { it.name != "metrics" }
+				.filter { it.name != "methods" }
+				.filter { it.name != "io_gitlab_arturbosch_smartsmells_metrics_HasMetrics__metrics" }
 				.collect()
 	}
 

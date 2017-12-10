@@ -39,6 +39,7 @@ class XMLWriterTest extends Specification {
 	def "class info with metrics transforms to xml"() {
 		given: "class info with three metrics"
 		def info = new ClassInfo(new QualifiedType("Test", QualifiedType.TypeToken.REFERENCE), "Test",
+				Collections.emptySet(),
 				["SIZE": Metric.of("SIZE", 5), "STUFF": Metric.of("STUFF", 2.2d)],
 				SourcePath.of(Test.BASE_PATH, Test.BASE_PATH),
 				SourceRange.of(0, 0, 0, 0))

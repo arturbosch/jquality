@@ -37,6 +37,7 @@ class ClassInfoVisitor extends InternalVisitor {
 		classes.add(new ClassInfo(
 				qualifiedType,
 				signature,
+				Collections.emptySet(),
 				metrics,
 				SourcePath.of(info),
 				SourceRange.fromNode(it)))

@@ -1,7 +1,7 @@
 package io.gitlab.arturbosch.smartsmells.metrics
 
 import groovy.transform.Canonical
-import groovy.transform.ToString
+import groovy.transform.CompileStatic
 import io.gitlab.arturbosch.jpal.ast.source.SourcePath
 import io.gitlab.arturbosch.jpal.ast.source.SourceRange
 import io.gitlab.arturbosch.jpal.resolution.QualifiedType
@@ -9,21 +9,23 @@ import io.gitlab.arturbosch.jpal.resolution.QualifiedType
 /**
  * @author Artur Bosch
  */
+@CompileStatic
 @Canonical
-@ToString(includePackage = false, includeNames = true)
-class ClassInfo {
+class ClassInfo implements HasMetrics {
 
 	final QualifiedType qualifiedType
 	final String signature
-	private final Map<String, Metric> metrics
+
+	final Set<MethodInfo> methods
 
 	@Delegate
-	SourcePath sourcePath
+	final SourcePath sourcePath
 	@Delegate
-	SourceRange sourceRange
+	final SourceRange sourceRange
 
 	ClassInfo(QualifiedType qualifiedType,
 			  String signature,
+			  Set<MethodInfo> methods,
 			  Map<String, Metric> metrics,
 			  SourcePath sourcePath,
 			  SourceRange sourceRange) {
@@ -32,19 +34,7 @@ class ClassInfo {
 		this.metrics = metrics
 		this.sourcePath = sourcePath
 		this.sourceRange = sourceRange
-	}
-
-	/**
-	 * Finds a metric with given name.
-	 * @param metricName
-	 * @return the metric or null
-	 */
-	Metric getMetric(String metricName) {
-		return metrics[metricName]
-	}
-
-	Collection<Metric> getMetrics() {
-		return metrics.values()
+		this.methods = methods
 	}
 
 	/**
@@ -52,6 +42,14 @@ class ClassInfo {
 	 */
 	String getName() {
 		return qualifiedType.shortName()
+	}
+
+	MethodInfo getMethodByName(String name) {
+		return methods.find { it.name == name }
+	}
+
+	MethodInfo getMethodByDeclarationString(String declaration) {
+		return methods.find { it.declarationString == declaration }
 	}
 
 	@Override
