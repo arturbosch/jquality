@@ -6,6 +6,7 @@ import io.gitlab.arturbosch.jpal.ast.source.SourceRange
 import io.gitlab.arturbosch.jpal.core.CompilationInfo
 import io.gitlab.arturbosch.jpal.core.CompilationInfoProcessor
 import io.gitlab.arturbosch.jpal.resolution.Resolver
+import io.gitlab.arturbosch.smartsmells.metrics.internal.FullstackMetrics
 
 /**
  * @author Artur Bosch
@@ -15,7 +16,7 @@ class FileMetricProcessor implements CompilationInfoProcessor<FileInfo> {
 
 	private ClassInfoVisitor detector
 
-	FileMetricProcessor(ClassInfoVisitor detector) {
+	FileMetricProcessor(ClassInfoVisitor detector = new ClassInfoVisitor(FullstackMetrics.create())) {
 		this.detector = detector
 	}
 

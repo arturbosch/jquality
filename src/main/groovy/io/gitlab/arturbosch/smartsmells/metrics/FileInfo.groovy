@@ -35,4 +35,8 @@ class FileInfo implements HasMetrics {
 				classes.collect { it.toString() }.join("\n\t") +
 				'}'
 	}
+
+	ClassInfo findClassByName(String name) {
+		return classes.find { it.name == name }
+	}
 }

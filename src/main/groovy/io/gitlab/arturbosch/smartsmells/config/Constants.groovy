@@ -48,4 +48,6 @@ class Constants {
 	static final String CLASS_DATA_SHOULD_BE_PRIVATE = "classdatashouldbeprivate"
 	static final String REFUSED_PARENT_BEQUEST = "refusedparentbequest"
 
+	static final String BRAIN_METHOD = "brainmethod"
+
 }

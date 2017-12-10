@@ -1,5 +1,7 @@
 package io.gitlab.arturbosch.smartsmells.metrics.raisers
 
+import com.github.javaparser.ast.body.CallableDeclaration
+import com.github.javaparser.ast.body.ConstructorDeclaration
 import com.github.javaparser.ast.body.MethodDeclaration
 import com.github.javaparser.ast.body.Parameter
 import com.github.javaparser.ast.expr.FieldAccessExpr
@@ -23,7 +25,7 @@ class NOAV implements MethodMetricRaiser {
 	}
 
 	@Override
-	Metric raise(MethodDeclaration method, Resolver resolver) {
+	Metric raise(CallableDeclaration method, Resolver resolver) {
 		def count = new AccessedVariablesVisitor().count(method, resolver)
 		return Metric.of(NUMBER_OF_ACCESSED_VARIABLES, count)
 	}
@@ -36,8 +38,10 @@ class AccessedVariablesVisitor extends VoidVisitorAdapter<Resolver> {
 	private final Set<String> parameters = new HashSet<>()
 	private final Set<String> fields = new HashSet<>()
 
-	int count(MethodDeclaration method, Resolver resolver) {
-		super.visit(method, resolver)
+	int count(CallableDeclaration method, Resolver resolver) {
+		method instanceof MethodDeclaration ?
+				visit(method, resolver) :
+				visit((ConstructorDeclaration) method, resolver)
 		return variables.size() + parameters.size() + fields.size()
 	}
 

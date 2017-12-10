@@ -5,7 +5,7 @@ import io.gitlab.arturbosch.smartsmells.common.visitor.InternalVisitor
 import io.gitlab.arturbosch.smartsmells.smells.DetectionResult
 
 /**
- * @author artur
+ * @author Artur Bosch
  */
 @CompileStatic
 abstract class Visitor<T extends DetectionResult> extends InternalVisitor {

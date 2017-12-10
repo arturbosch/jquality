@@ -1,5 +1,6 @@
 package io.gitlab.arturbosch.smartsmells.metrics
 
+import groovy.transform.Canonical
 import groovy.transform.CompileStatic
 import io.gitlab.arturbosch.smartsmells.util.Validate
 
@@ -9,6 +10,7 @@ import java.util.regex.Pattern
  * @author Artur Bosch
  */
 @CompileStatic
+@Canonical
 class Metric {
 
 	static final Pattern ABBR_PATTERN = Pattern.compile("[a-z]")

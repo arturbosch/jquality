@@ -19,7 +19,7 @@ class LOC implements CompositeMetricRaiser {
 	static final String LLOC = "LogicalLinesOfCode"
 	static final String BLOC = "BlankLinesOfCode"
 
-	private static final Pattern NL = Pattern.compile("\n")
+	static final Pattern NL = Pattern.compile("\n")
 
 	@Override
 	List<Metric> raise(ClassOrInterfaceDeclaration aClass) {

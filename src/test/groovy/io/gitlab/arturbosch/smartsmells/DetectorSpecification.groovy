@@ -3,6 +3,7 @@ package io.gitlab.arturbosch.smartsmells
 import io.gitlab.arturbosch.jpal.core.JPAL
 import io.gitlab.arturbosch.jpal.resolution.Resolver
 import io.gitlab.arturbosch.smartsmells.api.Detector
+import io.gitlab.arturbosch.smartsmells.common.Test
 import io.gitlab.arturbosch.smartsmells.common.Visitor
 import io.gitlab.arturbosch.smartsmells.smells.DetectionResult
 import org.spockframework.util.Assert
@@ -26,7 +27,7 @@ abstract class DetectorSpecification<T extends DetectionResult> extends Specific
 		def visitor = visitorMethod.invoke(detector) as Visitor<T>
 
 		def path = Paths.get("foo/bar.java")
-		def storage = JPAL.updatable()
+		def storage = JPAL.updatable(Test.METRIC_PROCESSOR)
 		def map = new HashMap<Path, String>()
 		map.put(path, code)
 		storage.updateCompilationInfo(map)

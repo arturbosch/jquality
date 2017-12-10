@@ -1,12 +1,14 @@
 package io.gitlab.arturbosch.smartsmells.smells.complexmethod
 
-import com.github.javaparser.ast.body.BodyDeclaration
+import com.github.javaparser.ast.body.CallableDeclaration
+import groovy.transform.CompileStatic
 import io.gitlab.arturbosch.smartsmells.common.visitor.MethodMetricVisitor
 import io.gitlab.arturbosch.smartsmells.metrics.Metrics
 
 /**
- * @author artur
+ * @author Artur Bosch
  */
+@CompileStatic
 class ComplexMethodVisitor extends MethodMetricVisitor<ComplexMethod> {
 
 	int mcc
@@ -16,13 +18,13 @@ class ComplexMethodVisitor extends MethodMetricVisitor<ComplexMethod> {
 	}
 
 	@Override
-	protected byThreshold(BodyDeclaration n) {
+	protected byThreshold(CallableDeclaration n) {
 		mcc = Metrics.mcCabe(n)
 		return mcc >= threshold
 	}
 
 	@Override
-	protected addSmell(BodyDeclaration n) {
-		smells.add(ComplexMethod.of(newLongMethod(n, mcc)))
+	protected addSmell(CallableDeclaration n) {
+		report((ComplexMethod) ComplexMethod.of(newLongMethod(n, mcc)))
 	}
 }

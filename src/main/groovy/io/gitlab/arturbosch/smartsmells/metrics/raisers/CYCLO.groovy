@@ -1,6 +1,6 @@
 package io.gitlab.arturbosch.smartsmells.metrics.raisers
 
-import com.github.javaparser.ast.body.MethodDeclaration
+import com.github.javaparser.ast.body.CallableDeclaration
 import groovy.transform.CompileStatic
 import io.gitlab.arturbosch.jpal.resolution.Resolver
 import io.gitlab.arturbosch.smartsmells.metrics.Metric
@@ -20,7 +20,7 @@ class CYCLO implements MethodMetricRaiser {
 	}
 
 	@Override
-	Metric raise(MethodDeclaration method, Resolver resolver) {
+	Metric raise(CallableDeclaration method, Resolver resolver) {
 		def mcCabe = Metrics.mcCabe(method)
 		return Metric.of(CYCLOMATIC_COMPLEXITY, mcCabe)
 	}

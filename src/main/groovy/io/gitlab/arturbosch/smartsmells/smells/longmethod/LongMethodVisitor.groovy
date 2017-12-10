@@ -1,12 +1,15 @@
 package io.gitlab.arturbosch.smartsmells.smells.longmethod
 
 import com.github.javaparser.ast.body.BodyDeclaration
+import com.github.javaparser.ast.body.CallableDeclaration
+import groovy.transform.CompileStatic
 import io.gitlab.arturbosch.smartsmells.common.visitor.MethodMetricVisitor
 import io.gitlab.arturbosch.smartsmells.util.JavaLoc
 
 /**
- * @author artur
+ * @author Artur Bosch
  */
+@CompileStatic
 class LongMethodVisitor extends MethodMetricVisitor<LongMethod> {
 
 	int size
@@ -20,12 +23,12 @@ class LongMethodVisitor extends MethodMetricVisitor<LongMethod> {
 	}
 
 	@Override
-	protected byThreshold(BodyDeclaration n) {
+	protected byThreshold(CallableDeclaration n) {
 		size = bodyLength(n)
 		return size > threshold
 	}
 
-	protected addSmell(BodyDeclaration n) {
+	protected addSmell(CallableDeclaration n) {
 		smells.add(newLongMethod(n, size))
 	}
 }

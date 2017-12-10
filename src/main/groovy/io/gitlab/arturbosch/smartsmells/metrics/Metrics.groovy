@@ -1,7 +1,7 @@
 package io.gitlab.arturbosch.smartsmells.metrics
 
 import com.github.javaparser.ast.Modifier
-import com.github.javaparser.ast.body.BodyDeclaration
+import com.github.javaparser.ast.body.CallableDeclaration
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration
 import com.github.javaparser.ast.body.MethodDeclaration
 import com.github.javaparser.ast.expr.FieldAccessExpr
@@ -77,7 +77,7 @@ final class Metrics {
 				.sum()
 	}
 
-	static int mcCabe(BodyDeclaration n) {
+	static int mcCabe(CallableDeclaration n) {
 		def complexityVisitor = new CyclomaticComplexityVisitor()
 		n.accept(complexityVisitor, null)
 		return complexityVisitor.mcCabeComplexity + 1

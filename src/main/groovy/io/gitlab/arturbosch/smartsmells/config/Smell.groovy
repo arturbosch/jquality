@@ -4,6 +4,7 @@ import groovy.transform.CompileStatic
 import io.gitlab.arturbosch.smartsmells.api.Detector
 import io.gitlab.arturbosch.smartsmells.smells.RefusedParentBequest.RPBConfig
 import io.gitlab.arturbosch.smartsmells.smells.RefusedParentBequest.RefusedParentBequestDetector
+import io.gitlab.arturbosch.smartsmells.smells.brainmethod.BrainMethodDetector
 import io.gitlab.arturbosch.smartsmells.smells.classdatashouldbeprivate.ClassDataShouldBePrivateDetector
 import io.gitlab.arturbosch.smartsmells.smells.comment.CommentDetector
 import io.gitlab.arturbosch.smartsmells.smells.comment.JavadocDetector
@@ -32,12 +33,19 @@ import static io.gitlab.arturbosch.smartsmells.util.Numbers.toDouble
 import static io.gitlab.arturbosch.smartsmells.util.Numbers.toInt
 
 /**
- * @author artur
+ * @author Artur Bosch
  */
 @CompileStatic
 enum Smell {
 
-	ClASS_DATA_SHOULD_BE_PRIVATE{
+	BRAIN_METHOD{
+		@Override
+		Optional<Detector> initialize(DetectorConfig detectorConfig) {
+			return initDefault(detectorConfig, Constants.BRAIN_METHOD) {
+				new BrainMethodDetector()
+			}
+		}
+	}, ClASS_DATA_SHOULD_BE_PRIVATE{
 		@Override
 		Optional<Detector> initialize(DetectorConfig detectorConfig) {
 			return initDefault(detectorConfig, Constants.CLASS_DATA_SHOULD_BE_PRIVATE) {

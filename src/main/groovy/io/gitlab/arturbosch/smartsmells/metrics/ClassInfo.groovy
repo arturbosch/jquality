@@ -1,10 +1,12 @@
 package io.gitlab.arturbosch.smartsmells.metrics
 
+import com.github.javaparser.ast.body.CallableDeclaration
 import groovy.transform.Canonical
 import groovy.transform.CompileStatic
 import io.gitlab.arturbosch.jpal.ast.source.SourcePath
 import io.gitlab.arturbosch.jpal.ast.source.SourceRange
 import io.gitlab.arturbosch.jpal.resolution.QualifiedType
+import io.gitlab.arturbosch.smartsmells.util.Validate
 
 /**
  * @author Artur Bosch
@@ -13,10 +15,13 @@ import io.gitlab.arturbosch.jpal.resolution.QualifiedType
 @Canonical
 class ClassInfo implements HasMetrics {
 
+	static final ClassInfo NOP = new ClassInfo(QualifiedType.UNKNOWN, "NOP",
+			(Map<String, Metric>) Collections.emptyMap(), (SourcePath) null, (SourceRange) null)
+
 	final QualifiedType qualifiedType
 	final String signature
 
-	final Set<MethodInfo> methods
+	Set<MethodInfo> methods
 
 	@Delegate
 	final SourcePath sourcePath
@@ -25,10 +30,10 @@ class ClassInfo implements HasMetrics {
 
 	ClassInfo(QualifiedType qualifiedType,
 			  String signature,
-			  Set<MethodInfo> methods,
 			  Map<String, Metric> metrics,
 			  SourcePath sourcePath,
-			  SourceRange sourceRange) {
+			  SourceRange sourceRange,
+			  Set<MethodInfo> methods = new HashSet<>()) {
 		this.qualifiedType = qualifiedType
 		this.signature = signature
 		this.metrics = metrics
@@ -48,8 +53,12 @@ class ClassInfo implements HasMetrics {
 		return methods.find { it.name == name }
 	}
 
-	MethodInfo getMethodByDeclarationString(String declaration) {
-		return methods.find { it.declarationString == declaration }
+	MethodInfo getMethodByDeclaration(CallableDeclaration declaration) {
+		return methods.find { it.declarationString == declaration.declarationAsString }
+	}
+
+	void addMethodInfo(MethodInfo method) {
+		methods.add(Validate.notNull(method))
 	}
 
 	@Override

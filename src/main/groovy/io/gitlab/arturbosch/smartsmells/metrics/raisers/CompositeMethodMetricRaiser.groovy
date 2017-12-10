@@ -9,9 +9,9 @@ import io.gitlab.arturbosch.smartsmells.metrics.Metric
  * @author Artur Bosch
  */
 @CompileStatic
-interface MethodMetricRaiser {
+interface CompositeMethodMetricRaiser {
 
 	String name()
 
-	Metric raise(CallableDeclaration method, Resolver resolver)
+	Set<Metric> raise(CallableDeclaration method, Resolver resolver)
 }

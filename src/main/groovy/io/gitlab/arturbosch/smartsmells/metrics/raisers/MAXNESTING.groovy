@@ -1,5 +1,7 @@
 package io.gitlab.arturbosch.smartsmells.metrics.raisers
 
+import com.github.javaparser.ast.body.CallableDeclaration
+import com.github.javaparser.ast.body.ConstructorDeclaration
 import com.github.javaparser.ast.body.MethodDeclaration
 import groovy.transform.CompileStatic
 import io.gitlab.arturbosch.jpal.resolution.Resolver
@@ -20,9 +22,11 @@ class MAXNESTING implements MethodMetricRaiser {
 	}
 
 	@Override
-	Metric raise(MethodDeclaration method, Resolver resolver) {
+	Metric raise(CallableDeclaration method, Resolver resolver) {
 		def visitor = new MethodDepthVisitor()
-		visitor.visit(method, resolver)
+		method instanceof MethodDeclaration ?
+				visitor.visit(method, resolver) :
+				visitor.visit((ConstructorDeclaration) method, resolver)
 		return Metric.of(MAXNESTING, visitor.maxDepth)
 	}
 }
