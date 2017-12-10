@@ -70,7 +70,7 @@ class AMW implements MetricRaiser {
 	Metric raise(ClassOrInterfaceDeclaration aClass) {
 		def methods = aClass.getChildNodesByType(MethodDeclaration.class)
 		def average = methods.stream()
-				.mapToInt { Metrics.mcCabe(aClass) }
+				.mapToInt { Metrics.mcCabe(it) }
 				.average()
 				.orElse(0.0d)
 		return Metric.of(AVERAGE_METHOD_WEIGHT, average)

@@ -32,77 +32,76 @@ class NestedBlockDepthVisitor extends Visitor<NestedBlockDepth> {
 	void visit(MethodDeclaration n, Resolver arg) {
 		def visitor = new MethodDepthVisitor()
 		visitor.visit(n, arg)
-		if (visitor.isTooDeep()) {
+		if (visitor.maxDepth > threshold) {
 			smells.add(new NestedBlockDepth(n.nameAsString, n.declarationAsString,
 					visitor.maxDepth, threshold, SourceRange.fromNode(n), SourcePath.of(info), ElementTarget.METHOD))
 		}
 	}
+}
 
-	class MethodDepthVisitor extends InternalVisitor {
+@CompileStatic
+class MethodDepthVisitor extends InternalVisitor {
 
-		int depth = 0
-		int maxDepth = 0
-		boolean tooDeep = false
+	int depth = 0
+	int maxDepth = 0
 
-		private inc() {
-			depth++
-			if (depth > threshold) {
-				tooDeep = true
-				if (depth > maxDepth) maxDepth = depth
-			}
+	private inc() {
+		depth++
+		if (depth > maxDepth) {
+			maxDepth = depth
 		}
+	}
 
-		private dec() {
-			depth--
-		}
+	private dec() {
+		depth--
+	}
 
-		@Override
-		void visit(DoStmt n, Resolver arg) {
-			inc()
-			super.visit(n, arg)
-			dec()
-		}
+	@Override
+	void visit(DoStmt n, Resolver arg) {
+		inc()
+		super.visit(n, arg)
+		dec()
+	}
 
-		@Override
-		void visit(IfStmt n, Resolver arg) {
-			inc()
-			super.visit(n, arg)
-			dec()
-		}
+	@Override
+	void visit(IfStmt n, Resolver arg) {
+		inc()
+		super.visit(n, arg)
+		dec()
+	}
 
-		@Override
-		void visit(ForeachStmt n, Resolver arg) {
-			inc()
-			super.visit(n, arg)
-			dec()
-		}
+	@Override
+	void visit(ForeachStmt n, Resolver arg) {
+		inc()
+		super.visit(n, arg)
+		dec()
+	}
 
-		@Override
-		void visit(ForStmt n, Resolver arg) {
-			inc()
-			super.visit(n, arg)
-			dec()
-		}
+	@Override
+	void visit(ForStmt n, Resolver arg) {
+		inc()
+		super.visit(n, arg)
+		dec()
+	}
 
-		@Override
-		void visit(SwitchStmt n, Resolver arg) {
-			inc()
-			super.visit(n, arg)
-			dec()
-		}
+	@Override
+	void visit(SwitchStmt n, Resolver arg) {
+		inc()
+		super.visit(n, arg)
+		dec()
+	}
 
-		@Override
-		void visit(WhileStmt n, Resolver arg) {
-			inc()
-			super.visit(n, arg)
-			dec()
-		}
+	@Override
+	void visit(WhileStmt n, Resolver arg) {
+		inc()
+		super.visit(n, arg)
+		dec()
+	}
 
-		@Override
-		void visit(TryStmt n, Resolver arg) {
-			inc()
-			super.visit(n, arg)
-			dec()
-		}
+	@Override
+	void visit(TryStmt n, Resolver arg) {
+		inc()
+		super.visit(n, arg)
+		dec()
 	}
 }

@@ -11,5 +11,7 @@ import io.gitlab.arturbosch.smartsmells.metrics.Metric
 @CompileStatic
 interface MethodMetricRaiser {
 
+	String name()
+
 	Metric raise(MethodDeclaration method, Resolver resolver)
 }
