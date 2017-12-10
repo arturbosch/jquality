@@ -64,24 +64,6 @@ class MetricsTest extends Specification {
 		tcc = Metrics.tcc(clazz)
 	}
 
-
-	def "sloc"() {
-		when:
-		def clazz = Test.firstClass(Test.compile(Test.COMMENT_DUMMY_PATH))
-		int count = Metrics.sloc(clazz)
-		then:
-		count == 7
-	}
-
-
-	def "loc"() {
-		when:
-		def clazz = Test.firstClass(Test.compile(Test.COMMENT_DUMMY_PATH))
-		int count = Metrics.loc(clazz)
-		then:
-		count == 19
-	}
-
 	def "cc"() {
 		given:
 		def resolver = new Resolver(JPAL.newInstance(Test.PATH))

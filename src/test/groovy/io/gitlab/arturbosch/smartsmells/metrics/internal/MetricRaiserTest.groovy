@@ -19,18 +19,16 @@ class MetricRaiserTest extends Specification {
 		def atfd = new ATFD()
 		def tcc = new TCC()
 		def mcc = new MCCabe()
-		def loc = new LOC()
-		def sloc = new SLOC()
 		def noa = new NOA()
 		def nom = new NOM()
-		def composite = new SimpleCompositeMetricRaiser([lm, lpl, wmc, atfd, tcc, mcc, loc, sloc, nom, noa])
-		def metricRaiser = new CombinedCompositeMetricRaiser([composite])
+		def composite = new SimpleCompositeMetricRaiser([lm, lpl, wmc, atfd, tcc, mcc, nom, noa])
+		def metricRaiser = new CombinedCompositeMetricRaiser([composite, new LOC()])
 		when: "querying all classes of godclass dummy"
 		def godClass = Test.compile(Test.GOD_CLASS_DUMMY_PATH)
 				.getChildNodesByType(ClassOrInterfaceDeclaration.class)[0]
 		def metrics = metricRaiser.raise(godClass)
-		then: "10 single metrics"
-		metrics.size() == 10
+		then: "13 single metrics"
+		metrics.size() == 13
 	}
 
 }

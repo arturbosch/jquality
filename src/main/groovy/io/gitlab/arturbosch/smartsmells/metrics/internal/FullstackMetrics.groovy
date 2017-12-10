@@ -19,14 +19,12 @@ class FullstackMetrics {
 		def atfd = new ATFD()
 		def tcc = new TCC()
 		def mcc = new MCCabe()
-		def loc = new LOC()
-		def sloc = new SLOC()
 		def noa = new NOA()
 		def nom = new NOM()
-		def list = [wmc, atfd, tcc, mcc, loc, sloc, nom, noa, lm, lpl]
+		def list = [wmc, atfd, tcc, mcc, nom, noa, lm, lpl]
 		if (!skipCCCM) list.addAll(new CC(), new CM())
 		def composite = new SimpleCompositeMetricRaiser(list as List<MetricRaiser>)
-		return new CombinedCompositeMetricRaiser([composite] as List<CompositeMetricRaiser>)
+		return new CombinedCompositeMetricRaiser([composite, new LOC()] as List<CompositeMetricRaiser>)
 	}
 
 	private FullstackMetrics() {

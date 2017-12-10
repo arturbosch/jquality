@@ -46,22 +46,6 @@ class MCCabe implements MetricRaiser {
 }
 
 @CompileStatic
-class LOC implements MetricRaiser {
-	@Override
-	Metric raise(ClassOrInterfaceDeclaration aClass) {
-		return Metric.of("LinesOfCode", Metrics.loc(aClass))
-	}
-}
-
-@CompileStatic
-class SLOC implements MetricRaiser {
-	@Override
-	Metric raise(ClassOrInterfaceDeclaration aClass) {
-		return Metric.of("SourceLinesOfCode", Metrics.sloc(aClass))
-	}
-}
-
-@CompileStatic
 class NOA implements MetricRaiser {
 	@Override
 	Metric raise(ClassOrInterfaceDeclaration aClass) {

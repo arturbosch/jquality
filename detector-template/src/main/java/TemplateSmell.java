@@ -23,6 +23,11 @@ public class TemplateSmell implements DetectionResult {
 	}
 
 	@Override
+	public String asCliRdyString() {
+		return null;
+	}
+
+	@Override
 	public SourceRange getPositions() {
 		return null;
 	}
