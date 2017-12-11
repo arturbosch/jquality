@@ -40,8 +40,10 @@ class LongMethodDetector extends Detector<LongMethod> {
 @CompileStatic
 class LongMethodVisitor extends MethodMetricVisitor<LongMethod> {
 
+	private int threshold
+
 	LongMethodVisitor(int threshold) {
-		super(threshold)
+		this.threshold = threshold
 	}
 
 	@Override

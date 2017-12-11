@@ -1,16 +1,13 @@
 package io.gitlab.arturbosch.smartsmells.smells.brainmethod
 
 import com.github.javaparser.ast.body.CallableDeclaration
-import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration
-import com.github.javaparser.ast.body.ConstructorDeclaration
-import com.github.javaparser.ast.body.MethodDeclaration
 import groovy.transform.Canonical
 import groovy.transform.CompileStatic
 import io.gitlab.arturbosch.jpal.resolution.Resolver
 import io.gitlab.arturbosch.smartsmells.api.Detector
 import io.gitlab.arturbosch.smartsmells.common.Visitor
+import io.gitlab.arturbosch.smartsmells.common.visitor.MethodMetricVisitor
 import io.gitlab.arturbosch.smartsmells.config.Smell
-import io.gitlab.arturbosch.smartsmells.metrics.ClassInfo
 import io.gitlab.arturbosch.smartsmells.metrics.raisers.CYCLO
 import io.gitlab.arturbosch.smartsmells.metrics.raisers.LOC
 import io.gitlab.arturbosch.smartsmells.metrics.raisers.MAXNESTING
@@ -53,29 +50,17 @@ class BrainMethodThreshold {
 }
 
 @CompileStatic
-class BrainMethodVisitor extends Visitor<BrainMethod> {
+class BrainMethodVisitor extends MethodMetricVisitor<BrainMethod> {
 
 	private BrainMethodThreshold threshold
-	private ClassInfo currentClass = ClassInfo.NOP
 
 	BrainMethodVisitor(BrainMethodThreshold threshold) {
 		this.threshold = threshold
 	}
 
 	@Override
-	void visit(ClassOrInterfaceDeclaration n, Resolver arg) {
-		currentClass = infoForClass(n)
-		super.visit(n, arg)
-	}
-
-	@Override
-	void visit(MethodDeclaration n, Resolver arg) {
-		fromCallable(n)
-		super.visit(n, arg)
-	}
-
-	private void fromCallable(CallableDeclaration n) {
-		def method = currentClass?.getMethodByDeclaration(n)
+	protected void callback(CallableDeclaration n, Resolver arg) {
+		def method = current?.getMethodByDeclaration(n)
 		def sloc = method?.getMetric(LOC.SLOC)?.value
 		def cyclo = method?.getMetric(CYCLO.CYCLOMATIC_COMPLEXITY)?.value
 		def nesting = method?.getMetric(MAXNESTING.MAXNESTING)?.value
@@ -87,11 +72,5 @@ class BrainMethodVisitor extends Visitor<BrainMethod> {
 				noav > threshold.noav) {
 			report((BrainMethod) BrainMethod.fromInfo(method))
 		}
-	}
-
-	@Override
-	void visit(ConstructorDeclaration n, Resolver arg) {
-		fromCallable(n)
-		super.visit(n, arg)
 	}
 }

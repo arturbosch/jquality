@@ -39,8 +39,10 @@ class ComplexMethodDetector extends Detector<ComplexMethod> {
 @CompileStatic
 class ComplexMethodVisitor extends MethodMetricVisitor<ComplexMethod> {
 
+	private int threshold
+
 	ComplexMethodVisitor(int threshold) {
-		super(threshold)
+		this.threshold = threshold
 	}
 
 	@Override

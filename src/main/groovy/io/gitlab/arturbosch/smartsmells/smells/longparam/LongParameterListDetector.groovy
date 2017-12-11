@@ -39,8 +39,10 @@ class LongParameterListDetector extends Detector<LongParameterList> {
 @CompileStatic
 class LongParameterListVisitor extends MethodMetricVisitor<LongParameterList> {
 
+	private int threshold
+
 	LongParameterListVisitor(int threshold) {
-		super(threshold)
+		this.threshold = threshold
 	}
 
 	@Override

@@ -16,12 +16,7 @@ import io.gitlab.arturbosch.smartsmells.smells.DetectionResult
 @CompileStatic
 abstract class MethodMetricVisitor<T extends DetectionResult> extends Visitor<T> {
 
-	int threshold
 	ClassInfo current
-
-	MethodMetricVisitor(int threshold) {
-		this.threshold = threshold
-	}
 
 	@Override
 	void visit(ClassOrInterfaceDeclaration n, Resolver arg) {
