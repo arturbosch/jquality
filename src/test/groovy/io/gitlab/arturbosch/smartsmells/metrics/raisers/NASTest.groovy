@@ -28,7 +28,12 @@ class NASTest extends Specification {
 		def nas = new NAS()
 		when:
 		nas.raise(cinfo.mainType as ClassOrInterfaceDeclaration, cinfo, resolver)
+		def nasMetric = cinfo.getData(FileInfo.KEY).findClassByName("SelfEnvy")
+				.getMetric(NAS.NUMBER_OF_ADDED_SERVICES)
+		def pnasMetric = cinfo.getData(FileInfo.KEY).findClassByName("SelfEnvy")
+				.getMetric(NAS.PERCENTAGE_OF_NEWLY_ADDED_SERVICES)
 		then:
-		cinfo.getData(FileInfo.KEY).findClassByName("SelfEnvy").getMetric(NAS.NUMBER_OF_ADDED_SERVICES).value == 1
+		nasMetric.value == 1
+		pnasMetric.asDouble() == 0.14d
 	}
 }

@@ -37,20 +37,48 @@ trait MetricPreListener {
 class NAS implements MetricPreListener {
 
 	static final String NUMBER_OF_ADDED_SERVICES = "NumberofAddedServices"
+	static final String PERCENTAGE_OF_NEWLY_ADDED_SERVICES = "PercentageofNewlyAddedServices"
 
 	@Override
 	void raise(ClassOrInterfaceDeclaration aClass, CompilationInfo info, Resolver resolver) {
 		def classInfo = findClassInfo(aClass, info)
 		if (classInfo) {
-			Set<String> ancestorMethods = TypeHelper.findAllAncestors(aClass, resolver).stream()
+			Collection<MethodInfo> ancestorMethods = TypeHelper.findAllAncestors(aClass, resolver).stream()
 					.flatMap { QualifiedType ancestorType -> resolveAncestorMethods(resolver, ancestorType).stream() }
-					.map { MethodInfo mi -> mi.declarationString }
-					.collect(Collectors.toSet())
-			def addedServices = classInfo.methods
-					.findAll { !(it.declarationString in ancestorMethods) }
-					.size()
-			classInfo.addMetric(Metric.of(NUMBER_OF_ADDED_SERVICES, addedServices))
+					.collect()
+			Set<MethodInfo> methodInfos = classInfo.methods
+			Metric pnas = raisePNAS(ancestorMethods, methodInfos)
+			Metric nas = raiseNAS(ancestorMethods, methodInfos)
+			classInfo.addMetric(nas)
+			classInfo.addMetric(pnas)
 		}
+	}
+
+	private static Metric raisePNAS(Collection<MethodInfo> ancestorMethods, Set<MethodInfo> methodInfos) {
+		def publicAncestorServices = ancestorMethods.stream()
+				.filter { it.declaration.isPublic() && !it.declaration.isStatic() }
+				.map { it.declarationString }
+				.collect()
+		def publicServices = methodInfos.stream()
+				.filter { it.declaration.isPublic() && !it.declaration.isStatic() }
+				.map { it.declarationString }
+				.collect()
+
+		int publicServiceSize = publicServices.findAll { !(it in publicAncestorServices) }.size()
+		int totalPublicServices = (publicServices + publicAncestorServices).toSet().size()
+		def value = totalPublicServices == 0 ? 0.0d : (double) publicServiceSize / totalPublicServices
+
+		Metric.of(PERCENTAGE_OF_NEWLY_ADDED_SERVICES, value)
+	}
+
+	private static Metric raiseNAS(Collection<MethodInfo> ancestorMethods, Set<MethodInfo> methodInfos) {
+		Set<String> ancestorNames = ancestorMethods.stream()
+				.map { MethodInfo mi -> mi.declarationString }
+				.collect(Collectors.toSet())
+		def addedServices = methodInfos
+				.findAll { !(it.declarationString in ancestorNames) }
+				.size()
+		Metric.of(NUMBER_OF_ADDED_SERVICES, addedServices)
 	}
 
 	private Set<MethodInfo> resolveAncestorMethods(Resolver resolver, QualifiedType ancestorType) {
