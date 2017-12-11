@@ -9,38 +9,6 @@ import io.gitlab.arturbosch.smartsmells.metrics.Metrics
 import io.gitlab.arturbosch.smartsmells.smells.longmethod.LongMethodVisitor
 
 @CompileStatic
-class TCC implements MetricRaiser {
-
-	public static final String TIED_CLASS_COHESION = "TiedClassCohesion"
-
-	@Override
-	String metricName() {
-		return TIED_CLASS_COHESION
-	}
-
-	@Override
-	Metric raise(ClassOrInterfaceDeclaration aClass) {
-		return Metric.of(TIED_CLASS_COHESION, Metrics.tcc(aClass))
-	}
-}
-
-@CompileStatic
-class ATFD implements MetricRaiser {
-
-	public static final String ACCESS_TO_FOREIGN_DATA = "AccessToForeignData"
-
-	@Override
-	String metricName() {
-		return ACCESS_TO_FOREIGN_DATA
-	}
-
-	@Override
-	Metric raise(ClassOrInterfaceDeclaration aClass) {
-		return Metric.of(ACCESS_TO_FOREIGN_DATA, Metrics.atfd(aClass))
-	}
-}
-
-@CompileStatic
 class NOA implements MetricRaiser {
 
 	public static final String NUMBER_OF_ATTRIBUTES = "NumberOfAttributes"

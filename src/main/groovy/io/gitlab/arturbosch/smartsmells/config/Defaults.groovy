@@ -10,8 +10,8 @@ class Defaults {
 	static int LONG_METHOD = 20
 	static int LONG_PARAMETER_LIST = 5
 	static int COMPLEX_METHOD = 10
-	static int WEIGHTED_METHOD_COUNT = 20
-	static int ACCESS_TO_FOREIGN_DATA = 4
+	static int WEIGHTED_METHOD_COUNT = 47
+	static int ACCESS_TO_FOREIGN_DATA = 5
 	static double TIED_CLASS_COHESION = 0.33
 	static boolean ONLY_PRIVATE_DEAD_CODE = true
 	static int LARGE_CLASS = 150

@@ -16,6 +16,7 @@ import io.gitlab.arturbosch.smartsmells.smells.deadcode.DeadCodeDetector
 import io.gitlab.arturbosch.smartsmells.smells.featureenvy.FeatureEnvyDetector
 import io.gitlab.arturbosch.smartsmells.smells.featureenvy.FeatureEnvyFactor
 import io.gitlab.arturbosch.smartsmells.smells.godclass.GodClassDetector
+import io.gitlab.arturbosch.smartsmells.smells.godclass.GodClassThreshold
 import io.gitlab.arturbosch.smartsmells.smells.largeclass.LargeClassDetector
 import io.gitlab.arturbosch.smartsmells.smells.longmethod.LongMethodDetector
 import io.gitlab.arturbosch.smartsmells.smells.longparam.LongParameterListDetector
@@ -105,10 +106,10 @@ enum Smell {
 		Optional<Detector> initialize(DetectorConfig detectorConfig) {
 			initDefault(detectorConfig, Constants.GOD_CLASS,
 					{
-						new GodClassDetector(
+						new GodClassDetector(new GodClassThreshold(
 								toInt(it.get(Constants.WMC), Defaults.WEIGHTED_METHOD_COUNT),
-								toInt(it.get(Constants.ATFD), Defaults.ACCESS_TO_FOREIGN_DATA),
-								toDouble(it.get(Constants.TCC), Defaults.TIED_CLASS_COHESION))
+								toDouble(it.get(Constants.TCC), Defaults.TIED_CLASS_COHESION),
+								toInt(it.get(Constants.ATFD), Defaults.ACCESS_TO_FOREIGN_DATA)))
 					})
 		}
 	}, JAVADOC{
@@ -198,7 +199,7 @@ enum Smell {
 				new StateCheckingDetector()
 			})
 		}
-	}, TRADITION_BREAKER {
+	}, TRADITION_BREAKER{
 		@Override
 		Optional<Detector> initialize(DetectorConfig detectorConfig) {
 			return initDefault(detectorConfig, Constants.TRADITION_BREAKER) {

@@ -63,5 +63,6 @@ class ShotgunSurgeryVisitor extends Visitor<ShotgunSurgery> {
 					cc, cm, ccThreshold, cmThreshold, SourcePath.of(info),
 					SourceRange.fromNode(n), ElementTarget.CLASS))
 		}
+		super.visit(n, resolver)
 	}
 }

@@ -15,11 +15,9 @@ class FullstackMetrics {
 	static CompositeMetricRaiser create() {
 		def lm = new LM()
 		def lpl = new LPL()
-		def atfd = new ATFD()
-		def tcc = new TCC()
 		def noa = new NOA()
 		def nom = new NOM()
-		def list = [atfd, tcc, nom, noa, lm, lpl]
+		def list = [nom, noa, lm, lpl]
 		def composite = new SimpleCompositeMetricRaiser(list as List<MetricRaiser>)
 		return new CombinedCompositeMetricRaiser([composite, new LOC()] as List<CompositeMetricRaiser>)
 	}

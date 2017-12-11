@@ -12,6 +12,7 @@ import io.gitlab.arturbosch.smartsmells.metrics.ClassInfo
 import io.gitlab.arturbosch.smartsmells.metrics.FileInfo
 import io.gitlab.arturbosch.smartsmells.metrics.MethodInfo
 import io.gitlab.arturbosch.smartsmells.metrics.Metric
+import io.gitlab.arturbosch.smartsmells.metrics.Metrics
 import io.gitlab.arturbosch.smartsmells.smells.shotgunsurgery.CMCCMetrics
 
 import java.util.stream.Collectors
@@ -123,5 +124,27 @@ class CC_CM implements MetricPreListener {
 		def classInfo = findClassInfo(aClass, info)
 		classInfo?.addMetric(Metric.of(COUNT_CLASSES, cc))
 		classInfo?.addMetric(Metric.of(COUNT_METHODS, cm))
+	}
+}
+
+@CompileStatic
+class TCC implements MetricPreListener {
+
+	static final String TIED_CLASS_COHESION = "TiedClassCohesion"
+
+	@Override
+	void raise(ClassOrInterfaceDeclaration aClass, CompilationInfo info, Resolver resolver) {
+		findClassInfo(aClass, info)?.addMetric(Metric.of(TIED_CLASS_COHESION, Metrics.tcc(aClass)))
+	}
+}
+
+@CompileStatic
+class ATFD implements MetricPreListener {
+
+	static final String ACCESS_TO_FOREIGN_DATA = "AccessToForeignData"
+
+	@Override
+	void raise(ClassOrInterfaceDeclaration aClass, CompilationInfo info, Resolver resolver) {
+		findClassInfo(aClass, info)?.addMetric(Metric.of(ACCESS_TO_FOREIGN_DATA, Metrics.atfd(aClass)))
 	}
 }

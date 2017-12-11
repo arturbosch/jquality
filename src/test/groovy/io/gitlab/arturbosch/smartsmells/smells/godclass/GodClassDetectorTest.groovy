@@ -1,12 +1,13 @@
 package io.gitlab.arturbosch.smartsmells.smells.godclass
 
+import io.gitlab.arturbosch.smartsmells.DetectorSpecification
+import io.gitlab.arturbosch.smartsmells.api.Detector
 import io.gitlab.arturbosch.smartsmells.common.Test
-import spock.lang.Specification
 
 /**
  * @author artur
  */
-class GodClassDetectorTest extends Specification {
+class GodClassDetectorTest extends DetectorSpecification<GodClass> {
 
 	def "find one god class"() {
 		expect:
@@ -23,7 +24,11 @@ class GodClassDetectorTest extends Specification {
 		smells[0].sourceRange != null
 
 		where:
-		smells = new GodClassDetector(wmcThreshold: 20, tccThreshold: 0.8d, atfdThreshold: 4)
-				.run(Test.GOD_CLASS_DUMMY_PATH)
+		smells = run(Test.GOD_CLASS_DUMMY_PATH)
+	}
+
+	@Override
+	Detector<GodClass> detector() {
+		return new GodClassDetector(new GodClassThreshold(20, 0.8d, 4))
 	}
 }
