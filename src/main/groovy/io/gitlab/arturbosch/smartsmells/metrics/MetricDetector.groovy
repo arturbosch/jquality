@@ -16,6 +16,7 @@ import io.gitlab.arturbosch.smartsmells.api.CompositeMetricRaiser
 import io.gitlab.arturbosch.smartsmells.common.visitor.InternalVisitor
 import io.gitlab.arturbosch.smartsmells.metrics.internal.FullstackMetrics
 import io.gitlab.arturbosch.smartsmells.metrics.raisers.AMW
+import io.gitlab.arturbosch.smartsmells.metrics.raisers.CC_CM
 import io.gitlab.arturbosch.smartsmells.metrics.raisers.CYCLO
 import io.gitlab.arturbosch.smartsmells.metrics.raisers.CompositeMethodMetricRaiser
 import io.gitlab.arturbosch.smartsmells.metrics.raisers.MAXNESTING
@@ -38,7 +39,7 @@ class MetricDetector extends InternalVisitor {
 	static final CompositeMetricRaiser metrics = FullstackMetrics.create()
 
 	static final List<MetricPreListener> preRaisers =
-			[new NAS()].sort { it.priority() } as List<MetricPreListener>
+			[new NAS(), new CC_CM()].sort { it.priority() } as List<MetricPreListener>
 
 	static final List<MetricPostRaiser> postRaisers =
 			[new AMW(), new WMC()].sort { it.priority() } as List<MetricPostRaiser>

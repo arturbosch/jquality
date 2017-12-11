@@ -12,6 +12,7 @@ import io.gitlab.arturbosch.smartsmells.metrics.ClassInfo
 import io.gitlab.arturbosch.smartsmells.metrics.FileInfo
 import io.gitlab.arturbosch.smartsmells.metrics.MethodInfo
 import io.gitlab.arturbosch.smartsmells.metrics.Metric
+import io.gitlab.arturbosch.smartsmells.smells.shotgunsurgery.CMCCMetrics
 
 import java.util.stream.Collectors
 
@@ -106,5 +107,21 @@ class NAS implements MetricPreListener {
 				.map { findClassInfo(it as ClassOrInterfaceDeclaration, ancestorInfo) }
 				.map { it.methods }
 				.orElse(Collections.emptySet() as Set<MethodInfo>)
+	}
+}
+
+@CompileStatic
+class CC_CM implements MetricPreListener {
+
+	static final String COUNT_CLASSES = "CountClasses"
+	static final String COUNT_METHODS = "CountMethods"
+
+	@Override
+	void raise(ClassOrInterfaceDeclaration aClass, CompilationInfo info, Resolver resolver) {
+		def pair = CMCCMetrics.raise(aClass, resolver)
+		def (int cc, int cm) = [pair.a, pair.b]
+		def classInfo = findClassInfo(aClass, info)
+		classInfo?.addMetric(Metric.of(COUNT_CLASSES, cc))
+		classInfo?.addMetric(Metric.of(COUNT_METHODS, cm))
 	}
 }

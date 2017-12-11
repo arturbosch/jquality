@@ -73,38 +73,6 @@ class NOM implements MetricRaiser {
 }
 
 @CompileStatic
-class CC implements MetricRaiser {
-
-	public static final String COUNT_CLASSES = "CountClasses"
-
-	@Override
-	String metricName() {
-		return COUNT_CLASSES
-	}
-
-	@Override
-	Metric raise(ClassOrInterfaceDeclaration aClass) {
-		return Metric.of(COUNT_CLASSES, Metrics.cc(aClass, resolver))
-	}
-}
-
-@CompileStatic
-class CM implements MetricRaiser {
-
-	public static final String COUNT_METHODS = "CountMethods"
-
-	@Override
-	String metricName() {
-		return COUNT_METHODS
-	}
-
-	@Override
-	Metric raise(ClassOrInterfaceDeclaration aClass) {
-		return Metric.of(COUNT_METHODS, Metrics.cm(aClass, resolver))
-	}
-}
-
-@CompileStatic
 class LM implements MetricRaiser {
 
 	public static final String LONG_METHOD = 'LongMethod'

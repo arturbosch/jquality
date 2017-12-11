@@ -12,7 +12,7 @@ import io.gitlab.arturbosch.smartsmells.api.SimpleCompositeMetricRaiser
 @CompileStatic
 class FullstackMetrics {
 
-	static CompositeMetricRaiser create(boolean skipCCCM = false) {
+	static CompositeMetricRaiser create() {
 		def lm = new LM()
 		def lpl = new LPL()
 		def atfd = new ATFD()
@@ -20,7 +20,6 @@ class FullstackMetrics {
 		def noa = new NOA()
 		def nom = new NOM()
 		def list = [atfd, tcc, nom, noa, lm, lpl]
-		if (!skipCCCM) list.addAll(new CC(), new CM())
 		def composite = new SimpleCompositeMetricRaiser(list as List<MetricRaiser>)
 		return new CombinedCompositeMetricRaiser([composite, new LOC()] as List<CompositeMetricRaiser>)
 	}
