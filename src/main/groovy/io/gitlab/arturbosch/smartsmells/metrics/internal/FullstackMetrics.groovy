@@ -13,13 +13,11 @@ import io.gitlab.arturbosch.smartsmells.api.SimpleCompositeMetricRaiser
 class FullstackMetrics {
 
 	static CompositeMetricRaiser create() {
-		def lm = new LM()
-		def lpl = new LPL()
 		def noa = new NOA()
 		def nom = new NOM()
-		def list = [nom, noa, lm, lpl]
+		def list = [nom, noa]
 		def composite = new SimpleCompositeMetricRaiser(list as List<MetricRaiser>)
-		return new CombinedCompositeMetricRaiser([composite, new LOC()] as List<CompositeMetricRaiser>)
+		return new CombinedCompositeMetricRaiser([composite] as List<CompositeMetricRaiser>)
 	}
 
 	private FullstackMetrics() {

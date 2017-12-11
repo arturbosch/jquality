@@ -9,6 +9,7 @@ import io.gitlab.arturbosch.jpal.internal.PrefixedThreadFactory
 import io.gitlab.arturbosch.jpal.resolution.Resolver
 import io.gitlab.arturbosch.smartsmells.config.DetectorConfig
 import io.gitlab.arturbosch.smartsmells.config.DetectorInitializer
+import io.gitlab.arturbosch.smartsmells.metrics.FileMetricProcessor
 import io.gitlab.arturbosch.smartsmells.smells.DetectionResult
 import io.gitlab.arturbosch.smartsmells.util.Validate
 
@@ -71,7 +72,7 @@ class DetectorFacade {
 	SmellResult run(Path startPath) {
 		Validate.notNull(startPath)
 
-		def storage = JPAL.newInstance(startPath, null, filters, null, executorService)
+		def storage = JPAL.newInstance(startPath, new FileMetricProcessor(), filters, null, executorService)
 		def resolver = new Resolver(storage)
 		def infos = storage.getAllCompilationInfo()
 

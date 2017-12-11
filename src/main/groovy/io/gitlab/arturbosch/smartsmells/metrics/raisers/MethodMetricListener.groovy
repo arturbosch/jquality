@@ -17,34 +17,61 @@ import com.github.javaparser.ast.visitor.VoidVisitorAdapter
 import groovy.transform.CompileStatic
 import io.gitlab.arturbosch.jpal.resolution.Resolver
 import io.gitlab.arturbosch.smartsmells.common.visitor.InternalVisitor
+import io.gitlab.arturbosch.smartsmells.metrics.MethodInfo
 import io.gitlab.arturbosch.smartsmells.metrics.Metric
 import io.gitlab.arturbosch.smartsmells.metrics.Metrics
+import io.gitlab.arturbosch.smartsmells.metrics.internal.LinesOfCode
 
 /**
  * @author Artur Bosch
  */
 @CompileStatic
-interface MethodMetricRaiser {
+trait MethodMetricListener {
 
-	String name()
+	int priority() {
+		return 0
+	}
 
-	Metric raise(CallableDeclaration method, Resolver resolver)
+	abstract void raise(CallableDeclaration callable, MethodInfo info, Resolver resolver)
 }
 
 @CompileStatic
-class NOAV implements MethodMetricRaiser {
-
-	public static final String NUMBER_OF_ACCESSED_VARIABLES = "NumberOfAccessedVariables"
+class MLOC implements MethodMetricListener {
 
 	@Override
-	String name() {
-		return NUMBER_OF_ACCESSED_VARIABLES
+	void raise(CallableDeclaration callable, MethodInfo info, Resolver resolver) {
+		def loc = new LinesOfCode()
+		loc.analyze(LOC.NL.split(callable.toString()))
+		[Metric.of(LOC.LOC, loc.source + loc.blank + loc.comment),
+		 Metric.of(LOC.SLOC, loc.source),
+		 Metric.of(LOC.CLOC, loc.comment),
+		 Metric.of(LOC.LLOC, loc.logical),
+		 Metric.of(LOC.BLOC, loc.blank)].each {
+			info.addMetric(it)
+		}
 	}
+}
+
+@CompileStatic
+class NOP implements MethodMetricListener {
+
+	static final String NUMBER_OF_PARAMETERS = "NumberOfParameters"
 
 	@Override
-	Metric raise(CallableDeclaration method, Resolver resolver) {
-		def count = new AccessedVariablesVisitor().count(method, resolver)
-		return Metric.of(NUMBER_OF_ACCESSED_VARIABLES, count)
+	void raise(CallableDeclaration callable, MethodInfo info, Resolver resolver) {
+		info?.addMetric(Metric.of(NUMBER_OF_PARAMETERS, callable.parameters.size()))
+	}
+}
+
+@CompileStatic
+class NOAV implements MethodMetricListener {
+
+	static final String NUMBER_OF_ACCESSED_VARIABLES = "NumberOfAccessedVariables"
+
+	@Override
+	void raise(CallableDeclaration callable, MethodInfo info, Resolver resolver) {
+		info?.addMetric(Metric.of(NUMBER_OF_ACCESSED_VARIABLES,
+				new AccessedVariablesVisitor().count(callable, resolver)))
 	}
 }
 
@@ -79,39 +106,24 @@ class AccessedVariablesVisitor extends VoidVisitorAdapter<Resolver> {
 }
 
 @CompileStatic
-class CYCLO implements MethodMetricRaiser {
+class CYCLO implements MethodMetricListener {
 
 	static final String CYCLOMATIC_COMPLEXITY = "CYCLO"
 
 	@Override
-	String name() {
-		return CYCLOMATIC_COMPLEXITY
-	}
-
-	@Override
-	Metric raise(CallableDeclaration method, Resolver resolver) {
-		def mcCabe = Metrics.mcCabe(method)
-		return Metric.of(CYCLOMATIC_COMPLEXITY, mcCabe)
+	void raise(CallableDeclaration callable, MethodInfo info, Resolver resolver) {
+		info?.addMetric(Metric.of(CYCLOMATIC_COMPLEXITY, Metrics.mcCabe(callable)))
 	}
 }
 
 @CompileStatic
-class MAXNESTING implements MethodMetricRaiser {
+class MAXNESTING implements MethodMetricListener {
 
-	public static final String MAXNESTING = "MAXNESTING"
-
-	@Override
-	String name() {
-		return MAXNESTING
-	}
+	static final String MAXNESTING = "MAXNESTING"
 
 	@Override
-	Metric raise(CallableDeclaration method, Resolver resolver) {
-		def visitor = new MethodDepthVisitor()
-		method instanceof MethodDeclaration ?
-				visitor.visit(method, resolver) :
-				visitor.visit((ConstructorDeclaration) method, resolver)
-		return Metric.of(MAXNESTING, visitor.maxDepth)
+	void raise(CallableDeclaration callable, MethodInfo info, Resolver resolver) {
+		info?.addMetric(Metric.of(MAXNESTING, new MethodDepthVisitor().findMaxDepth(callable, resolver)))
 	}
 }
 
@@ -130,6 +142,13 @@ class MethodDepthVisitor extends InternalVisitor {
 
 	private dec() {
 		depth--
+	}
+
+	int findMaxDepth(CallableDeclaration n, Resolver arg) {
+		n instanceof MethodDeclaration ?
+				visit(n, arg) :
+				visit((ConstructorDeclaration) n, arg)
+		return maxDepth
 	}
 
 	@Override

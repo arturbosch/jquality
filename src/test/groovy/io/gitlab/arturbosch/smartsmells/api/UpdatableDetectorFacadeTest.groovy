@@ -3,6 +3,7 @@ package io.gitlab.arturbosch.smartsmells.api
 import io.gitlab.arturbosch.jpal.core.JPAL
 import io.gitlab.arturbosch.smartsmells.common.Test
 import io.gitlab.arturbosch.smartsmells.config.Smell
+import io.gitlab.arturbosch.smartsmells.metrics.FileMetricProcessor
 import spock.lang.Specification
 
 import java.nio.file.Files
@@ -16,7 +17,7 @@ class UpdatableDetectorFacadeTest extends Specification {
 	def "test running two times over same project"() {
 		given:
 		def fullStackFacade = DetectorFacade.builder().fullStackFacade()
-		def facade = new UpdatableDetectorFacade(fullStackFacade, JPAL.updatable())
+		def facade = new UpdatableDetectorFacade(fullStackFacade, JPAL.updatable(new FileMetricProcessor()))
 		when:
 		facade.addOrUpdate(Collections.singletonList(Test.CYCLE_DUMMY_PATH))
 		facade.addOrUpdate(Collections.singletonList(Test.COMPLEX_METHOD_DUMMY_PATH))

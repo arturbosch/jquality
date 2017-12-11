@@ -19,18 +19,17 @@ import io.gitlab.arturbosch.smartsmells.metrics.raisers.AMW
 import io.gitlab.arturbosch.smartsmells.metrics.raisers.ATFD
 import io.gitlab.arturbosch.smartsmells.metrics.raisers.CC_CM
 import io.gitlab.arturbosch.smartsmells.metrics.raisers.CYCLO
-import io.gitlab.arturbosch.smartsmells.metrics.raisers.CompositeMethodMetricRaiser
+import io.gitlab.arturbosch.smartsmells.metrics.raisers.LOC
 import io.gitlab.arturbosch.smartsmells.metrics.raisers.MAXNESTING
 import io.gitlab.arturbosch.smartsmells.metrics.raisers.MLOC
-import io.gitlab.arturbosch.smartsmells.metrics.raisers.MethodMetricRaiser
+import io.gitlab.arturbosch.smartsmells.metrics.raisers.MethodMetricListener
 import io.gitlab.arturbosch.smartsmells.metrics.raisers.MetricPostRaiser
 import io.gitlab.arturbosch.smartsmells.metrics.raisers.MetricPreListener
 import io.gitlab.arturbosch.smartsmells.metrics.raisers.NAS
 import io.gitlab.arturbosch.smartsmells.metrics.raisers.NOAV
+import io.gitlab.arturbosch.smartsmells.metrics.raisers.NOP
 import io.gitlab.arturbosch.smartsmells.metrics.raisers.TCC
 import io.gitlab.arturbosch.smartsmells.metrics.raisers.WMC
-
-import java.util.stream.Collectors
 
 /**
  * @author Artur Bosch
@@ -41,10 +40,12 @@ class MetricDetector extends InternalVisitor {
 	static final CompositeMetricRaiser metrics = FullstackMetrics.create()
 
 	static final List<MetricPreListener> preRaisers =
-			[new NAS(), new CC_CM(), new TCC(), new ATFD()].sort { it.priority() } as List<MetricPreListener>
+			[new NAS(), new CC_CM(), new TCC(), new ATFD(), new LOC()]
+					.sort { it.priority() } as List<MetricPreListener>
 
 	static final List<MetricPostRaiser> postRaisers =
-			[new AMW(), new WMC()].sort { it.priority() } as List<MetricPostRaiser>
+			[new AMW(), new WMC()]
+					.sort { it.priority() } as List<MetricPostRaiser>
 
 	@Override
 	void visit(CompilationUnit n, Resolver arg) {
@@ -73,11 +74,9 @@ class MetricDetector extends InternalVisitor {
 @CompileStatic
 class MethodInfoVisitor extends InternalVisitor {
 
-	static final Set<MethodMetricRaiser> methodRaisers =
-			[new CYCLO(), new MAXNESTING(), new NOAV()].toSet() as Set<MethodMetricRaiser>
-
-	static final Set<CompositeMethodMetricRaiser> compositeMethodRaisers =
-			[new MLOC()].toSet() as Set<CompositeMethodMetricRaiser>
+	static final List<MethodMetricListener> listeners =
+			[new MLOC(), new NOP(), new CYCLO(), new MAXNESTING(), new NOAV()]
+					.sort { it.priority() } as List<MethodMetricListener>
 
 	private ClassInfo current
 
@@ -100,11 +99,8 @@ class MethodInfoVisitor extends InternalVisitor {
 	}
 
 	private void handleCallable(CallableDeclaration n, Resolver arg) {
-		List<Metric> metrics = methodRaisers.collect { it.raise(n, arg) }
-		List<Metric> nestedMetrics = compositeMethodRaisers.stream()
-				.flatMap { it.raise(n, arg).stream() }
-				.collect(Collectors.toList())
-		def info = MethodInfo.of(n, current, metrics + nestedMetrics)
-		current.addMethodInfo(info)
+		def methodInfo = MethodInfo.of(n, current)
+		current.addMethodInfo(methodInfo)
+		listeners.each { it.raise(n, methodInfo, arg) }
 	}
 }

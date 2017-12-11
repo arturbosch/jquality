@@ -1,12 +1,18 @@
 package io.gitlab.arturbosch.smartsmells.smells.longparam
 
+import io.gitlab.arturbosch.smartsmells.DetectorSpecification
+import io.gitlab.arturbosch.smartsmells.api.Detector
 import io.gitlab.arturbosch.smartsmells.common.Test
-import spock.lang.Specification
 
 /**
  * @author artur
  */
-class LongParameterListDetectorTest extends Specification {
+class LongParameterListDetectorTest extends DetectorSpecification<LongParameterList> {
+
+	@Override
+	Detector<LongParameterList> detector() {
+		return new LongParameterListDetector()
+	}
 
 	def "finds one long parameter list with default threshold"() {
 		expect:
@@ -16,7 +22,7 @@ class LongParameterListDetectorTest extends Specification {
 		smells[0].size == 6
 
 		where:
-		smells = new LongParameterListDetector().run(Test.PATH)
+		smells = run(Test.LONG_METHOD_DUMMY_PATH)
 	}
 
 	def "finds no long parameter list with specified threshold"() {
@@ -24,6 +30,6 @@ class LongParameterListDetectorTest extends Specification {
 		smells.size() == 0
 
 		where:
-		smells = new LongParameterListDetector(6).run(Test.PATH)
+		smells = run(Test.LONG_METHOD_DUMMY_PATH, new LongParameterListDetector(6))
 	}
 }

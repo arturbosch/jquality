@@ -43,4 +43,11 @@ abstract class DetectorSpecification<T extends DetectionResult> extends Specific
 		def info = resolver.find(path).get()
 		detector().execute(info, resolver)
 	}
+
+	Set<T> run(Path path, Detector<T> detector) {
+		Validate.notNull(path)
+		def resolver = new Resolver(JPAL.newInstance(path, new FileMetricProcessor()))
+		def info = resolver.find(path).get()
+		detector.execute(info, resolver)
+	}
 }

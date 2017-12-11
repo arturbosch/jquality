@@ -11,8 +11,8 @@ import io.gitlab.arturbosch.smartsmells.api.Detector
 import io.gitlab.arturbosch.smartsmells.common.Visitor
 import io.gitlab.arturbosch.smartsmells.config.Smell
 import io.gitlab.arturbosch.smartsmells.metrics.ClassInfo
-import io.gitlab.arturbosch.smartsmells.metrics.internal.LOC
 import io.gitlab.arturbosch.smartsmells.metrics.raisers.CYCLO
+import io.gitlab.arturbosch.smartsmells.metrics.raisers.LOC
 import io.gitlab.arturbosch.smartsmells.metrics.raisers.MAXNESTING
 import io.gitlab.arturbosch.smartsmells.metrics.raisers.NOAV
 

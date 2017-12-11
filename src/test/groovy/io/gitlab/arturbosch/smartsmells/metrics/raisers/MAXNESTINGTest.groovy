@@ -1,13 +1,12 @@
 package io.gitlab.arturbosch.smartsmells.metrics.raisers
 
-import com.github.javaparser.JavaParser
 import io.gitlab.arturbosch.smartsmells.common.Test
-import spock.lang.Specification
+import io.gitlab.arturbosch.smartsmells.metrics.FileInfo
 
 /**
  * @author Artur Bosch
  */
-class MAXNESTINGTest extends Specification {
+class MAXNESTINGTest extends MetricSpecification {
 
 	def "find max nesting of 3"() {
 		given:
@@ -36,13 +35,14 @@ class MAXNESTINGTest extends Specification {
 				}
 			}
 		"""
-
-		def unit = JavaParser.parse(code)
+		def info = setupCode(code)[0]
+		def methodInfo = info.getData(FileInfo.KEY)?.findClassByName("A")?.getMethodByName("m")
 
 		when:
-		def nesting = new MAXNESTING().raise(Test.nth(unit, 0), null)
+		new MAXNESTING().raise(Test.nth(info.unit, 0), methodInfo, resolver)
 
 		then:
-		nesting.value == 3
+		methodInfo.getMetric(MAXNESTING.MAXNESTING).value == 3
 	}
+
 }

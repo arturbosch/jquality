@@ -13,8 +13,10 @@ import io.gitlab.arturbosch.smartsmells.metrics.FileInfo
 import io.gitlab.arturbosch.smartsmells.metrics.MethodInfo
 import io.gitlab.arturbosch.smartsmells.metrics.Metric
 import io.gitlab.arturbosch.smartsmells.metrics.Metrics
+import io.gitlab.arturbosch.smartsmells.metrics.internal.LinesOfCode
 import io.gitlab.arturbosch.smartsmells.smells.shotgunsurgery.CMCCMetrics
 
+import java.util.regex.Pattern
 import java.util.stream.Collectors
 
 /**
@@ -146,5 +148,34 @@ class ATFD implements MetricPreListener {
 	@Override
 	void raise(ClassOrInterfaceDeclaration aClass, CompilationInfo info, Resolver resolver) {
 		findClassInfo(aClass, info)?.addMetric(Metric.of(ACCESS_TO_FOREIGN_DATA, Metrics.atfd(aClass)))
+	}
+}
+
+@CompileStatic
+class LOC implements MetricPreListener {
+
+	static final String LOC = "LinesOfCode"
+	static final String SLOC = "SourceLinesOfCode"
+	static final String CLOC = "CommentsLinesOfCode"
+	static final String LLOC = "LogicalLinesOfCode"
+	static final String BLOC = "BlankLinesOfCode"
+
+	static final Pattern NL = Pattern.compile("\n")
+
+	@Override
+	void raise(ClassOrInterfaceDeclaration aClass, CompilationInfo info, Resolver resolver) {
+		def classInfo = findClassInfo(aClass, info)
+		if (classInfo) {
+			def content = NL.split(aClass.toString())
+			def loc = new LinesOfCode()
+			loc.analyze(content)
+			[Metric.of(LOC, loc.source + loc.blank + loc.comment),
+			 Metric.of(SLOC, loc.source),
+			 Metric.of(CLOC, loc.comment),
+			 Metric.of(LLOC, loc.logical),
+			 Metric.of(BLOC, loc.blank)].each {
+				classInfo.addMetric(it)
+			}
+		}
 	}
 }

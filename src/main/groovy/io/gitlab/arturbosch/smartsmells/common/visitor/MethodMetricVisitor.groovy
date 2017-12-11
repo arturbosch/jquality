@@ -1,17 +1,14 @@
 package io.gitlab.arturbosch.smartsmells.common.visitor
 
 import com.github.javaparser.ast.body.CallableDeclaration
+import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration
 import com.github.javaparser.ast.body.ConstructorDeclaration
 import com.github.javaparser.ast.body.MethodDeclaration
-import com.github.javaparser.ast.stmt.BlockStmt
 import groovy.transform.CompileStatic
-import io.gitlab.arturbosch.jpal.ast.source.SourcePath
-import io.gitlab.arturbosch.jpal.ast.source.SourceRange
 import io.gitlab.arturbosch.jpal.resolution.Resolver
 import io.gitlab.arturbosch.smartsmells.common.Visitor
+import io.gitlab.arturbosch.smartsmells.metrics.ClassInfo
 import io.gitlab.arturbosch.smartsmells.smells.DetectionResult
-import io.gitlab.arturbosch.smartsmells.smells.ElementTarget
-import io.gitlab.arturbosch.smartsmells.smells.longmethod.LongMethod
 
 /**
  * @author artur
@@ -20,33 +17,29 @@ import io.gitlab.arturbosch.smartsmells.smells.longmethod.LongMethod
 abstract class MethodMetricVisitor<T extends DetectionResult> extends Visitor<T> {
 
 	int threshold
+	ClassInfo current
 
 	MethodMetricVisitor(int threshold) {
 		this.threshold = threshold
 	}
 
 	@Override
-	void visit(ConstructorDeclaration node, Resolver arg) {
-		visitBlock(Optional.ofNullable(node.body), node)
+	void visit(ClassOrInterfaceDeclaration n, Resolver arg) {
+		current = infoForClass(n)
+		super.visit(n, arg)
 	}
 
-	private void visitBlock(Optional<BlockStmt> blockStmt, CallableDeclaration body) {
-		blockStmt.map { it.statements }
-				.filter { byThreshold(body) }
-				.ifPresent { addSmell(body) }
+	@Override
+	void visit(ConstructorDeclaration node, Resolver arg) {
+		callback(node, arg)
+		super.visit(node, arg)
 	}
 
 	@Override
 	void visit(MethodDeclaration node, Resolver arg) {
-		visitBlock(node.body, node)
+		callback(node, arg)
+		super.visit(node, arg)
 	}
 
-	protected LongMethod newLongMethod(CallableDeclaration n, int size) {
-		return new LongMethod(n.nameAsString, n.declarationAsString, size, threshold,
-				SourceRange.fromNode(n), SourcePath.of(info), ElementTarget.METHOD)
-	}
-
-	protected abstract byThreshold(CallableDeclaration n)
-
-	protected abstract addSmell(CallableDeclaration n)
+	protected abstract void callback(CallableDeclaration n, Resolver arg)
 }
