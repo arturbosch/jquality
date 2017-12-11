@@ -1,5 +1,6 @@
 package io.gitlab.arturbosch.smartsmells.metrics
 
+import com.github.javaparser.ast.body.CallableDeclaration
 import groovy.transform.Canonical
 import groovy.transform.CompileStatic
 import io.gitlab.arturbosch.jpal.ast.source.SourcePath
@@ -33,5 +34,11 @@ class MethodInfo implements HasMetrics {
 		this.metrics = metrics
 		this.sourcePath = sourcePath
 		this.sourceRange = sourceRange
+	}
+
+	static MethodInfo of(CallableDeclaration decl, ClassInfo info) {
+		def asString = decl.declarationAsString
+		return new MethodInfo(decl.nameAsString, asString, asString, new HashMap<>(),
+				info.sourcePath, SourceRange.fromNode(decl))
 	}
 }

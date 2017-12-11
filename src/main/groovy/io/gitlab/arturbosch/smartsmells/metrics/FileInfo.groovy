@@ -39,6 +39,9 @@ class FileInfo implements HasMetrics {
 				'}'
 	}
 
+	/**
+	 * @return the class info matching given name or null
+	 */
 	ClassInfo findClassByName(String name) {
 		return classes.find { it.name == name }
 	}
