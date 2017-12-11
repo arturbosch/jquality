@@ -33,7 +33,7 @@ class NASTest extends Specification {
 		def pnasMetric = cinfo.getData(FileInfo.KEY).findClassByName("SelfEnvy")
 				.getMetric(NAS.PERCENTAGE_OF_NEWLY_ADDED_SERVICES)
 		then:
-		nasMetric.value == 1
-		pnasMetric.asDouble() == 0.14d
+		nasMetric.value == 2
+		pnasMetric.asDouble() == 0.66d
 	}
 }

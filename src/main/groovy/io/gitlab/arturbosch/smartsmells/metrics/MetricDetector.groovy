@@ -22,6 +22,8 @@ import io.gitlab.arturbosch.smartsmells.metrics.raisers.MAXNESTING
 import io.gitlab.arturbosch.smartsmells.metrics.raisers.MLOC
 import io.gitlab.arturbosch.smartsmells.metrics.raisers.MethodMetricRaiser
 import io.gitlab.arturbosch.smartsmells.metrics.raisers.MetricPostRaiser
+import io.gitlab.arturbosch.smartsmells.metrics.raisers.MetricPreListener
+import io.gitlab.arturbosch.smartsmells.metrics.raisers.NAS
 import io.gitlab.arturbosch.smartsmells.metrics.raisers.NOAV
 import io.gitlab.arturbosch.smartsmells.metrics.raisers.WMC
 
@@ -33,7 +35,10 @@ import java.util.stream.Collectors
 @CompileStatic
 class MetricDetector extends InternalVisitor {
 
-	private static final CompositeMetricRaiser metrics = FullstackMetrics.create()
+	static final CompositeMetricRaiser metrics = FullstackMetrics.create()
+
+	static final List<MetricPreListener> preRaisers =
+			[new NAS()].sort { it.priority() } as List<MetricPreListener>
 
 	static final List<MetricPostRaiser> postRaisers =
 			[new AMW(), new WMC()].sort { it.priority() } as List<MetricPostRaiser>
@@ -56,6 +61,7 @@ class MetricDetector extends InternalVisitor {
 				metrics, SourcePath.of(info), SourceRange.fromNode(aClass))
 		statistics().addClass(currentClazz)
 		new MethodInfoVisitor(currentClazz).visit(aClass, arg)
+		preRaisers.each { it.raise(aClass, info, arg) }
 		super.visit(aClass, arg)
 		postRaisers.each { it.raise(aClass, info, arg) }
 	}

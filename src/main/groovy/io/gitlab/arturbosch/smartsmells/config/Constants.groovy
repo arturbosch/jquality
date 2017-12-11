@@ -49,5 +49,6 @@ class Constants {
 	static final String REFUSED_PARENT_BEQUEST = "refusedparentbequest"
 
 	static final String BRAIN_METHOD = "brainmethod"
+	static final String TRADITION_BREAKER = "traditionbreaker"
 
 }

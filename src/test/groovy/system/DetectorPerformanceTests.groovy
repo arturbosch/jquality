@@ -6,7 +6,9 @@ import io.gitlab.arturbosch.jpal.resolution.Resolver
 import io.gitlab.arturbosch.smartsmells.Main
 import io.gitlab.arturbosch.smartsmells.api.Detector
 import io.gitlab.arturbosch.smartsmells.api.DetectorFacade
+import io.gitlab.arturbosch.smartsmells.metrics.FileMetricProcessor
 import io.gitlab.arturbosch.smartsmells.smells.RefusedParentBequest.RefusedParentBequestDetector
+import io.gitlab.arturbosch.smartsmells.smells.brainmethod.BrainMethodDetector
 import io.gitlab.arturbosch.smartsmells.smells.classdatashouldbeprivate.ClassDataShouldBePrivateDetector
 import io.gitlab.arturbosch.smartsmells.smells.comment.CommentDetector
 import io.gitlab.arturbosch.smartsmells.smells.complexmethod.ComplexMethodDetector
@@ -22,6 +24,7 @@ import io.gitlab.arturbosch.smartsmells.smells.messagechain.MessageChainDetector
 import io.gitlab.arturbosch.smartsmells.smells.middleman.MiddleManDetector
 import io.gitlab.arturbosch.smartsmells.smells.shotgunsurgery.ShotgunSurgeryDetector
 import io.gitlab.arturbosch.smartsmells.smells.statechecking.StateCheckingDetector
+import io.gitlab.arturbosch.smartsmells.smells.traditionbreaker.TraditionBreakerDetector
 import spock.lang.Specification
 
 import java.nio.file.Path
@@ -146,11 +149,25 @@ class DetectorPerformanceTests extends Specification {
 		true
 	}
 
+	def "tradition breaker detector"() {
+		when: "testing performance"
+		run(new TraditionBreakerDetector())
+		then: "it takes: 51 ms"
+		true
+	}
+
+	def "brain method detector"() {
+		when: "testing performance"
+		run(new BrainMethodDetector())
+		then: "it takes: 347 ms"
+		true
+	}
+
 	private static CompilationStorage init(Path path) {
 		if (storage == null) {
 			def time = Main.benchmark {
-				storage = JPAL.newInstance(path)
-			} // 7758 ms
+				storage = JPAL.newInstance(path, new FileMetricProcessor())
+			} // 7758 ms / 23458 ms with Metrics
 			println "Compilation: $time ms"
 		}
 		return storage

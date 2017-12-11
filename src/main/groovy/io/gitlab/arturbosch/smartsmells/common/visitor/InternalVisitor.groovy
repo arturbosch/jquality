@@ -31,7 +31,7 @@ abstract class InternalVisitor extends VoidVisitorAdapter<Resolver> {
 	}
 
 	protected final ClassInfo infoForClass(ClassOrInterfaceDeclaration clazz) {
-		return statistics().findClassByName(clazz.nameAsString)
+		return statistics()?.findClassByName(clazz.nameAsString)
 	}
 
 	protected final FileInfo statistics() {

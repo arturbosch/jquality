@@ -75,7 +75,7 @@ class BrainMethodVisitor extends Visitor<BrainMethod> {
 	}
 
 	private void fromCallable(CallableDeclaration n) {
-		def method = currentClass.getMethodByDeclaration(n)
+		def method = currentClass?.getMethodByDeclaration(n)
 		def sloc = method?.getMetric(LOC.SLOC)?.value
 		def cyclo = method?.getMetric(CYCLO.CYCLOMATIC_COMPLEXITY)?.value
 		def nesting = method?.getMetric(MAXNESTING.MAXNESTING)?.value

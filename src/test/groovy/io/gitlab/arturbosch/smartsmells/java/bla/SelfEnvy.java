@@ -18,5 +18,8 @@ public class SelfEnvy extends BaseEnvy {
 		aFloat = other.getaFloat();
 		aFloat = other.getaFloat();
 	}
+
+	public void addedService() {
+	}
 }
 

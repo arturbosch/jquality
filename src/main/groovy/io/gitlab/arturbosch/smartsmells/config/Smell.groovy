@@ -25,6 +25,7 @@ import io.gitlab.arturbosch.smartsmells.smells.middleman.MiddleManVisitor
 import io.gitlab.arturbosch.smartsmells.smells.nestedblockdepth.NestedBlockDepthDetector
 import io.gitlab.arturbosch.smartsmells.smells.shotgunsurgery.ShotgunSurgeryDetector
 import io.gitlab.arturbosch.smartsmells.smells.statechecking.StateCheckingDetector
+import io.gitlab.arturbosch.smartsmells.smells.traditionbreaker.TraditionBreakerDetector
 import io.gitlab.arturbosch.smartsmells.util.Strings
 
 import java.util.function.Function
@@ -196,6 +197,13 @@ enum Smell {
 			return initDefault(detectorConfig, Constants.STATE_CHECKING, {
 				new StateCheckingDetector()
 			})
+		}
+	}, TRADITION_BREAKER {
+		@Override
+		Optional<Detector> initialize(DetectorConfig detectorConfig) {
+			return initDefault(detectorConfig, Constants.TRADITION_BREAKER) {
+				new TraditionBreakerDetector()
+			}
 		}
 	}, UNKNOWN{
 		@Override

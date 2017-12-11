@@ -1,7 +1,9 @@
 package io.gitlab.arturbosch.smartsmells.metrics.raisers
 
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration
+import com.github.javaparser.ast.body.MethodDeclaration
 import groovy.transform.CompileStatic
+import io.gitlab.arturbosch.jpal.ast.MethodHelper
 import io.gitlab.arturbosch.jpal.ast.TypeHelper
 import io.gitlab.arturbosch.jpal.core.CompilationInfo
 import io.gitlab.arturbosch.jpal.resolution.QualifiedType
@@ -56,11 +58,15 @@ class NAS implements MetricPreListener {
 
 	private static Metric raisePNAS(Collection<MethodInfo> ancestorMethods, Set<MethodInfo> methodInfos) {
 		def publicAncestorServices = ancestorMethods.stream()
+				.filter { it.declaration instanceof MethodDeclaration }
 				.filter { it.declaration.isPublic() && !it.declaration.isStatic() }
+				.filter { !MethodHelper.isGetterOrSetter(it.declaration as MethodDeclaration) }
 				.map { it.declarationString }
 				.collect()
 		def publicServices = methodInfos.stream()
+				.filter { it.declaration instanceof MethodDeclaration }
 				.filter { it.declaration.isPublic() && !it.declaration.isStatic() }
+				.filter { !MethodHelper.isGetterOrSetter(it.declaration as MethodDeclaration) }
 				.map { it.declarationString }
 				.collect()
 
@@ -73,11 +79,18 @@ class NAS implements MetricPreListener {
 
 	private static Metric raiseNAS(Collection<MethodInfo> ancestorMethods, Set<MethodInfo> methodInfos) {
 		Set<String> ancestorNames = ancestorMethods.stream()
-				.map { MethodInfo mi -> mi.declarationString }
+				.filter { it.declaration instanceof MethodDeclaration }
+				.filter { it.declaration.isPublic() && !it.declaration.isStatic() }
+				.filter { !MethodHelper.isGetterOrSetter(it.declaration as MethodDeclaration) }
+				.map { it.declarationString }
 				.collect(Collectors.toSet())
-		def addedServices = methodInfos
-				.findAll { !(it.declarationString in ancestorNames) }
-				.size()
+		int addedServices = methodInfos.stream()
+				.filter { it.declaration instanceof MethodDeclaration }
+				.filter { it.declaration.isPublic() && !it.declaration.isStatic() }
+				.filter { !MethodHelper.isGetterOrSetter(it.declaration as MethodDeclaration) }
+				.filter { !(it.declarationString in ancestorNames) }
+				.filter { !it.declaration.getAnnotationByName("Override").isPresent() }
+				.count() as int
 		Metric.of(NUMBER_OF_ADDED_SERVICES, addedServices)
 	}
 
