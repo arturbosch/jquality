@@ -95,11 +95,7 @@ class MethodInfoVisitor extends InternalVisitor {
 		List<Metric> nestedMetrics = compositeMethodRaisers.stream()
 				.flatMap { it.raise(n, arg).stream() }
 				.collect(Collectors.toList())
-		Map<String, Metric> allMetrics = (metrics + nestedMetrics)
-				.collectEntries { [it.type, it] }
-		def declarationString = n.declarationAsString
-		def info = new MethodInfo(n.nameAsString, declarationString, declarationString,
-				allMetrics, current.sourcePath, SourceRange.fromNode(n))
+		def info = MethodInfo.of(n, current, metrics + nestedMetrics)
 		current.addMethodInfo(info)
 	}
 }
