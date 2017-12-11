@@ -6,12 +6,19 @@ import com.github.javaparser.ast.body.MethodDeclaration
 import com.github.javaparser.ast.body.Parameter
 import com.github.javaparser.ast.expr.FieldAccessExpr
 import com.github.javaparser.ast.expr.VariableDeclarationExpr
+import com.github.javaparser.ast.stmt.DoStmt
+import com.github.javaparser.ast.stmt.ForStmt
+import com.github.javaparser.ast.stmt.ForeachStmt
+import com.github.javaparser.ast.stmt.IfStmt
+import com.github.javaparser.ast.stmt.SwitchStmt
+import com.github.javaparser.ast.stmt.TryStmt
+import com.github.javaparser.ast.stmt.WhileStmt
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter
 import groovy.transform.CompileStatic
 import io.gitlab.arturbosch.jpal.resolution.Resolver
+import io.gitlab.arturbosch.smartsmells.common.visitor.InternalVisitor
 import io.gitlab.arturbosch.smartsmells.metrics.Metric
 import io.gitlab.arturbosch.smartsmells.metrics.Metrics
-import io.gitlab.arturbosch.smartsmells.smells.nestedblockdepth.MethodDepthVisitor
 
 /**
  * @author Artur Bosch
@@ -105,5 +112,72 @@ class MAXNESTING implements MethodMetricRaiser {
 				visitor.visit(method, resolver) :
 				visitor.visit((ConstructorDeclaration) method, resolver)
 		return Metric.of(MAXNESTING, visitor.maxDepth)
+	}
+}
+
+@CompileStatic
+class MethodDepthVisitor extends InternalVisitor {
+
+	int depth = 0
+	int maxDepth = 0
+
+	private inc() {
+		depth++
+		if (depth > maxDepth) {
+			maxDepth = depth
+		}
+	}
+
+	private dec() {
+		depth--
+	}
+
+	@Override
+	void visit(DoStmt n, Resolver arg) {
+		inc()
+		super.visit(n, arg)
+		dec()
+	}
+
+	@Override
+	void visit(IfStmt n, Resolver arg) {
+		inc()
+		super.visit(n, arg)
+		dec()
+	}
+
+	@Override
+	void visit(ForeachStmt n, Resolver arg) {
+		inc()
+		super.visit(n, arg)
+		dec()
+	}
+
+	@Override
+	void visit(ForStmt n, Resolver arg) {
+		inc()
+		super.visit(n, arg)
+		dec()
+	}
+
+	@Override
+	void visit(SwitchStmt n, Resolver arg) {
+		inc()
+		super.visit(n, arg)
+		dec()
+	}
+
+	@Override
+	void visit(WhileStmt n, Resolver arg) {
+		inc()
+		super.visit(n, arg)
+		dec()
+	}
+
+	@Override
+	void visit(TryStmt n, Resolver arg) {
+		inc()
+		super.visit(n, arg)
+		dec()
 	}
 }

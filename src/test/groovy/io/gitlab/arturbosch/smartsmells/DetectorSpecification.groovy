@@ -6,7 +6,7 @@ import io.gitlab.arturbosch.smartsmells.api.Detector
 import io.gitlab.arturbosch.smartsmells.common.Visitor
 import io.gitlab.arturbosch.smartsmells.metrics.FileMetricProcessor
 import io.gitlab.arturbosch.smartsmells.smells.DetectionResult
-import org.spockframework.util.Assert
+import io.gitlab.arturbosch.smartsmells.util.Validate
 import spock.lang.Specification
 
 import java.nio.file.Path
@@ -20,7 +20,7 @@ abstract class DetectorSpecification<T extends DetectionResult> extends Specific
 	abstract Detector<T> detector()
 
 	Set<T> run(String code) {
-		Assert.notNull(code)
+		Validate.notNull(code)
 		def detector = detector()
 		def visitorMethod = detector.class.getDeclaredMethods().find { it.name == "getVisitor" }
 		visitorMethod.accessible = true
@@ -35,5 +35,12 @@ abstract class DetectorSpecification<T extends DetectionResult> extends Specific
 
 		visitor.visit(info, new Resolver(storage))
 		return visitor.smells
+	}
+
+	Set<T> run(Path path) {
+		Validate.notNull(path)
+		def resolver = new Resolver(JPAL.newInstance(path, new FileMetricProcessor()))
+		def info = resolver.find(path).get()
+		detector().execute(info, resolver)
 	}
 }
