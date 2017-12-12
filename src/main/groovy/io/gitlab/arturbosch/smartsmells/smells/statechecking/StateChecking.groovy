@@ -4,6 +4,7 @@ import com.github.javaparser.ast.expr.Expression
 import com.github.javaparser.ast.stmt.IfStmt
 import com.github.javaparser.ast.stmt.Statement
 import com.github.javaparser.ast.stmt.SwitchStmt
+import groovy.transform.CompileStatic
 import groovy.transform.Immutable
 import groovy.transform.ToString
 import io.gitlab.arturbosch.jpal.ast.ClassHelper
@@ -19,6 +20,7 @@ import io.gitlab.arturbosch.smartsmells.smells.LocalSpecific
  */
 @Immutable
 @ToString(includePackage = false)
+@CompileStatic
 class StateChecking implements DetectionResult, LocalSpecific {
 
 	static String INSTANCE_OF = "Replace instanceof conditions with polymorphism"

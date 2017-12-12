@@ -3,12 +3,14 @@ package io.gitlab.arturbosch.smartsmells.smells.deadcode
 import com.github.javaparser.ast.Modifier
 import com.github.javaparser.ast.body.MethodDeclaration
 import com.github.javaparser.ast.body.Parameter
+import groovy.transform.CompileStatic
 
 import java.util.stream.Collectors
 
 /**
- * @author artur
+ * @author Artur Bosch
  */
+@CompileStatic
 final class DeadCodeHelper {
 
 	private DeadCodeHelper() {}
@@ -30,6 +32,6 @@ final class DeadCodeHelper {
 	static List<MethodDeclaration> filterMethodsForExcludedAnnotations(List<MethodDeclaration> methodDeclarations) {
 		methodDeclarations.stream().filter {
 			it.getAnnotations().find { excludedAnnotations.contains(it.nameAsString) } == null
-		}.collect()
+		}.collect(Collectors.toList())
 	}
 }

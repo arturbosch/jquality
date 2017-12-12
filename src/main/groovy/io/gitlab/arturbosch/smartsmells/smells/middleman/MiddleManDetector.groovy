@@ -1,13 +1,15 @@
 package io.gitlab.arturbosch.smartsmells.smells.middleman
 
+import groovy.transform.CompileStatic
 import io.gitlab.arturbosch.smartsmells.api.Detector
 import io.gitlab.arturbosch.smartsmells.common.Visitor
 import io.gitlab.arturbosch.smartsmells.config.Defaults
 import io.gitlab.arturbosch.smartsmells.config.Smell
 
 /**
- * @author artur
+ * @author Artur Bosch
  */
+@CompileStatic
 class MiddleManDetector extends Detector<MiddleMan> {
 
 	private MiddleManVisitor.MMT threshold

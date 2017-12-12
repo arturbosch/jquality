@@ -1,6 +1,7 @@
 package io.gitlab.arturbosch.smartsmells.smells.middleman
 
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration
+import groovy.transform.CompileStatic
 import groovy.transform.Immutable
 import groovy.transform.ToString
 import io.gitlab.arturbosch.jpal.ast.ClassHelper
@@ -11,10 +12,11 @@ import io.gitlab.arturbosch.smartsmells.smells.ClassSpecific
 import io.gitlab.arturbosch.smartsmells.smells.ElementTarget
 
 /**
- * @author artur
+ * @author Artur Bosch
  */
 @Immutable
 @ToString(includeNames = false, includePackage = false)
+@CompileStatic
 class MiddleMan implements DetectionResult, ClassSpecific {
 
 	String name

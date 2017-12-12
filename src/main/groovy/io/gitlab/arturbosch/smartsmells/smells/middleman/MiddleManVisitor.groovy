@@ -4,6 +4,7 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration
 import com.github.javaparser.ast.body.MethodDeclaration
 import com.github.javaparser.ast.expr.MethodCallExpr
 import com.github.javaparser.ast.stmt.ReturnStmt
+import groovy.transform.CompileStatic
 import io.gitlab.arturbosch.jpal.ast.ClassHelper
 import io.gitlab.arturbosch.jpal.ast.NodeHelper
 import io.gitlab.arturbosch.jpal.ast.source.SourcePath
@@ -15,12 +16,14 @@ import io.gitlab.arturbosch.smartsmells.metrics.Metrics
 import io.gitlab.arturbosch.smartsmells.smells.ElementTarget
 
 /**
- * @author artur
+ * @author Artur Bosch
  */
+@CompileStatic
 class MiddleManVisitor extends Visitor<MiddleMan> {
 
-	private threshold = MMT.all
+	private MMT threshold = MMT.all
 
+	@CompileStatic
 	enum MMT {
 		all, half, third
 	}

@@ -3,6 +3,7 @@ package io.gitlab.arturbosch.smartsmells.smells.messagechain
 import com.github.javaparser.ast.expr.Expression
 import com.github.javaparser.ast.expr.MethodCallExpr
 import com.github.javaparser.ast.stmt.Statement
+import groovy.transform.CompileStatic
 import groovy.transform.Immutable
 import groovy.transform.ToString
 import io.gitlab.arturbosch.jpal.ast.source.SourcePath
@@ -13,7 +14,7 @@ import io.gitlab.arturbosch.smartsmells.smells.ElementTarget
 import io.gitlab.arturbosch.smartsmells.smells.LocalSpecific
 
 /**
- * @author artur
+ * @author Artur Bosch
  */
 @Immutable
 @ToString(includeNames = false, includePackage = false)

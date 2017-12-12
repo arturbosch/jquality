@@ -1,13 +1,15 @@
 package io.gitlab.arturbosch.smartsmells.smells.deadcode
 
+import groovy.transform.CompileStatic
 import io.gitlab.arturbosch.smartsmells.api.Detector
 import io.gitlab.arturbosch.smartsmells.common.Visitor
 import io.gitlab.arturbosch.smartsmells.config.Defaults
 import io.gitlab.arturbosch.smartsmells.config.Smell
 
 /**
- * @author artur
+ * @author Artur Bosch
  */
+@CompileStatic
 class DeadCodeDetector extends Detector<DeadCode> {
 
 	private boolean onlyPrivate

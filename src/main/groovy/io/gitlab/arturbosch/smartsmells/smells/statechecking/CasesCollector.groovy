@@ -4,6 +4,7 @@ import com.github.javaparser.ast.expr.SimpleName
 import com.github.javaparser.ast.stmt.IfStmt
 import com.github.javaparser.ast.stmt.SwitchStmt
 import com.github.javaparser.utils.Pair
+import groovy.transform.CompileStatic
 import io.gitlab.arturbosch.jpal.internal.Printer
 
 import java.util.stream.Collectors
@@ -11,6 +12,7 @@ import java.util.stream.Collectors
 /**
  * @author Artur Bosch
  */
+@CompileStatic
 final class CasesCollector {
 
 	private CasesCollector() {

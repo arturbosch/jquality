@@ -13,7 +13,7 @@ import io.gitlab.arturbosch.smartsmells.smells.ElementTarget
 import java.util.stream.Collectors
 
 /**
- * @author artur
+ * @author Artur Bosch
  */
 class MessageChainVisitor extends Visitor<MessageChain> {
 
@@ -30,7 +30,8 @@ class MessageChainVisitor extends Visitor<MessageChain> {
 		super.visit(n, resolver)
 
 		methodCallExprMap.entrySet().stream()
-				.filter { isValidChainAndNoBuilderPattern(it.value, resolver) }.collect {
+				.filter { isValidChainAndNoBuilderPattern(it.value, resolver) }
+				.collect { Map.Entry<String, MethodCallExpr> it ->
 
 			def signature = it.value.toString(Printer.NO_COMMENTS)
 			new MessageChain(signature, extractSourceString(signature),

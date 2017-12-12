@@ -9,6 +9,7 @@ import com.github.javaparser.ast.expr.Expression
 import com.github.javaparser.ast.expr.VariableDeclarationExpr
 import com.github.javaparser.ast.stmt.ExpressionStmt
 import com.github.javaparser.ast.stmt.Statement
+import groovy.transform.CompileStatic
 import groovy.transform.Immutable
 import groovy.transform.ToString
 import io.gitlab.arturbosch.jpal.ast.ClassHelper
@@ -28,6 +29,7 @@ import io.gitlab.arturbosch.smartsmells.util.Strings
  */
 @Immutable
 @ToString(includePackage = false)
+@CompileStatic
 class DeadCode implements DetectionResult, MethodSpecific, ClassSpecific, FieldSpecific, LocalSpecific {
 
 	String name

@@ -16,10 +16,12 @@ import com.github.javaparser.ast.stmt.ReturnStmt
 import com.github.javaparser.ast.stmt.SwitchStmt
 import com.github.javaparser.ast.stmt.WhileStmt
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter
+import groovy.transform.CompileStatic
 
 /**
  * @author Artur Bosch
  */
+@CompileStatic
 class ReferenceVisitor extends VoidVisitorAdapter {
 
 	private Map<String, MutableInt> methodsToReferenceCount

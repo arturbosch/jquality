@@ -21,7 +21,7 @@ import io.gitlab.arturbosch.smartsmells.smells.ElementTarget
 import java.util.stream.Collectors
 
 /**
- * @author artur
+ * @author Artur Bosch
  */
 @CompileStatic
 class DeadCodeVisitor extends Visitor<DeadCode> {
