@@ -1,5 +1,6 @@
 package io.gitlab.arturbosch.smartsmells.smells
 
+import groovy.transform.CompileStatic
 import io.gitlab.arturbosch.jpal.ast.source.SourcePath
 import io.gitlab.arturbosch.jpal.ast.source.SourceRange
 import io.gitlab.arturbosch.smartsmells.api.SmellExchange
@@ -8,6 +9,7 @@ import io.gitlab.arturbosch.smartsmells.smells.cycle.Cycle
 /**
  * @author artur
  */
+@CompileStatic
 trait DetectionResult {
 
 	abstract String asCompactString()
