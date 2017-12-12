@@ -2,8 +2,6 @@ package io.gitlab.arturbosch.smartsmells.smells.complexmethod
 
 import com.github.javaparser.ast.body.CallableDeclaration
 import groovy.transform.CompileStatic
-import io.gitlab.arturbosch.jpal.ast.source.SourcePath
-import io.gitlab.arturbosch.jpal.ast.source.SourceRange
 import io.gitlab.arturbosch.jpal.resolution.Resolver
 import io.gitlab.arturbosch.smartsmells.api.Detector
 import io.gitlab.arturbosch.smartsmells.common.Visitor
@@ -47,10 +45,11 @@ class ComplexMethodVisitor extends MethodMetricVisitor<ComplexMethod> {
 
 	@Override
 	protected void callback(CallableDeclaration n, Resolver arg) {
-		int mcc = current?.getMethodByDeclaration(n)?.getMetric(CYCLO.CYCLOMATIC_COMPLEXITY)?.value ?: 0
-		if (mcc > threshold) {
-			report(new ComplexMethod(n.nameAsString, n.declarationAsString, mcc, threshold,
-					SourceRange.fromNode(n), SourcePath.of(info), ElementTarget.METHOD))
+		def methodInfo = current?.getMethodByDeclaration(n)
+		int mcc = methodInfo?.getMetric(CYCLO.CYCLOMATIC_COMPLEXITY)?.value ?: 0
+		if (methodInfo && mcc > threshold) {
+			report(new ComplexMethod(methodInfo.name, methodInfo.signature, mcc, threshold,
+					methodInfo.sourceRange, methodInfo.sourcePath, ElementTarget.METHOD))
 		}
 	}
 }

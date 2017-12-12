@@ -10,8 +10,10 @@ import io.gitlab.arturbosch.smartsmells.common.Visitor
 import io.gitlab.arturbosch.smartsmells.common.visitor.MethodMetricVisitor
 import io.gitlab.arturbosch.smartsmells.config.Defaults
 import io.gitlab.arturbosch.smartsmells.config.Smell
+import io.gitlab.arturbosch.smartsmells.metrics.MethodInfo
 import io.gitlab.arturbosch.smartsmells.metrics.raisers.NOP
 import io.gitlab.arturbosch.smartsmells.smells.ElementTarget
+import io.gitlab.arturbosch.smartsmells.smells.longmethod.LongMethod
 
 /**
  * @author Artur Bosch
@@ -47,11 +49,12 @@ class LongParameterListVisitor extends MethodMetricVisitor<LongParameterList> {
 
 	@Override
 	protected void callback(CallableDeclaration n, Resolver arg) {
-		def nop = current?.getMethodByDeclaration(n)?.getMetric(NOP.NUMBER_OF_PARAMETERS)?.value ?: 0
-		if (nop > threshold) {
-			report(new LongParameterList(n.nameAsString, n.declarationAsString, nop, threshold,
+		def methodInfo = current?.getMethodByDeclaration(n)
+		def nop = methodInfo?.getMetric(NOP.NUMBER_OF_PARAMETERS)?.value ?: 0
+		if (methodInfo && nop > threshold) {
+			report(new LongParameterList(methodInfo.name, methodInfo.signature, nop, threshold,
 					n.parameters.collect { it.nameAsString },
-					SourceRange.fromNode(n), SourcePath.of(info), ElementTarget.METHOD))
+					methodInfo.sourceRange, methodInfo.sourcePath, ElementTarget.METHOD))
 		}
 	}
 }
