@@ -1,12 +1,13 @@
 package io.gitlab.arturbosch.smartsmells.smells.largeclass
 
+import io.gitlab.arturbosch.smartsmells.DetectorSpecification
+import io.gitlab.arturbosch.smartsmells.api.Detector
 import io.gitlab.arturbosch.smartsmells.common.Test
-import spock.lang.Specification
 
 /**
  * @author artur
  */
-class LargeClassDetectorTest extends Specification {
+class LargeClassDetectorTest extends DetectorSpecification<LargeClass> {
 
 	def "find one large class"() {
 		expect:
@@ -17,6 +18,11 @@ class LargeClassDetectorTest extends Specification {
 		smells[0].sourceRange != null
 
 		where:
-		smells = new LargeClassDetector().run(Test.PATH)
+		smells = run(Test.BASE_PATH.resolve("LargeClassDummy.java"))
+	}
+
+	@Override
+	Detector<LargeClass> detector() {
+		return new LargeClassDetector()
 	}
 }

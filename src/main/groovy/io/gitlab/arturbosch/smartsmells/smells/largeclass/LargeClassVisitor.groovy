@@ -1,20 +1,16 @@
 package io.gitlab.arturbosch.smartsmells.smells.largeclass
 
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration
-import io.gitlab.arturbosch.jpal.ast.ClassHelper
-import io.gitlab.arturbosch.jpal.ast.source.SourcePath
-import io.gitlab.arturbosch.jpal.ast.source.SourceRange
+import groovy.transform.CompileStatic
 import io.gitlab.arturbosch.jpal.resolution.Resolver
 import io.gitlab.arturbosch.smartsmells.common.Visitor
+import io.gitlab.arturbosch.smartsmells.metrics.raisers.LOC
 import io.gitlab.arturbosch.smartsmells.smells.ElementTarget
-import io.gitlab.arturbosch.smartsmells.util.JavaLoc
-
-import java.nio.file.Files
-import java.util.stream.Stream
 
 /**
- * @author artur
+ * @author Artur Bosche
  */
+@CompileStatic
 class LargeClassVisitor extends Visitor<LargeClass> {
 
 	private int sizeThreshold
@@ -27,29 +23,13 @@ class LargeClassVisitor extends Visitor<LargeClass> {
 	void visit(ClassOrInterfaceDeclaration n, Resolver resolver) {
 		if (n.interface) return
 
-		def sum
-		try {
-			sum = JavaLoc.analyze(Files.readAllLines(info.path), false, false)
-		} catch (IOException ignored) {
-			sum = calcSizeFromNode(n)
+		def classInfo = infoForClass(n)
+		if (classInfo) {
+			def sum = classInfo.getMetric(LOC.SLOC)?.value ?: 0
+
+			if (sum >= sizeThreshold)
+				report(new LargeClass(classInfo.name, classInfo.signature,
+						sum, sizeThreshold, classInfo.sourcePath, classInfo.sourceRange, ElementTarget.CLASS))
 		}
-
-		if (sum >= sizeThreshold)
-			smells.add(new LargeClass(n.nameAsString, ClassHelper.createFullSignature(n),
-					sum.toInteger(), sizeThreshold,
-					SourcePath.of(info), SourceRange.fromNode(n), ElementTarget.CLASS))
 	}
-
-	private static int calcSizeFromNode(ClassOrInterfaceDeclaration n) {
-		def commentsSize = Stream.of(n.getAllContainedComments())
-				.flatMap { it.stream() }
-				.mapToInt {
-			def beginLine = it.begin.map { it.line }.orElse(0)
-			def endLine = it.end.map { it.line }.orElse(0)
-			(endLine - beginLine) + 1
-		}.sum()
-		def size = n.end.map { it.line }.orElse(0) - n.begin.map { it.line }.orElse(0) + 1
-		return size - commentsSize
-	}
-
 }
