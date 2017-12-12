@@ -2,11 +2,13 @@ package io.gitlab.arturbosch.smartsmells.smells.dataclass
 
 import com.github.javaparser.ast.body.MethodDeclaration
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter
+import groovy.transform.CompileStatic
 import io.gitlab.arturbosch.jpal.ast.MethodHelper
 
 /**
- * @author artur
+ * @author Artur Bosch
  */
+@CompileStatic
 final class DataClassHelper extends VoidVisitorAdapter {
 
 	private DataClassHelper() {}

@@ -1,6 +1,8 @@
 package io.gitlab.arturbosch.smartsmells.smells.dataclass
 
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration
+import com.github.javaparser.ast.body.MethodDeclaration
+import groovy.transform.CompileStatic
 import io.gitlab.arturbosch.jpal.ast.ClassHelper
 import io.gitlab.arturbosch.jpal.ast.NodeHelper
 import io.gitlab.arturbosch.jpal.ast.source.SourcePath
@@ -12,8 +14,9 @@ import io.gitlab.arturbosch.smartsmells.smells.ElementTarget
 import java.util.stream.Collectors
 
 /**
- * @author artur
+ * @author Artur Bosch
  */
+@CompileStatic
 class DataClassVisitor extends Visitor<DataClass> {
 
 	String currentClassName
@@ -28,7 +31,7 @@ class DataClassVisitor extends Visitor<DataClass> {
 		if (isException(n)) return
 
 		currentClassName = n.name
-		def filteredMethods = NodeHelper.findMethods(n).stream()
+		List<MethodDeclaration> filteredMethods = NodeHelper.findMethods(n).stream()
 				.filter { ClassHelper.inClassScope(it, currentClassName) }
 				.collect(Collectors.toList())
 

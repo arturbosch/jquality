@@ -3,6 +3,7 @@ package io.gitlab.arturbosch.smartsmells.smells.cycle
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration
 import com.github.javaparser.ast.body.FieldDeclaration
 import com.github.javaparser.ast.type.ClassOrInterfaceType
+import groovy.transform.CompileStatic
 import io.gitlab.arturbosch.jpal.ast.ClassHelper
 import io.gitlab.arturbosch.jpal.ast.NodeHelper
 import io.gitlab.arturbosch.jpal.ast.source.SourcePath
@@ -13,8 +14,9 @@ import io.gitlab.arturbosch.jpal.resolution.Resolver
 import io.gitlab.arturbosch.smartsmells.common.Visitor
 
 /**
- * @author artur
+ * @author Artur Bosch
  */
+@CompileStatic
 class CycleVisitor extends Visitor<Cycle> {
 
 	@Override

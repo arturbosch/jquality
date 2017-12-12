@@ -1,6 +1,7 @@
 package io.gitlab.arturbosch.smartsmells.smells.cycle
 
 import com.github.javaparser.ast.body.FieldDeclaration
+import groovy.transform.CompileStatic
 import groovy.transform.ToString
 import io.gitlab.arturbosch.smartsmells.smells.CycleSpecific
 import io.gitlab.arturbosch.smartsmells.smells.DetectionResult
@@ -10,6 +11,7 @@ import io.gitlab.arturbosch.smartsmells.smells.ElementTarget
  * @author artur
  */
 @ToString(includeNames = false, includePackage = false)
+@CompileStatic
 class Cycle implements DetectionResult, CycleSpecific {
 
 	Dependency source

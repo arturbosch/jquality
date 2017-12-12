@@ -1,6 +1,7 @@
 package io.gitlab.arturbosch.smartsmells.smells.dataclass
 
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration
+import groovy.transform.CompileStatic
 import groovy.transform.Immutable
 import groovy.transform.ToString
 import io.gitlab.arturbosch.jpal.ast.ClassHelper
@@ -10,10 +11,11 @@ import io.gitlab.arturbosch.smartsmells.smells.ClassSpecific
 import io.gitlab.arturbosch.smartsmells.smells.ElementTarget
 
 /**
- * @author artur
+ * @author Artur Bosch
  */
 @Immutable
 @ToString(includePackage = false)
+@CompileStatic
 class DataClass implements ClassSpecific {
 
 	String name

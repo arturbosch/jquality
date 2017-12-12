@@ -1,6 +1,7 @@
 package io.gitlab.arturbosch.smartsmells.smells.cycle
 
 import com.github.javaparser.ast.body.FieldDeclaration
+import groovy.transform.CompileStatic
 import groovy.transform.Immutable
 import io.gitlab.arturbosch.jpal.ast.source.SourcePath
 import io.gitlab.arturbosch.jpal.ast.source.SourceRange
@@ -10,9 +11,10 @@ import io.gitlab.arturbosch.smartsmells.smells.ElementTarget
 import io.gitlab.arturbosch.smartsmells.smells.FieldSpecific
 
 /**
- * @author artur
+ * @author Artur Bosch
  */
 @Immutable
+@CompileStatic
 class Dependency implements DetectionResult, FieldSpecific {
 
 	String name

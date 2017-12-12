@@ -4,6 +4,7 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration
 import com.github.javaparser.ast.body.FieldDeclaration
 import com.github.javaparser.ast.type.ClassOrInterfaceType
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter
+import groovy.transform.CompileStatic
 import io.gitlab.arturbosch.jpal.ast.ClassHelper
 import io.gitlab.arturbosch.jpal.core.CompilationInfo
 import io.gitlab.arturbosch.jpal.resolution.QualifiedType
@@ -11,8 +12,9 @@ import io.gitlab.arturbosch.jpal.resolution.Resolver
 import io.gitlab.arturbosch.jpal.resolution.nested.InnerClassesHandler
 
 /**
- * @author artur
+ * @author Artur Bosch
  */
+@CompileStatic
 class SameFieldTypeVisitor extends VoidVisitorAdapter<Resolver> {
 
 	private QualifiedType searchedType
