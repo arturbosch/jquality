@@ -14,7 +14,7 @@ import java.util.stream.Collectors
  * @author Artur Bosch
  */
 @CompileStatic
-trait MetricPostRaiser {
+trait PostClassListener {
 
 	int priority() {
 		return 0
@@ -28,7 +28,7 @@ trait MetricPostRaiser {
 }
 
 @CompileStatic
-class AMW implements MetricPostRaiser {
+class AMW implements PostClassListener {
 
 	static final String AVERAGE_METHOD_WEIGHT = "AverageMethodWeight"
 
@@ -48,7 +48,7 @@ class AMW implements MetricPostRaiser {
 }
 
 @CompileStatic
-class WMC implements MetricPostRaiser {
+class WMC implements PostClassListener {
 
 	static final String WEIGHTED_METHOD_COUNT = "WeightedMethodCount"
 

@@ -21,8 +21,8 @@ import io.gitlab.arturbosch.smartsmells.metrics.raisers.LOC
 import io.gitlab.arturbosch.smartsmells.metrics.raisers.MAXNESTING
 import io.gitlab.arturbosch.smartsmells.metrics.raisers.MLOC
 import io.gitlab.arturbosch.smartsmells.metrics.raisers.MethodMetricListener
-import io.gitlab.arturbosch.smartsmells.metrics.raisers.MetricPostRaiser
-import io.gitlab.arturbosch.smartsmells.metrics.raisers.MetricPreListener
+import io.gitlab.arturbosch.smartsmells.metrics.raisers.PostClassListener
+import io.gitlab.arturbosch.smartsmells.metrics.raisers.PreClassListener
 import io.gitlab.arturbosch.smartsmells.metrics.raisers.NAS
 import io.gitlab.arturbosch.smartsmells.metrics.raisers.NOA
 import io.gitlab.arturbosch.smartsmells.metrics.raisers.NOAV
@@ -37,13 +37,13 @@ import io.gitlab.arturbosch.smartsmells.metrics.raisers.WMC
 @CompileStatic
 class MetricDetector extends InternalVisitor {
 
-	static final List<MetricPreListener> preRaisers =
+	static final List<PreClassListener> preRaisers =
 			[new NAS(), new CC_CM(), new TCC(), new ATFD(), new LOC(), new NOM(), new NOA()]
-					.sort { it.priority() } as List<MetricPreListener>
+					.sort { it.priority() } as List<PreClassListener>
 
-	static final List<MetricPostRaiser> postRaisers =
+	static final List<PostClassListener> postRaisers =
 			[new AMW(), new WMC()]
-					.sort { it.priority() } as List<MetricPostRaiser>
+					.sort { it.priority() } as List<PostClassListener>
 
 	@Override
 	void visit(CompilationUnit n, Resolver arg) {

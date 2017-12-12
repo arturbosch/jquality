@@ -24,7 +24,7 @@ import java.util.stream.Collectors
  * @author Artur Bosch
  */
 @CompileStatic
-trait MetricPreListener {
+trait PreClassListener {
 
 	int priority() {
 		return 0
@@ -41,7 +41,7 @@ trait MetricPreListener {
 }
 
 @CompileStatic
-class NAS implements MetricPreListener {
+class NAS implements PreClassListener {
 
 	static final String NUMBER_OF_ADDED_SERVICES = "NumberofAddedServices"
 	static final String PERCENTAGE_OF_NEWLY_ADDED_SERVICES = "PercentageofNewlyAddedServices"
@@ -115,7 +115,7 @@ class NAS implements MetricPreListener {
 }
 
 @CompileStatic
-class CC_CM implements MetricPreListener {
+class CC_CM implements PreClassListener {
 
 	static final String COUNT_CLASSES = "CountClasses"
 	static final String COUNT_METHODS = "CountMethods"
@@ -131,7 +131,7 @@ class CC_CM implements MetricPreListener {
 }
 
 @CompileStatic
-class TCC implements MetricPreListener {
+class TCC implements PreClassListener {
 
 	static final String TIED_CLASS_COHESION = "TiedClassCohesion"
 
@@ -142,7 +142,7 @@ class TCC implements MetricPreListener {
 }
 
 @CompileStatic
-class ATFD implements MetricPreListener {
+class ATFD implements PreClassListener {
 
 	static final String ACCESS_TO_FOREIGN_DATA = "AccessToForeignData"
 
@@ -153,7 +153,7 @@ class ATFD implements MetricPreListener {
 }
 
 @CompileStatic
-class LOC implements MetricPreListener {
+class LOC implements PreClassListener {
 
 	static final String LOC = "LinesOfCode"
 	static final String SLOC = "SourceLinesOfCode"
@@ -182,7 +182,7 @@ class LOC implements MetricPreListener {
 }
 
 @CompileStatic
-class NOA implements MetricPreListener {
+class NOA implements PreClassListener {
 
 	static final String NUMBER_OF_ATTRIBUTES = "NumberOfAttributes"
 	static final String NUMBER_OF_PUBLIC_ATTRIBUTES = "NumberOfPublicAttributes"
@@ -210,7 +210,7 @@ class NOA implements MetricPreListener {
 }
 
 @CompileStatic
-class NOM implements MetricPreListener {
+class NOM implements PreClassListener {
 
 	static final String NUMBER_OF_METHODS = "NumberOfMethods"
 	static final String NUMBER_OF_PUBLIC_METHODS = "NumberOfPublicMethods"
