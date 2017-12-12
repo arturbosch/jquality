@@ -4,14 +4,12 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration
 import com.github.javaparser.ast.body.TypeDeclaration
 import groovy.transform.Canonical
 import groovy.transform.CompileStatic
-import io.gitlab.arturbosch.jpal.ast.ClassHelper
-import io.gitlab.arturbosch.jpal.ast.source.SourcePath
-import io.gitlab.arturbosch.jpal.ast.source.SourceRange
 import io.gitlab.arturbosch.jpal.core.CompilationInfo
 import io.gitlab.arturbosch.jpal.resolution.Resolver
 import io.gitlab.arturbosch.smartsmells.api.Detector
 import io.gitlab.arturbosch.smartsmells.common.Visitor
 import io.gitlab.arturbosch.smartsmells.config.Smell
+import io.gitlab.arturbosch.smartsmells.metrics.ClassInfo
 import io.gitlab.arturbosch.smartsmells.metrics.raisers.AMW
 import io.gitlab.arturbosch.smartsmells.metrics.raisers.NAS
 import io.gitlab.arturbosch.smartsmells.metrics.raisers.NOM
@@ -83,33 +81,32 @@ class TraditionBreakerVisitor extends Visitor<TraditionBreaker> {
 		resolver.find(qualifiedSuperType).ifPresent { CompilationInfo superInfo ->
 			superInfo.getTypeDeclarationByQualifier(qualifiedSuperType).ifPresent { TypeDeclaration superDecl ->
 				Validate.isTrue(superDecl instanceof ClassOrInterfaceDeclaration, "Unexpected non class parent.")
-				raiseMetrics(n, superDecl as ClassOrInterfaceDeclaration)
+				def classInfo = infoForClass(n)
+				def parentInfo = infoForClass(superDecl as ClassOrInterfaceDeclaration, superInfo)
+				if (classInfo && parentInfo) {
+					raiseMetrics(classInfo, parentInfo)
+				}
 			}
 		}
 	}
 
-	private void raiseMetrics(ClassOrInterfaceDeclaration clazz, ClassOrInterfaceDeclaration parent) {
-		def thisInfo = infoForClass(clazz)
-		def parentInfo = infoForClass(parent)
+	private void raiseMetrics(ClassInfo clazz, ClassInfo parent) {
+		def nas = clazz.getMetric(NAS.NUMBER_OF_ADDED_SERVICES)?.value ?: 0
+		def pnas = clazz.getMetric(NAS.PERCENTAGE_OF_NEWLY_ADDED_SERVICES)?.asDouble() ?: 0.0d
+		def nom = clazz.getMetric(NOM.NUMBER_OF_METHODS)?.value ?: 0
+		def nomParent = parent.getMetric(NOM.NUMBER_OF_METHODS)?.value ?: 0
+		def wmc = clazz.getMetric(WMC.WEIGHTED_METHOD_COUNT)?.value ?: 0
+		def wmcParent = parent.getMetric(WMC.WEIGHTED_METHOD_COUNT)?.value ?: 0
+		def amw = clazz.getMetric(AMW.AVERAGE_METHOD_WEIGHT)?.value ?: 0
+		def amwParent = parent.getMetric(AMW.AVERAGE_METHOD_WEIGHT)?.value ?: 0
 
-		if (thisInfo && parentInfo) {
-			def nas = thisInfo.getMetric(NAS.NUMBER_OF_ADDED_SERVICES)?.value ?: 0
-			def pnas = thisInfo.getMetric(NAS.PERCENTAGE_OF_NEWLY_ADDED_SERVICES)?.asDouble() ?: 0.0d
-			def nom = thisInfo.getMetric(NOM.NUMBER_OF_METHODS)?.value ?: 0
-			def nomParent = parentInfo.getMetric(NOM.NUMBER_OF_METHODS)?.value ?: 0
-			def wmc = thisInfo.getMetric(WMC.WEIGHTED_METHOD_COUNT)?.value ?: 0
-			def wmcParent = parentInfo.getMetric(WMC.WEIGHTED_METHOD_COUNT)?.value ?: 0
-			def amw = thisInfo.getMetric(AMW.AVERAGE_METHOD_WEIGHT)?.value ?: 0
-			def amwParent = parentInfo.getMetric(AMW.AVERAGE_METHOD_WEIGHT)?.value ?: 0
+		if ((nas >= config.averageNOMPerClass && pnas >= config.TWO_THIRDS) &&
+				((amw > config.AMW || wmc >= config.WMC) && nom >= config.HIGH) &&
+				(amwParent > config.AMW && (nomParent as double) > config.HIGH / 2 &&
+						(wmcParent as double) >= config.WMC / 2)) {
 
-			if ((nas >= config.averageNOMPerClass && pnas >= config.TWO_THIRDS) &&
-					((amw > config.AMW || wmc >= config.WMC) && nom >= config.HIGH) &&
-					(amwParent > config.AMW && (nomParent as double) > config.HIGH / 2 &&
-							(wmcParent as double) >= config.WMC / 2)) {
-
-				report(new TraditionBreaker(clazz.nameAsString, ClassHelper.createFullSignature(clazz), SourceRange
-						.fromNode(clazz), SourcePath.of(info), ElementTarget.CLASS))
-			}
+			report(new TraditionBreaker(clazz.name, clazz.signature, clazz.sourceRange,
+					clazz.sourcePath, ElementTarget.CLASS))
 		}
 	}
 }

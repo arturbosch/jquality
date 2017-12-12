@@ -37,6 +37,11 @@ abstract class DetectorSpecification<T extends DetectionResult> extends Specific
 		return visitor.smells
 	}
 
+	Resolver resolve(Path path) {
+		Validate.notNull(path)
+		new Resolver(JPAL.newInstance(path, new FileMetricProcessor()))
+	}
+
 	Set<T> run(Path path) {
 		Validate.notNull(path)
 		def resolver = new Resolver(JPAL.newInstance(path, new FileMetricProcessor()))
