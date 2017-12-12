@@ -12,9 +12,7 @@ import io.gitlab.arturbosch.jpal.ast.MethodHelper
 import io.gitlab.arturbosch.jpal.ast.source.SourcePath
 import io.gitlab.arturbosch.jpal.ast.source.SourceRange
 import io.gitlab.arturbosch.jpal.resolution.Resolver
-import io.gitlab.arturbosch.smartsmells.api.CompositeMetricRaiser
 import io.gitlab.arturbosch.smartsmells.common.visitor.InternalVisitor
-import io.gitlab.arturbosch.smartsmells.metrics.internal.FullstackMetrics
 import io.gitlab.arturbosch.smartsmells.metrics.raisers.AMW
 import io.gitlab.arturbosch.smartsmells.metrics.raisers.ATFD
 import io.gitlab.arturbosch.smartsmells.metrics.raisers.CC_CM
@@ -26,7 +24,9 @@ import io.gitlab.arturbosch.smartsmells.metrics.raisers.MethodMetricListener
 import io.gitlab.arturbosch.smartsmells.metrics.raisers.MetricPostRaiser
 import io.gitlab.arturbosch.smartsmells.metrics.raisers.MetricPreListener
 import io.gitlab.arturbosch.smartsmells.metrics.raisers.NAS
+import io.gitlab.arturbosch.smartsmells.metrics.raisers.NOA
 import io.gitlab.arturbosch.smartsmells.metrics.raisers.NOAV
+import io.gitlab.arturbosch.smartsmells.metrics.raisers.NOM
 import io.gitlab.arturbosch.smartsmells.metrics.raisers.NOP
 import io.gitlab.arturbosch.smartsmells.metrics.raisers.TCC
 import io.gitlab.arturbosch.smartsmells.metrics.raisers.WMC
@@ -37,10 +37,8 @@ import io.gitlab.arturbosch.smartsmells.metrics.raisers.WMC
 @CompileStatic
 class MetricDetector extends InternalVisitor {
 
-	static final CompositeMetricRaiser metrics = FullstackMetrics.create()
-
 	static final List<MetricPreListener> preRaisers =
-			[new NAS(), new CC_CM(), new TCC(), new ATFD(), new LOC()]
+			[new NAS(), new CC_CM(), new TCC(), new ATFD(), new LOC(), new NOM(), new NOA()]
 					.sort { it.priority() } as List<MetricPreListener>
 
 	static final List<MetricPostRaiser> postRaisers =
@@ -51,18 +49,15 @@ class MetricDetector extends InternalVisitor {
 	void visit(CompilationUnit n, Resolver arg) {
 		FileInfo fileInfo = new FileInfo(SourcePath.of(info), SourceRange.fromNode(info.unit))
 		info.setData(FileInfo.KEY, fileInfo)
-		metrics.init { it.each { it.setResolver(arg) } }
 		super.visit(n, arg)
 	}
 
 	@Override
 	void visit(ClassOrInterfaceDeclaration aClass, Resolver arg) {
-		def metrics = metrics.raise(aClass).collectEntries { [it.type, it] }
 		def qualifiedType = info.getQualifiedTypeBySimpleName(aClass.nameAsString)
 				.orElse(arg.resolveType(new ClassOrInterfaceType(aClass.nameAsString), info))
 		def signature = ClassHelper.createFullSignature(aClass)
-		def currentClazz = new ClassInfo(qualifiedType, signature,
-				metrics, SourcePath.of(info), SourceRange.fromNode(aClass))
+		def currentClazz = new ClassInfo(qualifiedType, signature, SourcePath.of(info), SourceRange.fromNode(aClass))
 		statistics().addClass(currentClazz)
 		new MethodInfoVisitor(currentClazz).visit(aClass, arg)
 		preRaisers.each { it.raise(aClass, info, arg) }

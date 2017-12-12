@@ -1,6 +1,7 @@
 package io.gitlab.arturbosch.smartsmells.metrics.raisers
 
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration
+import com.github.javaparser.ast.body.FieldDeclaration
 import com.github.javaparser.ast.body.MethodDeclaration
 import groovy.transform.CompileStatic
 import io.gitlab.arturbosch.jpal.ast.MethodHelper
@@ -176,6 +177,61 @@ class LOC implements MetricPreListener {
 			 Metric.of(BLOC, loc.blank)].each {
 				classInfo.addMetric(it)
 			}
+		}
+	}
+}
+
+@CompileStatic
+class NOA implements MetricPreListener {
+
+	static final String NUMBER_OF_ATTRIBUTES = "NumberOfAttributes"
+	static final String NUMBER_OF_PUBLIC_ATTRIBUTES = "NumberOfPublicAttributes"
+
+	@Override
+	void raise(ClassOrInterfaceDeclaration aClass, CompilationInfo info, Resolver resolver) {
+		def classInfo = findClassInfo(aClass, info)
+
+		if (classInfo) {
+			int noa = 0
+			int nopa = 0
+			for (FieldDeclaration field in aClass.fields) {
+				if (!field.isStatic()) {
+					def vars = field.variables.size()
+					if (field.isPublic()) {
+						nopa += vars
+					}
+					noa += vars
+				}
+			}
+			classInfo.addMetric(Metric.of(NUMBER_OF_ATTRIBUTES, noa))
+			classInfo.addMetric(Metric.of(NUMBER_OF_PUBLIC_ATTRIBUTES, nopa))
+		}
+	}
+}
+
+@CompileStatic
+class NOM implements MetricPreListener {
+
+	static final String NUMBER_OF_METHODS = "NumberOfMethods"
+	static final String NUMBER_OF_PUBLIC_METHODS = "NumberOfPublicMethods"
+
+	@Override
+	void raise(ClassOrInterfaceDeclaration aClass, CompilationInfo info, Resolver resolver) {
+		def classInfo = findClassInfo(aClass, info)
+
+		if (classInfo) {
+			int noa = 0
+			int nopa = 0
+			for (MethodDeclaration method in aClass.methods) {
+				if (!method.isStatic()) {
+					if (method.isPublic()) {
+						nopa += 1
+					}
+					noa += 1
+				}
+			}
+			classInfo.addMetric(Metric.of(NUMBER_OF_METHODS, noa))
+			classInfo.addMetric(Metric.of(NUMBER_OF_PUBLIC_METHODS, nopa))
 		}
 	}
 }

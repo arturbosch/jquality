@@ -38,8 +38,7 @@ class FileInfoAppender extends InternalVisitor implements CompilationInfoProcess
 		def qualifiedType = info.getQualifiedTypeBySimpleName(aClass.nameAsString)
 				.orElse(arg.resolveType(new ClassOrInterfaceType(aClass.nameAsString), info))
 		def signature = ClassHelper.createFullSignature(aClass)
-		def currentClazz = new ClassInfo(qualifiedType, signature, new HashMap<String, Metric>(),
-				SourcePath.of(info), SourceRange.fromNode(aClass))
+		def currentClazz = new ClassInfo(qualifiedType, signature, SourcePath.of(info), SourceRange.fromNode(aClass))
 		statistics().addClass(currentClazz)
 		new MethodInfoAppender(currentClazz).visit(aClass, arg)
 		super.visit(aClass, arg)

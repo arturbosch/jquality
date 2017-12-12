@@ -15,9 +15,6 @@ import io.gitlab.arturbosch.smartsmells.util.Validate
 @Canonical
 class ClassInfo implements HasMetrics {
 
-	static final ClassInfo NOP = new ClassInfo(QualifiedType.UNKNOWN, "NOP",
-			(Map<String, Metric>) Collections.emptyMap(), (SourcePath) null, (SourceRange) null)
-
 	final QualifiedType qualifiedType
 	final String signature
 
@@ -30,9 +27,9 @@ class ClassInfo implements HasMetrics {
 
 	ClassInfo(QualifiedType qualifiedType,
 			  String signature,
-			  Map<String, Metric> metrics,
 			  SourcePath sourcePath,
 			  SourceRange sourceRange,
+			  Map<String, Metric> metrics = new HashMap<>(),
 			  Set<MethodInfo> methods = new HashSet<>()) {
 		this.qualifiedType = qualifiedType
 		this.signature = signature

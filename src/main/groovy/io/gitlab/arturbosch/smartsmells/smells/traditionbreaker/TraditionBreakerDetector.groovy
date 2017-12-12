@@ -12,9 +12,9 @@ import io.gitlab.arturbosch.jpal.resolution.Resolver
 import io.gitlab.arturbosch.smartsmells.api.Detector
 import io.gitlab.arturbosch.smartsmells.common.Visitor
 import io.gitlab.arturbosch.smartsmells.config.Smell
-import io.gitlab.arturbosch.smartsmells.metrics.internal.NOM
 import io.gitlab.arturbosch.smartsmells.metrics.raisers.AMW
 import io.gitlab.arturbosch.smartsmells.metrics.raisers.NAS
+import io.gitlab.arturbosch.smartsmells.metrics.raisers.NOM
 import io.gitlab.arturbosch.smartsmells.metrics.raisers.WMC
 import io.gitlab.arturbosch.smartsmells.smells.ElementTarget
 import io.gitlab.arturbosch.smartsmells.util.Validate
