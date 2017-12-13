@@ -2,8 +2,8 @@ package io.gitlab.arturbosch.smartsmells.config
 
 import groovy.transform.CompileStatic
 import io.gitlab.arturbosch.smartsmells.api.Detector
-import io.gitlab.arturbosch.smartsmells.smells.RefusedParentBequest.RPBConfig
-import io.gitlab.arturbosch.smartsmells.smells.RefusedParentBequest.RefusedParentBequestDetector
+import io.gitlab.arturbosch.smartsmells.smells.refusedparentbequest.RPBConfig
+import io.gitlab.arturbosch.smartsmells.smells.refusedparentbequest.RefusedParentBequestDetector
 import io.gitlab.arturbosch.smartsmells.smells.brainmethod.BrainMethodDetector
 import io.gitlab.arturbosch.smartsmells.smells.classdatashouldbeprivate.ClassDataShouldBePrivateDetector
 import io.gitlab.arturbosch.smartsmells.smells.comment.CommentDetector

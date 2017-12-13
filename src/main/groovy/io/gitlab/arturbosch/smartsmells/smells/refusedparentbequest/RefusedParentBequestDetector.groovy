@@ -1,4 +1,4 @@
-package io.gitlab.arturbosch.smartsmells.smells.RefusedParentBequest
+package io.gitlab.arturbosch.smartsmells.smells.refusedparentbequest
 
 import com.github.javaparser.ast.Modifier
 import com.github.javaparser.ast.body.BodyDeclaration

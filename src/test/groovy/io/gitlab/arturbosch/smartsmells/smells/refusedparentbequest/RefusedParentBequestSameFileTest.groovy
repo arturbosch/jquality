@@ -1,4 +1,4 @@
-package io.gitlab.arturbosch.smartsmells.smells.RefusedParentBequest
+package io.gitlab.arturbosch.smartsmells.smells.refusedparentbequest
 
 import io.gitlab.arturbosch.smartsmells.DetectorSpecification
 import io.gitlab.arturbosch.smartsmells.api.Detector

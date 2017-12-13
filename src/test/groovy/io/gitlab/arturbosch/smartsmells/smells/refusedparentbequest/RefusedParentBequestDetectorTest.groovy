@@ -1,4 +1,4 @@
-package io.gitlab.arturbosch.smartsmells.smells.RefusedParentBequest
+package io.gitlab.arturbosch.smartsmells.smells.refusedparentbequest
 
 import io.gitlab.arturbosch.smartsmells.common.Test
 import spock.lang.Specification
