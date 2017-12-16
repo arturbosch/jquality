@@ -6,3 +6,4 @@ classes/
 !src/test/resources/detector.jar
 !gradle/wrapper/gradle-wrapper.jar
 *.iml
+!/jquality/src/test/resources/detector.jar
