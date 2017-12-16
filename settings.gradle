@@ -1,2 +1,4 @@
 rootProject.name = 'SmartSmells'
 include 'detector-template'
+include 'jquality'
+

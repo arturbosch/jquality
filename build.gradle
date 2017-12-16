@@ -1,86 +1,11 @@
-plugins {
-	id "com.jfrog.bintray" version "1.8.0"
-	id "com.github.johnrengelman.shadow" version "2.0.2"
-	id 'com.github.ben-manes.versions' version '0.17.0'
-//	id "com.github.hierynomus.license" version "0.13.1"
-}
+allprojects {
+	group 'io.gitlab.arturbosch.smartsmells'
+	version "$smartsmellsVersion"
 
-apply plugin: 'groovy'
-apply plugin: 'maven'
-apply plugin: 'maven-publish'
-apply plugin: 'application'
-
-group 'io.gitlab.arturbosch.smartsmells'
-version "$smartsmellsVersion"
-mainClassName = 'io.gitlab.arturbosch.smartsmells.Main'
-
-repositories {
-	mavenCentral()
-	mavenLocal()
-	maven { url "http://dl.bintray.com/arturbosch/code-analysis" }
-}
-
-uploadArchives {
 	repositories {
-		mavenDeployer {
-			repository(url: uri('../repo'))
-		}
+		mavenCentral()
+		mavenLocal()
+		maven { url "http://dl.bintray.com/arturbosch/code-analysis" }
 	}
-}
 
-bintray {
-	user = System.getenv("BINTRAY_USER") ?: ""
-	key = System.getenv("BINTRAY_API_KEY") ?: ""
-	publications = ["SmartSmellsPublication"]
-
-	pkg {
-		repo = 'code-analysis'
-		name = 'SmartSmells'
-		userOrg = 'arturbosch'
-		licenses = ['Apache-2.0']
-		vcsUrl = "https://github.com/arturbosch/SmartSmells"
-
-		version {
-			name = project.version
-			released = new Date()
-		}
-	}
-}
-
-publishing {
-	publications {
-		SmartSmellsPublication(MavenPublication) {
-			from components.java
-			groupId project.group
-			artifactId project.name
-			version project.version
-		}
-	}
-}
-
-test {
-	exclude '**/system/**'
-	testLogging {
-		exceptionFormat = 'full'
-	}
-}
-
-task sourcesJar(type: Jar, dependsOn: classes) {
-	classifier = 'sources'
-	from sourceSets.main.allSource
-}
-
-task systemTest(type: Test) {
-	exclude '/io/gitlab/arturbosch/**'
-}
-
-task unitTest(type: Test) {
-	exclude '**/system/**'
-}
-
-dependencies {
-	compile "io.gitlab.arturbosch.jpal:jpal:$jpalVersion"
-	compile "org.yaml:snakeyaml:$yamlVersion"
-	compile "com.beust:jcommander:$jcommanderVersion"
-	testCompile "org.spockframework:spock-core:$spockVersion"
 }

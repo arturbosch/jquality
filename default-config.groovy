@@ -13,7 +13,14 @@ config {
 	jars(['/home/artur/Repos/SmartSmells/src/test/resources/detector.jar']) // additional detectors, see detector-template project
 
 	detectors {
-		detector('comment') { // loose comments or comments over private members -> naming should be meaningful -> no doc needed
+		detector('brainmethod') { // centralizes the intelligence of a class
+			let('active', 'true')
+		}
+		detector('classdatashouldbeprivate') { // violates data hiding principle
+			let('active', 'true')
+		}
+		detector('comment') {
+			// loose comments or comments over private members -> naming should be meaningful -> no doc needed
 			let('active', 'false')
 		}
 		detector('complexcondition') { // complexity based on number of '&&' and '||' expressions
@@ -36,7 +43,8 @@ config {
 		detector('featureenvy') {
 			// uses the feature envy factor method by Kwankamol Nongpong -> http://ieeexplore.ieee.org/document/7051460/
 			let('active', 'true')
-			let('ignoreStatic', 'true') // static methods are often just plain utility methods which make extended use in parameters
+			let('ignoreStatic', 'true')
+			// static methods are often just plain utility methods which make extended use in parameters
 			let('threshold', '0.52') // the feature envy factor threshold, 0.52 is based on experience
 			let('base', '0.5')
 			let('weight', '0.5')
@@ -81,6 +89,12 @@ config {
 			let('cm', '10') // method calls
 		}
 		detector('statechecking') { // conditional blocks for extreme type or constant checking
+			let('active', 'true')
+		}
+		detector('traditionbreaker') { // doesn't use protected members of the parent, declares too many new services
+			let('active', 'true')
+		}
+		detector('refusedparentbequest') { // doesn't use protected members, doesn't override parent methods
 			let('active', 'true')
 		}
 		detector('metrics') {

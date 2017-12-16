@@ -1,16 +1,7 @@
-group 'io.gitlab.arturbosch.smartsmells'
-version '1.0.0'
-
 apply plugin: 'java'
 
 sourceCompatibility = 1.8
 
-repositories {
-	mavenCentral()
-	mavenLocal()
-	maven { url "http://dl.bintray.com/arturbosch/code-analysis" }
-}
-
 dependencies {
-	compileOnly "io.gitlab.arturbosch.smartsmells:SmartSmells:1.0.0.RC9"
+	compileOnly project(":jquality")
 }
