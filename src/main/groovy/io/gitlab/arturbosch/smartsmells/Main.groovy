@@ -19,8 +19,7 @@ class Main {
 	public static final IllegalArgumentException ILLEGAL_CONFIG_FORMAT_ERROR = new IllegalArgumentException(
 			"Configuration parameter is invalid. It must have one of these endings: $SUPPORTED_CONFIG_FORMATS")
 
-	@Parameter(names = ["--input", "-i"], required = true,
-			description = "Specify a path where your project is located for the analysis.")
+	@Parameter(names = ["--input", "-i"], description = "Specify a path where your project is located for the analysis.")
 	String projectPath
 	@Parameter(names = ["--output", "-o"], description = "Point to a path where the xml output file with the detection result should be saved.")
 	String outputPath
@@ -69,7 +68,7 @@ class Main {
 			String ending = configEnding()
 			if (ending == ".groovy") {
 				return buildGroovyConfigurationRunner()
-			} else if (ending == ".yml") {
+			} else if (ending == ".yml" || ending == ".yaml") {
 				return buildConfigOrFullStackRunner()
 			} else {
 				throw ILLEGAL_CONFIG_FORMAT_ERROR
@@ -90,7 +89,7 @@ class Main {
 		Validate.isTrue(path.exists(), configPath)
 		def configDsl = DetectorConfigDslRunner.execute(path)
 		configDsl.validate()
-		def groovyDslRunner = new GroovyDslRunner(configDsl)
+		def groovyDslRunner = new GroovyDslRunner(configDsl, projectPath)
 		return runMetrics ? new CompositeRunner(configDsl, [groovyDslRunner, new MetricRunner(configDsl)])
 				: groovyDslRunner
 	}

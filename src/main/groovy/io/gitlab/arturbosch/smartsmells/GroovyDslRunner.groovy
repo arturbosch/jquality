@@ -20,8 +20,8 @@ class GroovyDslRunner extends Runner {
 	private DetectorConfig config
 	private List<Path> jars
 
-	GroovyDslRunner(DetectorConfigDsl dsl) {
-		super(dsl.input, dsl.output, dsl.filters)
+	GroovyDslRunner(DetectorConfigDsl dsl, String projectPath) {
+		super(projectPath != null ? Paths.get(projectPath) : dsl.input, dsl.output, dsl.filters)
 		config = dsl.build()
 		jars = dsl.jars.collect { Paths.get(it) }
 	}
