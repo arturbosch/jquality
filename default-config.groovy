@@ -1,11 +1,12 @@
 //noinspection GroovyAssignabilityCheck
 config {
 
-	input '/home/artur/Repos/quide-master/Implementierung/QuideService/src/main/java'
+	input '/home/artur/Repos/kanbin'
 	output '/home/artur/test/stuff.xml'
 
 	filters {
 		filter '.*/test/.*,.*/resources/.*'
+		filter '.*Test.java'
 	}
 
 	metrics(['wmc', 'atfd', 'tcc']) // not yet supported, need to be configured through MetricFacadeBuilder

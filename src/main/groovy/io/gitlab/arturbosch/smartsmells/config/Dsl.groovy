@@ -20,9 +20,9 @@ final class Dsl {
 		private static DetectorConfigDsl INSTANCE = loadDefault()
 
 		static DetectorConfigDsl loadDefault() {
-			def resource = getClass().getResource("/default-config.groovy")
+			def resource = getClass().getResourceAsStream("/default-config.groovy")
 			Validate.notNull(resource, "Loaded default config was unexpectedly null.")
-			def configFile = new File(resource.toURI())
+			def configFile = resource.text
 			return DetectorConfigDslRunner.execute(configFile)
 		}
 	}
