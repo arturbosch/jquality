@@ -7,7 +7,6 @@ plugins {
 
 apply plugin: 'groovy'
 apply plugin: 'maven-publish'
-apply plugin: 'maven'
 apply plugin: 'application'
 
 mainClassName = 'io.gitlab.arturbosch.smartsmells.Main'
@@ -16,14 +15,6 @@ repositories {
 	mavenCentral()
 	mavenLocal()
 	maven { url "http://dl.bintray.com/arturbosch/code-analysis" }
-}
-
-uploadArchives {
-	repositories {
-		mavenDeployer {
-			repository(url: uri('../repo'))
-		}
-	}
 }
 
 bintray {

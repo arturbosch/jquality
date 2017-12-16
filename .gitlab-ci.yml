@@ -10,7 +10,7 @@ cache:
 build:
   stage: build
   script:
-    - ./gradlew build install
+    - ./gradlew build
   artifacts:
     paths:
       - build/libs/*.jar
