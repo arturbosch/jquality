@@ -123,4 +123,29 @@ class DeadCode implements DetectionResult, MethodSpecific, ClassSpecific, FieldS
 		}
 		return this
 	}
+
+	boolean equals(o) {
+		if (this.is(o)) return true
+		if (getClass() != o.class) return false
+
+		DeadCode deadCode = (DeadCode) o
+
+		if (elementTarget != deadCode.elementTarget) return false
+		if (name != deadCode.name) return false
+		if (signature != deadCode.signature) return false
+		if (sourcePath != deadCode.sourcePath) return false
+		if (sourceRange != deadCode.sourceRange) return false
+
+		return true
+	}
+
+	int hashCode() {
+		int result
+		result = (name != null ? name.hashCode() : 0)
+		result = 31 * result + (signature != null ? signature.hashCode() : 0)
+		result = 31 * result + (sourcePath != null ? sourcePath.hashCode() : 0)
+		result = 31 * result + (sourceRange != null ? sourceRange.hashCode() : 0)
+		result = 31 * result + (elementTarget != null ? elementTarget.hashCode() : 0)
+		return result
+	}
 }

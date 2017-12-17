@@ -75,4 +75,35 @@ class MessageChain implements DetectionResult, LocalSpecific {
 		}
 		return this
 	}
+
+	boolean equals(o) {
+		if (this.is(o)) return true
+		if (getClass() != o.class) return false
+
+		MessageChain that = (MessageChain) o
+
+		if (chainSize != that.chainSize) return false
+		if (chainSizeThreshold != that.chainSizeThreshold) return false
+		if (elementTarget != that.elementTarget) return false
+		if (signature != that.signature) return false
+		if (sourceEntity != that.sourceEntity) return false
+		if (sourcePath != that.sourcePath) return false
+		if (sourceRange != that.sourceRange) return false
+		if (targetEntity != that.targetEntity) return false
+
+		return true
+	}
+
+	int hashCode() {
+		int result
+		result = (signature != null ? signature.hashCode() : 0)
+		result = 31 * result + (sourceEntity != null ? sourceEntity.hashCode() : 0)
+		result = 31 * result + (targetEntity != null ? targetEntity.hashCode() : 0)
+		result = 31 * result + chainSize
+		result = 31 * result + chainSizeThreshold
+		result = 31 * result + (sourcePath != null ? sourcePath.hashCode() : 0)
+		result = 31 * result + (sourceRange != null ? sourceRange.hashCode() : 0)
+		result = 31 * result + (elementTarget != null ? elementTarget.hashCode() : 0)
+		return result
+	}
 }

@@ -87,4 +87,30 @@ class StateChecking implements DetectionResult, LocalSpecific {
 		return this
 	}
 
+	boolean equals(o) {
+		if (this.is(o)) return true
+		if (getClass() != o.class) return false
+
+		StateChecking that = (StateChecking) o
+
+		if (cases != that.cases) return false
+		if (elementTarget != that.elementTarget) return false
+		if (inScope != that.inScope) return false
+		if (sourcePath != that.sourcePath) return false
+		if (sourceRange != that.sourceRange) return false
+		if (type != that.type) return false
+
+		return true
+	}
+
+	int hashCode() {
+		int result
+		result = (inScope != null ? inScope.hashCode() : 0)
+		result = 31 * result + (cases != null ? cases.hashCode() : 0)
+		result = 31 * result + (type != null ? type.hashCode() : 0)
+		result = 31 * result + (sourcePath != null ? sourcePath.hashCode() : 0)
+		result = 31 * result + (sourceRange != null ? sourceRange.hashCode() : 0)
+		result = 31 * result + (elementTarget != null ? elementTarget.hashCode() : 0)
+		return result
+	}
 }

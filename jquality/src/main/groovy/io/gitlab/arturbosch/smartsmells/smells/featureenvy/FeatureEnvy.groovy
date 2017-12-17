@@ -56,6 +56,7 @@ class FeatureEnvy implements MethodSpecific {
 				SourceRange.fromNode(method), sourcePath, elementTarget)
 	}
 
+	@Override
 	boolean equals(o) {
 		if (this.is(o)) return true
 		if (!(o instanceof FeatureEnvy)) return false
@@ -73,6 +74,7 @@ class FeatureEnvy implements MethodSpecific {
 		return true
 	}
 
+	@Override
 	int hashCode() {
 		int result
 		result = (name != null ? name.hashCode() : 0)

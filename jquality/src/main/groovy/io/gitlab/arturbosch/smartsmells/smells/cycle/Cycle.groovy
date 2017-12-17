@@ -43,14 +43,6 @@ class Cycle implements DetectionResult, CycleSpecific {
 		return "${javaClassName()}$source.signature#$target.signature"
 	}
 
-	@Override
-	boolean equals(Object obj) {
-		if (obj instanceof Cycle) {
-			return (source == obj.source && target == obj.target) ||
-					(source == obj.target && target == obj.source)
-		}
-		return false
-	}
 
 	@Override
 	String toString() {
@@ -60,10 +52,6 @@ class Cycle implements DetectionResult, CycleSpecific {
 				'}'
 	}
 
-	@Override
-	int hashCode() {
-		return Objects.hash(source) + Objects.hash(target)
-	}
 
 	@Override
 	String name() {
@@ -95,5 +83,22 @@ class Cycle implements DetectionResult, CycleSpecific {
 	CycleSpecific copy(FieldDeclaration field) {
 		def newSource = source.copy(field) as Dependency
 		return new Cycle(newSource, target)
+	}
+
+	boolean equals(o) {
+		if (this.is(o)) return true
+		if (getClass() != o.class) return false
+
+		Cycle cycle = (Cycle) o
+
+		if (elementTarget != cycle.elementTarget) return false
+		if ((source != cycle.source && target != cycle.target) &&
+				(source != cycle.target && target != cycle.source)) return false
+
+		return true
+	}
+
+	int hashCode() {
+		return source.hashCode() + target.hashCode()
 	}
 }

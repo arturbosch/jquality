@@ -60,4 +60,34 @@ class LongParameterList implements MethodSpecific {
 		return signature
 	}
 
+	boolean equals(o) {
+		if (this.is(o)) return true
+		if (getClass() != o.class) return false
+
+		LongParameterList that = (LongParameterList) o
+
+		if (size != that.size) return false
+		if (threshold != that.threshold) return false
+		if (elementTarget != that.elementTarget) return false
+		if (name != that.name) return false
+		if (parameters != that.parameters) return false
+		if (signature != that.signature) return false
+		if (sourcePath != that.sourcePath) return false
+		if (sourceRange != that.sourceRange) return false
+
+		return true
+	}
+
+	int hashCode() {
+		int result
+		result = (name != null ? name.hashCode() : 0)
+		result = 31 * result + (signature != null ? signature.hashCode() : 0)
+		result = 31 * result + size
+		result = 31 * result + threshold
+		result = 31 * result + (parameters != null ? parameters.hashCode() : 0)
+		result = 31 * result + (sourceRange != null ? sourceRange.hashCode() : 0)
+		result = 31 * result + (sourcePath != null ? sourcePath.hashCode() : 0)
+		result = 31 * result + (elementTarget != null ? elementTarget.hashCode() : 0)
+		return result
+	}
 }

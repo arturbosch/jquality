@@ -69,4 +69,43 @@ class GodClass implements ClassSpecific {
 		return signature
 	}
 
+	boolean equals(o) {
+		if (this.is(o)) return true
+		if (getClass() != o.class) return false
+
+		GodClass godClass = (GodClass) o
+
+		if (accessToForeignData != godClass.accessToForeignData) return false
+		if (accessToForeignDataThreshold != godClass.accessToForeignDataThreshold) return false
+		if (Double.compare(godClass.tiedClassCohesion, tiedClassCohesion) != 0) return false
+		if (Double.compare(godClass.tiedClassCohesionThreshold, tiedClassCohesionThreshold) != 0) return false
+		if (weightedMethodPerClass != godClass.weightedMethodPerClass) return false
+		if (weightedMethodPerClassThreshold != godClass.weightedMethodPerClassThreshold) return false
+		if (elementTarget != godClass.elementTarget) return false
+		if (name != godClass.name) return false
+		if (signature != godClass.signature) return false
+		if (sourcePath != godClass.sourcePath) return false
+		if (sourceRange != godClass.sourceRange) return false
+
+		return true
+	}
+
+	int hashCode() {
+		int result
+		long temp
+		result = (name != null ? name.hashCode() : 0)
+		result = 31 * result + (signature != null ? signature.hashCode() : 0)
+		result = 31 * result + weightedMethodPerClass
+		temp = tiedClassCohesion != +0.0d ? Double.doubleToLongBits(tiedClassCohesion) : 0L
+		result = 31 * result + (int) (temp ^ (temp >>> 32))
+		result = 31 * result + accessToForeignData
+		result = 31 * result + weightedMethodPerClassThreshold
+		temp = tiedClassCohesionThreshold != +0.0d ? Double.doubleToLongBits(tiedClassCohesionThreshold) : 0L
+		result = 31 * result + (int) (temp ^ (temp >>> 32))
+		result = 31 * result + accessToForeignDataThreshold
+		result = 31 * result + (sourcePath != null ? sourcePath.hashCode() : 0)
+		result = 31 * result + (sourceRange != null ? sourceRange.hashCode() : 0)
+		result = 31 * result + (elementTarget != null ? elementTarget.hashCode() : 0)
+		return result
+	}
 }

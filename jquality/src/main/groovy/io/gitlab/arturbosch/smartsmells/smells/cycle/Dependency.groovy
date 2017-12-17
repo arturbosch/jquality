@@ -65,4 +65,27 @@ class Dependency implements DetectionResult, FieldSpecific {
 		def fieldSignature = field.toString(Printer.NO_COMMENTS)
 		return new Dependency(fieldType, fieldSignature, sourcePath, SourceRange.fromNode(field))
 	}
+
+	boolean equals(o) {
+		if (this.is(o)) return true
+		if (getClass() != o.class) return false
+
+		Dependency that = (Dependency) o
+
+		if (name != that.name) return false
+		if (signature != that.signature) return false
+		if (sourcePath != that.sourcePath) return false
+		if (sourceRange != that.sourceRange) return false
+
+		return true
+	}
+
+	int hashCode() {
+		int result
+		result = (name != null ? name.hashCode() : 0)
+		result = 31 * result + (signature != null ? signature.hashCode() : 0)
+		result = 31 * result + (sourcePath != null ? sourcePath.hashCode() : 0)
+		result = 31 * result + (sourceRange != null ? sourceRange.hashCode() : 0)
+		return result
+	}
 }

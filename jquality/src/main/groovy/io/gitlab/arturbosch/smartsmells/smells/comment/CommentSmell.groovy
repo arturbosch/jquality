@@ -87,4 +87,32 @@ class CommentSmell implements DetectionResult, ClassSpecific, MethodSpecific {
 				sourcePath, SourceRange.fromNode(clazz), elementTarget)
 	}
 
+	boolean equals(o) {
+		if (this.is(o)) return true
+		if (getClass() != o.class) return false
+
+		CommentSmell that = (CommentSmell) o
+
+		if (hasFIXME != that.hasFIXME) return false
+		if (hasTODO != that.hasTODO) return false
+		if (elementTarget != that.elementTarget) return false
+		if (signature != that.signature) return false
+		if (sourcePath != that.sourcePath) return false
+		if (sourceRange != that.sourceRange) return false
+		if (type != that.type) return false
+
+		return true
+	}
+
+	int hashCode() {
+		int result
+		result = (type != null ? type.hashCode() : 0)
+		result = 31 * result + (signature != null ? signature.hashCode() : 0)
+		result = 31 * result + (hasTODO ? 1 : 0)
+		result = 31 * result + (hasFIXME ? 1 : 0)
+		result = 31 * result + (sourcePath != null ? sourcePath.hashCode() : 0)
+		result = 31 * result + (sourceRange != null ? sourceRange.hashCode() : 0)
+		result = 31 * result + (elementTarget != null ? elementTarget.hashCode() : 0)
+		return result
+	}
 }

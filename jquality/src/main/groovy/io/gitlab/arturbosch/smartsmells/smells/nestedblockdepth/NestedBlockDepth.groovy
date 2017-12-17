@@ -59,4 +59,32 @@ class NestedBlockDepth implements MethodSpecific {
 		return signature
 	}
 
+	boolean equals(o) {
+		if (this.is(o)) return true
+		if (getClass() != o.class) return false
+
+		NestedBlockDepth that = (NestedBlockDepth) o
+
+		if (depth != that.depth) return false
+		if (depthThreshold != that.depthThreshold) return false
+		if (elementTarget != that.elementTarget) return false
+		if (name != that.name) return false
+		if (signature != that.signature) return false
+		if (sourcePath != that.sourcePath) return false
+		if (sourceRange != that.sourceRange) return false
+
+		return true
+	}
+
+	int hashCode() {
+		int result
+		result = (name != null ? name.hashCode() : 0)
+		result = 31 * result + (signature != null ? signature.hashCode() : 0)
+		result = 31 * result + depth
+		result = 31 * result + depthThreshold
+		result = 31 * result + (sourceRange != null ? sourceRange.hashCode() : 0)
+		result = 31 * result + (sourcePath != null ? sourcePath.hashCode() : 0)
+		result = 31 * result + (elementTarget != null ? elementTarget.hashCode() : 0)
+		return result
+	}
 }
