@@ -1,3 +1,7 @@
+brainmethod:
+  active: 'true'
+classdatashouldbeprivate:
+  active: 'true'
 comment:
   active: 'false'
 complexcondition:
@@ -44,11 +48,15 @@ messagechain:
 nestedblockdepth:
   active: 'true'
   threshold: '3'
+refusedparentbequest:
+  active: 'true'
 shotgunsurgery:
   active: 'true'
   cc: '5'
   cm: '10'
 statechecking:
+  active: 'true'
+traditionbreaker:
   active: 'true'
 metrics:
   active: 'false'
