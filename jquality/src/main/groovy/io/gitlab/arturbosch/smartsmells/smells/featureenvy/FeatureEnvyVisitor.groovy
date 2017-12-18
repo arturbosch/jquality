@@ -124,7 +124,7 @@ class FeatureEnvyVisitor extends Visitor<FeatureEnvy> {
 		def qualifiedType = resolver.resolveType(checkedType, info)
 
 		// same project
-		def maybeSameProject = resolver.storage.getCompilationInfo(qualifiedType)
+		def maybeSameProject = resolver.find(qualifiedType)
 				.map { it.qualifiedType.onlyPackageName }
 				.filter { packageNames.contains(it) }
 		if (!maybeSameProject.isPresent()) return false
