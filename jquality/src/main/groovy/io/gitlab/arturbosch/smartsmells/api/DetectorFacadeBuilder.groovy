@@ -6,6 +6,8 @@ import io.gitlab.arturbosch.smartsmells.config.DetectorInitializer
 import io.gitlab.arturbosch.smartsmells.config.Dsl
 import io.gitlab.arturbosch.smartsmells.util.Validate
 
+import java.util.concurrent.ExecutorService
+
 /**
  * @author Artur Bosch
  */
@@ -15,6 +17,7 @@ class DetectorFacadeBuilder {
 	private List<Detector> detectors = new LinkedList<>()
 	private List<String> filters = new ArrayList<String>()
 	private DetectorConfig config = null
+	private ExecutorService executorService = null
 
 	DetectorFacadeBuilder with(Detector detector) {
 		Validate.notNull(detector)
@@ -45,7 +48,13 @@ class DetectorFacadeBuilder {
 		return this
 	}
 
+	DetectorFacadeBuilder withExecutor(final ExecutorService executorService) {
+		Validate.notNull(executorService, "Executor must not be null.")
+		this.executorService = executorService
+		return this
+	}
+
 	DetectorFacade build() {
-		return new DetectorFacade(detectors, config, filters)
+		return new DetectorFacade(detectors, config, filters, executorService)
 	}
 }
