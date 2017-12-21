@@ -1,6 +1,5 @@
 package io.gitlab.arturbosch.smartsmells.metrics
 
-import com.github.javaparser.ast.CompilationUnit
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration
 import com.github.javaparser.ast.body.ConstructorDeclaration
 import com.github.javaparser.ast.body.MethodDeclaration
@@ -22,15 +21,18 @@ import io.gitlab.arturbosch.smartsmells.common.visitor.InternalVisitor
 class FileInfoAppender extends InternalVisitor implements CompilationInfoProcessor {
 
 	@Override
+	void setup(CompilationInfo info, Resolver resolver) {
+		FileInfo fileInfo = new FileInfo(SourcePath.of(info), SourceRange.fromNode(info.unit))
+		info.setData(FileInfo.KEY, fileInfo)
+	}
+
+	@Override
 	void process(CompilationInfo compilationInfo, Resolver resolver) {
 		new FileInfoAppender().visit(compilationInfo, resolver)
 	}
 
 	@Override
-	void visit(CompilationUnit n, Resolver arg) {
-		FileInfo fileInfo = new FileInfo(SourcePath.of(info), SourceRange.fromNode(info.unit))
-		info.setData(FileInfo.KEY, fileInfo)
-		super.visit(n, arg)
+	void cleanup(CompilationInfo info, Resolver resolver) {
 	}
 
 	@Override

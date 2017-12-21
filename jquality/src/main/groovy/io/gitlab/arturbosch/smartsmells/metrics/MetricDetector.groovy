@@ -1,6 +1,5 @@
 package io.gitlab.arturbosch.smartsmells.metrics
 
-import com.github.javaparser.ast.CompilationUnit
 import com.github.javaparser.ast.body.CallableDeclaration
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration
 import com.github.javaparser.ast.body.ConstructorDeclaration
@@ -44,13 +43,6 @@ class MetricDetector extends InternalVisitor {
 	static final List<PostClassListener> postRaisers =
 			[new AMW(), new WMC(), new NAS()]
 					.sort { it.priority() } as List<PostClassListener>
-
-	@Override
-	void visit(CompilationUnit n, Resolver arg) {
-		FileInfo fileInfo = new FileInfo(SourcePath.of(info), SourceRange.fromNode(info.unit))
-		info.setData(FileInfo.KEY, fileInfo)
-		super.visit(n, arg)
-	}
 
 	@Override
 	void visit(ClassOrInterfaceDeclaration aClass, Resolver arg) {
