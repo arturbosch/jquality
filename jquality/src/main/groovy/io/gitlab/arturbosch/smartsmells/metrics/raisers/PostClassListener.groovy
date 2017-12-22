@@ -12,6 +12,7 @@ import io.gitlab.arturbosch.smartsmells.metrics.ClassInfo
 import io.gitlab.arturbosch.smartsmells.metrics.FileInfo
 import io.gitlab.arturbosch.smartsmells.metrics.MethodInfo
 import io.gitlab.arturbosch.smartsmells.metrics.Metric
+import io.gitlab.arturbosch.smartsmells.util.Validate
 
 import java.util.stream.Collectors
 
@@ -28,7 +29,9 @@ trait PostClassListener {
 	abstract void raise(ClassOrInterfaceDeclaration aClass, CompilationInfo info, Resolver resolver)
 
 	ClassInfo findClassInfo(ClassOrInterfaceDeclaration aClass, CompilationInfo info) {
-		return info.getData(FileInfo.KEY).findClassByName(aClass.nameAsString)
+		def fileInfo = info.getData(FileInfo.KEY)
+		Validate.notNull(fileInfo, "Before running metrics make sure to use metric processor first.")
+		return fileInfo.findClassByName(aClass.nameAsString)
 	}
 }
 
@@ -76,13 +79,19 @@ class NAS implements PostClassListener {
 	static final String PERCENTAGE_OF_NEWLY_ADDED_SERVICES = "PercentageofNewlyAddedServices"
 
 	@Override
+	int priority() {
+		return 2
+	}
+
+	@Override
 	void raise(ClassOrInterfaceDeclaration aClass, CompilationInfo info, Resolver resolver) {
 		def classInfo = findClassInfo(aClass, info)
 		if (classInfo) {
-			List<MethodInfo> ancestorMethods = TypeHelper.findAllAncestors(aClass, resolver).stream()
-					.flatMap { QualifiedType ancestorType -> resolveAncestorMethods(resolver, ancestorType).stream() }
-					.collect(Collectors.toList())
-			Set<MethodInfo> methodInfos = classInfo.methods
+			Collection<MethodInfo> ancestorMethods = TypeHelper.findAllAncestors(aClass, resolver)
+					.collect { QualifiedType ancestorType -> resolveAncestorMethods(resolver, ancestorType) }
+					.flatten() as Collection<MethodInfo>
+
+			Collection<MethodInfo> methodInfos = classInfo.methods
 			Metric pnas = raisePNAS(ancestorMethods, methodInfos)
 			Metric nas = raiseNAS(ancestorMethods, methodInfos)
 			classInfo.addMetric(nas)
@@ -90,7 +99,21 @@ class NAS implements PostClassListener {
 		}
 	}
 
-	private static Metric raisePNAS(Collection<MethodInfo> ancestorMethods, Set<MethodInfo> methodInfos) {
+	private Collection<MethodInfo> resolveAncestorMethods(Resolver resolver, QualifiedType ancestorType) {
+		resolver.find(ancestorType)
+				.map { CompilationInfo ancestorInfo -> extractMethodInfos(ancestorInfo, ancestorType) }
+				.orElse(Collections.emptySet() as Set<MethodInfo>)
+	}
+
+	private Collection<MethodInfo> extractMethodInfos(CompilationInfo ancestorInfo, QualifiedType ancestorType) {
+		ancestorInfo.getTypeDeclarationByQualifier(ancestorType)
+				.filter { it instanceof ClassOrInterfaceDeclaration }
+				.map { findClassInfo(it as ClassOrInterfaceDeclaration, ancestorInfo) }
+				.map { it.methods }
+				.orElse(Collections.emptySet() as Set<MethodInfo>)
+	}
+
+	private static Metric raisePNAS(Collection<MethodInfo> ancestorMethods, Collection<MethodInfo> methodInfos) {
 		List<String> publicAncestorServices = ancestorMethods.stream()
 				.filter { it.declaration instanceof MethodDeclaration }
 				.filter { it.declaration.isPublic() && !it.declaration.isStatic() }
@@ -111,7 +134,7 @@ class NAS implements PostClassListener {
 		Metric.of(PERCENTAGE_OF_NEWLY_ADDED_SERVICES, value)
 	}
 
-	private static Metric raiseNAS(Collection<MethodInfo> ancestorMethods, Set<MethodInfo> methodInfos) {
+	private static Metric raiseNAS(Collection<MethodInfo> ancestorMethods, Collection<MethodInfo> methodInfos) {
 		Set<String> ancestorNames = ancestorMethods.stream()
 				.filter { it.declaration instanceof MethodDeclaration }
 				.filter { it.declaration.isPublic() && !it.declaration.isStatic() }
@@ -126,19 +149,5 @@ class NAS implements PostClassListener {
 				.filter { !it.declaration.getAnnotationByName("Override").isPresent() }
 				.count() as int
 		Metric.of(NUMBER_OF_ADDED_SERVICES, addedServices)
-	}
-
-	private Set<MethodInfo> resolveAncestorMethods(Resolver resolver, QualifiedType ancestorType) {
-		resolver.find(ancestorType)
-				.map { CompilationInfo ancestorInfo -> extractMethodInfos(ancestorInfo, ancestorType) }
-				.orElse(Collections.emptySet() as Set<MethodInfo>)
-	}
-
-	private Set<MethodInfo> extractMethodInfos(CompilationInfo ancestorInfo, QualifiedType ancestorType) {
-		ancestorInfo.getTypeDeclarationByQualifier(ancestorType)
-				.filter { it instanceof ClassOrInterfaceDeclaration }
-				.map { findClassInfo(it as ClassOrInterfaceDeclaration, ancestorInfo) }
-				.map { it.methods }
-				.orElse(Collections.emptySet() as Set<MethodInfo>)
 	}
 }

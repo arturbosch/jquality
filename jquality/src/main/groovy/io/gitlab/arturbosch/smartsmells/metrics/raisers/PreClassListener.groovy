@@ -4,21 +4,17 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration
 import com.github.javaparser.ast.body.FieldDeclaration
 import com.github.javaparser.ast.body.MethodDeclaration
 import groovy.transform.CompileStatic
-import io.gitlab.arturbosch.jpal.ast.MethodHelper
-import io.gitlab.arturbosch.jpal.ast.TypeHelper
 import io.gitlab.arturbosch.jpal.core.CompilationInfo
-import io.gitlab.arturbosch.jpal.resolution.QualifiedType
 import io.gitlab.arturbosch.jpal.resolution.Resolver
 import io.gitlab.arturbosch.smartsmells.metrics.ClassInfo
 import io.gitlab.arturbosch.smartsmells.metrics.FileInfo
-import io.gitlab.arturbosch.smartsmells.metrics.MethodInfo
 import io.gitlab.arturbosch.smartsmells.metrics.Metric
 import io.gitlab.arturbosch.smartsmells.metrics.Metrics
 import io.gitlab.arturbosch.smartsmells.metrics.internal.LinesOfCode
 import io.gitlab.arturbosch.smartsmells.smells.shotgunsurgery.CMCCMetrics
+import io.gitlab.arturbosch.smartsmells.util.Validate
 
 import java.util.regex.Pattern
-import java.util.stream.Collectors
 
 /**
  * @author Artur Bosch
@@ -36,7 +32,9 @@ trait PreClassListener {
 	 * @return the class info for given class or null
 	 */
 	ClassInfo findClassInfo(ClassOrInterfaceDeclaration aClass, CompilationInfo info) {
-		return info.getData(FileInfo.KEY)?.findClassByName(aClass.nameAsString)
+		def fileInfo = info.getData(FileInfo.KEY)
+		Validate.notNull(fileInfo, "Before running metrics make sure to use metric processor first.")
+		return fileInfo.findClassByName(aClass.nameAsString)
 	}
 }
 

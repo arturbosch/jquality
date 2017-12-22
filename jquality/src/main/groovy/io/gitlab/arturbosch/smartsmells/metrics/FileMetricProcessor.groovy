@@ -26,5 +26,6 @@ class FileMetricProcessor implements CompilationInfoProcessor {
 
 	@Override
 	void cleanup(CompilationInfo info, Resolver resolver) {
+		new PostMetricDetector().visit(info, resolver)
 	}
 }

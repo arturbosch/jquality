@@ -40,10 +40,6 @@ class MetricDetector extends InternalVisitor {
 			[new CC_CM(), new TCC(), new ATFD(), new LOC(), new NOM(), new NOA()]
 					.sort { it.priority() } as List<PreClassListener>
 
-	static final List<PostClassListener> postRaisers =
-			[new AMW(), new WMC(), new NAS()]
-					.sort { it.priority() } as List<PostClassListener>
-
 	@Override
 	void visit(ClassOrInterfaceDeclaration aClass, Resolver arg) {
 		def qualifiedType = info.getQualifiedTypeBySimpleName(aClass.nameAsString)
@@ -54,7 +50,20 @@ class MetricDetector extends InternalVisitor {
 		new MethodInfoVisitor(currentClazz).visit(aClass, arg)
 		preRaisers.each { it.raise(aClass, info, arg) }
 		super.visit(aClass, arg)
+	}
+}
+
+@CompileStatic
+class PostMetricDetector extends InternalVisitor {
+
+	static final List<PostClassListener> postRaisers =
+			[new AMW(), new WMC(), new NAS()]
+					.sort { it.priority() } as List<PostClassListener>
+
+	@Override
+	void visit(ClassOrInterfaceDeclaration aClass, Resolver arg) {
 		postRaisers.each { it.raise(aClass, info, arg) }
+		super.visit(aClass, arg)
 	}
 }
 
