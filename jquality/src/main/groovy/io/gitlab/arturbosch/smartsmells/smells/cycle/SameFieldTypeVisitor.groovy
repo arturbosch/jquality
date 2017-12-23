@@ -50,13 +50,16 @@ class SameFieldTypeVisitor extends VoidVisitorAdapter<Resolver> {
 
 	@Override
 	void visit(FieldDeclaration n, Resolver arg) {
-		def unqualifiedFieldName = innerClassesHandler.getUnqualifiedNameForInnerClass(n.commonType)
-		def qualifiedType = arg.resolveType(new ClassOrInterfaceType(unqualifiedFieldName), info)
+		def commonType = CycleVisitor.getCommonType(n)
+		if (commonType) {
+			def unqualifiedFieldName = innerClassesHandler.getUnqualifiedNameForInnerClass(commonType)
+			def qualifiedType = arg.resolveType(new ClassOrInterfaceType(unqualifiedFieldName), info)
 
-		if (qualifiedType.isReference()) {
-			if (qualifiedType.name == searchedType.name) {
-				foundFieldWithType = new Tuple2<>(currentClass, n)
-				found |= true
+			if (qualifiedType.isReference()) {
+				if (qualifiedType.name == searchedType.name) {
+					foundFieldWithType = new Tuple2<>(currentClass, n)
+					found |= true
+				}
 			}
 		}
 	}

@@ -8,10 +8,7 @@ import spock.lang.Specification
 import java.nio.file.Paths
 
 /**
- * Strangely tests using CompilationTree as compilation unit storage fail sometimes (after some months)
- * when running them outside of the idea.
- *
- * @author artur
+ * @author Artur Bosch
  */
 class CycleDetectorTest extends Specification {
 
@@ -38,6 +35,5 @@ class CycleDetectorTest extends Specification {
 		dep2 = Dependency.of("you", "you", SourcePath.of(Paths.get("you"), Paths.get("me")), SourceRange.of(2, 2, 2, 2))
 		cycle = new Cycle(dep1, dep2)
 		cycle2 = new Cycle(dep2, dep1)
-
 	}
 }

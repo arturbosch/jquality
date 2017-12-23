@@ -6,6 +6,7 @@ package io.gitlab.arturbosch.smartsmells.java.cycles;
 @SuppressWarnings("ALL")
 class CycleDummy {
 	OtherCycle meCycle = new OtherCycle();
+	int a, b[];
 
 	public void compute() {
 		meCycle.cycleDummy.meah();

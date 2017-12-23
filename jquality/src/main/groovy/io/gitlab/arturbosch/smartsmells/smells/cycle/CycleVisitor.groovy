@@ -1,8 +1,11 @@
 package io.gitlab.arturbosch.smartsmells.smells.cycle
 
+import com.github.javaparser.ast.NodeList
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration
 import com.github.javaparser.ast.body.FieldDeclaration
+import com.github.javaparser.ast.body.VariableDeclarator
 import com.github.javaparser.ast.type.ClassOrInterfaceType
+import com.github.javaparser.ast.type.Type
 import groovy.transform.CompileStatic
 import io.gitlab.arturbosch.jpal.ast.ClassHelper
 import io.gitlab.arturbosch.jpal.ast.NodeHelper
@@ -26,16 +29,33 @@ class CycleVisitor extends Visitor<Cycle> {
 
 		def fields = NodeHelper.findFields(n)
 		fields.each { field ->
+			def commonType = getCommonType(field)
 
-			def unqualifiedFieldName = info.data.innerClassesHandler.getUnqualifiedNameForInnerClass(field.commonType)
-			def qualifiedType = resolver.resolveType(new ClassOrInterfaceType(unqualifiedFieldName), info)
+			if (commonType) {
+				def unqualifiedFieldName = info.data.innerClassesHandler.getUnqualifiedNameForInnerClass(commonType)
+				def qualifiedType = resolver.resolveType(new ClassOrInterfaceType(unqualifiedFieldName), info)
 
-			if (qualifiedType.isReference()) {
-				searchForCycles(qualifiedType, thisClassType, field, resolver)
+				if (qualifiedType.isReference()) {
+					searchForCycles(qualifiedType, thisClassType, field, resolver)
+				}
 			}
 		}
 
 		super.visit(n, resolver)
+	}
+
+	static Type getCommonType(FieldDeclaration field) {
+		NodeList<VariableDeclarator> variables = field.getVariables()
+		if (variables.isEmpty()) {
+			return null
+		}
+		Type type = variables.get(0).getType()
+		for (int i = 1; i < variables.size(); i++) {
+			if (variables.get(i).getType() != type) {
+				return null
+			}
+		}
+		return type
 	}
 
 	def searchForCycles(QualifiedType otherType, QualifiedType thisType,
