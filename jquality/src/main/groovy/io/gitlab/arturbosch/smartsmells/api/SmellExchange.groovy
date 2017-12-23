@@ -86,6 +86,10 @@ final class SmellExchange {
 		if (!identifier && smelly instanceof CommentSmell) {
 			identifier = (getAttribute(smelly, "type") as CommentSmell.Type).name()
 		}
+		if (!identifier && smelly instanceof Cycle) {
+			def cycle = smelly as Cycle
+			identifier = cycle.source.name + "<->" + cycle.target.name
+		}
 		if (!identifier) identifier = getAttribute(smelly, "type")
 		return identifier
 	}
