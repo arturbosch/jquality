@@ -4,6 +4,7 @@ import com.github.javaparser.ast.body.CallableDeclaration
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration
 import com.github.javaparser.ast.body.ConstructorDeclaration
 import com.github.javaparser.ast.body.MethodDeclaration
+import com.github.javaparser.ast.body.TypeDeclaration
 import com.github.javaparser.ast.type.ClassOrInterfaceType
 import groovy.transform.CompileStatic
 import io.gitlab.arturbosch.jpal.ast.ClassHelper
@@ -43,8 +44,8 @@ class MetricDetector extends InternalVisitor {
 	@Override
 	void visit(ClassOrInterfaceDeclaration aClass, Resolver arg) {
 		def qualifiedType = info.getQualifiedTypeBySimpleName(aClass.nameAsString)
-				.orElse(arg.resolveType(new ClassOrInterfaceType(aClass.nameAsString), info))
-		def signature = ClassHelper.createFullSignature(aClass)
+				.orElseGet { arg.resolveType(new ClassOrInterfaceType(aClass.nameAsString), info) }
+		def signature = ClassHelper.createFullSignature(aClass as TypeDeclaration)
 		def currentClazz = new ClassInfo(qualifiedType, signature, SourcePath.of(info), SourceRange.fromNode(aClass))
 		statistics().addClass(currentClazz)
 		new MethodInfoVisitor(currentClazz).visit(aClass, arg)
