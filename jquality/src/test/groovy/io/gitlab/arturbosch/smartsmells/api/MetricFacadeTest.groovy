@@ -3,6 +3,8 @@ package io.gitlab.arturbosch.smartsmells.api
 import io.gitlab.arturbosch.smartsmells.common.Test
 import spock.lang.Specification
 
+import java.util.concurrent.Executors
+
 /**
  * @author Artur Bosch
  */
@@ -10,7 +12,7 @@ class MetricFacadeTest extends Specification {
 
 	def "run metric facade on dummies"() {
 		given: "metric facade"
-		def facade = new MetricFacade()
+		def facade = new MetricFacade(Executors.newSingleThreadExecutor())
 		when: "running facade with metric processor"
 		def result = facade.run(Test.BASE_PATH)
 		then:
