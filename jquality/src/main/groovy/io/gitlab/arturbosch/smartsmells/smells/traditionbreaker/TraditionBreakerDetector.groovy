@@ -41,7 +41,7 @@ class TraditionBreakerDetector extends Detector<TraditionBreaker> {
 }
 
 /**
- * ((NAS >= Average NOM per class) AND (TWO_THIRDS >= Two Thirds)) AND
+ * ((NAS >= Average NOM per class) AND (PNAS >= Two Thirds)) AND
  * (((AMW > Average) OR (WMC >= Very High)) AND (NOM >= High)) AND
  * ((Parent’s AMW > Average) AND (Parent’s NOM > High/2) AND (Parent’s WMC >= Very High/2))
  *
