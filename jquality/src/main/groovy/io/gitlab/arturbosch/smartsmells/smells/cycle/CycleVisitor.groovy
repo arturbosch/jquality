@@ -32,8 +32,7 @@ class CycleVisitor extends Visitor<Cycle> {
 			def commonType = getCommonType(field)
 
 			if (commonType) {
-				def unqualifiedFieldName = info.data.innerClassesHandler.getUnqualifiedNameForInnerClass(commonType)
-				def qualifiedType = resolver.resolveType(new ClassOrInterfaceType(unqualifiedFieldName), info)
+				def qualifiedType = resolver.resolveType(commonType, info)
 
 				if (qualifiedType.isReference()) {
 					searchForCycles(qualifiedType, thisClassType, field, resolver)
