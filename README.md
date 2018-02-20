@@ -8,22 +8,26 @@
 SmartSmells is a code smell detector for java powered by javaparser.
 Current found smells are:
 
-- GodClass
-- FeatureEnvy
+- BrainMethod
+- ClassDataShouldBePrivate
+- CommentSmell/Javadoc
+- ComplexCondition
+- ComplexMethod
+- Cycle
 - DataClass
+- Deadcode
+- FeatureEnvy
+- GodClass
+- LargeClass
 - LongMethod
 - LongParameterList
-- ComplexMethod
-- LargeClass
-- CommentSmell/Javadoc
-- Cycle
-- Deadcode
 - MessageChain
 - MiddleMan
-- StateChecking
-- ShotgunSurgery
 - NestedBlockDepth
-- ComplexCondition
+- RefusedParentBequest
+- ShotgunSurgery
+- StateChecking
+- TraditionBreaker
 
 ### Installation
 
