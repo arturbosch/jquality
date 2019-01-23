@@ -1,6 +1,6 @@
 allprojects {
-	group 'io.gitlab.arturbosch.smartsmells'
-	version "$smartsmellsVersion"
+	group 'io.gitlab.arturbosch'
+	version jqualityVersion
 
 	repositories {
 		mavenCentral()

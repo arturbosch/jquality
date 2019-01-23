@@ -23,7 +23,7 @@ class Main {
 	String projectPath
 	@Parameter(names = ["--output", "-o"], description = "Point to a path where the xml output file with the detection result should be saved.")
 	String outputPath
-	@Parameter(names = ["--config", "-c"], description = "Point to your SmartSmells configuration file. Supported formats are YAML and GROOVY. Take a look at default-config.[yml|groovy]")
+	@Parameter(names = ["--config", "-c"], description = "Point to your configuration file. Supported formats are YAML and GROOVY. Take a look at default-config.[yml|groovy]")
 	String configPath
 	@Parameter(names = ["--filters", "-f"], description = "Regex expressions, separated by a comma to specify path filters eg. '.*/test/.*'")
 	String filters
@@ -46,7 +46,7 @@ class Main {
 		def jcommander = new JCommander(main)
 		try {
 			jcommander.parse(args)
-			jcommander.setProgramName("SmartSmells")
+			jcommander.setProgramName("jquality")
 			if (main.help) {
 				jcommander.usage()
 				return
