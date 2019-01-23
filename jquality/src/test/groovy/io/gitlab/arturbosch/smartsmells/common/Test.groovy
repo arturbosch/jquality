@@ -36,6 +36,7 @@ class Test {
 	static Path MIDDLE_MAN_PATH = BASE_PATH.resolve("MiddleManDummy.java")
 	static Path FEATURE_ENVY_PATH = BASE_PATH.resolve("FeatureEnvyDummy.java")
 	static Path STATE_CHECKING_PATH = BASE_PATH.resolve("StateCheckingDummy.java")
+	static Path NPATH_DUMMY = BASE_PATH.resolve("NPathDummy.java")
 
 	static CompilationUnit compileContent(String content) {
 		return JavaParser.parse(content)

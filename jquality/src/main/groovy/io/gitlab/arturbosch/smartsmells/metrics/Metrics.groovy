@@ -4,6 +4,7 @@ import com.github.javaparser.ast.Modifier
 import com.github.javaparser.ast.body.CallableDeclaration
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration
 import com.github.javaparser.ast.body.MethodDeclaration
+import com.github.javaparser.ast.expr.Expression
 import com.github.javaparser.ast.expr.FieldAccessExpr
 import com.github.javaparser.ast.expr.MethodCallExpr
 import io.gitlab.arturbosch.jpal.ast.ClassHelper
@@ -13,6 +14,7 @@ import io.gitlab.arturbosch.jpal.ast.TypeHelper
 import io.gitlab.arturbosch.jpal.internal.Printer
 import io.gitlab.arturbosch.jpal.resolution.Resolver
 import io.gitlab.arturbosch.smartsmells.common.visitor.CyclomaticComplexityVisitor
+import io.gitlab.arturbosch.smartsmells.metrics.raisers.BooleanComplexityVisitor
 import io.gitlab.arturbosch.smartsmells.smells.godclass.FieldAccessVisitor
 import io.gitlab.arturbosch.smartsmells.smells.godclass.TiedClassCohesion
 
@@ -180,5 +182,9 @@ final class Metrics {
 		def methodName = n.nameAsString
 
 		methodFieldAccesses.put(methodName, accessedFieldNames)
+	}
+
+	static int booleanComplexity(Expression expr) {
+		return BooleanComplexityVisitor.calculate(expr)
 	}
 }
