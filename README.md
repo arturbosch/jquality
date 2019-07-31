@@ -2,7 +2,7 @@
 
 [![build status](https://gitlab.com/arturbosch/SmartSmells/badges/master/build.svg)](https://gitlab.com/arturbosch/SmartSmells/commits/master)
 [![CodeFactor](https://www.codefactor.io/repository/github/arturbosch/jquality/badge/master)](https://www.codefactor.io/repository/github/arturbosch/jquality/overview/master)
-[ ![Download](https://api.bintray.com/packages/arturbosch/code-analysis/SmartSmells/images/download.svg) ](https://bintray.com/arturbosch/code-analysis/SmartSmells/_latestVersion)
+[![Download](https://api.bintray.com/packages/arturbosch/code-analysis/jquality/images/download.svg) ](https://bintray.com/arturbosch/code-analysis/jquality/_latestVersion)
 
 ### Info
 
