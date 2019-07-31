@@ -1,20 +1,8 @@
 package io.gitlab.arturbosch.smartsmells.smells.deadcode
 
-import com.github.javaparser.ast.expr.AssignExpr
-import com.github.javaparser.ast.expr.BinaryExpr
-import com.github.javaparser.ast.expr.CastExpr
-import com.github.javaparser.ast.expr.Expression
-import com.github.javaparser.ast.expr.FieldAccessExpr
+
 import com.github.javaparser.ast.expr.MethodCallExpr
-import com.github.javaparser.ast.expr.MethodReferenceExpr
-import com.github.javaparser.ast.expr.ObjectCreationExpr
-import com.github.javaparser.ast.expr.SimpleName
-import com.github.javaparser.ast.stmt.ForStmt
-import com.github.javaparser.ast.stmt.ForeachStmt
-import com.github.javaparser.ast.stmt.IfStmt
-import com.github.javaparser.ast.stmt.ReturnStmt
-import com.github.javaparser.ast.stmt.SwitchStmt
-import com.github.javaparser.ast.stmt.WhileStmt
+import com.github.javaparser.ast.expr.NameExpr
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter
 import groovy.transform.CompileStatic
 
@@ -40,103 +28,18 @@ class ReferenceVisitor extends VoidVisitorAdapter {
 	}
 
 	@Override
-	void visit(MethodReferenceExpr n, Object arg) {
-		methodsToReferenceCount.get(n.identifier)?.increment()
-		super.visit(n, arg)
-	}
-
-	@Override
-	void visit(AssignExpr n, Object arg) {
-		checkArguments(n.value)
-		super.visit(n, arg)
-	}
-
-	@Override
-	void visit(CastExpr n, Object arg) {
-		checkArguments(n.expression)
-		super.visit(n, arg)
-	}
-
-	@Override
-	void visit(BinaryExpr n, Object arg) {
-		checkArguments(n.left)
-		checkArguments(n.right)
-		super.visit(n, arg)
-	}
-
-	@Override
-	void visit(ReturnStmt n, Object arg) {
-		n.expression.ifPresent { checkArguments(it) }
-		super.visit(n, arg)
-	}
-
-	@Override
 	void visit(MethodCallExpr n, Object arg) {
 		methodsToReferenceCount.get(n.nameAsString)?.increment()
-
-		n.scope.ifPresent {
-			checkArguments(it)
-		}
-
-		n.arguments.each {
-			checkArguments(it)
-		}
-
 		super.visit(n, arg)
 	}
 
 	@Override
-	void visit(FieldAccessExpr n, Object arg) {
-		fieldsToReferenceCount.get(n.nameAsString)?.increment()
+	void visit(NameExpr n, Object arg) {
+		def name = n.name.identifier
+		checkOccurrence(fieldsToReferenceCount, name)
+		checkOccurrence(parameterToReferenceCount, name)
+		checkOccurrence(localeVariableToReferenceCount, name)
 		super.visit(n, arg)
-	}
-
-	@Override
-	void visit(ObjectCreationExpr n, Object arg) {
-		n.arguments.each {
-			checkArguments(it)
-		}
-		super.visit(n, arg)
-	}
-
-	@Override
-	void visit(ForeachStmt n, Object arg) {
-		checkArguments(n.iterable)
-		checkArguments(n.variable)
-		super.visit(n, arg)
-	}
-
-	@Override
-	void visit(ForStmt n, Object arg) {
-		n.compare.ifPresent { checkArguments(it) }
-		super.visit(n, arg)
-	}
-
-	@Override
-	void visit(IfStmt n, Object arg) {
-		checkArguments(n.condition)
-		super.visit(n, arg)
-	}
-
-	@Override
-	void visit(WhileStmt n, Object arg) {
-		checkArguments(n.condition)
-		super.visit(n, arg)
-	}
-
-	@Override
-	void visit(SwitchStmt n, Object arg) {
-		checkArguments(n.selector)
-		super.visit(n, arg)
-	}
-
-	private void checkArguments(Expression it) {
-		it.getChildNodesByType(SimpleName.class).each {
-			def name = it.identifier
-			checkOccurrence(fieldsToReferenceCount, name)
-			checkOccurrence(parameterToReferenceCount, name)
-			checkOccurrence(localeVariableToReferenceCount, name)
-		}
 	}
 
 	private static void checkOccurrence(Map<String, MutableInt> map, String expr) {
@@ -144,5 +47,4 @@ class ReferenceVisitor extends VoidVisitorAdapter {
 				.filter { expr.contains(it.key) }
 				.forEach { it.value.increment() }
 	}
-
 }

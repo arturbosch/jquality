@@ -3,7 +3,8 @@ package io.gitlab.arturbosch.smartsmells.java;
 /**
  * @author artur
  */
-@SuppressWarnings("ALL") public class DeadCodeDummy {
+@SuppressWarnings("ALL")
+public class DeadCodeDummy {
 
 	private int deadField = 5;
 	private int usedField = 5;
@@ -26,5 +27,18 @@ package io.gitlab.arturbosch.smartsmells.java;
 		int i = (int) j;
 		String fullUrl = uri + ("/commits/new" + 6);
 		System.out.println(i + fullUrl);
+	}
+
+	public void usedMethodWithUsedReferenceInSwitch() {
+		int kk = 5;
+		switch (kk) {
+		}
+	}
+	public int usedMethodWithUsedReferenceInSwitchCase() {
+		int kkk = 5;
+		switch (5) {
+			case 5: kkk += 5;
+		}
+		return 0;
 	}
 }
