@@ -49,7 +49,7 @@ task unitTest(type: Test) {
 }
 
 dependencies {
-	api "io.gitlab.arturbosch.jpal:jpal:$jpalVersion"
+	api project(':jpal')
 	implementation "org.yaml:snakeyaml:$yamlVersion"
 	implementation "com.beust:jcommander:$jcommanderVersion"
 	testImplementation "org.spockframework:spock-core:$spockVersion"

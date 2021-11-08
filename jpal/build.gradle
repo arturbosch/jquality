@@ -1,0 +1,33 @@
+apply plugin: 'java-library'
+apply plugin: 'groovy'
+apply plugin: 'maven-publish'
+
+group 'io.gitlab.arturbosch.jpal'
+version '1.0.2'
+
+repositories {
+	mavenCentral()
+	mavenLocal()
+}
+
+publishing {
+	publications {
+		JpalPublication(MavenPublication) {
+			from components.java
+			groupId project.group
+			artifactId project.name
+			version project.version
+		}
+	}
+}
+
+dependencies {
+	api 'org.codehaus.groovy:groovy-all:2.4.11'
+	api 'com.github.javaparser:javaparser-core:3.4.1'
+	testImplementation 'org.spockframework:spock-core:1.1-groovy-2.4'
+}
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+	archiveClassifier.set('sources')
+	from sourceSets.main.allSource
+}

@@ -1,0 +1,42 @@
+Old methods from CompilationTree, need verification
+====================================================
+
+	static int findReferencesFor(QualifiedType qualifiedType) {
+		int references = 0
+		findReferencesFor(qualifiedType, { references++ })
+		return references
+	}
+
+	static int countMethodInvocations(QualifiedType qualifiedType, Collection<String> methods) {
+		int calls = 0
+		findReferencesFor(qualifiedType, {
+			calls = ASTHelper.getChildNodesByType(it, MethodCallExpr.class)
+					.stream()
+					.filter { methods.contains(it.name) }
+					.mapToInt { 1 }
+					.sum()
+		})
+		return calls
+	}
+
+	static void findReferencesFor(QualifiedType qualifiedType, Consumer<CompilationUnit> code) {
+		def walker = getJavaFilteredFileStream()
+		walker.forEach {
+			getCompilationUnit(it)
+					.ifPresent {
+
+				List<ImportDeclaration> imports = it.imports
+
+				Optional<ImportDeclaration> maybeImport = imports.stream()
+						.filter { it.name.toStringWithoutComments() == qualifiedType.name }
+						.findFirst()
+
+				if (maybeImport.isPresent()) {
+					code.accept(it)
+				} else if (TypeHelper.isTypePresentInCompilationUnit(it, qualifiedType)) {
+					code.accept(it)
+				}
+			}
+		}
+		StreamCloser.quietly(walker)
+	}

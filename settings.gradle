@@ -1,4 +1,5 @@
 rootProject.name = 'jquality'
 include 'detector-template'
 include 'jquality'
+include 'jpal'
 
