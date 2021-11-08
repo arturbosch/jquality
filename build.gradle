@@ -5,7 +5,5 @@ allprojects {
 	repositories {
 		mavenCentral()
 		mavenLocal()
-		maven { url "http://dl.bintray.com/arturbosch/code-analysis" }
 	}
-
 }

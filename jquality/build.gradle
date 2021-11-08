@@ -1,11 +1,10 @@
 plugins {
 	id "org.sonarqube" version "2.7"
-	id "com.jfrog.bintray" version "1.8.4"
-	id "com.github.johnrengelman.shadow" version "4.0.4"
-	id 'com.github.ben-manes.versions' version '0.20.0'
-//	id "com.github.hierynomus.license" version "0.13.1"
+	id "com.github.johnrengelman.shadow" version "7.1.0"
+	id 'com.github.ben-manes.versions' version '0.39.0'
 }
 
+apply plugin: 'java-library'
 apply plugin: 'groovy'
 apply plugin: 'maven-publish'
 apply plugin: 'application'
@@ -15,7 +14,6 @@ mainClassName = 'io.gitlab.arturbosch.smartsmells.Main'
 repositories {
 	mavenCentral()
 	mavenLocal()
-	maven { url "http://dl.bintray.com/arturbosch/code-analysis" }
 }
 
 task sourcesJar(type: Jar, dependsOn: classes) {
@@ -31,25 +29,6 @@ publishing {
 			groupId project.group
 			artifactId project.name
 			version project.version
-		}
-	}
-}
-
-bintray {
-	user = System.getenv("BINTRAY_USER") ?: ""
-	key = System.getenv("BINTRAY_API_KEY") ?: ""
-	publications = ["jqualityPublication"]
-
-	pkg {
-		repo = 'code-analysis'
-		name = 'jquality'
-		userOrg = 'arturbosch'
-		licenses = ['Apache-2.0']
-		vcsUrl = "https://github.com/arturbosch/jquality"
-
-		version {
-			name = project.version
-			released = new Date()
 		}
 	}
 }
@@ -70,8 +49,8 @@ task unitTest(type: Test) {
 }
 
 dependencies {
-	compile "io.gitlab.arturbosch.jpal:jpal:$jpalVersion"
-	compile "org.yaml:snakeyaml:$yamlVersion"
-	compile "com.beust:jcommander:$jcommanderVersion"
-	testCompile "org.spockframework:spock-core:$spockVersion"
+	api "io.gitlab.arturbosch.jpal:jpal:$jpalVersion"
+	implementation "org.yaml:snakeyaml:$yamlVersion"
+	implementation "com.beust:jcommander:$jcommanderVersion"
+	testImplementation "org.spockframework:spock-core:$spockVersion"
 }
