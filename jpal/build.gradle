@@ -22,7 +22,7 @@ publishing {
 }
 
 dependencies {
-	api 'org.codehaus.groovy:groovy-all:2.4.11'
+	api 'org.codehaus.groovy:groovy-all:2.4.21'
 	api 'com.github.javaparser:javaparser-core:3.4.1'
 	testImplementation 'org.spockframework:spock-core:1.1-groovy-2.4'
 }
