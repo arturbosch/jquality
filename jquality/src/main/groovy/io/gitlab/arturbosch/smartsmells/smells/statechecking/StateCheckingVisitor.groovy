@@ -19,7 +19,6 @@ import io.gitlab.arturbosch.jpal.resolution.Resolver
 import io.gitlab.arturbosch.jpal.resolution.symbols.SymbolReference
 import io.gitlab.arturbosch.smartsmells.common.Visitor
 import io.gitlab.arturbosch.smartsmells.smells.ElementTarget
-import sun.awt.util.IdentityArrayList
 
 import java.util.function.BinaryOperator
 
@@ -32,7 +31,7 @@ class StateCheckingVisitor extends Visitor<StateChecking> {
 	final static String UNKNOWN_METHOD = "UNKNOWN_METHOD"
 
 	private String currentClassName = ""
-	private List<Statement> statementsFromElseBlock = new IdentityArrayList<>()
+	private Set<Statement> statementsFromElseBlock = new HashSet<>()
 
 	@Override
 	void visit(ClassOrInterfaceDeclaration n, Resolver arg) {
